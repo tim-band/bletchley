@@ -7,11 +7,11 @@ public class ConvertExample
     private final BigInteger foo;
     private final BigInteger bar;
 
-    @SexpName("convert-example")
+    @PositionalSexp("convert-example")
     public ConvertExample(
-        @S("foo")
+        @P("foo")
         BigInteger foo,
-        @S("bar")
+        @P("bar")
         BigInteger bar
     ) {
         super();
