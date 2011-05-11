@@ -8,7 +8,6 @@ import net.lshift.spki.Get;
 import net.lshift.spki.SExp;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
@@ -50,10 +49,9 @@ public class PrivateSigningKey
         return new PublicSigningKey(keyPair.getPublic());
     }
 
-    public SExp sign(byte[] digest)
+    public SExp sign(DigestSha384 digest)
     {
-        assert digest.length == (new SHA384Digest()).getDigestSize();
-        BigInteger[] signature = signer.generateSignature(digest);
+        BigInteger[] signature = signer.generateSignature(digest.getBytes());
         return list("suiteb-p384-ecdsa-signature",
             list("r", signature[0]),
             list("s", signature[1]));

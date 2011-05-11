@@ -25,9 +25,9 @@ public class PublicSigningKey
         return new PublicSigningKey(EC.toECPublicKeyParameters(sexp));
     }
 
-    public boolean validate(byte[] digest, SExp sigVal)
+    public boolean validate(DigestSha384 digest, SExp sigVal)
     {
-        return signer.verifySignature(digest,
+        return signer.verifySignature(digest.getBytes(),
             Get.getBigInteger("r", sigVal),
             Get.getBigInteger("s", sigVal));
     }

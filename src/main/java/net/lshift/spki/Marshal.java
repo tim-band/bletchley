@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -186,15 +185,5 @@ public class Marshal {
         }
         if (!stack.isEmpty())
             throw new ParseException("Unclosed paren");
-    }
-
-    public static byte[] sha384(SExp sexp) {
-        // FIXME: shouldn't need to write out the whole message to digest it
-        SHA384Digest digester = new SHA384Digest();
-        byte[] message = marshal(sexp);
-        digester.update(message, 0, message.length);
-        byte[] digest = new byte[digester.getDigestSize()];
-        digester.doFinal(digest, 0);
-        return digest;
     }
 }

@@ -7,7 +7,6 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 import net.lshift.spki.Get;
-import net.lshift.spki.Marshal;
 import net.lshift.spki.SExp;
 
 import org.bouncycastle.asn1.nist.NISTNamedCurves;
@@ -86,10 +85,11 @@ public class EC {
         senderAgreement.init(privateKey);
         BigInteger sharedSecret = senderAgreement.calculateAgreement(
                 publicKey);
-        byte [] hash = Marshal.sha384(list("suiteb-p384-ecdh-shared-secret",
+        DigestSha384 hash = DigestSha384.digest(
+            list("suiteb-p384-ecdh-shared-secret",
                 toSExpDH((ECPublicKeyParameters)receiverKey),
                 toSExpDH((ECPublicKeyParameters)senderKey),
                 atom(sharedSecret)));
-        return new KeyParameter(hash, 0, 32);
+        return new KeyParameter(hash.getBytes(), 0, 32);
     }
 }
