@@ -53,4 +53,18 @@ public final class SList implements SExp {
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append('(');
+        sb.append(head.toString());
+        for (SExp s: sparts) {
+            sb.append(' ');
+            sb.append(s.toString());
+        }
+        sb.append(')');
+        return sb.toString();
+    }
 }

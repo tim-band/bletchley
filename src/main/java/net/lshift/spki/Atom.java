@@ -39,4 +39,20 @@ public final class Atom implements SExp {
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append('"');
+        for (byte b: bytes) {
+            if (Character.isLetterOrDigit(b) || b == (byte) '-') {
+                sb.append((char) b);
+            } else {
+                sb.append(String.format("\\0x%02x", b));
+            }
+        }
+        sb.append('"');
+        return sb.toString();
+    }
 }

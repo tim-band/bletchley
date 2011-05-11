@@ -23,7 +23,7 @@ public class Get {
         return ((SList)sexp).getSparts()[i-1];
     }
 
-    public static SExp getSExp(String string, SExp sexp) {
+    public static SList getSExp(String string, SExp sexp) {
         Atom match = Create.atom(string);
         for (SExp s: ((SList)sexp).getSparts()) {
             if (s instanceof SList) {
