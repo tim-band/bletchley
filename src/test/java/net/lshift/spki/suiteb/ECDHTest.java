@@ -35,6 +35,6 @@ public class ECDHTest {
         BigInteger receiverResult = receiverAgreement.calculateAgreement(
                 senderPair.getPublic());
         assertEquals(senderResult, receiverResult);
-        System.out.println(receiverResult);
+        //System.out.println(receiverResult);
     }
 }

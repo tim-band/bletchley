@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SExp;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -22,7 +21,7 @@ public class PKEncryptionTest {
         publicKey = PublicEncryptionKey.fromSExp(publicKey.toSExp());
         SExp message = atom("The magic words are squeamish ossifrage");
         SExp encrypted = publicKey.encrypt(message);
-        PrettyPrinter.prettyPrint(System.out, encrypted);
+        //PrettyPrinter.prettyPrint(System.out, encrypted);
         SExp decrypted = privateKey.decrypt(encrypted);
         assertEquals(message, decrypted);
     }
