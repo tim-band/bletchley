@@ -2,12 +2,12 @@ package net.lshift.spki.convert;
 
 import java.math.BigInteger;
 
-@SexpName("convert-example")
 public class ConvertExample
 {
     private final BigInteger foo;
     private final BigInteger bar;
 
+    @SexpName("convert-example")
     public ConvertExample(
         @S("foo")
         BigInteger foo,
