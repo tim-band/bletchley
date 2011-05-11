@@ -27,6 +27,7 @@ import org.bouncycastle.math.ec.ECPoint;
  */
 public class EC {
     public static final String ECDH_PUBLIC_KEY = "suiteb-p384-ecdh-public-key";
+    public static final String ECDSA_PUBLIC_KEY = "suiteb-p384-ecdsa-public-key";
 
     private static X9ECParameters curve = NISTNamedCurves.getByName("P-384");
 
@@ -58,8 +59,13 @@ public class EC {
                 false);
     }
 
-    public static SExp toSExp(ECPublicKeyParameters publicKey) {
+    public static SExp toSExpDH(ECPublicKeyParameters publicKey) {
         return list(ECDH_PUBLIC_KEY,
+                toSExp(publicKey.getQ()));
+    }
+
+    public static SExp toSExpDSA(ECPublicKeyParameters publicKey) {
+        return list(ECDSA_PUBLIC_KEY,
                 toSExp(publicKey.getQ()));
     }
 
@@ -81,8 +87,8 @@ public class EC {
         BigInteger sharedSecret = senderAgreement.calculateAgreement(
                 publicKey);
         byte [] hash = Marshal.sha384(list("suiteb-p384-ecdh-shared-secret",
-                toSExp((ECPublicKeyParameters)receiverKey),
-                toSExp((ECPublicKeyParameters)senderKey),
+                toSExpDH((ECPublicKeyParameters)receiverKey),
+                toSExpDH((ECPublicKeyParameters)senderKey),
                 atom(sharedSecret)));
         return new KeyParameter(hash, 0, 32);
     }

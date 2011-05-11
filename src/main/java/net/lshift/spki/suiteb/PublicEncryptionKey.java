@@ -25,7 +25,7 @@ public class PublicEncryptionKey {
     }
 
     public SExp toSExp() {
-        return EC.toSExp(publicKey);
+        return EC.toSExpDH(publicKey);
     }
 
     public static PublicEncryptionKey fromSExp(SExp sexp) {
@@ -59,7 +59,7 @@ public class PublicEncryptionKey {
         }
         // FIXME: include reference to private key, nonce, and more
         return list("suiteb-p384-ecdh-message",
-            EC.toSExp((ECPublicKeyParameters) ephemeralKey.getPublic()),
+            EC.toSExpDH((ECPublicKeyParameters) ephemeralKey.getPublic()),
             atom(ciphertext)
         );
     }

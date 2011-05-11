@@ -10,6 +10,7 @@ import net.lshift.spki.Constants;
 import org.bouncycastle.asn1.nist.NISTNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
@@ -32,9 +33,13 @@ public class ECDSATest
         signer.init(true, senderPair.getPrivate());
         byte[] message = "The magic words are squeamish ossifrage".getBytes(
             Constants.UTF8);
-        BigInteger[] signature = signer.generateSignature(message);
+        SHA384Digest digester = new SHA384Digest();
+        digester.update(message, 0, message.length);
+        byte[] digest = new byte[digester.getDigestSize()];
+        digester.doFinal(digest, 0);
+        BigInteger[] signature = signer.generateSignature(digest);
         ECDSASigner verifier = new ECDSASigner();
         verifier.init(false, senderPair.getPublic());
-        assertTrue(verifier.verifySignature(message, signature[0], signature[1]));
+        assertTrue(verifier.verifySignature(digest, signature[0], signature[1]));
     }
 }

@@ -68,7 +68,7 @@ public class PrivateEncryptionKey {
 
     public SExp toSExp() {
         return list("suiteb-p384-ecdh-private-key",
-            EC.toSExp((ECPublicKeyParameters)keyPair.getPublic()),
+            EC.toSExpDH((ECPublicKeyParameters)keyPair.getPublic()),
             list("d", ((ECPrivateKeyParameters)keyPair.getPrivate()).getD())
         );
     }
