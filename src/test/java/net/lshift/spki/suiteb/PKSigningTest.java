@@ -17,7 +17,7 @@ public class PKSigningTest {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
         //privateKey = PrivateSigningKey.fromSExp(privateKey.toSExp());
         PublicSigningKey publicKey = privateKey.getPublicKey();
-        // publicKey = PublicSigningKey.fromSExp(publicKey.toSExp());
+        publicKey = PublicSigningKey.fromSExp(publicKey.toSExp());
         SExp message = atom("The magic words are squeamish ossifrage");
         byte[] digest = Marshal.sha384(message);
         SExp sigVal = privateKey.sign(digest);

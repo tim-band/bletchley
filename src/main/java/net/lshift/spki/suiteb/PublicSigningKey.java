@@ -21,8 +21,8 @@ public class PublicSigningKey
         return EC.toSExpDSA(publicKey);
     }
 
-    public static PublicEncryptionKey fromSExp(SExp sexp) {
-        return new PublicEncryptionKey(EC.toECPublicKeyParameters(sexp));
+    public static PublicSigningKey fromSExp(SExp sexp) {
+        return new PublicSigningKey(EC.toECPublicKeyParameters(sexp));
     }
 
     public boolean validate(byte[] digest, SExp sigVal)
