@@ -1,5 +1,6 @@
 package net.lshift.spki;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -61,6 +62,18 @@ public class PrettyPrinter {
             ps = new PrintStream(os);
         }
         prettyPrint(ps, "", sexp);
+    }
+
+    public static String prettyPrint(SExp sexp)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            prettyPrint(baos, sexp);
+        } catch (IOException e) {
+            // should not be possible
+            throw new RuntimeException(e);
+        }
+        return new String(baos.toByteArray(), Constants.UTF8);
     }
 
 }
