@@ -31,7 +31,8 @@ public class ClassConvertInfo<T>
     {
         for (Annotation a: annotations) {
             if (a instanceof P) {
-                return new PositionFieldConvertInfo(((P)a).value(), class1, position);
+                return new PositionFieldConvertInfo(
+                    ((P)a).value(), class1, position);
             }
         }
         throw new ConvertException("Constructor parameter not annotated");
@@ -44,10 +45,11 @@ public class ClassConvertInfo<T>
         Class<?>[] parameters = constructor.getParameterTypes();
         Annotation[][] annotations = constructor.getParameterAnnotations();
         assert parameters.length == annotations.length;
-        ArrayList<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>(
-                        parameters.length);
+        ArrayList<FieldConvertInfo> fields
+            = new ArrayList<FieldConvertInfo>(parameters.length);
         for (int i = 0; i < parameters.length; i++) {
-            fields.add(getPositionalFieldConvertInfo(i+1, parameters[i], annotations[i]));
+            fields.add(getPositionalFieldConvertInfo(
+                i+1, parameters[i], annotations[i]));
         }
         return new ClassConvertInfo<T>(name, constructor, fields);
     }
@@ -71,10 +73,11 @@ public class ClassConvertInfo<T>
         Class<?>[] parameters = constructor.getParameterTypes();
         Annotation[][] annotations = constructor.getParameterAnnotations();
         assert parameters.length == annotations.length;
-        ArrayList<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>(
-                        parameters.length);
+        ArrayList<FieldConvertInfo> fields
+            = new ArrayList<FieldConvertInfo>(parameters.length);
         for (int i = 0; i < parameters.length; i++) {
-            fields.add(getDictlikeFieldConvertInfo(parameters[i], annotations[i]));
+            fields.add(getDictlikeFieldConvertInfo(
+                parameters[i], annotations[i]));
         }
         return new ClassConvertInfo<T>(name, constructor, fields);
     }
@@ -84,11 +87,13 @@ public class ClassConvertInfo<T>
         for (Constructor<?> c: class1.getConstructors()) {
             DictlikeSexp ds = c.getAnnotation(DictlikeSexp.class);
             if (ds != null) {
-                return getDictlikeClassConvertInfo(ds.value(), (Constructor<T>) c);
+                return getDictlikeClassConvertInfo(
+                    ds.value(), (Constructor<T>) c);
             }
             PositionalSexp ps = c.getAnnotation(PositionalSexp.class);
             if (ps != null) {
-                return getPositionalClassConvertInfo(ps.value(), (Constructor<T>) c);
+                return getPositionalClassConvertInfo(
+                    ps.value(), (Constructor<T>) c);
             }
         }
         throw new ConvertException("No suitably annotated constructor");
