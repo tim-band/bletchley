@@ -1,17 +1,16 @@
 package net.lshift.spki.suiteb;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SExp;
 import net.lshift.spki.convert.Convert;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RoundTrip
 {
