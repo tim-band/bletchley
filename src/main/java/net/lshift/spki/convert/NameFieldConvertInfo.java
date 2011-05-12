@@ -11,10 +11,10 @@ import net.lshift.spki.SList;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
-public class NameClassConvertInfo
-    extends ClassConvertInfo
+public class NameFieldConvertInfo
+    extends FieldConvertInfo
 {
-    public NameClassConvertInfo(String name, Class<?> type)
+    public NameFieldConvertInfo(String name, Class<?> type)
     {
         super(name, type);
     }
