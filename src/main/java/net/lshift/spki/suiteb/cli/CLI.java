@@ -1,6 +1,14 @@
 package net.lshift.spki.suiteb.cli;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
+import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SExp;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.DigestSha384;
@@ -107,7 +115,26 @@ public class CLI
         } catch (InvalidCipherTextException e) {
             throw new RuntimeException(e);
         }
-
     }
 
+    public static void main(String[] args)
+        throws FileNotFoundException,
+            ParseException,
+            IOException
+    {
+        String command = args[0];
+        File[] files = new File[args.length-1];
+        for (int i = 0; i < args.length-1; i++) {
+            files[i] = new File(args[i+1]);
+        }
+        if ("prettyprint".equals(command)) {
+            PrettyPrinter.prettyPrint(System.out,
+                Marshal.unmarshal(new FileInputStream(files[0])));
+        } else if ("genSigningKey".equals(command)) {
+            Marshal.marshal(new FileOutputStream(files[0]),
+                Convert.toSExp(PrivateSigningKey.generate().pack()));
+        } else {
+            throw new RuntimeException("Command not recognised: " + command);
+        }
+    }
 }

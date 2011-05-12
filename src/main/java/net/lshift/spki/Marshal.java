@@ -62,7 +62,7 @@ public class Marshal {
         }
     }
 
-    private static SExp unmarshal(InputStream is) throws ParseException, IOException {
+    public static SExp unmarshal(InputStream is) throws ParseException, IOException {
         List<SExp> resl = new ArrayList<SExp>(1);
         unmarshal(resl, is);
         if (resl.size() != 1)
