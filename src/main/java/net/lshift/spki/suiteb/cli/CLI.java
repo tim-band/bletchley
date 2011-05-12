@@ -24,10 +24,13 @@ import net.lshift.spki.suiteb.sexpstructs.ECDSAPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 import net.lshift.spki.suiteb.sexpstructs.SimpleSigned;
 
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 
 public class CLI
 {
+    private static final String CLI_MESSAGE = CLI.class.toString();
+
     public static byte[] generateEncryptionKey()
     {
         return Convert.toBytes(
@@ -117,10 +120,35 @@ public class CLI
         }
     }
 
+    public static <T> T read(Class<T> class1, File file) {
+        try {
+            return Convert.fromSExp(class1,
+                Marshal.unmarshal(new FileInputStream(file)));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> void write(File file, T o) {
+        try {
+            Marshal.marshal(new FileOutputStream(file),
+                Convert.toSExp(o));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args)
         throws FileNotFoundException,
             ParseException,
-            IOException
+            IOException,
+            InvalidCipherTextException
     {
         String command = args[0];
         File[] files = new File[args.length-1];
@@ -131,8 +159,44 @@ public class CLI
             PrettyPrinter.prettyPrint(System.out,
                 Marshal.unmarshal(new FileInputStream(files[0])));
         } else if ("genSigningKey".equals(command)) {
-            Marshal.marshal(new FileOutputStream(files[0]),
-                Convert.toSExp(PrivateSigningKey.generate().pack()));
+            write(files[0], PrivateSigningKey.generate().pack());
+        } else if ("genEncryptionKey".equals(command)) {
+            write(files[0], PrivateEncryptionKey.generate().pack());
+        } else if ("getPublicSigningKey".equals(command)) {
+            write(files[1], PrivateSigningKey.unpack(
+                read(ECDSAPrivateKey.class, files[0])).getPublicKey().pack());
+        } else if ("getPublicEncryptionKey".equals(command)) {
+            write(files[1], PrivateEncryptionKey.unpack(
+                read(ECDHPrivateKey.class, files[0])).getPublicKey().pack());
+        } else if ("genEncryptedSignedMessage".equals(command)) {
+            PrivateSigningKey dsaPrivate = PrivateSigningKey.unpack(
+                read(ECDSAPrivateKey.class, files[0]));
+            PublicEncryptionKey dhPublic = PublicEncryptionKey.unpack(
+                read(ECDHPublicKey.class, files[1]));
+            byte[] message = IOUtils.toByteArray(new FileInputStream(files[2]));
+            SExp messageSexp = Convert.toSExp(
+                new SimpleMessage(CLI_MESSAGE, message));
+            SimpleSigned signed = new SimpleSigned(messageSexp,
+                dsaPrivate.sign(DigestSha384.digest(messageSexp)));
+            ECDHMessage encrypted = dhPublic.encrypt(Convert.toSExp(signed));
+            write(files[3], encrypted);
+        } else if ("decryptSignedMessage".equals(command)) {
+            PrivateEncryptionKey dhPrivate = PrivateEncryptionKey.unpack(
+                read(ECDHPrivateKey.class, files[0]));
+            PublicSigningKey dsaPublic = PublicSigningKey.unpack(
+                read(ECDSAPublicKey.class, files[1]));
+            ECDHMessage encrypted = read(ECDHMessage.class, files[2]);
+            SExp decrypted = dhPrivate.decrypt(encrypted);
+            SimpleSigned signed = Convert.fromSExp(SimpleSigned.class, decrypted);
+            if (!dsaPublic.validate(DigestSha384.digest(signed.getObject()),
+                signed.getSignature())) {
+                throw new RuntimeException("Signature validation failure");
+            }
+            SimpleMessage message = Convert.fromSExp(SimpleMessage.class, signed.getObject());
+            if (!CLI_MESSAGE.equals(message.getType())) {
+                throw new RuntimeException("Message is of an unexpected type");
+            }
+            (new FileOutputStream(files[3])).write(message.getContent());
         } else {
             throw new RuntimeException("Command not recognised: " + command);
         }
