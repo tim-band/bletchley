@@ -10,13 +10,21 @@ import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class NameFieldConvertInfo
     extends FieldConvertInfo
 {
+    private final String hyphenatedName;
+
     public NameFieldConvertInfo(String name, Class<?> type)
     {
         super(name, type);
+        String[] c = StringUtils.splitByCharacterTypeCamelCase(name);
+        for (int i = 0; i < c.length; i++) {
+            c[i] = StringUtils.lowerCase(c[i]);
+        }
+        hyphenatedName = StringUtils.join(c, '-');
     }
 
     @Override
@@ -25,13 +33,13 @@ public class NameFieldConvertInfo
             InvocationTargetException,
             NoSuchMethodException
     {
-        return list(name, Convert.toSExp(
+        return list(hyphenatedName, Convert.toSExp(
             PropertyUtils.getProperty(bean, name)));
     }
 
     @Override
     public Object getValue(SExp sexp) {
-        SExp[] sexpVal = getSExp(name, sexp).getSparts();
+        SExp[] sexpVal = getSExp(hyphenatedName, sexp).getSparts();
         assert sexpVal.length == 1;
         return Convert.fromSExp(type, sexpVal[0]);
     }
