@@ -1,14 +1,11 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.Create.list;
-
-import java.math.BigInteger;
-
-import net.lshift.spki.Atom;
-import net.lshift.spki.Get;
 import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SExp;
+import net.lshift.spki.convert.Convert;
+import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
+import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -39,15 +36,23 @@ public class PrivateEncryptionKey {
     }
 
     public SExp decrypt(SExp message)
-    throws InvalidCipherTextException, ParseException {
-        ECPublicKeyParameters pk = EC.toECPublicKeyParameters(
-                Get.get(1, message));
+        throws InvalidCipherTextException,
+            ParseException
+    {
+        return decrypt(Convert.fromSExp(ECDHMessage.class, message));
+    }
+
+    public SExp decrypt(ECDHMessage message)
+        throws InvalidCipherTextException,
+            ParseException
+    {
+        ECPublicKeyParameters pk = EC.toECPublicKeyParameters(message.getEphemeralKey());
         KeyParameter sessionKey = EC.sessionKey(
                 keyPair.getPublic(),
                 pk,
                 keyPair.getPrivate(),
                 pk);
-        byte[] ciphertext = ((Atom)Get.get(2, message)).getBytes();
+        byte[] ciphertext = message.getCiphertext();
         // FIXME: vary nonce, use associated data
         byte[] nonce = new byte[1];
         nonce[0] = 0;
@@ -66,18 +71,19 @@ public class PrivateEncryptionKey {
         return Marshal.unmarshal(newtext);
     }
 
-    public SExp toSExp() {
-        return list("suiteb-p384-ecdh-private-key",
+
+    public ECDHPrivateKey toSExp() {
+        return new ECDHPrivateKey(
             EC.toSExpDH((ECPublicKeyParameters)keyPair.getPublic()),
-            list("d", ((ECPrivateKeyParameters)keyPair.getPrivate()).getD())
+            ((ECPrivateKeyParameters)keyPair.getPrivate()).getD()
         );
     }
 
-    public static PrivateEncryptionKey fromSExp(SExp sexp) {
+    public static PrivateEncryptionKey fromSExp(ECDHPrivateKey sexp) {
         ECPublicKeyParameters pk = EC.toECPublicKeyParameters(
-                Get.getSExp(EC.ECDH_PUBLIC_KEY, sexp));
-        BigInteger d = Get.getBigInteger("d", sexp);
-        ECPrivateKeyParameters privk = new ECPrivateKeyParameters(d, EC.domainParameters);
+                sexp.getPublicKey());
+        ECPrivateKeyParameters privk = new ECPrivateKeyParameters(
+            sexp.getD(), EC.domainParameters);
         return new PrivateEncryptionKey(new AsymmetricCipherKeyPair(pk, privk));
     }
 }

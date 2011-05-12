@@ -1,11 +1,9 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.Create.list;
-
 import java.math.BigInteger;
 
-import net.lshift.spki.Get;
-import net.lshift.spki.SExp;
+import net.lshift.spki.suiteb.sexpstructs.ECDSAPrivateKey;
+import net.lshift.spki.suiteb.sexpstructs.ECDSASignature;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -27,21 +25,21 @@ public class PrivateSigningKey
         return new PrivateSigningKey(EC.generate());
     }
 
-    public static PrivateSigningKey fromSExp(SExp sexp)
+    public static PrivateSigningKey fromSExp(ECDSAPrivateKey sexp)
     {
         ECPublicKeyParameters pk = EC.toECPublicKeyParameters(
-            Get.getSExp(EC.ECDSA_PUBLIC_KEY, sexp));
-        BigInteger d = Get.getBigInteger("d", sexp);
+            sexp.getPublicKey());
+        BigInteger d = sexp.getD();
         ECPrivateKeyParameters privk = new ECPrivateKeyParameters(d,
                         EC.domainParameters);
         return new PrivateSigningKey(new AsymmetricCipherKeyPair(pk, privk));
     }
 
-    public SExp toSExp()
+    public ECDSAPrivateKey toSExp()
     {
-        return list("suiteb-p384-ecdsa-private-key",
+        return new ECDSAPrivateKey(
             EC.toSExpDSA((ECPublicKeyParameters)keyPair.getPublic()),
-            list("d", ((ECPrivateKeyParameters)keyPair.getPrivate()).getD())
+             ((ECPrivateKeyParameters)keyPair.getPrivate()).getD()
         );
     }
 
@@ -49,11 +47,9 @@ public class PrivateSigningKey
         return new PublicSigningKey(keyPair.getPublic());
     }
 
-    public SExp sign(DigestSha384 digest)
+    public ECDSASignature sign(DigestSha384 digest)
     {
         BigInteger[] signature = signer.generateSignature(digest.getBytes());
-        return list("suiteb-p384-ecdsa-signature",
-            list("r", signature[0]),
-            list("s", signature[1]));
+        return new ECDSASignature(signature[0], signature[1]);
     }
 }

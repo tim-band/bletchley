@@ -1,9 +1,9 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.Create.atom;
-import static net.lshift.spki.Create.list;
 import net.lshift.spki.Marshal;
 import net.lshift.spki.SExp;
+import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
+import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.CipherParameters;
@@ -24,15 +24,15 @@ public class PublicEncryptionKey {
         this.publicKey = (ECPublicKeyParameters) publicKey;
     }
 
-    public SExp toSExp() {
+    public ECDHPublicKey toSExp() {
         return EC.toSExpDH(publicKey);
     }
 
-    public static PublicEncryptionKey fromSExp(SExp sexp) {
+    public static PublicEncryptionKey fromSExp(ECDHPublicKey sexp) {
         return new PublicEncryptionKey(EC.toECPublicKeyParameters(sexp));
     }
 
-    public SExp encrypt(SExp message) {
+    public ECDHMessage encrypt(SExp message) {
         AsymmetricCipherKeyPair ephemeralKey = EC.generate();
         KeyParameter sessionKey = EC.sessionKey(
                 publicKey,
@@ -58,9 +58,8 @@ public class PublicEncryptionKey {
             throw new RuntimeException(e);
         }
         // FIXME: include reference to private key, nonce, and more
-        return list("suiteb-p384-ecdh-message",
+        return new ECDHMessage(
             EC.toSExpDH((ECPublicKeyParameters) ephemeralKey.getPublic()),
-            atom(ciphertext)
-        );
+            ciphertext);
     }
 }

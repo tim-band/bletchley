@@ -1,13 +1,12 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.Create.atom;
-import static net.lshift.spki.Create.list;
-
-import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import net.lshift.spki.Get;
-import net.lshift.spki.SExp;
+import net.lshift.spki.convert.Convert;
+import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
+import net.lshift.spki.suiteb.sexpstructs.ECDHSharedSecret;
+import net.lshift.spki.suiteb.sexpstructs.ECDSAPublicKey;
+import net.lshift.spki.suiteb.sexpstructs.Point;
 
 import org.bouncycastle.asn1.nist.NISTNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -42,35 +41,38 @@ public class EC {
         return gen.generateKeyPair();
     }
 
-    public static SExp toSExp(ECPoint q) {
-        return list("point",
-                list("x", q.getX().toBigInteger()),
-                list("y", q.getY().toBigInteger()));
+    public static Point toPoint(ECPoint q) {
+        return new Point(
+            q.getX().toBigInteger(), q.getY().toBigInteger());
     }
 
-    // FIXME: I'll make these converters strict when I write
-    // the annotation-based deserializer.
-
-    public static ECPoint toECPoint(SExp sexp) {
+    public static ECPoint toECPoint(Point point) {
         return domainParameters.getCurve().createPoint(
-                Get.getBigInteger("x", sexp),
-                Get.getBigInteger("y", sexp),
-                false);
+                point.getX(), point.getY(), false);
     }
 
-    public static SExp toSExpDH(ECPublicKeyParameters publicKey) {
-        return list(ECDH_PUBLIC_KEY,
-                toSExp(publicKey.getQ()));
+    public static ECDHPublicKey toSExpDH(ECPublicKeyParameters publicKey) {
+        return new ECDHPublicKey(toPoint(publicKey.getQ()));
     }
 
-    public static SExp toSExpDSA(ECPublicKeyParameters publicKey) {
-        return list(ECDSA_PUBLIC_KEY,
-                toSExp(publicKey.getQ()));
+    public static ECDSAPublicKey toSExpDSA(ECPublicKeyParameters publicKey) {
+        return new ECDSAPublicKey(toPoint(publicKey.getQ()));
     }
 
-    public static ECPublicKeyParameters toECPublicKeyParameters(SExp sexp) {
+    public static ECPublicKeyParameters toECPublicKeyParameters(
+        ECDHPublicKey k
+    ) {
         return new ECPublicKeyParameters(
-                toECPoint(Get.getSExp("point", sexp)),
+                toECPoint(k.getPoint()),
+                domainParameters
+        );
+    }
+
+    public static ECPublicKeyParameters toECPublicKeyParameters(
+        ECDSAPublicKey k
+    ) {
+        return new ECPublicKeyParameters(
+                toECPoint(k.getPoint()),
                 domainParameters
         );
     }
@@ -83,13 +85,12 @@ public class EC {
     ) {
         ECDHBasicAgreement senderAgreement = new ECDHBasicAgreement();
         senderAgreement.init(privateKey);
-        BigInteger sharedSecret = senderAgreement.calculateAgreement(
-                publicKey);
+        ECDHSharedSecret sharedSecret = new ECDHSharedSecret(
+            toSExpDH((ECPublicKeyParameters)receiverKey),
+            toSExpDH((ECPublicKeyParameters)senderKey),
+            senderAgreement.calculateAgreement(publicKey));
         DigestSha384 hash = DigestSha384.digest(
-            list("suiteb-p384-ecdh-shared-secret",
-                toSExpDH((ECPublicKeyParameters)receiverKey),
-                toSExpDH((ECPublicKeyParameters)senderKey),
-                atom(sharedSecret)));
+            Convert.toSExp(sharedSecret));
         return new KeyParameter(hash.getBytes(), 0, 32);
     }
 }
