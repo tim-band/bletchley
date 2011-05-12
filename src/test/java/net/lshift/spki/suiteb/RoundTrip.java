@@ -18,7 +18,7 @@ public class RoundTrip
         try {
             Class<?> outClass = o.getClass();
             Object packed = outClass.getMethod("pack").invoke(o);
-            Object unpacked = packableRoundTrip(packed);
+            Object unpacked = convertableRoundTrip(packed);
             Method unpack = outClass.getMethod("unpack", packed.getClass());
             return (T) unpack.invoke(null, unpacked);
         } catch (SecurityException e) {
