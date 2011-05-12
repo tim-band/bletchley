@@ -20,7 +20,9 @@ public class Convert
 
     public static SExp toSExp(Object o)
     {
-        if (o instanceof byte[]) {
+        if (o instanceof SExp) {
+            return (SExp) o;
+        } else if (o instanceof byte[]) {
             return atom((byte[])o);
         } else if (o instanceof String) {
             return atom((String)o);
@@ -51,7 +53,9 @@ public class Convert
     public static <T> T fromSExp(Class<T> class1, SExp sexp)
     {
         try {
-            if (class1.equals(byte[].class)) {
+            if (SExp.class.isAssignableFrom(class1)) {
+                return (T) sexp;
+            } else if (class1.equals(byte[].class)) {
                 return (T) ((Atom)sexp).getBytes();
             } else if (class1.equals(String.class)) {
                 return (T) sb(sexp);
