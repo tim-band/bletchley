@@ -14,9 +14,9 @@ public class PKSigningTest {
     @Test
     public void test() throws IOException {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
-        privateKey = PrivateSigningKey.fromSExp(privateKey.toSExp());
+        privateKey = PrivateSigningKey.unpack(privateKey.pack());
         PublicSigningKey publicKey = privateKey.getPublicKey();
-        publicKey = PublicSigningKey.fromSExp(publicKey.toSExp());
+        publicKey = PublicSigningKey.unpack(publicKey.pack());
         SExp message = atom("The magic words are squeamish ossifrage");
         DigestSha384 digest = DigestSha384.digest(message);
         ECDSASignature sigVal = privateKey.sign(digest);

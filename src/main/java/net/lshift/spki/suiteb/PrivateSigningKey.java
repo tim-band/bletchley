@@ -21,11 +21,7 @@ public class PrivateSigningKey
         signer.init(true, keyPair.getPrivate());
     }
 
-    public static PrivateSigningKey generate() {
-        return new PrivateSigningKey(EC.generate());
-    }
-
-    public static PrivateSigningKey fromSExp(ECDSAPrivateKey sexp)
+    public static PrivateSigningKey unpack(ECDSAPrivateKey sexp)
     {
         ECPublicKeyParameters pk = EC.toECPublicKeyParameters(
             sexp.getPublicKey());
@@ -35,16 +31,20 @@ public class PrivateSigningKey
         return new PrivateSigningKey(new AsymmetricCipherKeyPair(pk, privk));
     }
 
-    public ECDSAPrivateKey toSExp()
+    public ECDSAPrivateKey pack()
     {
         return new ECDSAPrivateKey(
-            EC.toSExpDSA((ECPublicKeyParameters)keyPair.getPublic()),
+            EC.toECDSAPublicKey((ECPublicKeyParameters)keyPair.getPublic()),
              ((ECPrivateKeyParameters)keyPair.getPrivate()).getD()
         );
     }
 
     public PublicSigningKey getPublicKey() {
         return new PublicSigningKey(keyPair.getPublic());
+    }
+
+    public static PrivateSigningKey generate() {
+        return new PrivateSigningKey(EC.generate());
     }
 
     public ECDSASignature sign(DigestSha384 digest)

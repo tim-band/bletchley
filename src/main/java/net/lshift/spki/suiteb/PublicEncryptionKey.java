@@ -24,12 +24,12 @@ public class PublicEncryptionKey {
         this.publicKey = (ECPublicKeyParameters) publicKey;
     }
 
-    public ECDHPublicKey toSExp() {
-        return EC.toSExpDH(publicKey);
+    public static PublicEncryptionKey unpack(ECDHPublicKey sexp) {
+        return new PublicEncryptionKey(EC.toECPublicKeyParameters(sexp));
     }
 
-    public static PublicEncryptionKey fromSExp(ECDHPublicKey sexp) {
-        return new PublicEncryptionKey(EC.toECPublicKeyParameters(sexp));
+    public ECDHPublicKey pack() {
+        return EC.toECDHPublicKey(publicKey);
     }
 
     public ECDHMessage encrypt(SExp message) {
@@ -59,7 +59,7 @@ public class PublicEncryptionKey {
         }
         // FIXME: include reference to private key, nonce, and more
         return new ECDHMessage(
-            EC.toSExpDH((ECPublicKeyParameters) ephemeralKey.getPublic()),
+            EC.toECDHPublicKey((ECPublicKeyParameters) ephemeralKey.getPublic()),
             ciphertext);
     }
 }

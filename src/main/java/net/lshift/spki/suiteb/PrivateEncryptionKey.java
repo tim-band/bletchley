@@ -3,7 +3,6 @@ package net.lshift.spki.suiteb;
 import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SExp;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
 
@@ -27,19 +26,27 @@ public class PrivateEncryptionKey {
         this.keyPair = keyPair;
     }
 
-    public static PrivateEncryptionKey generate() {
-        return new PrivateEncryptionKey(EC.generate());
+    public static PrivateEncryptionKey unpack(ECDHPrivateKey sexp) {
+        ECPublicKeyParameters pk = EC.toECPublicKeyParameters(
+                sexp.getPublicKey());
+        ECPrivateKeyParameters privk = new ECPrivateKeyParameters(
+            sexp.getD(), EC.domainParameters);
+        return new PrivateEncryptionKey(new AsymmetricCipherKeyPair(pk, privk));
+    }
+
+    public ECDHPrivateKey pack() {
+        return new ECDHPrivateKey(
+            EC.toECDHPublicKey((ECPublicKeyParameters)keyPair.getPublic()),
+            ((ECPrivateKeyParameters)keyPair.getPrivate()).getD()
+        );
     }
 
     public PublicEncryptionKey getPublicKey() {
         return new PublicEncryptionKey(keyPair.getPublic());
     }
 
-    public SExp decrypt(SExp message)
-        throws InvalidCipherTextException,
-            ParseException
-    {
-        return decrypt(Convert.fromSExp(ECDHMessage.class, message));
+    public static PrivateEncryptionKey generate() {
+        return new PrivateEncryptionKey(EC.generate());
     }
 
     public SExp decrypt(ECDHMessage message)
@@ -69,21 +76,5 @@ public class PrivateEncryptionKey {
             throw new RuntimeException(e);
         }
         return Marshal.unmarshal(newtext);
-    }
-
-
-    public ECDHPrivateKey toSExp() {
-        return new ECDHPrivateKey(
-            EC.toSExpDH((ECPublicKeyParameters)keyPair.getPublic()),
-            ((ECPrivateKeyParameters)keyPair.getPrivate()).getD()
-        );
-    }
-
-    public static PrivateEncryptionKey fromSExp(ECDHPrivateKey sexp) {
-        ECPublicKeyParameters pk = EC.toECPublicKeyParameters(
-                sexp.getPublicKey());
-        ECPrivateKeyParameters privk = new ECPrivateKeyParameters(
-            sexp.getD(), EC.domainParameters);
-        return new PrivateEncryptionKey(new AsymmetricCipherKeyPair(pk, privk));
     }
 }

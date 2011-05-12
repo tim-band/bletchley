@@ -17,9 +17,9 @@ public class PKEncryptionTest {
     public void test()
     throws IOException, InvalidCipherTextException, ParseException {
         PrivateEncryptionKey privateKey = PrivateEncryptionKey.generate();
-        privateKey = PrivateEncryptionKey.fromSExp(privateKey.toSExp());
+        privateKey = PrivateEncryptionKey.unpack(privateKey.pack());
         PublicEncryptionKey publicKey = privateKey.getPublicKey();
-        publicKey = PublicEncryptionKey.fromSExp(publicKey.toSExp());
+        publicKey = PublicEncryptionKey.unpack(publicKey.pack());
         SExp message = atom("The magic words are squeamish ossifrage");
         ECDHMessage encrypted = publicKey.encrypt(message);
         //PrettyPrinter.prettyPrint(System.out, encrypted);

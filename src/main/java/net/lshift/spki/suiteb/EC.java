@@ -24,9 +24,6 @@ import org.bouncycastle.math.ec.ECPoint;
  * Static convenience functions for working with elliptic curves.
  */
 public class EC {
-    public static final String ECDH_PUBLIC_KEY = "suiteb-p384-ecdh-public-key";
-    public static final String ECDSA_PUBLIC_KEY = "suiteb-p384-ecdsa-public-key";
-
     private static X9ECParameters curve = NISTNamedCurves.getByName("P-384");
 
     static ECDomainParameters domainParameters = new ECDomainParameters(
@@ -51,11 +48,11 @@ public class EC {
                 point.getX(), point.getY(), false);
     }
 
-    public static ECDHPublicKey toSExpDH(ECPublicKeyParameters publicKey) {
+    public static ECDHPublicKey toECDHPublicKey(ECPublicKeyParameters publicKey) {
         return new ECDHPublicKey(toPoint(publicKey.getQ()));
     }
 
-    public static ECDSAPublicKey toSExpDSA(ECPublicKeyParameters publicKey) {
+    public static ECDSAPublicKey toECDSAPublicKey(ECPublicKeyParameters publicKey) {
         return new ECDSAPublicKey(toPoint(publicKey.getQ()));
     }
 
@@ -86,8 +83,8 @@ public class EC {
         ECDHBasicAgreement senderAgreement = new ECDHBasicAgreement();
         senderAgreement.init(privateKey);
         ECDHSharedSecret sharedSecret = new ECDHSharedSecret(
-            toSExpDH((ECPublicKeyParameters)receiverKey),
-            toSExpDH((ECPublicKeyParameters)senderKey),
+            toECDHPublicKey((ECPublicKeyParameters)receiverKey),
+            toECDHPublicKey((ECPublicKeyParameters)senderKey),
             senderAgreement.calculateAgreement(publicKey));
         DigestSha384 hash = DigestSha384.digest(
             Convert.toSExp(sharedSecret));

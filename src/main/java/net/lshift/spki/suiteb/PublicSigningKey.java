@@ -17,12 +17,12 @@ public class PublicSigningKey
         signer.init(false, publicKey);
     }
 
-    public ECDSAPublicKey toSExp() {
-        return EC.toSExpDSA(publicKey);
+    public static PublicSigningKey unpack(ECDSAPublicKey sexp) {
+        return new PublicSigningKey(EC.toECPublicKeyParameters(sexp));
     }
 
-    public static PublicSigningKey fromSExp(ECDSAPublicKey sexp) {
-        return new PublicSigningKey(EC.toECPublicKeyParameters(sexp));
+    public ECDSAPublicKey pack() {
+        return EC.toECDSAPublicKey(publicKey);
     }
 
     public boolean validate(DigestSha384 digest, ECDSASignature sigVal)
