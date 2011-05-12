@@ -1,11 +1,11 @@
 package net.lshift.spki.convert;
 
+import static net.lshift.spki.Create.atom;
 import static net.lshift.spki.Create.list;
 
 import java.lang.reflect.InvocationTargetException;
 
 import net.lshift.spki.Atom;
-import net.lshift.spki.Create;
 import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
@@ -37,7 +37,7 @@ public class NameFieldConvertInfo
     }
 
     private static SList getSExp(String string, SExp sexp) {
-        Atom match = Create.atom(string);
+        Atom match = atom(string);
         for (SExp s: ((SList)sexp).getSparts()) {
             if (s instanceof SList) {
                 SList sl = (SList) s;
