@@ -13,15 +13,12 @@ import net.lshift.spki.convert.Convert;
 public class RoundTrip
 {
     @SuppressWarnings("unchecked")
-    public static <T> T roundTrip(T o)
+    public static <T> T packableRoundTrip(T o)
     {
         try {
             Class<?> outClass = o.getClass();
             Object packed = outClass.getMethod("pack").invoke(o);
-            SExp sexp = Convert.toSExp(packed);
-            PrettyPrinter.prettyPrint(System.out, sexp);
-            byte[] bytes = Marshal.marshal(sexp);
-            Object unpacked = Convert.fromBytes(packed.getClass(), bytes);
+            Object unpacked = packableRoundTrip(packed);
             Method unpack = outClass.getMethod("unpack", packed.getClass());
             return (T) unpack.invoke(null, unpacked);
         } catch (SecurityException e) {
@@ -33,6 +30,19 @@ public class RoundTrip
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T convertableRoundTrip(T o)
+    {
+        try {
+            SExp sexp = Convert.toSExp(o);
+            PrettyPrinter.prettyPrint(System.out, sexp);
+            byte[] bytes = Marshal.marshal(sexp);
+            return (T) Convert.fromBytes(o.getClass(), bytes);
+        } catch (SecurityException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
