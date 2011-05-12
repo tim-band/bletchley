@@ -11,10 +11,10 @@ import net.lshift.spki.SList;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
-public class NameConvertable
-    extends Convertable
+public class NameClassConvertInfo
+    extends ClassConvertInfo
 {
-    public NameConvertable(String name, Class<?> type)
+    public NameClassConvertInfo(String name, Class<?> type)
     {
         super(name, type);
     }

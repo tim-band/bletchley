@@ -7,12 +7,12 @@ import net.lshift.spki.SList;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
-public class PositionConvertable
-    extends Convertable
+public class PositionClassConvertInfo
+    extends ClassConvertInfo
 {
     private final int position;
 
-    public PositionConvertable(String name, Class<?> type, int position)
+    public PositionClassConvertInfo(String name, Class<?> type, int position)
     {
         super(name, type);
         this.position = position;

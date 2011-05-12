@@ -4,12 +4,12 @@ import java.lang.reflect.InvocationTargetException;
 
 import net.lshift.spki.SExp;
 
-public abstract class Convertable
+public abstract class ClassConvertInfo
 {
     protected final String name;
     protected final Class<?> type;
 
-    public Convertable(String name, Class<?> type)
+    public ClassConvertInfo(String name, Class<?> type)
     {
         super();
         this.name = name;

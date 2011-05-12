@@ -30,7 +30,7 @@ public class Convert
             return atom((Date)o);
         }
         // FIXME: cache these, use them for byte etc
-        ConvertInfo<?> convertInfo = ConvertInfo.getConversion(o.getClass());
+        FieldConvertInfo<?> convertInfo = FieldConvertInfo.getFieldConvertInfo(o.getClass());
         try {
             return convertInfo.toSExpCast(o);
         } catch (IllegalAccessException e) {
@@ -59,7 +59,7 @@ public class Convert
             } else if (class1.equals(Date.class)) {
                 return (T) Constants.DATE_FORMAT.parse(sb(sexp));
             }
-            ConvertInfo<?> convertInfo = ConvertInfo.getConversion(class1);
+            FieldConvertInfo<?> convertInfo = FieldConvertInfo.getFieldConvertInfo(class1);
             return (T) convertInfo.fromSExp(sexp);
         } catch (ParseException e) {
             throw new RuntimeException(e);
