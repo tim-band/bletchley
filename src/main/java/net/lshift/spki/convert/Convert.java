@@ -9,6 +9,7 @@ import java.util.Date;
 
 import net.lshift.spki.Atom;
 import net.lshift.spki.Constants;
+import net.lshift.spki.Marshal;
 import net.lshift.spki.SExp;
 
 public class Convert
@@ -41,6 +42,10 @@ public class Convert
         }
     }
 
+    public static byte[] toBytes(Object o) {
+        return Marshal.marshal(toSExp(o));
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> T fromSExp(Class<T> class1, SExp sexp)
     {
@@ -52,7 +57,7 @@ public class Convert
             } else if (class1.equals(BigInteger.class)) {
                 return (T) new BigInteger(((Atom)sexp).getBytes());
             } else if (class1.equals(Date.class)) {
-                    return (T) Constants.DATE_FORMAT.parse(sb(sexp));
+                return (T) Constants.DATE_FORMAT.parse(sb(sexp));
             }
             ConvertInfo<?> convertInfo = ConvertInfo.getConversion(class1);
             return (T) convertInfo.fromSExp(sexp);
@@ -67,5 +72,11 @@ public class Convert
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static <T> T fromBytes(Class<T> class1, byte[] bytes)
+        throws net.lshift.spki.ParseException
+    {
+        return fromSExp(class1, Marshal.unmarshal(bytes));
     }
 }

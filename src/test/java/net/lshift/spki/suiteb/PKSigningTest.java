@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.Create.atom;
+import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -14,13 +15,13 @@ public class PKSigningTest {
     @Test
     public void test() throws IOException {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
-        privateKey = PrivateSigningKey.unpack(privateKey.pack());
+        privateKey = roundTrip(privateKey);
         PublicSigningKey publicKey = privateKey.getPublicKey();
-        publicKey = PublicSigningKey.unpack(publicKey.pack());
+        publicKey = roundTrip(publicKey);
         SExp message = atom("The magic words are squeamish ossifrage");
         DigestSha384 digest = DigestSha384.digest(message);
+        // FIXME: round trip this
         ECDSASignature sigVal = privateKey.sign(digest);
-        //PrettyPrinter.prettyPrint(System.out, sigVal);
         assertTrue(publicKey.validate(digest, sigVal));
     }
 }
