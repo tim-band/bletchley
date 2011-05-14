@@ -2,6 +2,8 @@ package net.lshift.spki.convert;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.beanutils.PropertyUtils;
+
 import net.lshift.spki.SExp;
 
 public abstract class FieldConvertInfo
@@ -26,10 +28,19 @@ public abstract class FieldConvertInfo
         return type;
     }
 
-    public abstract SExp genSexp(Object bean)
+    public SExp genSexp(Object bean)
         throws IllegalAccessException,
             InvocationTargetException,
-            NoSuchMethodException;
+            NoSuchMethodException
+    {
+        return genSexpFromSexp(Convert.toSExp(
+            PropertyUtils.getProperty(bean, name)));
+    }
+
+    public abstract SExp genSexpFromSexp(SExp sexp)
+    throws IllegalAccessException,
+        InvocationTargetException,
+        NoSuchMethodException;
 
     public abstract SExp getValueSExp(SExp sexp);
 

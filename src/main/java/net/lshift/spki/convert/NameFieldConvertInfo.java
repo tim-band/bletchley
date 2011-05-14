@@ -9,7 +9,6 @@ import net.lshift.spki.Atom;
 import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 
 public class NameFieldConvertInfo
@@ -28,13 +27,12 @@ public class NameFieldConvertInfo
     }
 
     @Override
-    public SExp genSexp(Object bean)
+    public SExp genSexpFromSexp(SExp sexp)
         throws IllegalAccessException,
             InvocationTargetException,
             NoSuchMethodException
     {
-        return list(hyphenatedName, Convert.toSExp(
-            PropertyUtils.getProperty(bean, name)));
+        return list(hyphenatedName, sexp);
     }
 
     @Override

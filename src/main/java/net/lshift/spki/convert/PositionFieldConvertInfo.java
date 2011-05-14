@@ -5,8 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
-import org.apache.commons.beanutils.PropertyUtils;
-
 public class PositionFieldConvertInfo
     extends FieldConvertInfo
 {
@@ -18,16 +16,17 @@ public class PositionFieldConvertInfo
         this.position = position;
     }
 
-    public SExp genSexp(Object bean)
+    @Override
+    public SExp getValueSExp(SExp sexp) {
+        return ((SList)sexp).getSparts()[position -1];
+    }
+
+    @Override
+    public SExp genSexpFromSexp(SExp sexp)
         throws IllegalAccessException,
             InvocationTargetException,
             NoSuchMethodException
     {
-        return Convert.toSExp(PropertyUtils.getProperty(bean, name));
-    }
-
-    @Override
-    public SExp getValueSExp(SExp sexp) {
-        return ((SList)sexp).getSparts()[position -1];
+        return sexp;
     }
 }
