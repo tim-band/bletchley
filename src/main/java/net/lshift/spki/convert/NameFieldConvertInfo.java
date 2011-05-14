@@ -38,10 +38,10 @@ public class NameFieldConvertInfo
     }
 
     @Override
-    public Object getValue(SExp sexp) {
+    public SExp getValueSExp(SExp sexp) {
         SExp[] sexpVal = getSExp(hyphenatedName, sexp).getSparts();
         assert sexpVal.length == 1;
-        return Convert.fromSExp(type, sexpVal[0]);
+        return sexpVal[0];
     }
 
     private static SList getSExp(String string, SExp sexp) {

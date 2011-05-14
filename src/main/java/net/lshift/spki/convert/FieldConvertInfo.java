@@ -31,5 +31,9 @@ public abstract class FieldConvertInfo
             InvocationTargetException,
             NoSuchMethodException;
 
-    public abstract Object getValue(SExp sexp);
+    public abstract SExp getValueSExp(SExp sexp);
+
+    public Object getValue(SExp sexp) {
+        return Convert.fromSExp(type, getValueSExp(sexp));
+    }
 }

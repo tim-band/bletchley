@@ -26,7 +26,8 @@ public class PositionFieldConvertInfo
         return Convert.toSExp(PropertyUtils.getProperty(bean, name));
     }
 
-    public Object getValue(SExp sexp) {
-        return Convert.fromSExp(type, ((SList)sexp).getSparts()[position -1]);
+    @Override
+    public SExp getValueSExp(SExp sexp) {
+        return ((SList)sexp).getSparts()[position -1];
     }
 }
