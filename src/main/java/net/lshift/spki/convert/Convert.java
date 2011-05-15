@@ -1,12 +1,22 @@
 package net.lshift.spki.convert;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import net.lshift.spki.Marshal;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.SExp;
 
 public class Convert
 {
     private static final Registry REGISTRY = new Registry();
+
+    private static <T> Converter<T> getConverter(Class<T> clazz)
+    {
+        return REGISTRY.getConverter(clazz);
+    }
 
     @SuppressWarnings("unchecked")
     public static SExp toSExp(Object o)
@@ -14,23 +24,28 @@ public class Convert
         return ((Converter<Object>) getConverter(o.getClass())).toSexp(o);
     }
 
-    private static <T> Converter<T> getConverter(Class<T> clazz)
+    public static <T> T fromSExp(Class<T> clazz, SExp sexp)
     {
-        return REGISTRY.getConverter(clazz);
+        return getConverter(clazz).fromSexp(sexp);
     }
 
-    public static byte[] toBytes(Object o) {
-        return Marshal.marshal(toSExp(o));
+    public static void write(Openable open, Object o) throws IOException
+    {
+        final OutputStream os = open.write();
+        try {
+            Marshal.marshal(os, toSExp(o));
+        } finally {
+            os.close();
+        }
     }
 
-    public static <T> T fromSExp(Class<T> class1, SExp sexp)
+    public static <T> T read(Class<T> clazz, Openable open) throws ParseException, IOException
     {
-        return getConverter(class1).fromSexp(sexp);
-    }
-
-    public static <T> T fromBytes(Class<T> class1, byte[] bytes)
-        throws net.lshift.spki.ParseException
-    {
-        return fromSExp(class1, Marshal.unmarshal(bytes));
+        final InputStream is = open.read();
+        try {
+            return fromSExp(clazz, Marshal.unmarshal(is));
+        } finally {
+            is.close();
+        }
     }
 }
