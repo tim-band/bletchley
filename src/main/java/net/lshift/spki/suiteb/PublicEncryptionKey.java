@@ -26,11 +26,11 @@ public class PublicEncryptionKey extends PackConvertable  {
     }
 
     public static PublicEncryptionKey unpack(ECDHPublicKey sexp) {
-        return new PublicEncryptionKey(EC.toECPublicKeyParameters(sexp));
+        return new PublicEncryptionKey(sexp.getParameters());
     }
 
     public ECDHPublicKey pack() {
-        return EC.toECDHPublicKey(publicKey);
+        return new ECDHPublicKey(publicKey.getQ());
     }
 
     public ECDHMessage encrypt(SExp message) {
@@ -60,7 +60,7 @@ public class PublicEncryptionKey extends PackConvertable  {
         }
         // FIXME: include reference to private key, nonce, and more
         return new ECDHMessage(
-            EC.toECDHPublicKey((ECPublicKeyParameters) ephemeralKey.getPublic()),
+            ((ECPublicKeyParameters) ephemeralKey.getPublic()).getQ(),
             ciphertext);
     }
 }

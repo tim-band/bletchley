@@ -18,11 +18,12 @@ public class PKEncryptionTest {
     public void test()
     throws IOException, InvalidCipherTextException, ParseException {
         PrivateEncryptionKey privateKey = PrivateEncryptionKey.generate();
-        privateKey = roundTrip(privateKey);
+        privateKey = roundTrip(PrivateEncryptionKey.class, privateKey);
         PublicEncryptionKey publicKey = privateKey.getPublicKey();
-        publicKey = roundTrip(publicKey);
+        publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
         SExp message = atom("The magic words are squeamish ossifrage");
-        ECDHMessage encrypted = roundTrip(publicKey.encrypt(message));
+        ECDHMessage encrypted = roundTrip(ECDHMessage.class,
+            publicKey.encrypt(message));
         SExp decrypted = privateKey.decrypt(encrypted);
         assertEquals(message, decrypted);
     }

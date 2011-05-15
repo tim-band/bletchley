@@ -6,9 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lshift.spki.Atom;
 import net.lshift.spki.SExp;
-import net.lshift.spki.SList;
 
 public class Registry
 {
@@ -19,14 +17,6 @@ public class Registry
         Class<T> clazz,
         Converter<T> converter)
     {
-        registerIgnoringClass(clazz, converter);
-    }
-
-    public synchronized void registerIgnoringClass(
-        Class<?> clazz,
-        Converter<?> converter)
-    {
-
         Converter<?> already = converterMap.get(clazz);
         if (already != null) {
             assert already.equals(converter);
@@ -38,8 +28,6 @@ public class Registry
     {
         final SExpConverter sexpConverter = new SExpConverter();
         register(SExp.class, sexpConverter);
-        registerIgnoringClass(Atom.class, sexpConverter);
-        registerIgnoringClass(SList.class, sexpConverter);
         register(byte[].class, new ByteArrayConverter());
         register(String.class, new StringConverter());
         register(BigInteger.class, new BigIntegerConverter());

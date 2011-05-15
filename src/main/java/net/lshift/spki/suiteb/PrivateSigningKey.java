@@ -4,6 +4,7 @@ import java.math.BigInteger;
 
 import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDSAPrivateKey;
+import net.lshift.spki.suiteb.sexpstructs.ECDSAPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.ECDSASignature;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -24,19 +25,14 @@ public class PrivateSigningKey extends PackConvertable
 
     public static PrivateSigningKey unpack(ECDSAPrivateKey sexp)
     {
-        ECPublicKeyParameters pk = EC.toECPublicKeyParameters(
-            sexp.getPublicKey());
-        BigInteger d = sexp.getD();
-        ECPrivateKeyParameters privk = new ECPrivateKeyParameters(d,
-                        EC.domainParameters);
-        return new PrivateSigningKey(new AsymmetricCipherKeyPair(pk, privk));
+        return new PrivateSigningKey(sexp.getKeypair());
     }
 
     public ECDSAPrivateKey pack()
     {
         return new ECDSAPrivateKey(
-            EC.toECDSAPublicKey((ECPublicKeyParameters)keyPair.getPublic()),
-             ((ECPrivateKeyParameters)keyPair.getPrivate()).getD()
+            new ECDSAPublicKey(((ECPublicKeyParameters)keyPair.getPublic()).getQ()),
+            ((ECPrivateKeyParameters)keyPair.getPrivate()).getD()
         );
     }
 

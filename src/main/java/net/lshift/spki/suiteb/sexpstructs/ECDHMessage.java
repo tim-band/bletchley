@@ -4,14 +4,16 @@ import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 
+import org.bouncycastle.math.ec.ECPoint;
+
 public class ECDHMessage extends PositionBeanConvertable
 {
-    private final ECDHPublicKey ephemeralKey;
+    private final ECPoint ephemeralKey;
     private final byte[] ciphertext;
 
     @SExpName("suiteb-p384-ecdh-message")
     public ECDHMessage(
-        @P("ephemeralKey") ECDHPublicKey ephemeralKey,
+        @P("ephemeralKey") ECPoint ephemeralKey,
         @P("ciphertext") byte[] ciphertext)
     {
         super();
@@ -19,7 +21,7 @@ public class ECDHMessage extends PositionBeanConvertable
         this.ciphertext = ciphertext;
     }
 
-    public ECDHPublicKey getEphemeralKey()
+    public ECPoint getEphemeralKey()
     {
         return ephemeralKey;
     }

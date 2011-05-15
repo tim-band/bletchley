@@ -11,17 +11,18 @@ import net.lshift.spki.SExp;
 
 public class Convert
 {
-    private static final Registry REGISTRY = new Registry();
+    public static final Registry REGISTRY = new Registry();
 
     private static <T> Converter<T> getConverter(Class<T> clazz)
     {
         return REGISTRY.getConverter(clazz);
     }
 
+    //public static <T> SExp toSExp(Class<T> clazz, T o)
     @SuppressWarnings("unchecked")
-    public static SExp toSExp(Object o)
+    public static SExp toSExp(Class<?> clazz, Object o)
     {
-        return ((Converter<Object>) getConverter(o.getClass())).toSexp(o);
+        return ((Converter<Object>)getConverter(clazz)).toSexp(o);
     }
 
     public static <T> T fromSExp(Class<T> clazz, SExp sexp)
@@ -29,11 +30,12 @@ public class Convert
         return getConverter(clazz).fromSexp(sexp);
     }
 
-    public static void write(Openable open, Object o) throws IOException
+    public static <T> void write(Openable open, Class<T> clazz, T o)
+        throws IOException
     {
         final OutputStream os = open.write();
         try {
-            Marshal.marshal(os, toSExp(o));
+            Marshal.marshal(os, toSExp(clazz, o));
         } finally {
             os.close();
         }

@@ -3,10 +3,7 @@ package net.lshift.spki.suiteb;
 import java.security.SecureRandom;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.ECDHSharedSecret;
-import net.lshift.spki.suiteb.sexpstructs.ECDSAPublicKey;
-import net.lshift.spki.suiteb.sexpstructs.Point;
 
 import org.bouncycastle.asn1.nist.NISTNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -24,54 +21,18 @@ import org.bouncycastle.math.ec.ECPoint;
  * Static convenience functions for working with elliptic curves.
  */
 public class EC {
-    private static X9ECParameters curve = NISTNamedCurves.getByName("P-384");
+    private static final X9ECParameters CURVE = NISTNamedCurves.getByName("P-384");
 
-    static ECDomainParameters domainParameters = new ECDomainParameters(
-            curve.getCurve(), curve.getG(), curve.getN());
+    public static final ECDomainParameters DOMAIN_PARAMETERS = new ECDomainParameters(
+            CURVE.getCurve(), CURVE.getG(), CURVE.getN());
     static SecureRandom random = new SecureRandom();
     static ECKeyPairGenerator gen = new ECKeyPairGenerator();
     static {
-        gen.init(new ECKeyGenerationParameters(domainParameters, random));
+        gen.init(new ECKeyGenerationParameters(DOMAIN_PARAMETERS, random));
     }
 
     public static AsymmetricCipherKeyPair generate() {
         return gen.generateKeyPair();
-    }
-
-    public static Point toPoint(ECPoint q) {
-        return new Point(
-            q.getX().toBigInteger(), q.getY().toBigInteger());
-    }
-
-    public static ECPoint toECPoint(Point point) {
-        return domainParameters.getCurve().createPoint(
-                point.getX(), point.getY(), false);
-    }
-
-    public static ECDHPublicKey toECDHPublicKey(ECPublicKeyParameters publicKey) {
-        return new ECDHPublicKey(toPoint(publicKey.getQ()));
-    }
-
-    public static ECDSAPublicKey toECDSAPublicKey(ECPublicKeyParameters publicKey) {
-        return new ECDSAPublicKey(toPoint(publicKey.getQ()));
-    }
-
-    public static ECPublicKeyParameters toECPublicKeyParameters(
-        ECDHPublicKey k
-    ) {
-        return new ECPublicKeyParameters(
-                toECPoint(k.getPoint()),
-                domainParameters
-        );
-    }
-
-    public static ECPublicKeyParameters toECPublicKeyParameters(
-        ECDSAPublicKey k
-    ) {
-        return new ECPublicKeyParameters(
-                toECPoint(k.getPoint()),
-                domainParameters
-        );
     }
 
     public static KeyParameter sessionKey(
@@ -83,11 +44,16 @@ public class EC {
         ECDHBasicAgreement senderAgreement = new ECDHBasicAgreement();
         senderAgreement.init(privateKey);
         ECDHSharedSecret sharedSecret = new ECDHSharedSecret(
-            toECDHPublicKey((ECPublicKeyParameters)receiverKey),
-            toECDHPublicKey((ECPublicKeyParameters)senderKey),
+            ((ECPublicKeyParameters)receiverKey).getQ(),
+            ((ECPublicKeyParameters)senderKey).getQ(),
             senderAgreement.calculateAgreement(publicKey));
         DigestSha384 hash = DigestSha384.digest(
-            Convert.toSExp(sharedSecret));
+            Convert.toSExp(ECDHSharedSecret.class, sharedSecret));
         return new KeyParameter(hash.getBytes(), 0, 32);
+    }
+
+    public static ECPublicKeyParameters toECPublicKeyParameters(ECPoint point)
+    {
+        return new ECPublicKeyParameters(point, EC.DOMAIN_PARAMETERS);
     }
 }

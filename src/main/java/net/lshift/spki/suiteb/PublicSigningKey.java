@@ -19,11 +19,11 @@ public class PublicSigningKey extends PackConvertable
     }
 
     public static PublicSigningKey unpack(ECDSAPublicKey sexp) {
-        return new PublicSigningKey(EC.toECPublicKeyParameters(sexp));
+        return new PublicSigningKey(sexp.getParameters());
     }
 
     public ECDSAPublicKey pack() {
-        return EC.toECDSAPublicKey(publicKey);
+        return new ECDSAPublicKey(publicKey.getQ());
     }
 
     public boolean validate(DigestSha384 digest, ECDSASignature sigVal)

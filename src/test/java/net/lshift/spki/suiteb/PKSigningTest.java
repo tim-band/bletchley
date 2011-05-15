@@ -15,12 +15,13 @@ public class PKSigningTest {
     @Test
     public void test() throws IOException {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
-        privateKey = roundTrip(privateKey);
+        privateKey = roundTrip(PrivateSigningKey.class, privateKey);
         PublicSigningKey publicKey = privateKey.getPublicKey();
-        publicKey = roundTrip(publicKey);
+        publicKey = roundTrip(PublicSigningKey.class, publicKey);
         SExp message = atom("The magic words are squeamish ossifrage");
         DigestSha384 digest = DigestSha384.digest(message);
-        ECDSASignature sigVal = roundTrip(privateKey.sign(digest));
+        ECDSASignature sigVal = roundTrip(ECDSASignature.class,
+            privateKey.sign(digest));
         assertTrue(publicKey.validate(digest, sigVal));
     }
 }

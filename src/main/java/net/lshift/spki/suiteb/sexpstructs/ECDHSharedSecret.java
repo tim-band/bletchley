@@ -2,20 +2,22 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import java.math.BigInteger;
 
+import org.bouncycastle.math.ec.ECPoint;
+
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 
 public class ECDHSharedSecret extends PositionBeanConvertable
 {
-    private final ECDHPublicKey receiverKey;
-    private final ECDHPublicKey senderKey;
+    private final ECPoint receiverKey;
+    private final ECPoint senderKey;
     private final BigInteger sharedSecret;
 
     @SExpName("suiteb-p384-ecdh-shared-secret")
     public ECDHSharedSecret(
-        @P("receiverKey") ECDHPublicKey receiverKey,
-        @P("senderKey") ECDHPublicKey senderKey,
+        @P("receiverKey") ECPoint receiverKey,
+        @P("senderKey") ECPoint senderKey,
         @P("sharedSecret") BigInteger sharedSecret)
    {
         super();
@@ -24,12 +26,12 @@ public class ECDHSharedSecret extends PositionBeanConvertable
         this.sharedSecret = sharedSecret;
     }
 
-    public ECDHPublicKey getReceiverKey()
+    public ECPoint getReceiverKey()
     {
         return receiverKey;
     }
 
-    public ECDHPublicKey getSenderKey()
+    public ECPoint getSenderKey()
     {
         return senderKey;
     }

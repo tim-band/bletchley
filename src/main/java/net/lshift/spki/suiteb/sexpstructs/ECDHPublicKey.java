@@ -1,22 +1,15 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 
-public class ECDHPublicKey  extends PositionBeanConvertable
+import org.bouncycastle.math.ec.ECPoint;
+
+public class ECDHPublicKey extends ECPublicKey
 {
-    private final Point point;
-
     @SExpName("suiteb-p384-ecdh-public-key")
-    public ECDHPublicKey(@P("point") Point point)
+    public ECDHPublicKey(@P("point") ECPoint point)
     {
-        super();
-        this.point = point;
-    }
-
-    public Point getPoint()
-    {
-        return point;
+        super(point);
     }
 }

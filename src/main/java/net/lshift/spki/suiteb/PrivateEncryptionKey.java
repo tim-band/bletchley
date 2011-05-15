@@ -6,6 +6,7 @@ import net.lshift.spki.SExp;
 import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
+import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -28,16 +29,12 @@ public class PrivateEncryptionKey extends PackConvertable {
     }
 
     public static PrivateEncryptionKey unpack(ECDHPrivateKey sexp) {
-        ECPublicKeyParameters pk = EC.toECPublicKeyParameters(
-                sexp.getPublicKey());
-        ECPrivateKeyParameters privk = new ECPrivateKeyParameters(
-            sexp.getD(), EC.domainParameters);
-        return new PrivateEncryptionKey(new AsymmetricCipherKeyPair(pk, privk));
+        return new PrivateEncryptionKey(sexp.getKeypair());
     }
 
     public ECDHPrivateKey pack() {
         return new ECDHPrivateKey(
-            EC.toECDHPublicKey((ECPublicKeyParameters)keyPair.getPublic()),
+            new ECDHPublicKey(((ECPublicKeyParameters)keyPair.getPublic()).getQ()),
             ((ECPrivateKeyParameters)keyPair.getPrivate()).getD()
         );
     }
@@ -54,7 +51,8 @@ public class PrivateEncryptionKey extends PackConvertable {
         throws InvalidCipherTextException,
             ParseException
     {
-        ECPublicKeyParameters pk = EC.toECPublicKeyParameters(message.getEphemeralKey());
+        ECPublicKeyParameters pk =
+            EC.toECPublicKeyParameters(message.getEphemeralKey());
         KeyParameter sessionKey = EC.sessionKey(
                 keyPair.getPublic(),
                 pk,
@@ -77,5 +75,8 @@ public class PrivateEncryptionKey extends PackConvertable {
             throw new RuntimeException(e);
         }
         return Marshal.unmarshal(newtext);
+    }
+
+    static {
     }
 }

@@ -57,7 +57,8 @@ public abstract class BeanConverter<T> implements Converter<T>
             for (int i = 0; i < fields.length; i++) {
                 final Object property = PropertyUtils.getProperty(o,
                     fields[i].getName());
-                components[i] = fieldToSexp(fields[i], Convert.toSExp(property));
+                components[i] = fieldToSexp(fields[i],
+                    Convert.toSExp((Class<?>) fields[i].getType(), property));
             }
             return Create.list(name, components);
         } catch (IllegalAccessException e) {
@@ -72,7 +73,9 @@ public abstract class BeanConverter<T> implements Converter<T>
         }
     }
 
-    protected abstract SExp fieldToSexp(FieldConvertInfo fieldConvertInfo, SExp sexp);
+    protected abstract SExp fieldToSexp(
+        FieldConvertInfo fieldConvertInfo,
+        SExp sexp);
 
     @Override
     public T fromSexp(SExp sexp)

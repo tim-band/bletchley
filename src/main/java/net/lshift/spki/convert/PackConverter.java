@@ -44,6 +44,6 @@ public class PackConverter<T extends PackConvertable>
     @Override
     public SExp toSexp(T o)
     {
-        return Convert.toSExp(o.pack());
+        return Convert.toSExp(otherType, o.pack());
     }
 }

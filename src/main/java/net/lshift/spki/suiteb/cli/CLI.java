@@ -32,7 +32,8 @@ public class CLI
 
     public static void generateEncryptionKey(Openable out) throws IOException
     {
-        write(out, PrivateEncryptionKey.generate());
+        write(out, PrivateEncryptionKey.class,
+            PrivateEncryptionKey.generate());
     }
 
     public static void getPublicEncryptionKey(Openable privk, Openable pubk)
@@ -41,12 +42,12 @@ public class CLI
     {
         final PrivateEncryptionKey privatek
             = read(PrivateEncryptionKey.class, privk);
-        write(pubk, privatek.getPublicKey());
+        write(pubk, PublicEncryptionKey.class, privatek.getPublicKey());
     }
 
     public static void generateSigningKey(Openable out) throws IOException
     {
-        write(out, PrivateSigningKey.generate());
+        write(out, PrivateSigningKey.class, PrivateSigningKey.generate());
     }
 
     public static void getPublicSigningKey(Openable privk, Openable pubk)
@@ -54,7 +55,7 @@ public class CLI
             IOException
     {
         final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
-        write(pubk, privatek.getPublicKey());
+        write(pubk, PublicSigningKey.class, privatek.getPublicKey());
     }
 
     public static void generateEncryptedSignedMessage(
@@ -66,12 +67,13 @@ public class CLI
     {
         PrivateSigningKey dsaPrivate = read(PrivateSigningKey.class, sPrivate);
         PublicEncryptionKey dhPublic = read(PublicEncryptionKey.class, ePublic);
-        SExp messageSexp = Convert.toSExp(
+        SExp messageSexp = Convert.toSExp(SimpleMessage.class,
             new SimpleMessage(messageType, OpenableUtils.readBytes(message)));
         SimpleSigned signed = new SimpleSigned(messageSexp,
             dsaPrivate.sign(DigestSha384.digest(messageSexp)));
-        ECDHMessage encrypted = dhPublic.encrypt(Convert.toSExp(signed));
-        write(out, encrypted);
+        ECDHMessage encrypted = dhPublic.encrypt(Convert.toSExp(
+            SimpleSigned.class, signed));
+        write(out, ECDHMessage.class, encrypted);
     }
 
     public static void decryptSignedMessage(

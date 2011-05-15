@@ -5,6 +5,10 @@ import java.math.BigInteger;
 import net.lshift.spki.convert.NameBeanConvertable;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SExpName;
+import net.lshift.spki.convert.StepConverter;
+import net.lshift.spki.suiteb.EC;
+
+import org.bouncycastle.math.ec.ECPoint;
 
 public class Point extends NameBeanConvertable
 {
@@ -29,5 +33,35 @@ public class Point extends NameBeanConvertable
     public BigInteger getY()
     {
         return y;
+    }
+
+    private static class ECPointConverter extends StepConverter<ECPoint, Point> {
+        @Override
+        protected Class<Point> getStepClass() { return Point.class; }
+
+        @Override
+        protected Class<ECPoint> getResultClass() { return ECPoint.class; }
+
+        @Override
+        protected Point stepIn(ECPoint q)
+        {
+            return new Point(
+                q.getX().toBigInteger(), q.getY().toBigInteger());
+        }
+
+        @Override
+        protected ECPoint stepOut(Point point)
+        {
+            return EC.DOMAIN_PARAMETERS.getCurve().createPoint(
+                point.getX(), point.getY(), false);
+        }
+    }
+
+    static {
+        new ECPointConverter().registerSelf();
+    }
+
+    public static void ensureRegistered() {
+        // Do nothing - just ensures the class is loaded and so registered
     }
 }
