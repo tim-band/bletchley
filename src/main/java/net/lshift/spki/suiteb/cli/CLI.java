@@ -6,7 +6,6 @@ import static net.lshift.spki.convert.Convert.write;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
@@ -15,6 +14,7 @@ import net.lshift.spki.SExp;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
+import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -24,7 +24,6 @@ import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 import net.lshift.spki.suiteb.sexpstructs.SimpleSigned;
 
-import org.apache.commons.io.IOUtils;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 
 public class CLI
@@ -67,9 +66,8 @@ public class CLI
     {
         PrivateSigningKey dsaPrivate = read(PrivateSigningKey.class, sPrivate);
         PublicEncryptionKey dhPublic = read(PublicEncryptionKey.class, ePublic);
-        byte[] messageBytes = IOUtils.toByteArray(message.read());
         SExp messageSexp = Convert.toSExp(
-            new SimpleMessage(messageType, messageBytes));
+            new SimpleMessage(messageType, OpenableUtils.readBytes(message)));
         SimpleSigned signed = new SimpleSigned(messageSexp,
             dsaPrivate.sign(DigestSha384.digest(messageSexp)));
         ECDHMessage encrypted = dhPublic.encrypt(Convert.toSExp(signed));
@@ -96,12 +94,7 @@ public class CLI
         if (!messageType.equals(message.getType())) {
             throw new RuntimeException("Message is of an unexpected type");
         }
-        OutputStream os = out.write();
-        try {
-            os.write(message.getContent());
-        } finally {
-            os.close();
-        }
+        OpenableUtils.writeBytes(out, message.getContent());
     }
 
     public static void main(String command, Openable[] args)
