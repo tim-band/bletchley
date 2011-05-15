@@ -1,8 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.Create.atom;
-import static net.lshift.spki.suiteb.RoundTrip.convertableRoundTrip;
-import static net.lshift.spki.suiteb.RoundTrip.packableRoundTrip;
+import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -19,11 +18,11 @@ public class PKEncryptionTest {
     public void test()
     throws IOException, InvalidCipherTextException, ParseException {
         PrivateEncryptionKey privateKey = PrivateEncryptionKey.generate();
-        privateKey = packableRoundTrip(privateKey);
+        privateKey = roundTrip(privateKey);
         PublicEncryptionKey publicKey = privateKey.getPublicKey();
-        publicKey = packableRoundTrip(publicKey);
+        publicKey = roundTrip(publicKey);
         SExp message = atom("The magic words are squeamish ossifrage");
-        ECDHMessage encrypted = convertableRoundTrip(publicKey.encrypt(message));
+        ECDHMessage encrypted = roundTrip(publicKey.encrypt(message));
         SExp decrypted = privateKey.decrypt(encrypted);
         assertEquals(message, decrypted);
     }

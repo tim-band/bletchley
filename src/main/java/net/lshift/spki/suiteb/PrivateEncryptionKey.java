@@ -3,6 +3,7 @@ package net.lshift.spki.suiteb;
 import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SExp;
+import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
 
@@ -18,7 +19,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 /**
  * A private key for encrypting data.
  */
-public class PrivateEncryptionKey {
+public class PrivateEncryptionKey extends PackConvertable {
     private final AsymmetricCipherKeyPair keyPair;
 
     private PrivateEncryptionKey(AsymmetricCipherKeyPair keyPair) {

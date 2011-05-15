@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb;
 
 import java.math.BigInteger;
 
+import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDSAPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.ECDSASignature;
 
@@ -10,7 +11,7 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
-public class PrivateSigningKey
+public class PrivateSigningKey extends PackConvertable
 {
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();

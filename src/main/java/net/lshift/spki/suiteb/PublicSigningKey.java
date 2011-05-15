@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDSAPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.ECDSASignature;
 
@@ -7,7 +8,7 @@ import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
-public class PublicSigningKey
+public class PublicSigningKey extends PackConvertable
 {
     private ECPublicKeyParameters publicKey;
     private final ECDSASigner signer = new ECDSASigner();

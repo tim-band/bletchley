@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.Marshal;
 import net.lshift.spki.SExp;
+import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
 
@@ -17,7 +18,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 /**
  * A public key for encrypting data.
  */
-public class PublicEncryptionKey {
+public class PublicEncryptionKey extends PackConvertable  {
     private ECPublicKeyParameters publicKey;
 
     PublicEncryptionKey(CipherParameters publicKey) {
