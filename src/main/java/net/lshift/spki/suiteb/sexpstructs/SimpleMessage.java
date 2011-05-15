@@ -1,14 +1,15 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionalSexp;
+import net.lshift.spki.convert.PositionBeanConvertable;
+import net.lshift.spki.convert.SExpName;
 
-public class SimpleMessage
+public class SimpleMessage extends PositionBeanConvertable
 {
     private final String type;
     private final byte[] content;
 
-    @PositionalSexp("simple-message")
+    @SExpName("simple-message")
     public SimpleMessage(
         @P("type") String type,
         @P("content") byte[] content)

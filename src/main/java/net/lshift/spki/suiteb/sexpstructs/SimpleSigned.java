@@ -2,15 +2,16 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.SExp;
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionalSexp;
+import net.lshift.spki.convert.PositionBeanConvertable;
+import net.lshift.spki.convert.SExpName;
 
 // FIXME: replace this with a real SPKI signature
-public class SimpleSigned
+public class SimpleSigned extends PositionBeanConvertable
 {
     private final SExp object;
     private final ECDSASignature signature;
 
-    @PositionalSexp("simple-signed")
+    @SExpName("simple-signed")
     public SimpleSigned(
         @P("object") SExp object,
         @P("signature") ECDSASignature signature

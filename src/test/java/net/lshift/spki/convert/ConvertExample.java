@@ -2,12 +2,12 @@ package net.lshift.spki.convert;
 
 import java.math.BigInteger;
 
-public class ConvertExample
+public class ConvertExample extends PositionBeanConvertable
 {
     private final BigInteger foo;
     private final BigInteger bar;
 
-    @PositionalSexp("convert-example")
+    @SExpName("convert-example")
     public ConvertExample(
         @P("foo")
         BigInteger foo,

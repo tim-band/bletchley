@@ -2,15 +2,16 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import java.math.BigInteger;
 
-import net.lshift.spki.convert.DictlikeSexp;
+import net.lshift.spki.convert.NameBeanConvertable;
 import net.lshift.spki.convert.P;
+import net.lshift.spki.convert.SExpName;
 
-public class ECDHPrivateKey
+public class ECDHPrivateKey extends NameBeanConvertable
 {
     private final ECDHPublicKey publicKey;
     private final BigInteger d;
 
-    @DictlikeSexp("suiteb-p384-ecdh-private-key")
+    @SExpName("suiteb-p384-ecdh-private-key")
     public ECDHPrivateKey(
         @P("publicKey") ECDHPublicKey publicKey,
         @P("d") BigInteger d)

@@ -1,83 +1,31 @@
 package net.lshift.spki.convert;
 
-import static net.lshift.spki.Create.atom;
 
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.util.Date;
-
-import net.lshift.spki.Atom;
-import net.lshift.spki.Constants;
 import net.lshift.spki.Marshal;
 import net.lshift.spki.SExp;
 
 public class Convert
 {
-    private static String sb(SExp b) {
-        return new String(((Atom)b).getBytes(), Constants.UTF8);
-    }
+    private static final Registry REGISTRY = new Registry();
 
+    @SuppressWarnings("unchecked")
     public static SExp toSExp(Object o)
     {
-        if (o instanceof SExp) {
-            return (SExp) o;
-        } else if (o instanceof byte[]) {
-            return atom((byte[])o);
-        } else if (o instanceof String) {
-            return atom((String)o);
-        } else if (o instanceof BigInteger) {
-            return atom((BigInteger)o);
-        } else if (o instanceof Date) {
-            return atom((Date)o);
-        }
-        // FIXME: cache these, use them for byte etc
-        ClassConvertInfo<?> convertInfo
-            = ClassConvertInfo.getClassConvertInfo(o.getClass());
-        try {
-            return convertInfo.toSExpCast(o);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        return ((Converter<Object>) getConverter(o.getClass())).toSexp(o);
+    }
+
+    private static <T> Converter<T> getConverter(Class<T> clazz)
+    {
+        return REGISTRY.getConverter(clazz);
     }
 
     public static byte[] toBytes(Object o) {
         return Marshal.marshal(toSExp(o));
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> T fromSExp(Class<T> class1, SExp sexp)
     {
-        try {
-            if (SExp.class.isAssignableFrom(class1)) {
-                return (T) sexp;
-            } else if (class1.equals(byte[].class)) {
-                return (T) ((Atom)sexp).getBytes();
-            } else if (class1.equals(String.class)) {
-                return (T) sb(sexp);
-            } else if (class1.equals(BigInteger.class)) {
-                return (T) new BigInteger(((Atom)sexp).getBytes());
-            } else if (class1.equals(Date.class)) {
-                return (T) Constants.DATE_FORMAT.parse(sb(sexp));
-            }
-            ClassConvertInfo<?> convertInfo
-                = ClassConvertInfo.getClassConvertInfo(class1);
-            return (T) convertInfo.fromSExp(sexp);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+        return getConverter(class1).fromSexp(sexp);
     }
 
     public static <T> T fromBytes(Class<T> class1, byte[] bytes)

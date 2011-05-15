@@ -1,13 +1,14 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionalSexp;
+import net.lshift.spki.convert.PositionBeanConvertable;
+import net.lshift.spki.convert.SExpName;
 
-public class ECDHPublicKey
+public class ECDHPublicKey  extends PositionBeanConvertable
 {
     private final Point point;
 
-    @PositionalSexp("suiteb-p384-ecdh-public-key")
+    @SExpName("suiteb-p384-ecdh-public-key")
     public ECDHPublicKey(@P("point") Point point)
     {
         super();

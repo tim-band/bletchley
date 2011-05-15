@@ -1,14 +1,15 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionalSexp;
+import net.lshift.spki.convert.PositionBeanConvertable;
+import net.lshift.spki.convert.SExpName;
 
-public class ECDHMessage
+public class ECDHMessage extends PositionBeanConvertable
 {
     private final ECDHPublicKey ephemeralKey;
     private final byte[] ciphertext;
 
-    @PositionalSexp("suiteb-p384-ecdh-message")
+    @SExpName("suiteb-p384-ecdh-message")
     public ECDHMessage(
         @P("ephemeralKey") ECDHPublicKey ephemeralKey,
         @P("ciphertext") byte[] ciphertext)

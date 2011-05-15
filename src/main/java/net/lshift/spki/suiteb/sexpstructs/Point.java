@@ -2,15 +2,16 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import java.math.BigInteger;
 
+import net.lshift.spki.convert.NameBeanConvertable;
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.DictlikeSexp;
+import net.lshift.spki.convert.SExpName;
 
-public class Point
+public class Point extends NameBeanConvertable
 {
     private final BigInteger x;
     private final BigInteger y;
 
-    @DictlikeSexp("point")
+    @SExpName("point")
     public Point(
         @P("x") BigInteger x,
         @P("y") BigInteger y
