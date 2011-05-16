@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.lshift.spki.Marshal;
+import net.lshift.spki.ParseException;
+
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -28,6 +31,29 @@ public class OpenableUtils
         OutputStream os = out.write();
         try {
             os.write(messageBytes);
+        } finally {
+            os.close();
+        }
+    }
+
+    public static <T> T read(Class<T> clazz, Openable open)
+        throws ParseException,
+            IOException
+    {
+        final InputStream is = open.read();
+        try {
+            return Convert.fromSExp(clazz, Marshal.unmarshal(is));
+        } finally {
+            is.close();
+        }
+    }
+
+    public static <T> void write(Openable open, Class<T> clazz, T o)
+        throws IOException
+    {
+        final OutputStream os = open.write();
+        try {
+            Marshal.marshal(os, Convert.toSExp(clazz, o));
         } finally {
             os.close();
         }

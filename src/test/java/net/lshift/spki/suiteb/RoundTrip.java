@@ -1,12 +1,14 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.convert.OpenableUtils.read;
+import static net.lshift.spki.convert.OpenableUtils.write;
+
 import java.io.IOException;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SExp;
 import net.lshift.spki.convert.ByteOpenable;
-import net.lshift.spki.convert.Convert;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +24,9 @@ public class RoundTrip
     {
         try {
             ByteOpenable buf = new ByteOpenable();
-            Convert.write(buf, clazz, o);
-            LOG.info(PrettyPrinter.prettyPrint(Convert.read(SExp.class, buf)));
-            return Convert.read(clazz, buf);
+            write(buf, clazz, o);
+            LOG.info(PrettyPrinter.prettyPrint(read(SExp.class, buf)));
+            return read(clazz, buf);
         } catch (SecurityException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {

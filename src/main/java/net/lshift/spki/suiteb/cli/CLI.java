@@ -1,7 +1,9 @@
 package net.lshift.spki.suiteb.cli;
 
-import static net.lshift.spki.convert.Convert.read;
-import static net.lshift.spki.convert.Convert.write;
+import static net.lshift.spki.convert.OpenableUtils.read;
+import static net.lshift.spki.convert.OpenableUtils.readBytes;
+import static net.lshift.spki.convert.OpenableUtils.write;
+import static net.lshift.spki.convert.OpenableUtils.writeBytes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +16,6 @@ import net.lshift.spki.SExp;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
-import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -71,7 +72,7 @@ public class CLI
         PrivateSigningKey dsaPrivate = read(PrivateSigningKey.class, sPrivate);
         PublicEncryptionKey dhPublic = read(PublicEncryptionKey.class, ePublic);
         SExp messageSexp = Convert.toSExp(SimpleMessage.class,
-            new SimpleMessage(messageType, OpenableUtils.readBytes(message)));
+            new SimpleMessage(messageType, readBytes(message)));
         SimpleSigned signed = new SimpleSigned(messageSexp,
             dsaPrivate.sign(DigestSha384.digest(messageSexp)));
         ECDHMessage encrypted = dhPublic.encrypt(Convert.toSExp(
@@ -104,7 +105,7 @@ public class CLI
         if (!messageType.equals(message.getType())) {
             throw new RuntimeException("Message is of an unexpected type");
         }
-        OpenableUtils.writeBytes(out, message.getContent());
+        writeBytes(out, message.getContent());
     }
 
     public static void main(String command, Openable[] args)
