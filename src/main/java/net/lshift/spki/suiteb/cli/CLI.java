@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SExp;
@@ -33,6 +32,14 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
 public class CLI
 {
     private static final String CLI_MESSAGE = CLI.class.toString();
+
+    public static void prettyPrint(Openable file)
+        throws IOException,
+            ParseException
+    {
+        PrettyPrinter.prettyPrint(System.out,
+            read(SExp.class, file));
+    }
 
     public static void generateEncryptionKey(Openable out) throws IOException
     {
@@ -115,8 +122,7 @@ public class CLI
             InvalidCipherTextException
     {
         if ("prettyPrint".equals(command)) {
-            PrettyPrinter.prettyPrint(System.out,
-                Marshal.unmarshal(args[0].read()));
+            prettyPrint(args[0]);
         } else if ("genSigningKey".equals(command)) {
             generateSigningKey(args[0]);
         } else if ("genEncryptionKey".equals(command)) {
