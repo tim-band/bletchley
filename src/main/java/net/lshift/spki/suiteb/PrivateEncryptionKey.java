@@ -6,19 +6,17 @@ import net.lshift.spki.SExp;
 import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
-import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESFastEngine;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.params.AEADParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 /**
- * A private key for encrypting data.
+ * A private key for decrypting data.
  */
 public class PrivateEncryptionKey extends PackConvertable {
     private final AsymmetricCipherKeyPair keyPair;
@@ -28,15 +26,12 @@ public class PrivateEncryptionKey extends PackConvertable {
         this.keyPair = keyPair;
     }
 
-    public static PrivateEncryptionKey unpack(ECDHPrivateKey sexp) {
-        return new PrivateEncryptionKey(sexp.getKeypair());
+    public static PrivateEncryptionKey unpack(ECDHPrivateKey packed) {
+        return new PrivateEncryptionKey(packed.getKeypair());
     }
 
     public ECDHPrivateKey pack() {
-        return new ECDHPrivateKey(
-            new ECDHPublicKey(((ECPublicKeyParameters)keyPair.getPublic()).getQ()),
-            ((ECPrivateKeyParameters)keyPair.getPrivate()).getD()
-        );
+        return new ECDHPrivateKey(keyPair);
     }
 
     public PublicEncryptionKey getPublicKey() {

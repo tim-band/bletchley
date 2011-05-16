@@ -3,6 +3,9 @@ package net.lshift.spki.convert;
 import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
+/**
+ * SExp converter that lists the bean fields in a fixed order.
+ */
 public class PositionBeanConverter<T>
     extends BeanConverter<T>
 {

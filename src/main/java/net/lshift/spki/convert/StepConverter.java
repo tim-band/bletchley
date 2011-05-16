@@ -2,16 +2,20 @@ package net.lshift.spki.convert;
 
 import net.lshift.spki.SExp;
 
-public abstract class StepConverter<T1, T2> implements Converter<T1>
+/**
+ * Convert TResult to SExp by first converting it to TStep using stepIn/stepOut
+ */
+public abstract class StepConverter<TResult, TStep>
+    implements Converter<TResult>
 {
     @Override
-    public T1 fromSexp(SExp sexp)
+    public TResult fromSexp(SExp sexp)
     {
         return stepOut(Convert.fromSExp(getStepClass(), sexp));
     }
 
     @Override
-    public SExp toSexp(T1 o)
+    public SExp toSexp(TResult o)
     {
         return Convert.toSExp(getStepClass(), stepIn(o));
     }
@@ -21,11 +25,11 @@ public abstract class StepConverter<T1, T2> implements Converter<T1>
         Convert.REGISTRY.register(getResultClass(), this);
     }
 
-    protected abstract Class<T1> getResultClass();
+    protected abstract Class<TResult> getResultClass();
 
-    protected abstract Class<T2> getStepClass();
+    protected abstract Class<TStep> getStepClass();
 
-    protected abstract T1 stepOut(T2 fromSExp);
+    protected abstract TResult stepOut(TStep fromSExp);
 
-    protected abstract T2 stepIn(T1 o);
+    protected abstract TStep stepIn(TResult o);
 }

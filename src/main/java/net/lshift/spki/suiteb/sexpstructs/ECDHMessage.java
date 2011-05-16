@@ -6,6 +6,9 @@ import net.lshift.spki.convert.SExpName;
 
 import org.bouncycastle.math.ec.ECPoint;
 
+/**
+ * Serialization format for ECDH-encrypted messages
+ */
 public class ECDHMessage extends PositionBeanConvertable
 {
     private final ECPoint ephemeralKey;

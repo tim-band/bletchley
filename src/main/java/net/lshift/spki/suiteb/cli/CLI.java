@@ -26,6 +26,9 @@ import net.lshift.spki.suiteb.sexpstructs.SimpleSigned;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
 
+/**
+ * Command line interface to crypto functions
+ */
 public class CLI
 {
     private static final String CLI_MESSAGE = CLI.class.toString();
@@ -81,9 +84,13 @@ public class CLI
         Openable ePrivate,
         Openable sPublic,
         Openable packet,
-        Openable out) throws ParseException, IOException, InvalidCipherTextException
+        Openable out)
+        throws ParseException,
+            IOException,
+            InvalidCipherTextException
     {
-        PrivateEncryptionKey dhPrivate = read(PrivateEncryptionKey.class,  ePrivate);
+        PrivateEncryptionKey dhPrivate = read(PrivateEncryptionKey.class,
+            ePrivate);
         PublicSigningKey dsaPublic = read(PublicSigningKey.class, sPublic);
         ECDHMessage encrypted = read(ECDHMessage.class, packet);
         SExp decrypted = dhPrivate.decrypt(encrypted);
@@ -92,7 +99,8 @@ public class CLI
             signed.getSignature())) {
             throw new RuntimeException("Signature validation failure");
         }
-        SimpleMessage message = Convert.fromSExp(SimpleMessage.class, signed.getObject());
+        SimpleMessage message = Convert.fromSExp(SimpleMessage.class,
+            signed.getObject());
         if (!messageType.equals(message.getType())) {
             throw new RuntimeException("Message is of an unexpected type");
         }
@@ -105,7 +113,7 @@ public class CLI
             IOException,
             InvalidCipherTextException
     {
-        if ("prettyprint".equals(command)) {
+        if ("prettyPrint".equals(command)) {
             PrettyPrinter.prettyPrint(System.out,
                 Marshal.unmarshal(args[0].read()));
         } else if ("genSigningKey".equals(command)) {
@@ -127,7 +135,12 @@ public class CLI
         }
     }
 
-    public static void main(String[] args) throws FileNotFoundException, InvalidCipherTextException, ParseException, IOException {
+    public static void main(String[] args)
+        throws FileNotFoundException,
+            InvalidCipherTextException,
+            ParseException,
+            IOException
+    {
         Openable[] openables = new Openable[args.length-1];
         for (int i = 0; i < args.length-1; i++) {
             openables[i] = new FileOpenable(new File(args[i+1]));

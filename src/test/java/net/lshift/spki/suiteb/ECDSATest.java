@@ -17,7 +17,9 @@ import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.junit.Test;
 
-
+/**
+ * Exercise doing ECDSA using the BouncyCastle API.
+ */
 public class ECDSATest
 {
     @Test

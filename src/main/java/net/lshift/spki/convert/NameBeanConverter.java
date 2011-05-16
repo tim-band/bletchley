@@ -6,6 +6,9 @@ import net.lshift.spki.Create;
 import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
+/**
+ * SExp converter that produces a SExp that looks like key-value pairs
+ */
 public class NameBeanConverter<T>
     extends BeanConverter<T>
 {
@@ -15,9 +18,9 @@ public class NameBeanConverter<T>
     }
 
     @Override
-    protected SExp fieldToSexp(FieldConvertInfo fieldConvertInfo, SExp o)
+    protected SExp fieldToSexp(FieldConvertInfo fieldConvertInfo, SExp sexp)
     {
-        return Create.list(fieldConvertInfo.getHyphenatedName(), o);
+        return Create.list(fieldConvertInfo.getHyphenatedName(), sexp);
     }
 
     @Override

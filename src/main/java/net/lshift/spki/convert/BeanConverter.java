@@ -10,6 +10,10 @@ import net.lshift.spki.Create;
 import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
+/**
+ * Superclass for a converter that reads bean properties based on
+ * an annotated constructor.
+ */
 public abstract class BeanConverter<T> implements Converter<T>
 {
     private final String name;
@@ -35,7 +39,7 @@ public abstract class BeanConverter<T> implements Converter<T>
                 return;
             }
         }
-        throw new RuntimeException("No suitably annotated constructor: " +
+        throw new ConvertException("No suitably annotated constructor: " +
                         clazz.getCanonicalName());
     }
 
@@ -46,7 +50,7 @@ public abstract class BeanConverter<T> implements Converter<T>
                 return ((P)a).value();
             }
         }
-        throw new RuntimeException("No P annotation found");
+        throw new ConvertException("No P annotation found");
     }
 
     @Override
@@ -58,18 +62,15 @@ public abstract class BeanConverter<T> implements Converter<T>
                 final Object property = PropertyUtils.getProperty(o,
                     fields[i].getName());
                 components[i] = fieldToSexp(fields[i],
-                    Convert.toSExpUnchecked((Class<?>) fields[i].getType(), property));
+                    Convert.toSExpUnchecked(fields[i].getType(), property));
             }
             return Create.list(name, components);
         } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         } catch (InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         } catch (NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         }
     }
 
@@ -93,13 +94,13 @@ public abstract class BeanConverter<T> implements Converter<T>
         try {
             return constructor.newInstance(initargs);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         } catch (InstantiationException e) {
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         }
     }
 

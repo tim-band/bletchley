@@ -3,6 +3,9 @@ package net.lshift.spki.convert;
 import net.lshift.spki.Create;
 import net.lshift.spki.SExp;
 
+/**
+ * Convert between a byte[] and a SExp
+ */
 public class ByteArrayConverter
     implements Converter<byte[]>
 {

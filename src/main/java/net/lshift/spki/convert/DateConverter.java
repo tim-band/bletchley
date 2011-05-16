@@ -7,6 +7,9 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.Create;
 import net.lshift.spki.SExp;
 
+/**
+ * Convert between a Date and a SExp
+ */
 public class DateConverter
     implements Converter<Date>
 {

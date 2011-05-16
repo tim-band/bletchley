@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Adapt File to the Openable interface.
+ */
 public class FileOpenable implements Openable
 {
     private final File file;

@@ -30,7 +30,7 @@ public class PublicEncryptionKey extends PackConvertable  {
     }
 
     public ECDHPublicKey pack() {
-        return new ECDHPublicKey(publicKey.getQ());
+        return new ECDHPublicKey(publicKey);
     }
 
     public ECDHMessage encrypt(SExp message) {
@@ -50,7 +50,8 @@ public class PublicEncryptionKey extends PackConvertable  {
         byte[] plaintext = Marshal.marshal(message);
         byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
         int resp = 0;
-        resp += gcm.processBytes(plaintext, 0, plaintext.length, ciphertext, resp);
+        resp += gcm.processBytes(plaintext, 0, plaintext.length,
+            ciphertext, resp);
         try {
             resp += gcm.doFinal(ciphertext, resp);
         } catch (IllegalStateException e) {

@@ -2,6 +2,9 @@ package net.lshift.spki.convert;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * Information stored by the BeanConverter for each field of the class.
+ */
 public class FieldConvertInfo
 {
     protected final String name;

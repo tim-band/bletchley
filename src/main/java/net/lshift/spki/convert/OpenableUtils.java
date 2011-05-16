@@ -6,9 +6,11 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * Utilities for acting on Openable objects
+ */
 public class OpenableUtils
 {
-
     public static byte[] readBytes(Openable message)
         throws IOException
     {
@@ -30,5 +32,4 @@ public class OpenableUtils
             os.close();
         }
     }
-
 }

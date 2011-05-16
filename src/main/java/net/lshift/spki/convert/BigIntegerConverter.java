@@ -5,6 +5,9 @@ import java.math.BigInteger;
 import net.lshift.spki.Create;
 import net.lshift.spki.SExp;
 
+/**
+ * Convert between a BigInteger and a SExp
+ */
 public class BigIntegerConverter
     implements Converter<BigInteger>
 {

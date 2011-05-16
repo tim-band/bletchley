@@ -8,6 +8,9 @@ import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
+/**
+ * A public key for verifying signatures
+ */
 public class PublicSigningKey extends PackConvertable
 {
     private ECPublicKeyParameters publicKey;
@@ -23,7 +26,7 @@ public class PublicSigningKey extends PackConvertable
     }
 
     public ECDSAPublicKey pack() {
-        return new ECDSAPublicKey(publicKey.getQ());
+        return new ECDSAPublicKey(publicKey);
     }
 
     public boolean validate(DigestSha384 digest, ECDSASignature sigVal)

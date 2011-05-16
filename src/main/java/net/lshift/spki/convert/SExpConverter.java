@@ -2,6 +2,9 @@ package net.lshift.spki.convert;
 
 import net.lshift.spki.SExp;
 
+/**
+ * Trivially convert between SExp and SExp - do nothing.
+ */
 public class SExpConverter
     implements Converter<SExp>
 {
@@ -12,8 +15,8 @@ public class SExpConverter
     }
 
     @Override
-    public SExp toSexp(SExp o)
+    public SExp toSexp(SExp sexp)
     {
-        return o;
+        return sexp;
     }
 }

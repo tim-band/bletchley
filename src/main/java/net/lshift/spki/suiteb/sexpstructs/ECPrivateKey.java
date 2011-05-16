@@ -9,6 +9,9 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
+/**
+ * Superclass for serialization formats for EC private keys
+ */
 public class ECPrivateKey
     extends NameBeanConvertable
 {
@@ -20,6 +23,11 @@ public class ECPrivateKey
         super();
         this.publicKey = publicKey;
         this.d = d;
+    }
+
+    public ECPrivateKey(ECPublicKey publicKey, AsymmetricCipherKeyPair keyPair)
+    {
+        this(publicKey, ((ECPrivateKeyParameters)keyPair.getPrivate()).getD());
     }
 
     public ECPublicKey getPublicKey()

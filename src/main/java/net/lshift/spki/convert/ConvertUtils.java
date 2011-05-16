@@ -4,6 +4,9 @@ import net.lshift.spki.Atom;
 import net.lshift.spki.Constants;
 import net.lshift.spki.SExp;
 
+/**
+ * Static utilities for conversion between SExps and objects.
+ */
 public class ConvertUtils
 {
     public static byte[] toBytes(SExp sexp) {

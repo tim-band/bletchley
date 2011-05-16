@@ -5,7 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-// FIXME: this class is only really suitable for testing
+/**
+ * In-memory Openable suitable only for testing.
+ */
 public class ByteOpenable
     implements Openable
 {

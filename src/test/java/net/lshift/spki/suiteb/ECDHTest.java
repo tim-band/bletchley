@@ -14,7 +14,9 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
 import org.junit.Test;
 
-
+/**
+ * Exercise the ECDH parts of the bouncycastle API
+ */
 public class ECDHTest {
     @Test
     public void curveTest() {

@@ -8,6 +8,11 @@ import java.util.Map;
 
 import net.lshift.spki.SExp;
 
+/**
+ * Registry of SExp converters.  If a class implements the Convertable
+ * interface, that means it knows how to convert itself and so doesn't
+ * need to be registered in advance.
+ */
 public class Registry
 {
     private final Map<Class<?>, Converter<?>> converterMap
@@ -26,8 +31,7 @@ public class Registry
     }
 
     {
-        final SExpConverter sexpConverter = new SExpConverter();
-        register(SExp.class, sexpConverter);
+        register(SExp.class, new SExpConverter());
         register(byte[].class, new ByteArrayConverter());
         register(String.class, new StringConverter());
         register(BigInteger.class, new BigIntegerConverter());
@@ -39,7 +43,7 @@ public class Registry
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
             if (!Convertable.class.isAssignableFrom(clazz)) {
-                throw new RuntimeException("Don't know how to serialize class:"
+                throw new ConvertException("Don't know how to serialize class:"
                     + clazz.getCanonicalName());
             }
             try {
@@ -47,15 +51,15 @@ public class Registry
                 res = (Converter<T>) clazz.getMethod(
                     "getConverter", Class.class).invoke(null, clazz);
             } catch (SecurityException e) {
-                throw new RuntimeException(e);
+                throw new ConvertReflectionException(e);
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                throw new ConvertReflectionException(e);
             } catch (IllegalArgumentException e) {
-                throw new RuntimeException(e);
+                throw new ConvertReflectionException(e);
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw new ConvertReflectionException(e);
             } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
+                throw new ConvertReflectionException(e);
             }
             converterMap.put(clazz, res);
         }

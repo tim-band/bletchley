@@ -8,6 +8,10 @@ import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 
+/**
+ * Serialization format for ECDH shared secret before it's hashed into
+ * a GCM key.
+ */
 public class ECDHSharedSecret extends PositionBeanConvertable
 {
     private final ECPoint receiverKey;

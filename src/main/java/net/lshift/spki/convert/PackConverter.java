@@ -5,23 +5,25 @@ import java.lang.reflect.Method;
 
 import net.lshift.spki.SExp;
 
+/**
+ * "Pack" protocol converter - convert to sexp via another object and
+ * "pack" or "unpack" methods.
+ */
 public class PackConverter<T extends PackConvertable>
     implements Converter<T>
 {
-    private final Method packMethod;
     private final Method unpackMethod;
     private final Class<?> otherType;
 
     public PackConverter(Class<T> clazz)
     {
         try {
-            packMethod = clazz.getMethod("pack");
-            otherType = packMethod.getReturnType();
+            otherType = clazz.getMethod("pack").getReturnType();
             unpackMethod = clazz.getMethod("unpack", otherType);
         } catch (SecurityException e) {
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         }
     }
 
@@ -33,11 +35,11 @@ public class PackConverter<T extends PackConvertable>
             return (T) unpackMethod.invoke(null,
                 Convert.fromSExp(otherType, sexp));
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new ConvertReflectionException(e);
         }
     }
 

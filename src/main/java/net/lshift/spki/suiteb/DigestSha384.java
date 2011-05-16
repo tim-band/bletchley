@@ -5,6 +5,9 @@ import net.lshift.spki.SExp;
 
 import org.bouncycastle.crypto.digests.SHA384Digest;
 
+/**
+ * A SHA-384 digest of a SExp.
+ */
 public class DigestSha384
 {
     private final int DIGEST_LENGTH = 48;

@@ -21,12 +21,14 @@ import org.bouncycastle.math.ec.ECPoint;
  * Static convenience functions for working with elliptic curves.
  */
 public class EC {
-    private static final X9ECParameters CURVE = NISTNamedCurves.getByName("P-384");
+    private static final X9ECParameters CURVE
+        = NISTNamedCurves.getByName("P-384");
 
-    public static final ECDomainParameters DOMAIN_PARAMETERS = new ECDomainParameters(
+    public static final ECDomainParameters DOMAIN_PARAMETERS
+        = new ECDomainParameters(
             CURVE.getCurve(), CURVE.getG(), CURVE.getN());
-    static SecureRandom random = new SecureRandom();
-    static ECKeyPairGenerator gen = new ECKeyPairGenerator();
+    private static SecureRandom random = new SecureRandom();
+    private static ECKeyPairGenerator gen = new ECKeyPairGenerator();
     static {
         gen.init(new ECKeyGenerationParameters(DOMAIN_PARAMETERS, random));
     }

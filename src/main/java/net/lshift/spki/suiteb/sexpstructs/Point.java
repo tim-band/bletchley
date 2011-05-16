@@ -10,6 +10,9 @@ import net.lshift.spki.suiteb.EC;
 
 import org.bouncycastle.math.ec.ECPoint;
 
+/**
+ * Serialization format for an ECPoint ie a point on an elliptic curve.
+ */
 public class Point extends NameBeanConvertable
 {
     private final BigInteger x;
@@ -35,7 +38,9 @@ public class Point extends NameBeanConvertable
         return y;
     }
 
-    private static class ECPointConverter extends StepConverter<ECPoint, Point> {
+    private static class ECPointConverter
+        extends StepConverter<ECPoint, Point>
+    {
         @Override
         protected Class<Point> getStepClass() { return Point.class; }
 

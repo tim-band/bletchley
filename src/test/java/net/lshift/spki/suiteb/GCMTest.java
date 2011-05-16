@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 
+/**
+ * Exercise GCM using the bouncycastle API.
+ */
 public class GCMTest {
     private final static int MAC_BYTES = 16;
     @Test

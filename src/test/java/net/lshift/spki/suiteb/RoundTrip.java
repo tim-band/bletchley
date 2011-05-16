@@ -11,6 +11,9 @@ import net.lshift.spki.convert.Convert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Put the argument through a serialization/deserialization round trip
+ */
 public class RoundTrip
 {
     private static final Logger LOG = LoggerFactory.getLogger(RoundTrip.class);

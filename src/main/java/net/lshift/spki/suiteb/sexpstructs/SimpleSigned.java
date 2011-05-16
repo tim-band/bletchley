@@ -5,7 +5,11 @@ import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 
-// FIXME: replace this with a real SPKI signature
+/**
+ * Simple signature format - just a message and a bare signature.
+ *
+ * FIXME: we should use real SPKI signatures and "sequence" sexps.
+ */
 public class SimpleSigned extends PositionBeanConvertable
 {
     private final SExp object;

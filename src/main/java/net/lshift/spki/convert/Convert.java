@@ -1,6 +1,5 @@
 package net.lshift.spki.convert;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,6 +8,10 @@ import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SExp;
 
+/**
+ * Static utilities for converting between classes and SExps based on
+ * a registry of converters for classes.
+ */
 public class Convert
 {
     public static final Registry REGISTRY = new Registry();
