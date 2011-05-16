@@ -41,4 +41,8 @@ public class ECDHMessage extends PositionBeanConvertable
     {
         return ciphertext;
     }
+
+    static {
+        Point.ensureRegistered();
+    }
 }

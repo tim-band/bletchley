@@ -12,7 +12,7 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 /**
  * Superclass for serialization formats for EC private keys
  */
-public class ECPrivateKey
+public abstract class ECPrivateKey
     extends NameBeanConvertable
 {
     protected final ECPublicKey publicKey;
@@ -46,5 +46,9 @@ public class ECPrivateKey
         ECPrivateKeyParameters privk = new ECPrivateKeyParameters(
             d, EC.DOMAIN_PARAMETERS);
         return new AsymmetricCipherKeyPair(pk, privk);
+    }
+
+    static {
+        Point.ensureRegistered();
     }
 }

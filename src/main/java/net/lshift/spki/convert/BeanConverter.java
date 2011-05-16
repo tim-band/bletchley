@@ -23,6 +23,14 @@ public abstract class BeanConverter<T> implements Converter<T>
     @SuppressWarnings("unchecked")
     public BeanConverter(Class<T> clazz)
     {
+        // Ensure the class is initialized
+        // in case it statically registers converters
+        // http://java.sun.com/j2se/1.5.0/compatibility.html
+        try {
+            Class.forName(clazz.getName(), true, clazz.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new AssertionError(e);  // Can't happen
+        }
         for (Constructor<?> c: clazz.getConstructors()) {
             SExpName sname = c.getAnnotation(SExpName.class);
             if (sname != null) {

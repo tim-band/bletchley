@@ -44,4 +44,8 @@ public class ECDHSharedSecret extends PositionBeanConvertable
     {
         return sharedSecret;
     }
+
+    static {
+        Point.ensureRegistered();
+    }
 }

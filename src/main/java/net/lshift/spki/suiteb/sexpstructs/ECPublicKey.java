@@ -10,7 +10,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Superclass for serialization formats for EC public keys
  */
-public class ECPublicKey
+public abstract class ECPublicKey
     extends PositionBeanConvertable
 {
     protected final ECPoint point;
