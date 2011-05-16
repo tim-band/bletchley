@@ -12,21 +12,29 @@ import org.bouncycastle.math.ec.ECPoint;
 public class ECDHMessage extends PositionBeanConvertable
 {
     private final ECPoint ephemeralKey;
+    private final byte[] encryptedPayloadKey;
     private final byte[] ciphertext;
 
     @SExpName("suiteb-p384-ecdh-message")
     public ECDHMessage(
         @P("ephemeralKey") ECPoint ephemeralKey,
+        @P("encryptedPayloadKey") byte[] encryptedPayloadKey,
         @P("ciphertext") byte[] ciphertext)
     {
         super();
         this.ephemeralKey = ephemeralKey;
+        this.encryptedPayloadKey = encryptedPayloadKey;
         this.ciphertext = ciphertext;
     }
 
     public ECPoint getEphemeralKey()
     {
         return ephemeralKey;
+    }
+
+    public byte[] getEncryptedPayloadKey()
+    {
+        return encryptedPayloadKey;
     }
 
     public byte[] getCiphertext()
