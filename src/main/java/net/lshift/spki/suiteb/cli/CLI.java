@@ -82,8 +82,7 @@ public class CLI
             new SimpleMessage(messageType, readBytes(message)));
         SimpleSigned signed = new SimpleSigned(messageSexp,
             dsaPrivate.sign(DigestSha384.digest(messageSexp)));
-        ECDHMessage encrypted = dhPublic.encrypt(Convert.toSExp(
-            SimpleSigned.class, signed));
+        ECDHMessage encrypted = dhPublic.encrypt(SimpleSigned.class, signed);
         write(out, ECDHMessage.class, encrypted);
     }
 
@@ -101,8 +100,7 @@ public class CLI
             ePrivate);
         PublicSigningKey dsaPublic = read(PublicSigningKey.class, sPublic);
         ECDHMessage encrypted = read(ECDHMessage.class, packet);
-        SExp decrypted = dhPrivate.decrypt(encrypted);
-        SimpleSigned signed = Convert.fromSExp(SimpleSigned.class, decrypted);
+        SimpleSigned signed = dhPrivate.decrypt(SimpleSigned.class, encrypted);
         if (!dsaPublic.validate(DigestSha384.digest(signed.getObject()),
             signed.getSignature())) {
             throw new RuntimeException("Signature validation failure");

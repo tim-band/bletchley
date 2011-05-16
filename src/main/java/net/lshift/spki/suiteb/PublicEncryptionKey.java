@@ -1,7 +1,5 @@
 package net.lshift.spki.suiteb;
 
-import net.lshift.spki.SExp;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
@@ -29,7 +27,7 @@ public class PublicEncryptionKey extends PackConvertable  {
         return new ECDHPublicKey(publicKey);
     }
 
-    public ECDHMessage encrypt(SExp message) {
+    public <T> ECDHMessage encrypt(Class<T> messageType, T message) {
         AsymmetricCipherKeyPair ephemeralKey = EC.generate();
         byte[] sessionKey = EC.sessionKey(
                 publicKey,
@@ -40,8 +38,8 @@ public class PublicEncryptionKey extends PackConvertable  {
         // FIXME: include reference to private key, nonce, and more
         return new ECDHMessage(
             ((ECPublicKeyParameters) ephemeralKey.getPublic()).getQ(),
-            EC.symmetricEncrypt(sessionKey,
-                Convert.toSExp(EncryptedKey.class, new EncryptedKey(payloadKey))),
-            EC.symmetricEncrypt(payloadKey, message));
+            EC.symmetricEncrypt(EncryptedKey.class, sessionKey,
+                new EncryptedKey(payloadKey)),
+            EC.symmetricEncrypt(messageType, payloadKey, message));
     }
 }

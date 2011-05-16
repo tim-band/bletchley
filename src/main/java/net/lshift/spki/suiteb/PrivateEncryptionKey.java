@@ -1,8 +1,6 @@
 package net.lshift.spki.suiteb;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.SExp;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
@@ -39,7 +37,7 @@ public class PrivateEncryptionKey extends PackConvertable {
         return new PrivateEncryptionKey(EC.generate());
     }
 
-    public SExp decrypt(ECDHMessage message)
+    public <T> T decrypt(Class<T> payloadType, ECDHMessage message)
         throws InvalidCipherTextException,
             ParseException
     {
@@ -50,8 +48,9 @@ public class PrivateEncryptionKey extends PackConvertable {
                 pk,
                 keyPair.getPrivate(),
                 pk);
-        EncryptedKey payloadKey = Convert.fromSExp(EncryptedKey.class,
-            EC.symmetricDecrypt(sessionKey, message.getEncryptedPayloadKey()));
-        return EC.symmetricDecrypt(payloadKey.getKey(), message.getCiphertext());
+        EncryptedKey payloadKey = EC.symmetricDecrypt(EncryptedKey.class,
+            sessionKey, message.getEncryptedPayloadKey());
+        return EC.symmetricDecrypt(payloadType,
+            payloadKey.getKey(), message.getCiphertext());
     }
 }

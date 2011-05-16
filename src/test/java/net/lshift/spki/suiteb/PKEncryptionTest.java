@@ -23,8 +23,8 @@ public class PKEncryptionTest {
         publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
         SExp message = atom("The magic words are squeamish ossifrage");
         ECDHMessage encrypted = roundTrip(ECDHMessage.class,
-            publicKey.encrypt(message));
-        SExp decrypted = privateKey.decrypt(encrypted);
+            publicKey.encrypt(SExp.class, message));
+        SExp decrypted = privateKey.decrypt(SExp.class, encrypted);
         assertEquals(message, decrypted);
     }
 }

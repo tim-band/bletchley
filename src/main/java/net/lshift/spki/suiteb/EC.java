@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
-import net.lshift.spki.SExp;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.sexpstructs.ECDHSharedSecret;
 
@@ -81,7 +80,8 @@ public class EC {
      * As it stands, each key can be used only once ever!
      * To fix that, we need to vary the nonce.
      */
-    public static byte[] symmetricEncrypt(byte[] key, SExp message)
+    public static <T> byte[] symmetricEncrypt(Class<T> messageType,
+        byte[] key, T message)
     {
         // FIXME: vary nonce, use associated data
         byte[] nonce = new byte[1];
@@ -91,7 +91,7 @@ public class EC {
             new KeyParameter(key), 128, nonce, new byte[0]);
         GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
         gcm.init(true, aeadparams);
-        byte[] plaintext = Marshal.marshal(message);
+        byte[] plaintext = Marshal.marshal(Convert.toSExp(messageType, message));
         byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
         int resp = 0;
         resp += gcm.processBytes(plaintext, 0, plaintext.length,
@@ -106,7 +106,9 @@ public class EC {
         return ciphertext;
     }
 
-    public static SExp symmetricDecrypt(byte[] key, byte[] ciphertext)
+    public static <T> T symmetricDecrypt(
+        Class<T> messageType,
+        byte[] key, byte[] ciphertext)
         throws InvalidCipherTextException,
             ParseException
     {
@@ -125,6 +127,6 @@ public class EC {
         } catch (IllegalStateException e) {
             throw new RuntimeException(e);
         }
-        return Marshal.unmarshal(newtext);
+        return Convert.fromSExp(messageType, Marshal.unmarshal(newtext));
     }
 }
