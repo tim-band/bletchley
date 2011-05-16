@@ -21,7 +21,7 @@ public class RoundTrip
             ByteOpenable buf = new ByteOpenable();
             Convert.write(buf, clazz, o);
             LOG.info(PrettyPrinter.prettyPrint(Convert.read(SExp.class, buf)));
-            return (T) Convert.read(clazz, buf);
+            return Convert.read(clazz, buf);
         } catch (SecurityException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {

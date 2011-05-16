@@ -18,10 +18,17 @@ public class Convert
         return REGISTRY.getConverter(clazz);
     }
 
-    //public static <T> SExp toSExp(Class<T> clazz, T o)
-    @SuppressWarnings("unchecked")
-    public static SExp toSExp(Class<?> clazz, Object o)
+    public static <T> SExp toSExp(Class<T> clazz, T o)
     {
+        return (getConverter(clazz)).toSexp(o);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static SExp toSExpUnchecked(Class<?> clazz, Object o)
+    {
+        if (!clazz.isAssignableFrom(o.getClass())) {
+            throw new ConvertException("Object of unexpected type");
+        }
         return ((Converter<Object>)getConverter(clazz)).toSexp(o);
     }
 

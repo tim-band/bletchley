@@ -76,7 +76,4 @@ public class PrivateEncryptionKey extends PackConvertable {
         }
         return Marshal.unmarshal(newtext);
     }
-
-    static {
-    }
 }

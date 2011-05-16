@@ -35,6 +35,11 @@ public class EC {
         return gen.generateKeyPair();
     }
 
+    public static ECPublicKeyParameters toECPublicKeyParameters(ECPoint point)
+    {
+        return new ECPublicKeyParameters(point, EC.DOMAIN_PARAMETERS);
+    }
+
     public static KeyParameter sessionKey(
             CipherParameters receiverKey,
             CipherParameters senderKey,
@@ -50,10 +55,5 @@ public class EC {
         DigestSha384 hash = DigestSha384.digest(
             Convert.toSExp(ECDHSharedSecret.class, sharedSecret));
         return new KeyParameter(hash.getBytes(), 0, 32);
-    }
-
-    public static ECPublicKeyParameters toECPublicKeyParameters(ECPoint point)
-    {
-        return new ECPublicKeyParameters(point, EC.DOMAIN_PARAMETERS);
     }
 }

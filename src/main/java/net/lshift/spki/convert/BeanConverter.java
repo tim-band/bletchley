@@ -58,7 +58,7 @@ public abstract class BeanConverter<T> implements Converter<T>
                 final Object property = PropertyUtils.getProperty(o,
                     fields[i].getName());
                 components[i] = fieldToSexp(fields[i],
-                    Convert.toSExp((Class<?>) fields[i].getType(), property));
+                    Convert.toSExpUnchecked((Class<?>) fields[i].getType(), property));
             }
             return Create.list(name, components);
         } catch (IllegalAccessException e) {
