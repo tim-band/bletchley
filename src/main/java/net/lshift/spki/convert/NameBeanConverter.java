@@ -10,7 +10,7 @@ import net.lshift.spki.SList;
  * SExp converter that produces a SExp that looks like key-value pairs
  */
 public class NameBeanConverter<T>
-    extends BeanConverter<T>
+    extends BeanFieldConverter<T>
 {
     public NameBeanConverter(Class<T> clazz)
     {

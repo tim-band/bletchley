@@ -4,7 +4,6 @@ import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
-import net.lshift.spki.suiteb.sexpstructs.EncryptedKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -29,6 +28,7 @@ public class PrivateEncryptionKey extends PackConvertable {
         return new ECDHPrivateKey(keyPair);
     }
 
+    // FIXME: cache this or regenerate every time?
     public PublicEncryptionKey getPublicKey() {
         return new PublicEncryptionKey(keyPair.getPublic());
     }
@@ -41,6 +41,9 @@ public class PrivateEncryptionKey extends PackConvertable {
         throws InvalidCipherTextException,
             ParseException
     {
+        if (!getPublicKey().getKeyId().equals(message.getRecipient())) {
+            throw new RuntimeException("Wrong recipient");
+        }
         ECPublicKeyParameters pk =
             EC.toECPublicKeyParameters(message.getEphemeralKey());
         byte[] sessionKey = EC.sessionKey(
@@ -48,9 +51,7 @@ public class PrivateEncryptionKey extends PackConvertable {
                 pk,
                 keyPair.getPrivate(),
                 pk);
-        EncryptedKey payloadKey = EC.symmetricDecrypt(EncryptedKey.class,
-            sessionKey, message.getEncryptedPayloadKey());
         return EC.symmetricDecrypt(payloadType,
-            payloadKey.getKey(), message.getCiphertext());
+            sessionKey, message.getCiphertext());
     }
 }

@@ -7,7 +7,7 @@ import net.lshift.spki.SList;
  * SExp converter that lists the bean fields in a fixed order.
  */
 public class PositionBeanConverter<T>
-    extends BeanConverter<T>
+    extends BeanFieldConverter<T>
 {
     public PositionBeanConverter(Class<T> clazz)
     {

@@ -3,7 +3,6 @@ package net.lshift.spki.suiteb;
 import net.lshift.spki.convert.PackConvertable;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
-import net.lshift.spki.suiteb.sexpstructs.EncryptedKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.CipherParameters;
@@ -13,10 +12,18 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
  * A public key for encrypting data.
  */
 public class PublicEncryptionKey extends PackConvertable  {
-    private ECPublicKeyParameters publicKey;
+    private final ECPublicKeyParameters publicKey;
+    private final DigestSha384 keyId;
 
     PublicEncryptionKey(CipherParameters publicKey) {
         this.publicKey = (ECPublicKeyParameters) publicKey;
+        keyId = DigestSha384.digest(
+            PublicEncryptionKey.class, this);
+    }
+
+    public DigestSha384 getKeyId()
+    {
+        return keyId;
     }
 
     public static PublicEncryptionKey unpack(ECDHPublicKey sexp) {
@@ -34,12 +41,10 @@ public class PublicEncryptionKey extends PackConvertable  {
                 ephemeralKey.getPublic(),
                 ephemeralKey.getPrivate(),
                 publicKey);
-        byte[] payloadKey = EC.getPayloadKey();
         // FIXME: include reference to private key, nonce, and more
         return new ECDHMessage(
+            keyId,
             ((ECPublicKeyParameters) ephemeralKey.getPublic()).getQ(),
-            EC.symmetricEncrypt(EncryptedKey.class, sessionKey,
-                new EncryptedKey(payloadKey)),
-            EC.symmetricEncrypt(messageType, payloadKey, message));
+            EC.symmetricEncrypt(messageType, sessionKey, message));
     }
 }

@@ -64,11 +64,11 @@ public class EC {
             ((ECPublicKeyParameters)senderKey).getQ(),
             senderAgreement.calculateAgreement(publicKey));
         DigestSha384 hash = DigestSha384.digest(
-            Convert.toSExp(ECDHSharedSecret.class, sharedSecret));
+            ECDHSharedSecret.class, sharedSecret);
         return Arrays.copyOf(hash.getBytes(), AES_KEY_BYTES);
     }
 
-    public static byte[] getPayloadKey()
+    public static byte[] generateAESKey()
     {
         byte[] key = new byte[AES_KEY_BYTES];
         random.nextBytes(key);

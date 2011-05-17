@@ -17,4 +17,17 @@ public class ConvertUtils
     {
         return new String(ConvertUtils.toBytes(sexp), Constants.UTF8);
     }
+
+    public static <T> void initialize(Class<T> clazz)
+        throws AssertionError
+    {
+        // Ensure the class is initialized
+        // in case it statically registers converters
+        // http://java.sun.com/j2se/1.5.0/compatibility.html
+        try {
+            Class.forName(clazz.getName(), true, clazz.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new AssertionError(e);  // Can't happen
+        }
+    }
 }
