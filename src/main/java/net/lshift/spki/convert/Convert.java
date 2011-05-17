@@ -16,6 +16,8 @@ public class Convert
         return REGISTRY.getConverter(clazz);
     }
 
+    // FIXME: not clear that either this or the next method should
+    // allow clazz != o.getClass() in general.
     public static <T> SExp toSExp(Class<T> clazz, T o)
     {
         return (getConverter(clazz)).toSexp(o);

@@ -28,7 +28,12 @@ public abstract class BeanConverter<T> implements Converter<T>
                         clazz.getCanonicalName());
     }
 
-    protected String getName(Annotation[] annotations)
+    public String getName()
+    {
+        return name;
+    }
+
+    protected String getPAnnotation(Annotation[] annotations)
     {
         for (Annotation a: annotations) {
             if (a instanceof P) {

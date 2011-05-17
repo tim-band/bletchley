@@ -30,7 +30,7 @@ public class SequenceConverter<T> extends BeanConverter<T>
                 "Constructor must be one argument:"
                 + clazz.getCanonicalName());
         }
-        beanName = getName(annotations[0]);
+        beanName = getPAnnotation(annotations[0]);
         Type[] pTypes = constructor.getGenericParameterTypes();
         if (!(pTypes[0] instanceof ParameterizedType)) {
             throw new ConvertException(
