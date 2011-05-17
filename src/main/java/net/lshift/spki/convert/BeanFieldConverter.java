@@ -26,7 +26,7 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
         fields = new FieldConvertInfo[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             fields[i] = new FieldConvertInfo(
-                getName(annotations[i]), parameters[i]);
+                getPAnnotation(annotations[i]), parameters[i]);
         }
     }
 
