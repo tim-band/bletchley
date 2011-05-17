@@ -24,6 +24,7 @@ public class Hash
     {
         return hashType;
     }
+
     public byte[] getValue()
     {
         return value;

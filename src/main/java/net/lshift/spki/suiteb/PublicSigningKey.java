@@ -25,6 +25,7 @@ public class PublicSigningKey extends PackConvertable
         return new PublicSigningKey(sexp.getParameters());
     }
 
+    @Override
     public ECDSAPublicKey pack() {
         return new ECDSAPublicKey(publicKey);
     }

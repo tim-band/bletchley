@@ -41,6 +41,8 @@ public class Point extends NameBeanConvertable
     private static class ECPointConverter
         extends StepConverter<ECPoint, Point>
     {
+        public ECPointConverter() { super(); }
+
         @Override
         protected Class<Point> getStepClass() { return Point.class; }
 

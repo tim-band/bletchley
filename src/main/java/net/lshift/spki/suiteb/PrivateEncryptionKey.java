@@ -24,6 +24,7 @@ public class PrivateEncryptionKey extends PackConvertable {
         return new PrivateEncryptionKey(packed.getKeypair());
     }
 
+    @Override
     public ECDHPrivateKey pack() {
         return new ECDHPrivateKey(keyPair);
     }

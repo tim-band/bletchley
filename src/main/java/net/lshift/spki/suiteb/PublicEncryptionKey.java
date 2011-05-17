@@ -30,6 +30,7 @@ public class PublicEncryptionKey extends PackConvertable  {
         return new PublicEncryptionKey(sexp.getParameters());
     }
 
+    @Override
     public ECDHPublicKey pack() {
         return new ECDHPublicKey(publicKey);
     }

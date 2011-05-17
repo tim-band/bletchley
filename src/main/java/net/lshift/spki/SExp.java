@@ -6,5 +6,5 @@ package net.lshift.spki;
  * @see SList
  */
 public interface SExp {
-
+    // Define no methods - all in Atom or SList.
 }

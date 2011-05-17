@@ -3,9 +3,6 @@ package net.lshift.spki.suiteb;
 import static net.lshift.spki.Create.atom;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-
 import net.lshift.spki.SExp;
 import net.lshift.spki.suiteb.sexpstructs.ECDSASignature;
 
@@ -13,7 +10,7 @@ import org.junit.Test;
 
 public class PKSigningTest {
     @Test
-    public void test() throws IOException {
+    public void test() {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
         privateKey = roundTrip(PrivateSigningKey.class, privateKey);
         PublicSigningKey publicKey = privateKey.getPublicKey();

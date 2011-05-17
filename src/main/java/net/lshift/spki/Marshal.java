@@ -72,7 +72,8 @@ public class Marshal {
 
     // FIXME: use a simple parser here and put the complex parser in
     // PrettyPrinter
-    private static void unmarshal(List<SExp> current, InputStream is) throws ParseException, IOException {
+    private static void unmarshal(List<SExp> target, InputStream is) throws ParseException, IOException {
+        List<SExp> current = target;
         Stack<List<SExp>> stack = new Stack<List<SExp>>();
         PushbackInputStream stream = new PushbackInputStream(is);
 

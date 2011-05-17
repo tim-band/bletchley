@@ -28,6 +28,7 @@ public class PrivateSigningKey extends PackConvertable
         return new PrivateSigningKey(sexp.getKeypair());
     }
 
+    @Override
     public ECDSAPrivateKey pack()
     {
         return new ECDSAPrivateKey(keyPair);

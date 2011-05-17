@@ -2,10 +2,8 @@ package net.lshift.spki.convert;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.math.BigInteger;
 
-import net.lshift.spki.ParseException;
 import net.lshift.spki.SExp;
 
 import org.junit.Test;
@@ -13,7 +11,7 @@ import org.junit.Test;
 public class ConvertTest
 {
     @Test
-    public void convertTest() throws ParseException, IOException {
+    public void convertTest() {
         ConvertExample test = new ConvertExample(
             BigInteger.valueOf(3), BigInteger.valueOf(17));
         SExp sexp = Convert.toSExp(ConvertExample.class, test);
