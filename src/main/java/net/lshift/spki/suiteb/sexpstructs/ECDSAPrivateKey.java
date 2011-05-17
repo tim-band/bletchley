@@ -7,6 +7,9 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SExpName;
 
+/**
+ * Serialization format for private signing keys
+ */
 public class ECDSAPrivateKey extends ECPrivateKey
 {
     @SExpName("suiteb-p384-ecdsa-private-key")

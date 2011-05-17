@@ -4,6 +4,9 @@ import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 
+/**
+ * SPKI hash value format
+ */
 public class Hash
     extends PositionBeanConvertable
 {

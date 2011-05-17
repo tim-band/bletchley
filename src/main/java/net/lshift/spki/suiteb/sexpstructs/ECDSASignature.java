@@ -6,6 +6,9 @@ import net.lshift.spki.convert.NameBeanConvertable;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SExpName;
 
+/**
+ * Serialization format for a raw ECDSA signature
+ */
 public class ECDSASignature extends NameBeanConvertable
 {
     private final BigInteger r;

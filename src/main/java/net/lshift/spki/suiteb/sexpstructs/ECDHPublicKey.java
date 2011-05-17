@@ -7,6 +7,9 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.math.ec.ECPoint;
 
+/**
+ * Serialization format for public encryption keys
+ */
 public class ECDHPublicKey extends ECPublicKey
 {
     @SExpName("suiteb-p384-ecdh-public-key")

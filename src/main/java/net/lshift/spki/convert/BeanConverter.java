@@ -3,6 +3,10 @@ package net.lshift.spki.convert;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 
+/**
+ * Superclass for converters that look for a constructor
+ * annotated with the sexp name.
+ */
 public abstract class BeanConverter<T> implements Converter<T>
 {
     protected final String name;
@@ -23,7 +27,6 @@ public abstract class BeanConverter<T> implements Converter<T>
         throw new ConvertException("No suitably annotated constructor: " +
                         clazz.getCanonicalName());
     }
-
 
     protected String getName(Annotation[] annotations)
     {

@@ -13,6 +13,9 @@ import net.lshift.spki.SList;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
+/**
+ * Converter for a class that has a single field of type List.
+ */
 public class SequenceConverter<T> extends BeanConverter<T>
 {
     private final String beanName;

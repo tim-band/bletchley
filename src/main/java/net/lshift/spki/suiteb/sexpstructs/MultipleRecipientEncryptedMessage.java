@@ -4,6 +4,9 @@ import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 
+/**
+ * A message encrypted for multiple recipients
+ */
 public class MultipleRecipientEncryptedMessage
     extends PositionBeanConvertable
 {

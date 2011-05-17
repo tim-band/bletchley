@@ -7,6 +7,9 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.math.ec.ECPoint;
 
+/**
+ * Serialization format for public sig verification keys
+ */
 public class ECDSAPublicKey extends ECPublicKey
 {
     @SExpName("suiteb-p384-ecdsa-public-key")

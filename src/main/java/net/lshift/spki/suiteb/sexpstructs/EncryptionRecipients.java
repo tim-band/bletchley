@@ -6,6 +6,9 @@ import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SExpName;
 import net.lshift.spki.convert.SequenceConvertable;
 
+/**
+ * A list of messages for multiple distinct recipients
+ */
 public class EncryptionRecipients extends SequenceConvertable
 {
     private final List<ECDHMessage> recipients;

@@ -4,7 +4,11 @@ import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 
-// FIXME: EncryptedKey isn't a good name for this class
+/**
+ * Serialization format for a symmetric key
+ *
+ * FIXME: EncryptedKey isn't a good name for this class
+ */
 public class EncryptedKey
     extends PositionBeanConvertable
 {
