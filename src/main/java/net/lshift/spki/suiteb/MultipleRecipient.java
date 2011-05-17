@@ -11,6 +11,9 @@ import net.lshift.spki.suiteb.sexpstructs.EncryptedKey;
 import net.lshift.spki.suiteb.sexpstructs.EncryptionRecipients;
 import net.lshift.spki.suiteb.sexpstructs.MultipleRecipientEncryptedMessage;
 
+/**
+ * Encrypt/decrypt messages intended for multiple recipients.
+ */
 public class MultipleRecipient
 {
     public static <T> MultipleRecipientEncryptedMessage encrypt(

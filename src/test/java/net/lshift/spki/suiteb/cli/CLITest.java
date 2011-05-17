@@ -31,13 +31,13 @@ public class CLITest
         Openable packet = new ByteOpenable();
         Openable result = new ByteOpenable();
 
-        CLI.generateSigningKey(sPrivate);
+        CLI.genSigningKey(sPrivate);
         CLI.getPublicSigningKey(sPrivate, sPublic);
-        CLI.generateEncryptionKey(ePrivate);
+        CLI.genEncryptionKey(ePrivate);
         CLI.getPublicEncryptionKey(ePrivate, ePublic);
 
         OpenableUtils.writeBytes(message, messageBytes);
-        CLI.generateEncryptedSignedMessage(messageType,
+        CLI.genEncryptedSignedMessage(messageType,
             sPrivate, ePublic, message, packet);
         CLI.decryptSignedMessage(messageType,
             ePrivate, sPublic, packet, result);

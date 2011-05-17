@@ -11,7 +11,7 @@ import java.io.OutputStream;
 public class ByteOpenable
     implements Openable
 {
-    private final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    private ByteArrayOutputStream output;
 
     @Override
     public InputStream read()
@@ -22,6 +22,7 @@ public class ByteOpenable
     @Override
     public OutputStream write()
     {
+        output = new ByteArrayOutputStream();
         return output;
     }
 
