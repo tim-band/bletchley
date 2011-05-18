@@ -54,11 +54,11 @@ public class CLIMultipleRecipientTest
         Openable packet = new ByteOpenable();
         encryptArgs[i++] = packet;
         assert(i == encryptArgs.length);
-        CLI.main("genEncryptedSignedMRMessage", encryptArgs);
+        CLI.main("genEncryptedSignedMessage", encryptArgs);
 
         Openable result = new ByteOpenable();
         for (Openable ePrivate: ePrivates) {
-            CLI.main("decryptSignedMRMessage",
+            CLI.main("decryptSignedMessage",
                 ePrivate, sPublic, packet, result);
             byte[] resultBytes = OpenableUtils.readBytes(result);
             assertArrayEquals(messageBytes, resultBytes);

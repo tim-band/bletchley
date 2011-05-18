@@ -27,6 +27,8 @@ public class InferenceEngine
             process((Sequence) item);
         } else if (item instanceof ECDHItem) {
             process((ECDHItem) item);
+        } else if (item instanceof AESKey) {
+            process((AESKey) item);
         } else if (item instanceof AESPacket) {
             process((AESPacket) item);
         } else if (item instanceof SimpleMessage) {
@@ -49,7 +51,9 @@ public class InferenceEngine
     public void process(ECDHItem item)
     {
         PrivateEncryptionKey key = dhKeys.get(item.recipient);
-        process(new AESKey(item.keyId, key.getKey(item.ephemeralKey)));
+        if (key != null) {
+            process(new AESKey(item.keyId, key.getKey(item.ephemeralKey)));
+        }
     }
 
     public void process(AESKey key)
@@ -65,7 +69,9 @@ public class InferenceEngine
     {
         try {
             AESKey key = aesKeys.get(packet.keyId);
-            process(key.decrypt(packet));
+            if (key != null) {
+                process(key.decrypt(packet));
+            }
         } catch (InvalidCipherTextException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {

@@ -15,9 +15,6 @@ import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 import org.junit.Test;
 
 public class PKEncryptionTest {
-    static {
-        SequenceConversion.ensureInstalled();
-    }
     @Test
     public void test()
     {
@@ -39,5 +36,9 @@ public class PKEncryptionTest {
         List<SimpleMessage> messages = inferenceEngine.getMessages();
         assertEquals(1, messages.size());
         assertEquals(message, messages.get(0));
+    }
+
+    static {
+        SequenceConversion.ensureInstalled();
     }
 }

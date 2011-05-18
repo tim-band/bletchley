@@ -1,12 +1,9 @@
 package net.lshift.spki.suiteb;
 
-import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.PackConvertable;
-import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.math.ec.ECPoint;
 
@@ -37,25 +34,6 @@ public class PrivateEncryptionKey extends PackConvertable {
 
     public static PrivateEncryptionKey generate() {
         return new PrivateEncryptionKey(EC.generate());
-    }
-
-    public <T> T decrypt(Class<T> payloadType, ECDHMessage message)
-        throws InvalidCipherTextException,
-            ParseException
-    {
-        if (!getPublicKey().getKeyId().equals(message.recipient)) {
-            throw new RuntimeException("Wrong recipient");
-        }
-        ECPublicKeyParameters pk =
-            EC.toECPublicKeyParameters(message.ephemeralKey);
-        return null;
-//        byte[] sessionKey = EC.sessionKey(
-//                keyPair.getPublic(),
-//                pk,
-//                keyPair.getPrivate(),
-//                pk).key;
-        //return EC.symmetricDecrypt(payloadType,
-        //    sessionKey, message.ciphertext);
     }
 
     public byte[] getKey(ECPoint ephemeralKey)

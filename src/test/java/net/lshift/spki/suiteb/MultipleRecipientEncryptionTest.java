@@ -1,24 +1,21 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.Create.atom;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.ParseException;
-import net.lshift.spki.SExp;
+import net.lshift.spki.Constants;
+import net.lshift.spki.suiteb.sexpstructs.SequenceConversion;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
-import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.junit.Test;
 
 public class MultipleRecipientEncryptionTest
 {
     @Test
     public void test()
-        throws InvalidCipherTextException,
-            ParseException
     {
         List<PrivateEncryptionKey> keys = new ArrayList<PrivateEncryptionKey>();
         List<PublicEncryptionKey> publicKeys = new ArrayList<PublicEncryptionKey>();
@@ -27,14 +24,20 @@ public class MultipleRecipientEncryptionTest
             keys.add(k);
             publicKeys.add(k.getPublicKey());
         }
-        SExp message = atom("The magic words are squeamish ossifrage");
+        SimpleMessage message = new SimpleMessage(
+            MultipleRecipientEncryptionTest.class.getCanonicalName(),
+            "The magic words are squeamish ossifrage".getBytes(Constants.UTF8));
         SequenceItem packet
-            = MultipleRecipient.encrypt(SExp.class, publicKeys, message);
+            = MultipleRecipient.encrypt(publicKeys, message);
         packet = RoundTrip.roundTrip(
             SequenceItem.class, packet);
         for (PrivateEncryptionKey k: keys) {
-            SExp result = MultipleRecipient.decrypt(SExp.class, k, packet);
+            SimpleMessage result = MultipleRecipient.decrypt(k, packet);
             assertEquals(message, result);
         }
+    }
+
+    static {
+        SequenceConversion.ensureInstalled();
     }
 }

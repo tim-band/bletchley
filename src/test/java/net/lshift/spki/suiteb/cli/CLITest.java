@@ -20,7 +20,6 @@ public class CLITest
             ParseException,
             IOException
     {
-        final String messageType = CLITest.class.toString();
         final byte[] messageBytes
             = "the magic words are squeamish ossifrage".getBytes();
         Openable sPrivate = new ByteOpenable();
@@ -31,15 +30,15 @@ public class CLITest
         Openable packet = new ByteOpenable();
         Openable result = new ByteOpenable();
 
-        CLI.genSigningKey(sPrivate);
-        CLI.getPublicSigningKey(sPrivate, sPublic);
-        CLI.genEncryptionKey(ePrivate);
-        CLI.getPublicEncryptionKey(ePrivate, ePublic);
+        CLI.main("genSigningKey", sPrivate);
+        CLI.main("getPublicSigningKey", sPrivate, sPublic);
+        CLI.main("genEncryptionKey", ePrivate);
+        CLI.main("getPublicEncryptionKey", ePrivate, ePublic);
 
         OpenableUtils.writeBytes(message, messageBytes);
-        CLI.genEncryptedSignedMessage(messageType,
-            sPrivate, ePublic, message, packet);
-        CLI.decryptSignedMessage(messageType,
+        CLI.main("genEncryptedSignedMessage",
+            sPrivate, message, ePublic, packet);
+        CLI.main("decryptSignedMessage",
             ePrivate, sPublic, packet, result);
         byte[] resultBytes = OpenableUtils.readBytes(result);
         assertArrayEquals(messageBytes, resultBytes);
