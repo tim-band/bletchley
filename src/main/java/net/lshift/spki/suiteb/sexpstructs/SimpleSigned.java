@@ -24,14 +24,4 @@ public class SimpleSigned extends PositionBeanConvertable
         this.object = object;
         this.signature = signature;
     }
-
-    public SExp getObject()
-    {
-        return object;
-    }
-
-    public ECDSASignature getSignature()
-    {
-        return signature;
-    }
 }

@@ -22,14 +22,4 @@ public class Hash
         this.hashType = hashType;
         this.value = value;
     }
-
-    public String getHashType()
-    {
-        return hashType;
-    }
-
-    public byte[] getValue()
-    {
-        return value;
-    }
 }

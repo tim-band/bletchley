@@ -23,14 +23,4 @@ public class MultipleRecipientEncryptedMessage
         this.recipients = recipients;
         this.ciphertext = ciphertext;
     }
-
-    public EncryptionRecipients getRecipients()
-    {
-        return recipients;
-    }
-
-    public byte[] getCiphertext()
-    {
-        return ciphertext;
-    }
 }

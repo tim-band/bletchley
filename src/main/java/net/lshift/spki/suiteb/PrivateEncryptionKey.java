@@ -42,17 +42,17 @@ public class PrivateEncryptionKey extends PackConvertable {
         throws InvalidCipherTextException,
             ParseException
     {
-        if (!getPublicKey().getKeyId().equals(message.getRecipient())) {
+        if (!getPublicKey().getKeyId().equals(message.recipient)) {
             throw new RuntimeException("Wrong recipient");
         }
         ECPublicKeyParameters pk =
-            EC.toECPublicKeyParameters(message.getEphemeralKey());
+            EC.toECPublicKeyParameters(message.ephemeralKey);
         byte[] sessionKey = EC.sessionKey(
                 keyPair.getPublic(),
                 pk,
                 keyPair.getPrivate(),
                 pk);
         return EC.symmetricDecrypt(payloadType,
-            sessionKey, message.getCiphertext());
+            sessionKey, message.ciphertext);
     }
 }

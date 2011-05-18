@@ -30,21 +30,6 @@ public class ECDHSharedSecret extends PositionBeanConvertable
         this.sharedSecret = sharedSecret;
     }
 
-    public ECPoint getReceiverKey()
-    {
-        return receiverKey;
-    }
-
-    public ECPoint getSenderKey()
-    {
-        return senderKey;
-    }
-
-    public BigInteger getSharedSecret()
-    {
-        return sharedSecret;
-    }
-
     static {
         Point.ensureRegistered();
     }

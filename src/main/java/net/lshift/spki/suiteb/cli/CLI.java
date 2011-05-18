@@ -105,16 +105,16 @@ public class CLI
         PublicSigningKey dsaPublic = read(PublicSigningKey.class, sPublic);
         ECDHMessage encrypted = read(ECDHMessage.class, packet);
         SimpleSigned signed = dhPrivate.decrypt(SimpleSigned.class, encrypted);
-        if (!dsaPublic.validate(DigestSha384.digest(signed.getObject()),
-            signed.getSignature())) {
+        if (!dsaPublic.validate(DigestSha384.digest(signed.object),
+            signed.signature)) {
             throw new RuntimeException("Signature validation failure");
         }
         SimpleMessage message = Convert.fromSExp(SimpleMessage.class,
-            signed.getObject());
-        if (!messageType.equals(message.getType())) {
+            signed.object);
+        if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message is of an unexpected type");
         }
-        writeBytes(out, message.getContent());
+        writeBytes(out, message.content);
     }
 
     private static void genEncryptedSignedMRMessage(
@@ -154,16 +154,16 @@ public class CLI
         SimpleSigned signed = MultipleRecipient.decrypt(
             SimpleSigned.class, dhPrivate,
             read(MultipleRecipientEncryptedMessage.class, packet));
-        if (!dsaPublic.validate(DigestSha384.digest(signed.getObject()),
-            signed.getSignature())) {
+        if (!dsaPublic.validate(DigestSha384.digest(signed.object),
+            signed.signature)) {
             throw new RuntimeException("Signature validation failure");
         }
         SimpleMessage message = Convert.fromSExp(SimpleMessage.class,
-            signed.getObject());
-        if (!messageType.equals(message.getType())) {
+            signed.object);
+        if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message is of an unexpected type");
         }
-        writeBytes(out, message.getContent());
+        writeBytes(out, message.content);
     }
 
     public static void main(String command, Openable... args)

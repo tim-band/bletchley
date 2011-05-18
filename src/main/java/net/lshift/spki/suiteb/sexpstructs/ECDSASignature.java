@@ -23,13 +23,4 @@ public class ECDSASignature extends NameBeanConvertable
         this.r = r;
         this.s = s;
     }
-
-    public BigInteger getR()
-    {
-        return r;
-    }
-    public BigInteger getS()
-    {
-        return s;
-    }
 }

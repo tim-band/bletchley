@@ -19,16 +19,6 @@ public class ConvertExample extends PositionBeanConvertable
         this.bar = bar;
     }
 
-    public BigInteger getFoo()
-    {
-        return foo;
-    }
-
-    public BigInteger getBar()
-    {
-        return bar;
-    }
-
     @Override
     public int hashCode()
     {

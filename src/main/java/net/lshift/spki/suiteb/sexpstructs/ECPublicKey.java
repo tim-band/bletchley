@@ -30,11 +30,6 @@ public abstract class ECPublicKey
         this((ECPublicKeyParameters) keyPair.getPublic());
     }
 
-    public ECPoint getPoint()
-    {
-        return point;
-    }
-
     public ECPublicKeyParameters getParameters()
     {
         return EC.toECPublicKeyParameters(point);

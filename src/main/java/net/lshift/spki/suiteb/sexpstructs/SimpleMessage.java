@@ -22,14 +22,4 @@ public class SimpleMessage extends PositionBeanConvertable
         this.type = type;
         this.content = content;
     }
-
-    public String getType()
-    {
-        return type;
-    }
-
-    public byte[] getContent()
-    {
-        return content;
-    }
 }

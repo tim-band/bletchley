@@ -28,16 +28,6 @@ public class Point extends NameBeanConvertable
         this.y = y;
     }
 
-    public BigInteger getX()
-    {
-        return x;
-    }
-
-    public BigInteger getY()
-    {
-        return y;
-    }
-
     public static class ECPointConverter
         extends StepConverter<ECPoint, Point>
     {
@@ -60,7 +50,7 @@ public class Point extends NameBeanConvertable
         public ECPoint stepOut(Point point)
         {
             return EC.DOMAIN_PARAMETERS.getCurve().createPoint(
-                point.getX(), point.getY(), false);
+                point.x, point.y, false);
         }
     }
 

@@ -41,12 +41,12 @@ public class MultipleRecipient
             ParseException
     {
         DigestSha384 keyId = k.getPublicKey().getKeyId();
-        for (ECDHMessage recipient: packet.getRecipients().getRecipients()) {
-            if (keyId.equals(recipient.getRecipient())) {
+        for (ECDHMessage recipient: packet.recipients.recipients) {
+            if (keyId.equals(recipient.recipient)) {
                 EncryptedKey payloadKey
                     = k.decrypt(EncryptedKey.class, recipient);
                 return EC.symmetricDecrypt(messageType,
-                    payloadKey.getKey(), packet.getCiphertext());
+                    payloadKey.key, packet.ciphertext);
             }
         }
         throw new RuntimeException("No message for us found");

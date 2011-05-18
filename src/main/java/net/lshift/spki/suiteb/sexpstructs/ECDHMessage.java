@@ -28,21 +28,6 @@ public class ECDHMessage extends PositionBeanConvertable
         this.ciphertext = ciphertext;
     }
 
-    public DigestSha384 getRecipient()
-    {
-        return recipient;
-    }
-
-    public ECPoint getEphemeralKey()
-    {
-        return ephemeralKey;
-    }
-
-    public byte[] getCiphertext()
-    {
-        return ciphertext;
-    }
-
     static {
         Point.ensureRegistered();
     }

@@ -21,9 +21,4 @@ public class EncryptedKey
         super();
         this.key = key;
     }
-
-    public byte[] getKey()
-    {
-        return key;
-    }
 }

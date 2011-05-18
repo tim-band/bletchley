@@ -20,9 +20,4 @@ public class EncryptionRecipients extends SequenceConvertable
         super();
         this.recipients = recipients;
     }
-
-    public List<ECDHMessage> getRecipients()
-    {
-        return recipients;
-    }
 }

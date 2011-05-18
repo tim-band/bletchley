@@ -33,6 +33,6 @@ public class PublicSigningKey extends PackConvertable
     public boolean validate(DigestSha384 digest, ECDSASignature sigVal)
     {
         return signer.verifySignature(digest.getBytes(),
-            sigVal.getR(), sigVal.getS());
+            sigVal.r, sigVal.s);
     }
 }

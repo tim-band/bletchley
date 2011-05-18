@@ -30,16 +30,6 @@ public abstract class ECPrivateKey
         this(publicKey, ((ECPrivateKeyParameters)keyPair.getPrivate()).getD());
     }
 
-    public ECPublicKey getPublicKey()
-    {
-        return publicKey;
-    }
-
-    public BigInteger getD()
-    {
-        return d;
-    }
-
     public AsymmetricCipherKeyPair getKeypair()
     {
         ECPublicKeyParameters pk = publicKey.getParameters();

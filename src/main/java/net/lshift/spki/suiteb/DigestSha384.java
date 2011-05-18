@@ -39,10 +39,10 @@ public class DigestSha384 extends PackConvertable
     }
 
     public static DigestSha384 unpack(Hash hash) {
-        if (!DIGEST_NAME.equals(hash.getHashType())) {
-            throw new ConvertException("Unexpected hash type: " + hash.getHashType());
+        if (!DIGEST_NAME.equals(hash.hashType)) {
+            throw new ConvertException("Unexpected hash type: " + hash.hashType);
         }
-        return new DigestSha384(hash.getValue());
+        return new DigestSha384(hash.value);
     }
 
     public static DigestSha384 digest(SExp sexp)
