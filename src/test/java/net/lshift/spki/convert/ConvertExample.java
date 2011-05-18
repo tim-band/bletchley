@@ -4,8 +4,8 @@ import java.math.BigInteger;
 
 public class ConvertExample extends PositionBeanConvertable
 {
-    private final BigInteger foo;
-    private final BigInteger bar;
+    public final BigInteger foo;
+    public final BigInteger bar;
 
     @SExpName("convert-example")
     public ConvertExample(

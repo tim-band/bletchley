@@ -12,8 +12,8 @@ import net.lshift.spki.convert.SExpName;
  */
 public class SimpleSigned extends PositionBeanConvertable
 {
-    private final SExp object;
-    private final ECDSASignature signature;
+    public final SExp object;
+    public final ECDSASignature signature;
 
     @SExpName("simple-signed")
     public SimpleSigned(

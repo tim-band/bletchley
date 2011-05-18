@@ -12,9 +12,9 @@ import org.bouncycastle.math.ec.ECPoint;
  */
 public class ECDHMessage extends PositionBeanConvertable
 {
-    private final DigestSha384 recipient;
-    private final ECPoint ephemeralKey;
-    private final byte[] ciphertext;
+    public final DigestSha384 recipient;
+    public final ECPoint ephemeralKey;
+    public final byte[] ciphertext;
 
     @SExpName("suiteb-p384-ecdh-message")
     public ECDHMessage(

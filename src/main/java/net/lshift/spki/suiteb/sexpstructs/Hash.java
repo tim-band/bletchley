@@ -10,8 +10,8 @@ import net.lshift.spki.convert.SExpName;
 public class Hash
     extends PositionBeanConvertable
 {
-    private final String hashType;
-    private final byte[] value;
+    public final String hashType;
+    public final byte[] value;
 
     @SExpName("hash")
     public Hash(

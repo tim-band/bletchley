@@ -15,8 +15,8 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 public abstract class ECPrivateKey
     extends NameBeanConvertable
 {
-    protected final ECPublicKey publicKey;
-    protected final BigInteger d;
+    public final ECPublicKey publicKey;
+    public final BigInteger d;
 
     public ECPrivateKey(ECPublicKey publicKey, BigInteger d)
     {

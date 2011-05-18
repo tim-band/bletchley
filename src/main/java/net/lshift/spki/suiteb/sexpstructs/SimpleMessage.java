@@ -10,8 +10,8 @@ import net.lshift.spki.convert.SExpName;
  */
 public class SimpleMessage extends PositionBeanConvertable
 {
-    private final String type;
-    private final byte[] content;
+    public final String type;
+    public final byte[] content;
 
     @SExpName("simple-message")
     public SimpleMessage(

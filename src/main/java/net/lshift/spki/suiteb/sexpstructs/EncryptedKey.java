@@ -12,7 +12,7 @@ import net.lshift.spki.convert.SExpName;
 public class EncryptedKey
     extends PositionBeanConvertable
 {
-    private final byte[] key;
+    public final byte[] key;
 
     @SExpName("suiteb-aes-gcm-key")
     public EncryptedKey(

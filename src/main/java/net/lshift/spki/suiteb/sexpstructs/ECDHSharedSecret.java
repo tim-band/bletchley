@@ -14,9 +14,9 @@ import net.lshift.spki.convert.SExpName;
  */
 public class ECDHSharedSecret extends PositionBeanConvertable
 {
-    private final ECPoint receiverKey;
-    private final ECPoint senderKey;
-    private final BigInteger sharedSecret;
+    public final ECPoint receiverKey;
+    public final ECPoint senderKey;
+    public final BigInteger sharedSecret;
 
     @SExpName("suiteb-p384-ecdh-shared-secret")
     public ECDHSharedSecret(

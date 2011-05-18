@@ -11,7 +11,7 @@ import net.lshift.spki.convert.SequenceConvertable;
  */
 public class EncryptionRecipients extends SequenceConvertable
 {
-    private final List<ECDHMessage> recipients;
+    public final List<ECDHMessage> recipients;
 
     @SExpName("recipients")
     public EncryptionRecipients(

@@ -11,8 +11,6 @@ import net.lshift.spki.Create;
 import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
-import org.apache.commons.beanutils.PropertyUtils;
-
 /**
  * Converter for a class that has a single field of type List.
  */
@@ -69,8 +67,6 @@ public class SequenceConverter<T> extends BeanConverter<T>
         initargs[0] = components;
         try {
             return constructor.newInstance(initargs);
-        } catch (IllegalArgumentException e) {
-            throw new ConvertReflectionException(e);
         } catch (InstantiationException e) {
             throw new ConvertReflectionException(e);
         } catch (IllegalAccessException e) {
@@ -84,8 +80,7 @@ public class SequenceConverter<T> extends BeanConverter<T>
     public SExp toSexp(T o)
     {
         try {
-            List<?> property = (List<?>) PropertyUtils.getProperty(o,
-                beanName);
+            List<?> property = (List<?>)  clazz.getField(beanName).get(o);
             List<SExp> components = new ArrayList<SExp>(property.size());
             for (Object v: property) {
                 components.add(Convert.toSExpUnchecked(contentType, v));
@@ -93,9 +88,7 @@ public class SequenceConverter<T> extends BeanConverter<T>
             return Create.list(name, components);
         } catch (IllegalAccessException e) {
             throw new ConvertReflectionException(e);
-        } catch (InvocationTargetException e) {
-            throw new ConvertReflectionException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchFieldException e) {
             throw new ConvertReflectionException(e);
         }
     }

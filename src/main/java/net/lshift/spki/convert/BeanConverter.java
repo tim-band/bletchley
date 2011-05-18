@@ -9,12 +9,14 @@ import java.lang.reflect.Constructor;
  */
 public abstract class BeanConverter<T> implements Converter<T>
 {
+    protected final Class<T> clazz;
     protected final String name;
     protected final Constructor<T> constructor;
 
     @SuppressWarnings("unchecked")
     public BeanConverter(Class<T> clazz)
     {
+        this.clazz = clazz;
         ConvertUtils.initialize(clazz);
         for (Constructor<?> c: clazz.getConstructors()) {
             SExpName sname = c.getAnnotation(SExpName.class);

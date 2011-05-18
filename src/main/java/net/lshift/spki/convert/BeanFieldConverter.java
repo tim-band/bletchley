@@ -7,8 +7,6 @@ import net.lshift.spki.Create;
 import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
-import org.apache.commons.beanutils.PropertyUtils;
-
 /**
  * Superclass for a converter that reads bean properties based on
  * an annotated constructor.
@@ -36,17 +34,15 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
         try {
             SExp[] components = new SExp[fields.length];
             for (int i = 0; i < fields.length; i++) {
-                final Object property = PropertyUtils.getProperty(o,
-                    fields[i].getName());
+                final Object property =
+                    clazz.getField(fields[i].getName()).get(o);
                 components[i] = fieldToSexp(fields[i],
                     Convert.toSExpUnchecked(fields[i].getType(), property));
             }
             return Create.list(name, components);
         } catch (IllegalAccessException e) {
             throw new ConvertReflectionException(e);
-        } catch (InvocationTargetException e) {
-            throw new ConvertReflectionException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchFieldException e) {
             throw new ConvertReflectionException(e);
         }
     }
@@ -70,8 +66,6 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
         }
         try {
             return constructor.newInstance(initargs);
-        } catch (IllegalArgumentException e) {
-            throw new ConvertReflectionException(e);
         } catch (InstantiationException e) {
             throw new ConvertReflectionException(e);
         } catch (IllegalAccessException e) {

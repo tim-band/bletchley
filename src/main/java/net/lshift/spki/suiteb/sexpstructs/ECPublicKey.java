@@ -13,7 +13,7 @@ import org.bouncycastle.math.ec.ECPoint;
 public abstract class ECPublicKey
     extends PositionBeanConvertable
 {
-    protected final ECPoint point;
+    public final ECPoint point;
 
     public ECPublicKey(ECPoint point)
     {

@@ -10,9 +10,9 @@ import net.lshift.spki.convert.SExpName;
 public class MultipleRecipientEncryptedMessage
     extends PositionBeanConvertable
 {
-    private final EncryptionRecipients recipients;
+    public final EncryptionRecipients recipients;
     // FIXME: replace ciphertext with a structure including a nonce
-    private final byte[] ciphertext;
+    public final byte[] ciphertext;
 
     @SExpName("suiteb-multiple-recipients")
     public MultipleRecipientEncryptedMessage(

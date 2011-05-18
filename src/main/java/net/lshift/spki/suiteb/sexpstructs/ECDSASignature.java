@@ -11,8 +11,8 @@ import net.lshift.spki.convert.SExpName;
  */
 public class ECDSASignature extends NameBeanConvertable
 {
-    private final BigInteger r;
-    private final BigInteger s;
+    public final BigInteger r;
+    public final BigInteger s;
 
     @SExpName("suiteb-p384-ecdsa-signature")
     public ECDSASignature(

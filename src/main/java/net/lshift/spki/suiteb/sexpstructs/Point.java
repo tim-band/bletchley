@@ -15,8 +15,8 @@ import org.bouncycastle.math.ec.ECPoint;
  */
 public class Point extends NameBeanConvertable
 {
-    private final BigInteger x;
-    private final BigInteger y;
+    public final BigInteger x;
+    public final BigInteger y;
 
     @SExpName("point")
     public Point(
@@ -38,26 +38,26 @@ public class Point extends NameBeanConvertable
         return y;
     }
 
-    private static class ECPointConverter
+    public static class ECPointConverter
         extends StepConverter<ECPoint, Point>
     {
         public ECPointConverter() { super(); }
 
         @Override
-        protected Class<Point> getStepClass() { return Point.class; }
+        public Class<Point> getStepClass() { return Point.class; }
 
         @Override
-        protected Class<ECPoint> getResultClass() { return ECPoint.class; }
+        public Class<ECPoint> getResultClass() { return ECPoint.class; }
 
         @Override
-        protected Point stepIn(ECPoint q)
+        public Point stepIn(ECPoint q)
         {
             return new Point(
                 q.getX().toBigInteger(), q.getY().toBigInteger());
         }
 
         @Override
-        protected ECPoint stepOut(Point point)
+        public ECPoint stepOut(Point point)
         {
             return EC.DOMAIN_PARAMETERS.getCurve().createPoint(
                 point.getX(), point.getY(), false);
