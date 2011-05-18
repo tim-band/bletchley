@@ -24,7 +24,6 @@ import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
 import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
-import net.lshift.spki.suiteb.sexpstructs.MultipleRecipientEncryptedMessage;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 import net.lshift.spki.suiteb.sexpstructs.SimpleSigned;
 
@@ -86,8 +85,8 @@ public class CLI
             new SimpleMessage(messageType, readBytes(message)));
         SimpleSigned signed = new SimpleSigned(messageSexp,
             dsaPrivate.sign(DigestSha384.digest(messageSexp)));
-        ECDHMessage encrypted = dhPublic.encrypt(SimpleSigned.class, signed);
-        write(out, ECDHMessage.class, encrypted);
+//        ECDHMessage encrypted = dhPublic.encrypt(SimpleSigned.class, signed);
+//        write(out, ECDHMessage.class, encrypted);
     }
 
     public static void decryptSignedMessage(
@@ -132,10 +131,10 @@ public class CLI
         for (; i < args.length -1; i++) {
             publicKeys.add(read(PublicEncryptionKey.class, args[i]));
         }
-        MultipleRecipientEncryptedMessage packet
-            = MultipleRecipient.encrypt(SimpleSigned.class, publicKeys, signed);
-        write(args[args.length -1],
-            MultipleRecipientEncryptedMessage.class, packet);
+        //MultipleRecipientEncryptedMessage packet
+        //    = MultipleRecipient.encrypt(SimpleSigned.class, publicKeys, signed);
+        //write(args[args.length -1],
+        //    MultipleRecipientEncryptedMessage.class, packet);
     }
 
     private static void decryptSignedMRMessage(
@@ -151,19 +150,19 @@ public class CLI
         PrivateEncryptionKey dhPrivate = read(PrivateEncryptionKey.class,
             ePrivate);
         PublicSigningKey dsaPublic = read(PublicSigningKey.class, sPublic);
-        SimpleSigned signed = MultipleRecipient.decrypt(
-            SimpleSigned.class, dhPrivate,
-            read(MultipleRecipientEncryptedMessage.class, packet));
-        if (!dsaPublic.validate(DigestSha384.digest(signed.object),
-            signed.signature)) {
-            throw new RuntimeException("Signature validation failure");
-        }
-        SimpleMessage message = Convert.fromSExp(SimpleMessage.class,
-            signed.object);
-        if (!messageType.equals(message.type)) {
-            throw new RuntimeException("Message is of an unexpected type");
-        }
-        writeBytes(out, message.content);
+//        SimpleSigned signed = MultipleRecipient.decrypt(
+//            SimpleSigned.class, dhPrivate,
+//            read(MultipleRecipientEncryptedMessage.class, packet));
+//        if (!dsaPublic.validate(DigestSha384.digest(signed.object),
+//            signed.signature)) {
+//            throw new RuntimeException("Signature validation failure");
+//        }
+//        SimpleMessage message = Convert.fromSExp(SimpleMessage.class,
+//            signed.object);
+//        if (!messageType.equals(message.type)) {
+//            throw new RuntimeException("Message is of an unexpected type");
+//        }
+//        writeBytes(out, message.content);
     }
 
     public static void main(String command, Openable... args)

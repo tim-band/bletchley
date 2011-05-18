@@ -38,6 +38,11 @@ public class DiscriminatingConverter<T> implements Converter<T>
     @Override
     public SExp toSexp(T o)
     {
-        return ((Converter<T>)classMap.get(o.getClass())).toSexp(o);
+        final Converter<? extends T> converter = classMap.get(o.getClass());
+        if (converter == null) {
+            throw new ConvertException("Don't know how to convert from: "
+                + o.getClass().getCanonicalName());
+        }
+        return ((Converter<T>)converter).toSexp(o);
     }
 }

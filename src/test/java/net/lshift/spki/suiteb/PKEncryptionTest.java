@@ -1,27 +1,43 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.Create.atom;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static org.junit.Assert.assertEquals;
-import net.lshift.spki.ParseException;
-import net.lshift.spki.SExp;
-import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
 
-import org.bouncycastle.crypto.InvalidCipherTextException;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.lshift.spki.Constants;
+import net.lshift.spki.suiteb.sexpstructs.Sequence;
+import net.lshift.spki.suiteb.sexpstructs.SequenceConversion;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
+
 import org.junit.Test;
 
 public class PKEncryptionTest {
+    static {
+        SequenceConversion.ensureInstalled();
+    }
     @Test
     public void test()
-    throws InvalidCipherTextException, ParseException {
+    {
         PrivateEncryptionKey privateKey = PrivateEncryptionKey.generate();
         privateKey = roundTrip(PrivateEncryptionKey.class, privateKey);
         PublicEncryptionKey publicKey = privateKey.getPublicKey();
         publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
-        SExp message = atom("The magic words are squeamish ossifrage");
-        ECDHMessage encrypted = roundTrip(ECDHMessage.class,
-            publicKey.encrypt(SExp.class, message));
-        SExp decrypted = privateKey.decrypt(SExp.class, encrypted);
-        assertEquals(message, decrypted);
+        SimpleMessage message = new SimpleMessage(
+            PKEncryptionTest.class.getCanonicalName(),
+            "The magic words are squeamish ossifrage".getBytes(Constants.UTF8));
+        List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
+        AESKey aesKey = publicKey.setupEncrypt(sequenceItems);
+        sequenceItems.add(aesKey.encrypt(message));
+        Sequence sequence = new Sequence(sequenceItems);
+        sequence = roundTrip(Sequence.class, sequence);
+        InferenceEngine inferenceEngine = new InferenceEngine();
+        inferenceEngine.process(privateKey);
+        inferenceEngine.process(sequence);
+        List<SimpleMessage> messages = inferenceEngine.getMessages();
+        assertEquals(1, messages.size());
+        assertEquals(message, messages.get(0));
     }
 }

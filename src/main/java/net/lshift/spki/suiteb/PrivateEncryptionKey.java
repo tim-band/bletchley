@@ -8,6 +8,7 @@ import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.math.ec.ECPoint;
 
 /**
  * A private key for decrypting data.
@@ -47,12 +48,24 @@ public class PrivateEncryptionKey extends PackConvertable {
         }
         ECPublicKeyParameters pk =
             EC.toECPublicKeyParameters(message.ephemeralKey);
-        byte[] sessionKey = EC.sessionKey(
-                keyPair.getPublic(),
-                pk,
-                keyPair.getPrivate(),
-                pk);
-        return EC.symmetricDecrypt(payloadType,
-            sessionKey, message.ciphertext);
+        return null;
+//        byte[] sessionKey = EC.sessionKey(
+//                keyPair.getPublic(),
+//                pk,
+//                keyPair.getPrivate(),
+//                pk).key;
+        //return EC.symmetricDecrypt(payloadType,
+        //    sessionKey, message.ciphertext);
+    }
+
+    public byte[] getKey(ECPoint ephemeralKey)
+    {
+        ECPublicKeyParameters pk =
+            EC.toECPublicKeyParameters(ephemeralKey);
+        return EC.sessionKey(
+            keyPair.getPublic(),
+            pk,
+            keyPair.getPrivate(),
+            pk);
     }
 }

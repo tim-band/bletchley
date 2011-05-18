@@ -29,6 +29,7 @@ import org.bouncycastle.math.ec.ECPoint;
  */
 public class EC {
     private static final int AES_KEY_BYTES = 32;
+    private static final int KEY_ID_BYTES = 4;
 
     private static final X9ECParameters CURVE
         = NISTNamedCurves.getByName("P-384");
@@ -36,6 +37,7 @@ public class EC {
     public static final ECDomainParameters DOMAIN_PARAMETERS
         = new ECDomainParameters(
             CURVE.getCurve(), CURVE.getG(), CURVE.getN());
+
     private static SecureRandom random = new SecureRandom();
     private static ECKeyPairGenerator gen = new ECKeyPairGenerator();
     static {
@@ -68,25 +70,26 @@ public class EC {
         return Arrays.copyOf(hash.getBytes(), AES_KEY_BYTES);
     }
 
-    public static byte[] generateAESKey()
+    public static AESKeyId generateAESKeyId()
     {
-        byte[] key = new byte[AES_KEY_BYTES];
-        random.nextBytes(key);
-        return key;
+        return new AESKeyId(randomBytes(KEY_ID_BYTES));
     }
 
-    /**
-     * WARNING WARNING WARNING WARNING WARNING
-     * As it stands, each key can be used only once ever!
-     * To fix that, we need to vary the nonce.
-     */
-    public static <T> byte[] symmetricEncrypt(Class<T> messageType,
-        byte[] key, T message)
+    public static byte[] randomBytes(int len)
     {
-        // FIXME: vary nonce, use associated data
-        byte[] nonce = new byte[1];
-        nonce[0] = 0;
+        byte[] res = new byte[len];
+        random.nextBytes(res);
+        return res;
+    }
 
+    public static AESKey generateAESKey()
+    {
+        return new AESKey(generateAESKeyId(), randomBytes(AES_KEY_BYTES));
+    }
+
+    public static <T> byte[] symmetricEncrypt(Class<T> messageType,
+        byte[] key, byte[] nonce, T message)
+    {
         AEADParameters aeadparams = new AEADParameters(
             new KeyParameter(key), 128, nonce, new byte[0]);
         GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
@@ -108,13 +111,12 @@ public class EC {
 
     public static <T> T symmetricDecrypt(
         Class<T> messageType,
-        byte[] key, byte[] ciphertext)
+        byte[] key,
+        byte[] nonce,
+        byte[] ciphertext)
         throws InvalidCipherTextException,
             ParseException
     {
-        // FIXME: vary nonce, use associated data
-        byte[] nonce = new byte[1];
-        nonce[0] = 0;
         AEADParameters aeadparams = new AEADParameters(
             new KeyParameter(key), 128, nonce, new byte[0]);
         GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());

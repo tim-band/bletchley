@@ -1,8 +1,11 @@
 package net.lshift.spki.suiteb;
 
+import java.util.List;
+
 import net.lshift.spki.convert.PackConvertable;
-import net.lshift.spki.suiteb.sexpstructs.ECDHMessage;
+import net.lshift.spki.suiteb.sexpstructs.ECDHItem;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.CipherParameters;
@@ -35,17 +38,18 @@ public class PublicEncryptionKey extends PackConvertable  {
         return new ECDHPublicKey(publicKey);
     }
 
-    public <T> ECDHMessage encrypt(Class<T> messageType, T message) {
+    public AESKey setupEncrypt(List<SequenceItem> sequence)
+    {
         AsymmetricCipherKeyPair ephemeralKey = EC.generate();
-        byte[] sessionKey = EC.sessionKey(
+        AESKey res = new AESKey(EC.generateAESKeyId(),
+            EC.sessionKey(
                 publicKey,
                 ephemeralKey.getPublic(),
                 ephemeralKey.getPrivate(),
-                publicKey);
-        // FIXME: include reference to private key, nonce, and more
-        return new ECDHMessage(
-            keyId,
-            ((ECPublicKeyParameters) ephemeralKey.getPublic()).getQ(),
-            EC.symmetricEncrypt(messageType, sessionKey, message));
+                publicKey));
+        sequence.add(new ECDHItem(
+            keyId, res.keyId,
+            ((ECPublicKeyParameters) ephemeralKey.getPublic()).getQ()));
+        return res;
     }
 }

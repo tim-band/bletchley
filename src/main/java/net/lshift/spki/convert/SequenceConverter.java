@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.lshift.spki.Create;
@@ -64,7 +65,7 @@ public class SequenceConverter<T> extends BeanConverter<T>
             components.add(Convert.fromSExp(contentType, tail[i]));
         }
         Object[] initargs = new Object[1];
-        initargs[0] = components;
+        initargs[0] = Collections.unmodifiableList(components);
         try {
             return constructor.newInstance(initargs);
         } catch (InstantiationException e) {

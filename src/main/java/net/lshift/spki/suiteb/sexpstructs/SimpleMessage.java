@@ -4,11 +4,14 @@ import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * Format for a simple kind of message - just identifier and data - that
  * can be encrypted and/or signed.
  */
-public class SimpleMessage extends PositionBeanConvertable
+public class SimpleMessage extends PositionBeanConvertable implements SequenceItem
 {
     public final String type;
     public final byte[] content;
@@ -21,5 +24,17 @@ public class SimpleMessage extends PositionBeanConvertable
         super();
         this.type = type;
         this.content = content;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SExp;
-import net.lshift.spki.suiteb.sexpstructs.MultipleRecipientEncryptedMessage;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.junit.Test;
@@ -28,10 +28,10 @@ public class MultipleRecipientEncryptionTest
             publicKeys.add(k.getPublicKey());
         }
         SExp message = atom("The magic words are squeamish ossifrage");
-        MultipleRecipientEncryptedMessage packet
+        SequenceItem packet
             = MultipleRecipient.encrypt(SExp.class, publicKeys, message);
         packet = RoundTrip.roundTrip(
-            MultipleRecipientEncryptedMessage.class, packet);
+            SequenceItem.class, packet);
         for (PrivateEncryptionKey k: keys) {
             SExp result = MultipleRecipient.decrypt(SExp.class, k, packet);
             assertEquals(message, result);

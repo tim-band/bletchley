@@ -25,5 +25,4 @@ public class ByteOpenable
         output = new ByteArrayOutputStream();
         return output;
     }
-
 }
