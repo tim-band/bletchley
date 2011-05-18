@@ -25,7 +25,7 @@ public class AESKey extends PositionBeanConvertable implements SequenceItem
 
     public AESPacket encrypt(SequenceItem message)
     {
-        byte[] nonce = EC.randomBytes(128);
+        byte[] nonce = EC.randomBytes(16);
         // FIXME: inline this
         byte[] ciphertext = EC.symmetricEncrypt(
             SequenceItem.class, key, nonce, message);

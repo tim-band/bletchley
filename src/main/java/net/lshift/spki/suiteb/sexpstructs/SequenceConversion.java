@@ -4,6 +4,7 @@ import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.DiscriminatingConverter;
 import net.lshift.spki.suiteb.AESKey;
 import net.lshift.spki.suiteb.AESPacket;
+import net.lshift.spki.suiteb.Signature;
 
 @SuppressWarnings("unchecked")
 public class SequenceConversion
@@ -15,7 +16,9 @@ public class SequenceConversion
                 ECDHItem.class,
                 AESPacket.class,
                 AESKey.class,
-                SimpleMessage.class));
+                SimpleMessage.class,
+                ECDSAPublicKey.class,
+                Signature.class));
     }
 
     public static void ensureInstalled() {

@@ -9,6 +9,7 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.suiteb.sexpstructs.ECDHItem;
+import net.lshift.spki.suiteb.sexpstructs.ECDSAPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
@@ -17,8 +18,14 @@ public class InferenceEngine
 {
     private Map<DigestSha384, PrivateEncryptionKey> dhKeys
         = new HashMap<DigestSha384, PrivateEncryptionKey>();
+    private Map<DigestSha384, PublicSigningKey> dsaKeys
+        = new HashMap<DigestSha384, PublicSigningKey>();
     private Map<AESKeyId, AESKey> aesKeys = new HashMap<AESKeyId, AESKey>();
-    private ArrayList<SimpleMessage> messages = new ArrayList<SimpleMessage>();
+    private Map<DigestSha384, SimpleMessage> messages
+        = new HashMap<DigestSha384,SimpleMessage>();
+    // U. G. L. Y.
+    private HashMap<DigestSha384, List<SequenceItem>> signedBy
+        = new HashMap<DigestSha384, List<SequenceItem>>();
 
     // FIXME: use dynamic dispatch here
     public void process(SequenceItem item)
@@ -33,6 +40,14 @@ public class InferenceEngine
             process((AESPacket) item);
         } else if (item instanceof SimpleMessage) {
             process((SimpleMessage) item);
+        } else if (item instanceof ECDSAPublicKey) {
+            process((ECDSAPublicKey) item);
+        } else if (item instanceof Signature) {
+            process((Signature) item);
+        } else {
+            throw new RuntimeException(
+                "Don't know how to process sequence item: "
+                + item.getClass().getCanonicalName());
         }
     }
 
@@ -61,8 +76,31 @@ public class InferenceEngine
         aesKeys.put(key.keyId, key);
     }
 
+    public void process(ECDSAPublicKey key)
+    {
+        PublicSigningKey pKey = PublicSigningKey.unpack(key);
+        dsaKeys.put(pKey.getKeyId(), pKey);
+    }
+
+    public void process(Signature sig)
+    {
+        PublicSigningKey pKey = dsaKeys.get(sig.keyId);
+        if (pKey == null) return;
+        SimpleMessage message = messages.get(sig.digest);
+        if (message == null) return;
+        if (!pKey.validate(sig.digest, sig.rawSignature))
+            throw new RuntimeException("Sig validation failure");
+        List<SequenceItem> sigs = signedBy.get(sig.keyId);
+        if (sigs == null) {
+            sigs = new ArrayList<SequenceItem>();
+            signedBy.put(sig.keyId, sigs);
+        }
+        sigs.add(message);
+    }
+
     public void process(SimpleMessage message) {
-        messages.add(message);
+        messages.put(
+            DigestSha384.digest(SimpleMessage.class, message), message);
     }
 
     public void process(AESPacket packet)
@@ -81,6 +119,11 @@ public class InferenceEngine
 
     public List<SimpleMessage> getMessages()
     {
-        return messages;
+        return new ArrayList<SimpleMessage>(messages.values());
+    }
+
+    public List<SequenceItem> getSignedBy(DigestSha384 keyId)
+    {
+        return signedBy.get(keyId);
     }
 }

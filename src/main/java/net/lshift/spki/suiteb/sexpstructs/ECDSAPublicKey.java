@@ -10,7 +10,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for public sig verification keys
  */
-public class ECDSAPublicKey extends ECPublicKey
+public class ECDSAPublicKey extends ECPublicKey implements SequenceItem
 {
     @SExpName("suiteb-p384-ecdsa-public-key")
     public ECDSAPublicKey(@P("point") ECPoint point)
