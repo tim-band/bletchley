@@ -35,8 +35,8 @@ public class CLIMultipleRecipientTest
             Openable ePrivate = new ByteOpenable();
             Openable ePublic = new ByteOpenable();
 
-            CLI.genEncryptionKey(ePrivate);
-            CLI.getPublicEncryptionKey(ePrivate, ePublic);
+            CLI.main("genEncryptionKey", ePrivate);
+            CLI.main("getPublicEncryptionKey", ePrivate, ePublic);
             ePrivates.add(ePrivate);
             ePublics.add(ePublic);
         }
@@ -51,7 +51,7 @@ public class CLIMultipleRecipientTest
         }
         Openable packet = new ByteOpenable();
         encryptArgs[i++] = packet;
-        assert(i == encryptArgs.length);
+        assert i == encryptArgs.length;
         CLI.main("genEncryptedSignedMessage", encryptArgs);
 
         Openable result = new ByteOpenable();
