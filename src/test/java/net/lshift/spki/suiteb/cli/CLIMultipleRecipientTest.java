@@ -11,15 +11,13 @@ import net.lshift.spki.convert.ByteOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
 
-import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.junit.Test;
 
 public class CLIMultipleRecipientTest
 {
     @Test
     public void cliTest()
-        throws InvalidCipherTextException,
-            ParseException,
+        throws ParseException,
             IOException
     {
         final byte[] messageBytes

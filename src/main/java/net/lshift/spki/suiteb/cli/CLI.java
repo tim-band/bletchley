@@ -1,11 +1,7 @@
 package net.lshift.spki.suiteb.cli;
 
 import static net.lshift.spki.convert.OpenableUtils.read;
-import static net.lshift.spki.convert.OpenableUtils.readBytes;
 import static net.lshift.spki.convert.OpenableUtils.write;
-import static net.lshift.spki.convert.OpenableUtils.writeBytes;
-import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,30 +9,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SExp;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.suiteb.AESKey;
-import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.EC;
 import net.lshift.spki.suiteb.InferenceEngine;
-import net.lshift.spki.suiteb.MultipleRecipient;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
-import net.lshift.spki.suiteb.SequenceSigningTest;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceConversion;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
-
-import org.bouncycastle.crypto.InvalidCipherTextException;
 
 /**
  * Command line interface to crypto functions
@@ -138,8 +127,7 @@ public class CLI
     public static void main(String command, Openable... args)
         throws FileNotFoundException,
             ParseException,
-            IOException,
-            InvalidCipherTextException
+            IOException
     {
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
@@ -163,7 +151,6 @@ public class CLI
 
     public static void main(String[] args)
         throws FileNotFoundException,
-            InvalidCipherTextException,
             ParseException,
             IOException
     {
