@@ -23,7 +23,7 @@ public class InferenceEngine
     private Map<AESKeyId, AESKey> aesKeys = new HashMap<AESKeyId, AESKey>();
     private Map<DigestSha384, SimpleMessage> messages
         = new HashMap<DigestSha384,SimpleMessage>();
-    // U. G. L. Y.
+    // FIXME this is pretty ugly!
     private HashMap<DigestSha384, List<SequenceItem>> signedBy
         = new HashMap<DigestSha384, List<SequenceItem>>();
 
@@ -78,7 +78,11 @@ public class InferenceEngine
 
     public void process(ECDSAPublicKey key)
     {
-        PublicSigningKey pKey = PublicSigningKey.unpack(key);
+        process(PublicSigningKey.unpack(key));
+    }
+
+    public void process(PublicSigningKey pKey)
+    {
         dsaKeys.put(pKey.getKeyId(), pKey);
     }
 

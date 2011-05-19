@@ -4,6 +4,8 @@ import static net.lshift.spki.convert.OpenableUtils.read;
 import static net.lshift.spki.convert.OpenableUtils.readBytes;
 import static net.lshift.spki.convert.OpenableUtils.write;
 import static net.lshift.spki.convert.OpenableUtils.writeBytes;
+import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,19 +13,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SExp;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
+import net.lshift.spki.convert.OpenableUtils;
+import net.lshift.spki.suiteb.AESKey;
 import net.lshift.spki.suiteb.DigestSha384;
+import net.lshift.spki.suiteb.EC;
+import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.MultipleRecipient;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
+import net.lshift.spki.suiteb.SequenceSigningTest;
+import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceConversion;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -78,15 +88,51 @@ public class CLI
         Openable packet,
         Openable out)
         throws ParseException,
-            IOException,
-            InvalidCipherTextException
+            IOException
     {
+        InferenceEngine inference = new InferenceEngine();
+        PublicSigningKey signingKey = read(PublicSigningKey.class, sPublic);
+        inference.process(signingKey);
+        inference.process(read(PrivateEncryptionKey.class, ePrivate));
+        inference.process(read(SequenceItem.class, packet));
+        List<SequenceItem> signedBy
+            = inference.getSignedBy(signingKey.getKeyId());
+        if (signedBy.size() != 1) {
+            throw new RuntimeException("Did not find exactly one signed message");
+        }
+        if (!(signedBy.get(0) instanceof SimpleMessage)) {
+            throw new RuntimeException("Signed object was not message");
+        }
+        SimpleMessage message = (SimpleMessage) signedBy.get(0);
+        if (!messageType.equals(message.type)) {
+            throw new RuntimeException("Message was not of expected type");
+        }
+        OpenableUtils.writeBytes(out, message.content);
     }
 
     private static void genEncryptedSignedMessage(
         String messageType,
         Openable[] args) throws ParseException, IOException
     {
+        List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
+        AESKey aesKey = EC.generateAESKey();
+        for (int i = 2; i < args.length-1; i++) {
+            PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
+            AESKey rKey = pKey.setupEncrypt(sequenceItems);
+            sequenceItems.add(rKey.encrypt(aesKey));
+        }
+
+        List<SequenceItem> encryptedSequenceItems
+            = new ArrayList<SequenceItem>();
+        SimpleMessage message = new SimpleMessage(
+            messageType, OpenableUtils.readBytes(args[1]));
+        encryptedSequenceItems.add(message);
+        PrivateSigningKey privateKey = read(PrivateSigningKey.class, args[0]);
+        encryptedSequenceItems.add(privateKey.sign(message));
+
+        sequenceItems.add(aesKey.encrypt(new Sequence(encryptedSequenceItems)));
+
+        write(args[args.length-1], Sequence.class, new Sequence(sequenceItems));
     }
 
     public static void main(String command, Openable... args)

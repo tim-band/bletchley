@@ -12,17 +12,25 @@ import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
  */
 public class MultipleRecipient
 {
-    public static SequenceItem encrypt(
+    public static void encrypt(
+        List<SequenceItem> sequenceItems,
         List<PublicEncryptionKey> publicKeys,
         SequenceItem message)
     {
-        List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         AESKey aesKey = EC.generateAESKey();
         for (PublicEncryptionKey pKey : publicKeys) {
             AESKey rKey = pKey.setupEncrypt(sequenceItems);
             sequenceItems.add(rKey.encrypt(aesKey));
         }
         sequenceItems.add(aesKey.encrypt(message));
+    }
+
+    public static SequenceItem encrypt(
+        List<PublicEncryptionKey> publicKeys,
+        SequenceItem message)
+    {
+        List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
+        encrypt(sequenceItems, publicKeys, message);
         return new Sequence(sequenceItems);
     }
 

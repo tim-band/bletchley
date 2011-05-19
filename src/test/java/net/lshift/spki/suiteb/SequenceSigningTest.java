@@ -25,7 +25,6 @@ public class SequenceSigningTest
         SimpleMessage message = new SimpleMessage(
             SequenceSigningTest.class.getCanonicalName(),
             "The magic words are squeamish ossifrage".getBytes(Constants.UTF8));
-        DigestSha384 digest = DigestSha384.digest(SimpleMessage.class, message);
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         sequenceItems.add(publicKey.pack());
         sequenceItems.add(message);
