@@ -49,7 +49,7 @@ public class AESKey extends PositionBeanConvertable implements SequenceItem
     public AESPacket encrypt(SequenceItem message)
     {
         try {
-            byte[] nonce = EC.randomBytes(16);
+            byte[] nonce = EC.randomBytes(12);
             GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, nonce, ZERO_BYTES));
