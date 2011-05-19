@@ -21,7 +21,7 @@ public class AESKey extends PositionBeanConvertable implements SequenceItem
     private static final byte[] KEYID_NONCE = new byte[] { 0 };
     private static final byte[] KEYID_AD
         = "8:keyid-ad".getBytes(Constants.UTF8);
-    private static final byte[] KEYID_PLAINTEXT = new byte[] { };
+    private static final byte[] ZERO_BYTES = new byte[] { };
 
     public final byte[] key;
 
@@ -34,13 +34,12 @@ public class AESKey extends PositionBeanConvertable implements SequenceItem
     }
 
     public AESKeyId getKeyId() {
-        AEADParameters aeadparams = new AEADParameters(
-            new KeyParameter(key), 128, KEYID_NONCE, KEYID_AD);
         GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
-        gcm.init(true, aeadparams);
-        byte[] ciphertext = new byte[gcm.getOutputSize(KEYID_PLAINTEXT.length)];
+        gcm.init(true, new AEADParameters(
+            new KeyParameter(key), 128, KEYID_NONCE, KEYID_AD));
+        byte[] ciphertext = new byte[gcm.getOutputSize(ZERO_BYTES.length)];
         int resp = 0;
-        resp += gcm.processBytes(KEYID_PLAINTEXT, 0, KEYID_PLAINTEXT.length,
+        resp += gcm.processBytes(ZERO_BYTES, 0, ZERO_BYTES.length,
             ciphertext, resp);
         try {
             resp += gcm.doFinal(ciphertext, resp);
@@ -56,10 +55,9 @@ public class AESKey extends PositionBeanConvertable implements SequenceItem
     public AESPacket encrypt(SequenceItem message)
     {
         byte[] nonce = EC.randomBytes(16);
-        AEADParameters aeadparams = new AEADParameters(
-            new KeyParameter(key), 128, nonce, new byte[0]);
         GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
-        gcm.init(true, aeadparams);
+        gcm.init(true, new AEADParameters(
+            new KeyParameter(key), 128, nonce, ZERO_BYTES));
         byte[] plaintext = Marshal.marshal(Convert.toSExp(SequenceItem.class, message));
         byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
         int resp = 0;
@@ -77,10 +75,9 @@ public class AESKey extends PositionBeanConvertable implements SequenceItem
 
     public SequenceItem decrypt(AESPacket packet) throws InvalidCipherTextException, ParseException
     {
-        AEADParameters aeadparams = new AEADParameters(
-            new KeyParameter(key), 128, packet.nonce, new byte[0]);
         GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
-        gcm.init(false, aeadparams);
+        gcm.init(false, new AEADParameters(
+            new KeyParameter(key), 128, packet.nonce, ZERO_BYTES));
         byte[] newtext = new byte[gcm.getOutputSize(packet.ciphertext.length)];
         int pp = 0;
         pp += gcm.processBytes(packet.ciphertext, pp,
