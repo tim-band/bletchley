@@ -59,10 +59,10 @@ public class SequenceConverter<T> extends BeanConverter<T>
             throw new ConvertException("Expected " + name +
                 " but was " + slist.getHead());
         }
-        SExp[] tail = slist.getSparts();
-        List<Object> components = new ArrayList<Object>(tail.length);
-        for (int i = 0; i < tail.length; i++) {
-            components.add(Convert.fromSExp(contentType, tail[i]));
+        List<SExp> tail = slist.getSparts();
+        List<Object> components = new ArrayList<Object>(tail.size());
+        for (SExp tailPart: tail) {
+            components.add(Convert.fromSExp(contentType, tailPart));
         }
         Object[] initargs = new Object[1];
         initargs[0] = Collections.unmodifiableList(components);

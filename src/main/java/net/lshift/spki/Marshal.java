@@ -33,11 +33,10 @@ public class Marshal {
             ob.write(b);
         } else {
             ob.write(Constants.OPENPAREN);
-            Atom h = ((SList) sexp).getHead();
-            SExp[] t = ((SList) sexp).getSparts();
-            marshal(ob, h);
-            for (int i = 0; i < t.length; i++) {
-                marshal(ob, t[i]);
+            final SList slist = (SList) sexp;
+            marshal(ob, slist.getHead());
+            for (SExp p: slist.getSparts()) {
+                marshal(ob, p);
             }
             ob.write(Constants.CLOSEPAREN);
         }

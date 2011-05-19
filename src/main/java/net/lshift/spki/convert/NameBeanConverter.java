@@ -1,6 +1,9 @@
 package net.lshift.spki.convert;
 
 import static net.lshift.spki.Create.atom;
+
+import java.util.List;
+
 import net.lshift.spki.Atom;
 import net.lshift.spki.Create;
 import net.lshift.spki.SExp;
@@ -35,12 +38,12 @@ public class NameBeanConverter<T>
             if (s instanceof SList) {
                 SList sl = (SList) s;
                 if (match.equals(sl.getHead())) {
-                    SExp[] sparts = sl.getSparts();
-                    if (sparts.length != 1) {
+                    List<SExp> sparts = sl.getSparts();
+                    if (sparts.size() != 1) {
                         throw new ConvertException(
                             "Wrong number of parts for " + fieldName);
                     }
-                    return sparts[0];
+                    return sparts.get(0);
                 }
             }
         }

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.encoders.Hex;
@@ -40,13 +41,13 @@ public class PrettyPrinter {
                 ps.println("|");
             }
         } else {
-            SExp[] sparts = ((SList) sexp).getSparts();
+            List<SExp> sparts = ((SList) sexp).getSparts();
             ps.print(prefix);
             ps.print("(\"");
             ps.write(((SList) sexp).getHead().getBytes());
             ps.println("\"");
-            for (int i = 0; i < sparts.length; i++) {
-                prettyPrint(ps, prefix + "    ", sparts[i]);
+            for (SExp part: sparts) {
+                prettyPrint(ps, prefix + "    ", part);
             }
             ps.print(prefix);
             ps.println(")");

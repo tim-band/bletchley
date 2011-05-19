@@ -26,6 +26,6 @@ public class PositionBeanConverter<T>
         int i,
         SList slist)
     {
-        return slist.getSparts()[i];
+        return slist.getSparts().get(i);
     }
 }
