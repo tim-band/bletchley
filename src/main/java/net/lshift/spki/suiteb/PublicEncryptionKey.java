@@ -30,14 +30,14 @@ public class PublicEncryptionKey extends PublicKey  {
     public AESKey setupEncrypt(List<SequenceItem> sequence)
     {
         AsymmetricCipherKeyPair ephemeralKey = EC.generate();
-        AESKey res = new AESKey(EC.generateAESKeyId(),
+        AESKey res = new AESKey(
             EC.sessionKey(
                 publicKey,
                 ephemeralKey.getPublic(),
                 ephemeralKey.getPrivate(),
                 publicKey));
         sequence.add(new ECDHItem(
-            keyId, res.keyId,
+            keyId,
             ((ECPublicKeyParameters) ephemeralKey.getPublic()).getQ()));
         return res;
     }

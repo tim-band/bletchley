@@ -67,13 +67,13 @@ public class InferenceEngine
     {
         PrivateEncryptionKey key = dhKeys.get(item.recipient);
         if (key != null) {
-            process(new AESKey(item.keyId, key.getKey(item.ephemeralKey)));
+            process(new AESKey(key.getKey(item.ephemeralKey)));
         }
     }
 
     public void process(AESKey key)
     {
-        aesKeys.put(key.keyId, key);
+        aesKeys.put(key.getKeyId(), key);
     }
 
     public void process(ECDSAPublicKey key)
