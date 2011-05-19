@@ -6,6 +6,11 @@ import net.lshift.spki.suiteb.AESKey;
 import net.lshift.spki.suiteb.AESPacket;
 import net.lshift.spki.suiteb.Signature;
 
+/**
+ * Class that sets up conversion for SequenceItem objects.
+ * SequenceItem is an interface so it can't be set up when the interface
+ * is loaded.
+ */
 @SuppressWarnings("unchecked")
 public class SequenceConversion
 {

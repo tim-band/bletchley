@@ -5,6 +5,9 @@ import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
+/**
+ * A SequenceItem encrypted with AES/GCM.
+ */
 public class AESPacket extends PositionBeanConvertable implements SequenceItem
 {
     public final AESKeyId keyId;

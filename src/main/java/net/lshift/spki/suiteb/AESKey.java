@@ -15,6 +15,9 @@ import net.lshift.spki.convert.PositionBeanConvertable;
 import net.lshift.spki.convert.SExpName;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
+/**
+ * A key to use with AES/GCM.
+ */
 public class AESKey extends PositionBeanConvertable implements SequenceItem
 {
     public static final int AES_KEY_BYTES = 32;

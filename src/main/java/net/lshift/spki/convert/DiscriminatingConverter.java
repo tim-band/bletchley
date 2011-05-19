@@ -6,6 +6,10 @@ import java.util.Map;
 import net.lshift.spki.SExp;
 import net.lshift.spki.SList;
 
+/**
+ * Convert to/from a superclass given a list of known subclasses
+ * each with a different SExpName
+ */
 public class DiscriminatingConverter<T> implements Converter<T>
 {
     private final Map<String, Converter<? extends T>> nameMap

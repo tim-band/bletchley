@@ -5,6 +5,11 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import net.lshift.spki.convert.PackConvertable;
 
+/**
+ * Identifier for a symmetric key, deterministically generated from the key.
+ * Symmetrically encrypted packets carry this information so you know what
+ * key to decrypt them with.
+ */
 public class AESKeyId extends PackConvertable
 {
     public final byte[] keyId;

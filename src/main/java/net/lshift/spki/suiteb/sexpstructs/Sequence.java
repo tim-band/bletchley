@@ -6,6 +6,9 @@ import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SExpName;
 import net.lshift.spki.convert.SequenceConvertable;
 
+/**
+ * A list of SequenceItems.  Itself a SequenceItem.
+ */
 public class Sequence extends SequenceConvertable implements SequenceItem
 {
     public final List<SequenceItem> sequence;

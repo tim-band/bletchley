@@ -5,6 +5,9 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 import net.lshift.spki.convert.PackConvertable;
 
+/**
+ * A superclass for PublicKey objects
+ */
 public abstract class PublicKey
     extends PackConvertable
 {
@@ -22,5 +25,4 @@ public abstract class PublicKey
     {
         return keyId;
     }
-
 }

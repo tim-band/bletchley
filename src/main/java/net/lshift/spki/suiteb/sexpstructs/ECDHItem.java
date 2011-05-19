@@ -7,6 +7,9 @@ import net.lshift.spki.suiteb.DigestSha384;
 
 import org.bouncycastle.math.ec.ECPoint;
 
+/**
+ * An ECDH session key packet
+ */
 public class ECDHItem extends PositionBeanConvertable
     implements SequenceItem
 {

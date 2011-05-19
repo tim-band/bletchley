@@ -14,6 +14,13 @@ import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
+/**
+ * Take a bunch of SequenceItems and figure out what you can infer from them.
+ * Decrypt what you can decrypt, check the signatures you can check and so on.
+ * ORDER MATTERS for the moment, but we could fix that if need be.
+ * Full of limitations, but the principle is there, the limitations can be
+ * fixed and it will do for now.
+ */
 public class InferenceEngine
 {
     private Map<DigestSha384, PrivateEncryptionKey> dhKeys
