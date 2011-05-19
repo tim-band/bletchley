@@ -18,7 +18,6 @@ import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 public class AESKey extends PositionBeanConvertable implements SequenceItem
 {
     public static final int AES_KEY_BYTES = 32;
-    private static final byte[] KEYID_NONCE = new byte[] { 0 };
     private static final byte[] KEYID_AD
         = "8:keyid-ad".getBytes(Constants.UTF8);
     private static final byte[] ZERO_BYTES = new byte[] { };
@@ -36,7 +35,7 @@ public class AESKey extends PositionBeanConvertable implements SequenceItem
         try {
             GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
-                new KeyParameter(key), 128, KEYID_NONCE, KEYID_AD));
+                new KeyParameter(key), 128, KEYID_AD, KEYID_AD));
             byte[] ciphertext = new byte[gcm.getOutputSize(ZERO_BYTES.length)];
             int resp = gcm.processBytes(ZERO_BYTES, 0, ZERO_BYTES.length,
                 ciphertext, 0);
