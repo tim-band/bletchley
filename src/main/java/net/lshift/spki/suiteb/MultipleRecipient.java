@@ -17,7 +17,7 @@ public class MultipleRecipient
         List<PublicEncryptionKey> publicKeys,
         SequenceItem message)
     {
-        AESKey aesKey = EC.generateAESKey();
+        AESKey aesKey = AESKey.generateAESKey();
         for (PublicEncryptionKey pKey : publicKeys) {
             AESKey rKey = pKey.setupEncrypt(sequenceItems);
             sequenceItems.add(rKey.encrypt(aesKey));

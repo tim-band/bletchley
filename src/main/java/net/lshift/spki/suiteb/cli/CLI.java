@@ -16,7 +16,6 @@ import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.suiteb.AESKey;
-import net.lshift.spki.suiteb.EC;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -104,7 +103,7 @@ public class CLI
         Openable[] args) throws ParseException, IOException
     {
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
-        AESKey aesKey = EC.generateAESKey();
+        AESKey aesKey = AESKey.generateAESKey();
         for (int i = 2; i < args.length-1; i++) {
             PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
             AESKey rKey = pKey.setupEncrypt(sequenceItems);
