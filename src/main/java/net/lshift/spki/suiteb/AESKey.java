@@ -29,65 +29,61 @@ public class AESKey extends PositionBeanConvertable implements SequenceItem
     public AESKey(
         @P("key") byte[] key
     ) {
-        super();
         this.key = key;
     }
 
     public AESKeyId getKeyId() {
-        GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
-        gcm.init(true, new AEADParameters(
-            new KeyParameter(key), 128, KEYID_NONCE, KEYID_AD));
-        byte[] ciphertext = new byte[gcm.getOutputSize(ZERO_BYTES.length)];
-        int resp = 0;
-        resp += gcm.processBytes(ZERO_BYTES, 0, ZERO_BYTES.length,
-            ciphertext, resp);
         try {
-            resp += gcm.doFinal(ciphertext, resp);
-        } catch (IllegalStateException e) {
-            throw new RuntimeException(e);
+            GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+            gcm.init(true, new AEADParameters(
+                new KeyParameter(key), 128, KEYID_NONCE, KEYID_AD));
+            byte[] ciphertext = new byte[gcm.getOutputSize(ZERO_BYTES.length)];
+            int resp = gcm.processBytes(ZERO_BYTES, 0, ZERO_BYTES.length,
+                ciphertext, 0);
+            gcm.doFinal(ciphertext, resp);
+            return new AESKeyId(ciphertext);
         } catch (InvalidCipherTextException e) {
             throw new RuntimeException(e);
         }
-        return new AESKeyId(ciphertext);
-
     }
 
     public AESPacket encrypt(SequenceItem message)
     {
-        byte[] nonce = EC.randomBytes(16);
-        GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
-        gcm.init(true, new AEADParameters(
-            new KeyParameter(key), 128, nonce, ZERO_BYTES));
-        byte[] plaintext = Marshal.marshal(Convert.toSExp(SequenceItem.class, message));
-        byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
-        int resp = 0;
-        resp += gcm.processBytes(plaintext, 0, plaintext.length,
-            ciphertext, resp);
         try {
-            resp += gcm.doFinal(ciphertext, resp);
-        } catch (IllegalStateException e) {
-            throw new RuntimeException(e);
+            byte[] nonce = EC.randomBytes(16);
+            GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+            gcm.init(true, new AEADParameters(
+                new KeyParameter(key), 128, nonce, ZERO_BYTES));
+            byte[] plaintext = Marshal.marshal(
+                Convert.toSExp(SequenceItem.class, message));
+            byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
+            int resp = gcm.processBytes(plaintext, 0, plaintext.length,
+                ciphertext, 0);
+            gcm.doFinal(ciphertext, resp);
+            return new AESPacket(getKeyId(), nonce, ciphertext);
         } catch (InvalidCipherTextException e) {
             throw new RuntimeException(e);
         }
-        return new AESPacket(getKeyId(), nonce, ciphertext);
     }
 
-    public SequenceItem decrypt(AESPacket packet) throws InvalidCipherTextException, ParseException
+    public SequenceItem decrypt(AESPacket packet)
+        throws InvalidCipherTextException,
+            ParseException
     {
-        GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
-        gcm.init(false, new AEADParameters(
-            new KeyParameter(key), 128, packet.nonce, ZERO_BYTES));
-        byte[] newtext = new byte[gcm.getOutputSize(packet.ciphertext.length)];
-        int pp = 0;
-        pp += gcm.processBytes(packet.ciphertext, pp,
-            packet.ciphertext.length, newtext, pp);
         try {
-            pp += gcm.doFinal(newtext, pp);
+            GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+            gcm.init(false, new AEADParameters(
+                new KeyParameter(key), 128, packet.nonce, ZERO_BYTES));
+            byte[] newtext = new byte[
+                gcm.getOutputSize(packet.ciphertext.length)];
+            int pp = gcm.processBytes(packet.ciphertext, 0,
+                packet.ciphertext.length, newtext, 0);
+            gcm.doFinal(newtext, pp);
+            return Convert.fromSExp(
+                SequenceItem.class, Marshal.unmarshal(newtext));
         } catch (IllegalStateException e) {
             throw new RuntimeException(e);
         }
-        return Convert.fromSExp(SequenceItem.class, Marshal.unmarshal(newtext));
     }
 
     public static AESKey generateAESKey()
