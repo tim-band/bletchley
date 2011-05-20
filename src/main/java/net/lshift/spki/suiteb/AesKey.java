@@ -10,6 +10,7 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertible;
 import net.lshift.spki.convert.SexpName;
@@ -56,8 +57,8 @@ public class AesKey extends PositionBeanConvertible implements SequenceItem
             GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, nonce, ZERO_BYTES));
-            byte[] plaintext = Marshal.marshal(
-                Convert.toSExp(SequenceItem.class, message));
+            byte[] plaintext =
+                ConvertUtils.toBytes(SequenceItem.class, message);
             byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
             int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);

@@ -17,12 +17,6 @@ public abstract class StepConverter<TResult, TStep>
     }
 
     @Override
-    public Sexp toSexp(TResult o)
-    {
-        return Convert.toSExp(getStepClass(), stepIn(o));
-    }
-
-    @Override
     public void write(ConvertOutputStream out, TResult o)
         throws IOException
     {

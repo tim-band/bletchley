@@ -19,12 +19,6 @@ public class SexpConverter
     }
 
     @Override
-    public Sexp toSexp(Sexp sexp)
-    {
-        return sexp;
-    }
-
-    @Override
     public void write(ConvertOutputStream out, Sexp o)
         throws IOException
     {

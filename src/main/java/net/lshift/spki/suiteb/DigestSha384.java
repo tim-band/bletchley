@@ -2,10 +2,8 @@ package net.lshift.spki.suiteb;
 
 import java.util.Arrays;
 
-import net.lshift.spki.Marshal;
-import net.lshift.spki.Sexp;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertException;
+import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.PackConvertible;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 
@@ -45,20 +43,15 @@ public class DigestSha384 extends PackConvertible
         return new DigestSha384(hash.value);
     }
 
-    public static DigestSha384 digest(Sexp sexp)
+    public static <T> DigestSha384 digest(Class<T> clazz, T o)
     {
         // FIXME: shouldn't need to write out the whole message to digest it
         SHA384Digest digester = new SHA384Digest();
-        byte[] message = Marshal.marshal(sexp);
+        byte[] message = ConvertUtils.toBytes(clazz, o);
         digester.update(message, 0, message.length);
         byte[] digest = new byte[digester.getDigestSize()];
         digester.doFinal(digest, 0);
         return new DigestSha384(digest);
-    }
-
-    public static <T> DigestSha384 digest(Class<T> clazz, T o)
-    {
-        return digest(Convert.toSExp(clazz, o));
     }
 
     @Override

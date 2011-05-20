@@ -4,20 +4,20 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
 
-import net.lshift.spki.Sexp;
+import net.lshift.spki.ParseException;
 
 import org.junit.Test;
 
 public class ConvertTest
 {
     @Test
-    public void convertTest() {
+    public void convertTest() throws ParseException {
         ConvertExample test = new ConvertExample(
             BigInteger.valueOf(3), BigInteger.valueOf(17));
-        Sexp sexp = Convert.toSExp(ConvertExample.class, test);
+        byte[] bytes = ConvertUtils.toBytes(ConvertExample.class, test);
         //PrettyPrinter.prettyPrint(System.out, sexp);
-        ConvertExample changeBack = Convert.fromSExp(
-            ConvertExample.class, sexp);
+        ConvertExample changeBack = ConvertUtils.fromBytes(
+            ConvertExample.class, bytes);
         assertEquals(test, changeBack);
     }
 }

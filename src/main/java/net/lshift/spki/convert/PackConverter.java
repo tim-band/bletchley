@@ -45,12 +45,6 @@ public class PackConverter<T extends PackConvertible>
     }
 
     @Override
-    public Sexp toSexp(T o)
-    {
-        return Convert.toSExpUnchecked(otherType, o.pack());
-    }
-
-    @Override
     public void write(ConvertOutputStream out, T o)
         throws IOException
     {

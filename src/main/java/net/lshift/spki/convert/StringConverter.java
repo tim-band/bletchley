@@ -18,12 +18,6 @@ public class StringConverter
     }
 
     @Override
-    public Sexp toSexp(String string)
-    {
-        return Create.atom(string);
-    }
-
-    @Override
     public void write(ConvertOutputStream out, String o)
         throws IOException
     {

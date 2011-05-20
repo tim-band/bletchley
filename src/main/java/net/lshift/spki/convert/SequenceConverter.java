@@ -79,23 +79,6 @@ public class SequenceConverter<T> extends BeanConverter<T>
     }
 
     @Override
-    public Sexp toSexp(T o)
-    {
-        try {
-            List<?> property = (List<?>)  clazz.getField(beanName).get(o);
-            List<Sexp> components = new ArrayList<Sexp>(property.size());
-            for (Object v: property) {
-                components.add(Convert.toSExpUnchecked(contentType, v));
-            }
-            return Create.list(name, components);
-        } catch (IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
-        } catch (NoSuchFieldException e) {
-            throw new ConvertReflectionException(e);
-        }
-    }
-
-    @Override
     public void write(ConvertOutputStream out, T o)
         throws IOException
     {

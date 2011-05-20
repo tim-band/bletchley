@@ -18,12 +18,6 @@ public class ByteArrayConverter
     }
 
     @Override
-    public Sexp toSexp(byte[] o)
-    {
-        return Create.atom(o);
-    }
-
-    @Override
     public void write(ConvertOutputStream out, byte[] o)
         throws IOException
     {

@@ -41,18 +41,6 @@ public class DiscriminatingConverter<T> implements Converter<T>
 
     @SuppressWarnings("unchecked")
     @Override
-    public Sexp toSexp(T o)
-    {
-        final Converter<? extends T> converter = classMap.get(o.getClass());
-        if (converter == null) {
-            throw new ConvertException("Don't know how to convert from: "
-                + o.getClass().getCanonicalName());
-        }
-        return ((Converter<T>)converter).toSexp(o);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
     public void write(ConvertOutputStream out, T o)
         throws IOException
     {

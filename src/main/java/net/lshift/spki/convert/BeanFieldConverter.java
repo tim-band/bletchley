@@ -30,25 +30,6 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
     }
 
     @Override
-    public Sexp toSexp(T o)
-    {
-        try {
-            Sexp[] components = new Sexp[fields.length];
-            for (int i = 0; i < fields.length; i++) {
-                final Object property =
-                    clazz.getField(fields[i].getName()).get(o);
-                components[i] = fieldToSexp(fields[i],
-                    Convert.toSExpUnchecked(fields[i].getType(), property));
-            }
-            return Create.list(name, components);
-        } catch (IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
-        } catch (NoSuchFieldException e) {
-            throw new ConvertReflectionException(e);
-        }
-    }
-
-    @Override
     public void write(ConvertOutputStream out, T o)
         throws IOException
     {

@@ -10,8 +10,6 @@ import net.lshift.spki.Sexp;
  */
 public interface Converter<T>
 {
-    public Sexp toSexp(T o);
-
     public T fromSexp(Sexp sexp);
 
     public void write(ConvertOutputStream out, T o) throws IOException;

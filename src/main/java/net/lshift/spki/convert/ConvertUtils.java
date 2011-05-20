@@ -1,8 +1,15 @@
 package net.lshift.spki.convert;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import net.lshift.spki.Atom;
+import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.Constants;
+import net.lshift.spki.Marshal;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 /**
  * Static utilities for conversion between SExps and objects.
@@ -29,5 +36,27 @@ public class ConvertUtils
         } catch (ClassNotFoundException e) {
             throw new AssertionError(e);  // Can't happen
         }
+    }
+
+    public static <T> byte[] toBytes(Class<T> clazz, T o)
+    {
+        try {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ConvertOutputStream out
+                = new ConvertOutputStream(new CanonicalSpkiOutputStream(os));
+            out.write(clazz, o);
+            out.close();
+            return os.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(
+                "ByteArrayOutputStream cannot throw IOException", e);
+        }
+    }
+
+    public static ConvertExample fromBytes(
+        Class<ConvertExample> clazz,
+        byte[] bytes) throws ParseException
+    {
+        return Convert.fromSExp(clazz, Marshal.unmarshal(bytes));
     }
 }
