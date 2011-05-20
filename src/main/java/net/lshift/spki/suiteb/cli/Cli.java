@@ -36,30 +36,6 @@ import org.apache.commons.lang.NotImplementedException;
 /**
  * Command line interface to crypto functions
  */
-class InputStreamOpenable implements Openable {
-        private InputStream is;
-        InputStreamOpenable(InputStream is) {
-            this.is = is;
-        }
-        public InputStream read() throws IOException {
-            return is;
-        }
-        public OutputStream write() throws IOException {
-            throw new NotImplementedException();
-        }
-    }
-class OutputStreamOpenable implements Openable {
-        private OutputStream os;
-        OutputStreamOpenable(OutputStream os) {
-            this.os = os;
-        }
-        public InputStream read() throws IOException {
-            throw new NotImplementedException();
-        }
-        public OutputStream write() throws IOException {
-            return os;
-        }
-    }
 public class Cli {
 
     private static final String CLI_MESSAGE = Cli.class.toString();
@@ -185,7 +161,9 @@ public class Cli {
         server.createContext("/decryptAndVerify", new HttpHandler() {
             @Override
             public void handle(HttpExchange t) throws IOException {
-                InputStreamOpenable iso = new InputStreamOpenable(t.getRequestBody());
+                InputStream is = t.getRequestBody();
+                ByteOpenable iso = new ByteOpenable();
+                iso.write().write(IOUtils.toByteArray(is));
                 OutputStream os = t.getResponseBody();
                 if (!t.getRequestMethod().equals("PUT")) {
                     writeResponse(t, os, 400, "Expected PUT request".getBytes("ASCII"));
@@ -194,7 +172,8 @@ public class Cli {
                 ByteOpenable oso = new ByteOpenable();
                 try {
                     decryptSignedMessage(CLI_MESSAGE, encryptionKey, signingKey, iso, oso);
-                    writeResponse(t, os, 200, IOUtils.toByteArray(iso.read()));
+                    byte[] ans = IOUtils.toByteArray(oso.read());
+                    writeResponse(t, os, 200, ans);
                 } catch (ParseException e) {
                     writeResponse(t, os, 400,
                             ("Could not decrypt and verify: " + e.getMessage()).getBytes("ascii"));
