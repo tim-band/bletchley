@@ -4,6 +4,9 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Generate a canonical encoding of an S-expression given a stream of tokens.
+ */
 public class SpkiOutputStream implements Closeable
 {
     private final OutputStream os;

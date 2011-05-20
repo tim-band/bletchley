@@ -29,65 +29,65 @@ public class SpkiInputStreamTest
     @Test
     public void getAtom() throws IOException, ParseException {
         setInput("3:foo");
-        assertThat(sis.getNext(), is(ATOM));
-        assertThat(sis.getBytes(), is(s("foo")));
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("foo")));
     }
 
     @Test
     public void getLongerAtom() throws IOException, ParseException {
         setInput("12:foodfoodfood");
-        assertThat(sis.getNext(), is(ATOM));
-        assertThat(sis.getBytes(), is(s("foodfoodfood")));
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("foodfoodfood")));
     }
 
     @Test(expected=ParseException.class)
     public void catchOverflow() throws IOException, ParseException {
         setInput("4294967299:foo");
-        sis.getNext();
-        sis.getBytes();
+        sis.next();
+        sis.atomBytes();
     }
 
     @Test(expected=ParseException.class)
     public void tooShortAtomCausesException() throws IOException, ParseException {
         setInput("3:fo");
-        sis.getNext();
-        sis.getBytes();
+        sis.next();
+        sis.atomBytes();
     }
 
     @Test(expected=ParseException.class)
     public void assertMustReadAtom() throws ParseException, IOException {
         setInput("3:foo");
-        sis.getNext();
-        sis.getNext();
+        sis.next();
+        sis.next();
     }
 
 
     @Test
     public void assertAtomIsOKWhenNextIsAtom() throws ParseException, IOException {
         setInput("3:foo");
-        sis.getNextOfType(ATOM);
+        sis.nextAssertType(ATOM);
     }
 
     @Test(expected=ParseException.class)
     public void assertAtomFailsWhenNextIsNotAtom() throws ParseException, IOException {
         setInput("(3:foo)");
-        sis.getNextOfType(ATOM);
+        sis.nextAssertType(ATOM);
     }
 
     @Test(expected=ParseException.class)
     public void assertNonDigitsFails() throws ParseException, IOException {
         setInput("34asdf");
-        sis.getNext();
+        sis.next();
     }
 
     @Test(expected=ParseException.class)
     public void assertDoesntRecover() throws ParseException, IOException {
         setInput("34a3:foo");
         try {
-            sis.getNext();
+            sis.next();
         } catch (ParseException e) {
             // ignore it
         }
-        sis.getBytes();
+        sis.atomBytes();
     }
 }
