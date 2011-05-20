@@ -7,20 +7,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PushbackInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.bouncycastle.util.encoders.Base64;
-import org.bouncycastle.util.encoders.Hex;
+import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
  * Marshal S-expressions into canonical form, and parse them out again.
- *
- * FIXME: the parser is too smart; I'd rather have two parsers, one
- * which reads canonical sexps from binary streams, and another that
- * reads pretty-printed sexps from character streams.
  */
 public class Marshal {
     public static void marshal(OutputStream ob, SExp sexp)
@@ -48,7 +42,7 @@ public class Marshal {
             marshal(baos, sexp);
         } catch (IOException e) {
             throw new RuntimeException(
-                "A ByteArrayOutputStream should never throw an IOException!", e);
+                "A ByteArrayOutputStream should never throw an IOException", e);
         }
         return baos.toByteArray();
     }
@@ -61,7 +55,17 @@ public class Marshal {
         }
     }
 
-    public static SExp unmarshal(InputStream is) throws ParseException, IOException {
+    public static SExp unmarshal(InputStream is)
+        throws ParseException,
+            IOException
+   {
+        return unmarshal(new SpkiInputStream(is));
+    }
+
+    public static SExp unmarshal(SpkiInputStream is)
+        throws ParseException,
+            IOException
+    {
         List<SExp> resl = new ArrayList<SExp>(1);
         unmarshal(resl, is);
         if (resl.size() != 1)
@@ -69,19 +73,28 @@ public class Marshal {
         return resl.get(0);
     }
 
-    // FIXME: use a simple parser here and put the complex parser in
-    // PrettyPrinter
-    private static void unmarshal(List<SExp> target, InputStream is) throws ParseException, IOException {
+    public static void unmarshal(List<SExp> target, SpkiInputStream is)
+        throws ParseException,
+            IOException
+    {
         List<SExp> current = target;
         Stack<List<SExp>> stack = new Stack<List<SExp>>();
-        PushbackInputStream stream = new PushbackInputStream(is);
 
-        int token;
-        while ((token = stream.read()) >= 0) {
-            if (token == Constants.OPENPAREN) {
+        for (;;) {
+            TokenType token = is.getNext();
+            switch (token) {
+            case EOF:
+                if (!stack.isEmpty())
+                    throw new ParseException("Unclosed paren");
+                return;
+            case ATOM:
+                current.add(new Atom(is.getBytes()));
+                break;
+            case OPENPAREN:
                 stack.push(current);
                 current = new ArrayList<SExp>();
-            } else if (token == Constants.CLOSEPAREN) {
+                break;
+            case CLOSEPAREN:
                 if (stack.isEmpty())
                     throw new ParseException("Overclosed paren");
                 if (current.isEmpty())
@@ -92,98 +105,8 @@ public class Marshal {
                 SList c = list((Atom) head, current.subList(1, current.size()));
                 current = stack.pop();
                 current.add(c);
-            } else if (token >= Constants.DIGITBASE && token < Constants.DIGITBASE + 10) {
-                int l = 0;
-
-                while (true) {
-                    if (token == Constants.COLON) break;
-                    int digit = token - Constants.DIGITBASE;
-                    if (digit < 0 || digit > 9)
-                        throw new ParseException("Bad format");
-                    l *= 10;
-                    l += digit; // UNSATISFACTORY: check for overflow?
-                    token = stream.read();
-                }
-                byte[] res = new byte[l];
-                if (stream.read(res) != l)
-                    throw new ParseException("Truncated format");
-                current.add(new Atom(res));
-            } else if (token == Constants.DOUBLEQUOTE) {
-                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                while (true) {
-                    token = stream.read();
-                    if (token < 0)
-                        throw new ParseException(
-                                        "Unterminated quoted string");
-                    if (token == Constants.DOUBLEQUOTE) break;
-                    // UNSATISFACTORY: handle backslashes properly
-                    if (token == Constants.BACKSLASH)
-                        throw new ParseException(
-                                        "Parser cannot handle bacslashes in quoted strings");
-                    bs.write(token);
-                }
-                current.add(new Atom(bs.toByteArray()));
-            } else if (token == Constants.OCTOTHORPE) {
-                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                while (true) {
-                    token = stream.read();
-                    if (token < 0)
-                        throw new ParseException("Unterminated hex string");
-                    if (token == Constants.OCTOTHORPE) break;
-                    bs.write(token);
-                }
-                current.add(new Atom(Hex.decode(bs.toByteArray())));
-            } else if (token == Constants.HBAR) {
-                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                while (true) {
-                    token = stream.read();
-                    if (token < 0)
-                        throw new ParseException(
-                                        "Unterminated base64 string");
-                    if (token == Constants.HBAR) break;
-                    bs.write(token);
-                }
-                current.add(new Atom(Base64.decode(bs.toByteArray())));
-            } else if (token == Constants.OPENBRACE) {
-                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                while (true) {
-                    token = stream.read();
-                    if (token < 0)
-                        throw new ParseException(
-                                        "Unterminated base64 section");
-                    if (token == Constants.CLOSEBRACE) break;
-                    bs.write(token);
-                }
-                ByteArrayInputStream bis = new ByteArrayInputStream(
-                        Base64.decode(bs.toByteArray()));
-                unmarshal(current, bis);
-            } else if (token == 0x09 || token == 0x0a || token == 0x0b
-                            || token == 0x0c || token == 0x0d || token == 0x20) {
-                // White space, ignore it.
-            } else {
-                // Assume a white-space-terminated token. Is this overgenerous?
-
-                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                while (true) {
-                    if (token < 0)
-                        throw new ParseException(
-                                        "Unterminated quoted string");
-                    if (token == 0x09 || token == 0x0a || token == 0x0b
-                                    || token == 0x0c || token == 0x0d
-                                    || token == 0x20 || token == Constants.OPENPAREN
-                                    || token == Constants.CLOSEPAREN) {
-                        stream.unread(token);
-                        break;
-                    }
-                    // UNSATISFACTORY: check for a whole load of disallowed
-                    // characters
-                    bs.write(token);
-                    token = stream.read();
-                }
-                current.add(new Atom(bs.toByteArray()));
+                break;
             }
         }
-        if (!stack.isEmpty())
-            throw new ParseException("Unclosed paren");
     }
 }

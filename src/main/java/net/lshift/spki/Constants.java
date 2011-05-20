@@ -10,7 +10,8 @@ import java.util.TimeZone;
  */
 public class Constants
 {
-    public static Charset UTF8 = Charset.forName("UTF-8");
+    public static final Charset ASCII = Charset.forName("US-ASCII");
+    public static final Charset UTF8 = Charset.forName("UTF-8");
     public static final DateFormat DATE_FORMAT;
 
     static {
