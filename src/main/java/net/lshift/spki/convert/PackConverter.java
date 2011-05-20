@@ -1,5 +1,6 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -47,5 +48,12 @@ public class PackConverter<T extends PackConvertible>
     public Sexp toSexp(T o)
     {
         return Convert.toSExpUnchecked(otherType, o.pack());
+    }
+
+    @Override
+    public void write(ConvertOutputStream out, T o)
+        throws IOException
+    {
+        out.writeUnchecked(otherType, o.pack());
     }
 }

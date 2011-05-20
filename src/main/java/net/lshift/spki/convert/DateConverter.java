@@ -1,31 +1,40 @@
 package net.lshift.spki.convert;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import net.lshift.spki.Constants;
-import net.lshift.spki.Create;
-import net.lshift.spki.Sexp;
 
 /**
  * Convert between a Date and a SExp
  */
-public class DateConverter
-    implements Converter<Date>
+public class DateConverter extends StepConverter<Date, String>
 {
     @Override
-    public Date fromSexp(Sexp sexp)
+    protected Class<Date> getResultClass()
     {
-        try {
-            return Constants.DATE_FORMAT.parse(ConvertUtils.toString(sexp));
-        } catch (ParseException e) {
-            throw new ConvertException(e);
-        }
+        return Date.class;
     }
 
     @Override
-    public Sexp toSexp(Date o)
+    protected Class<String> getStepClass()
     {
-        return Create.atom(Constants.DATE_FORMAT.format(o));
+        return String.class;
+    }
+
+    @Override
+    protected String stepIn(Date o)
+    {
+        return Constants.DATE_FORMAT.format(o);
+    }
+
+    @Override
+    protected Date stepOut(String o)
+    {
+        // TODO Auto-generated method stub
+        try {
+            return Constants.DATE_FORMAT.parse(o);
+        } catch (java.text.ParseException e) {
+            throw new ConvertException(e);
+        }
     }
 }

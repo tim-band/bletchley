@@ -2,6 +2,7 @@ package net.lshift.spki.convert;
 
 import static net.lshift.spki.Create.atom;
 
+import java.io.IOException;
 import java.util.List;
 
 import net.lshift.spki.Atom;
@@ -21,18 +22,30 @@ public class NameBeanConverter<T>
     }
 
     @Override
-    protected Sexp fieldToSexp(FieldConvertInfo fieldConvertInfo, Sexp sexp)
+    protected Sexp fieldToSexp(FieldConvertInfo field, Sexp sexp)
     {
-        return Create.list(fieldConvertInfo.getHyphenatedName(), sexp);
+        return Create.list(field.getHyphenatedName(), sexp);
+    }
+
+    @Override
+    protected void writeField(
+        ConvertOutputStream out,
+        FieldConvertInfo field,
+        Object property) throws IOException
+    {
+        out.beginSexp();
+        out.atom(field.getHyphenatedName());
+        out.writeUnchecked(field.getType(), property);
+        out.endSexp();
     }
 
     @Override
     protected Sexp getSExp(
-        FieldConvertInfo fieldConvertInfo,
+        FieldConvertInfo field,
         int i,
         Slist slist)
     {
-        String fieldName = fieldConvertInfo.getHyphenatedName();
+        String fieldName = field.getHyphenatedName();
         Atom match = atom(fieldName);
         for (Sexp s: slist.getSparts()) {
             if (s instanceof Slist) {

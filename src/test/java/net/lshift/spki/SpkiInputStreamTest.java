@@ -14,7 +14,7 @@ public class SpkiInputStreamTest
     public SpkiInputStream sis;
 
     public void setInput(byte [] bytes) {
-        sis = new SpkiInputStream(
+        sis = new CanonicalSpkiInputStream(
             new ByteArrayInputStream(bytes));
     }
 

@@ -1,5 +1,7 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
+
 import net.lshift.spki.Create;
 import net.lshift.spki.Sexp;
 
@@ -19,5 +21,12 @@ public class ByteArrayConverter
     public Sexp toSexp(byte[] o)
     {
         return Create.atom(o);
+    }
+
+    @Override
+    public void write(ConvertOutputStream out, byte[] o)
+        throws IOException
+    {
+        out.atom(o);
     }
 }

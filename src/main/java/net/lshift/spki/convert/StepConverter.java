@@ -1,5 +1,7 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
+
 import net.lshift.spki.Sexp;
 
 /**
@@ -18,6 +20,13 @@ public abstract class StepConverter<TResult, TStep>
     public Sexp toSexp(TResult o)
     {
         return Convert.toSExp(getStepClass(), stepIn(o));
+    }
+
+    @Override
+    public void write(ConvertOutputStream out, TResult o)
+        throws IOException
+    {
+        out.write(getStepClass(), stepIn(o));
     }
 
     public void registerSelf()

@@ -1,5 +1,7 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
+
 import net.lshift.spki.Create;
 import net.lshift.spki.Sexp;
 
@@ -19,5 +21,12 @@ public class StringConverter
     public Sexp toSexp(String string)
     {
         return Create.atom(string);
+    }
+
+    @Override
+    public void write(ConvertOutputStream out, String o)
+        throws IOException
+    {
+        out.atom(o);
     }
 }

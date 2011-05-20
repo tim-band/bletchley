@@ -1,5 +1,6 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -87,6 +88,25 @@ public class SequenceConverter<T> extends BeanConverter<T>
                 components.add(Convert.toSExpUnchecked(contentType, v));
             }
             return Create.list(name, components);
+        } catch (IllegalAccessException e) {
+            throw new ConvertReflectionException(e);
+        } catch (NoSuchFieldException e) {
+            throw new ConvertReflectionException(e);
+        }
+    }
+
+    @Override
+    public void write(ConvertOutputStream out, T o)
+        throws IOException
+    {
+        try {
+            out.beginSexp();
+            writeName(out);
+            List<?> property = (List<?>) clazz.getField(beanName).get(o);
+            for (Object v: property) {
+                out.writeUnchecked(contentType, v);
+            }
+        out.endSexp();
         } catch (IllegalAccessException e) {
             throw new ConvertReflectionException(e);
         } catch (NoSuchFieldException e) {

@@ -1,5 +1,6 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 
@@ -46,6 +47,31 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
             throw new ConvertReflectionException(e);
         }
     }
+
+    @Override
+    public void write(ConvertOutputStream out, T o)
+        throws IOException
+    {
+        try {
+            out.beginSexp();
+            writeName(out);
+            for (int i = 0; i < fields.length; i++) {
+                final Object property =
+                    clazz.getField(fields[i].getName()).get(o);
+                writeField(out, fields[i], property);
+            }
+            out.endSexp();
+        } catch (IllegalAccessException e) {
+            throw new ConvertReflectionException(e);
+        } catch (NoSuchFieldException e) {
+            throw new ConvertReflectionException(e);
+        }
+    }
+
+    protected abstract void writeField(
+        ConvertOutputStream out,
+        FieldConvertInfo fieldConvertInfo,
+        Object property) throws IOException;
 
     protected abstract Sexp fieldToSexp(
         FieldConvertInfo fieldConvertInfo,

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 
@@ -53,7 +54,10 @@ public class OpenableUtils
     {
         final OutputStream os = open.write();
         try {
-            Marshal.marshal(os, Convert.toSExp(clazz, o));
+            ConvertOutputStream out
+                = new ConvertOutputStream(new CanonicalSpkiOutputStream(os));
+            out.write(clazz, o);
+            out.close();
         } finally {
             os.close();
         }

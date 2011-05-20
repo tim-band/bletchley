@@ -1,5 +1,6 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,5 +49,18 @@ public class DiscriminatingConverter<T> implements Converter<T>
                 + o.getClass().getCanonicalName());
         }
         return ((Converter<T>)converter).toSexp(o);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void write(ConvertOutputStream out, T o)
+        throws IOException
+    {
+        final Converter<? extends T> converter = classMap.get(o.getClass());
+        if (converter == null) {
+            throw new ConvertException("Don't know how to convert from: "
+                + o.getClass().getCanonicalName());
+        }
+        ((Converter<T>)converter).write(out, o);
     }
 }

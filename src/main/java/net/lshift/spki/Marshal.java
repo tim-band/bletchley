@@ -35,7 +35,7 @@ public class Marshal {
 
     public static void marshal(OutputStream os, Sexp sexp) throws IOException
     {
-        marshal(new SpkiOutputStream(os), sexp);
+        marshal(new CanonicalSpkiOutputStream(os), sexp);
     }
 
     public static byte[] marshal(Sexp sexp) {
@@ -61,7 +61,7 @@ public class Marshal {
         throws ParseException,
             IOException
    {
-        return unmarshal(new SpkiInputStream(is));
+        return unmarshal(new CanonicalSpkiInputStream(is));
     }
 
     public static Sexp unmarshal(SpkiInputStream is)

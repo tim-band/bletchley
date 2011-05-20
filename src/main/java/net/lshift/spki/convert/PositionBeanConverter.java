@@ -1,5 +1,7 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
+
 import net.lshift.spki.Sexp;
 import net.lshift.spki.Slist;
 
@@ -27,5 +29,15 @@ public class PositionBeanConverter<T>
         Slist slist)
     {
         return slist.getSparts().get(i);
+    }
+
+    @Override
+    protected void writeField(
+        ConvertOutputStream out,
+        FieldConvertInfo field,
+        Object property)
+        throws IOException
+    {
+        out.writeUnchecked(field.getType(), property);
     }
 }

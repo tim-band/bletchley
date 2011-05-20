@@ -1,5 +1,6 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
 import java.math.BigInteger;
 
 import net.lshift.spki.Create;
@@ -21,5 +22,11 @@ public class BigIntegerConverter
     public Sexp toSexp(BigInteger o)
     {
         return Create.atom(o.toByteArray());
+    }
+
+    @Override
+    public void write(ConvertOutputStream out, BigInteger o) throws IOException
+    {
+        out.atom(o.toByteArray());
     }
 }
