@@ -3,7 +3,6 @@ package net.lshift.spki.convert;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import net.lshift.spki.Create;
 import net.lshift.spki.Sexp;
 
 /**

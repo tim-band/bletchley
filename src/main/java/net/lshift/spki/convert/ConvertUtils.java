@@ -9,7 +9,6 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 /**
  * Static utilities for conversion between SExps and objects.
