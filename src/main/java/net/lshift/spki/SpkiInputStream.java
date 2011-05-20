@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 public class SpkiInputStream
 {
+    private static final int NO_MORE_DIGITS_BOUND = (Integer.MAX_VALUE - 9)/10;
     private final InputStream is;
     private boolean inAtom = false;
     private boolean invalid = false;
@@ -61,7 +62,9 @@ public class SpkiInputStream
             c = is.read();
             if (c == Constants.COLON)
                 return r;
-            if (r >= (Integer.MAX_VALUE - 10)/10) {
+            if (r > NO_MORE_DIGITS_BOUND) {
+                // Could strictly speaking handle it so long as
+                // next digit is 0..7 and is last, but let's not go mad.
                 invalid = true;
                 throw new ParseException("Integer too large");
             }
