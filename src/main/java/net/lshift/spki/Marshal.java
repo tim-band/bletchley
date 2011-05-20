@@ -17,23 +17,25 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  * Marshal S-expressions into canonical form, and parse them out again.
  */
 public class Marshal {
-    public static void marshal(OutputStream ob, Sexp sexp)
+    public static void marshal(SpkiOutputStream ob, Sexp sexp)
         throws IOException
     {
         if (sexp instanceof Atom) {
-            byte[] b = ((Atom)sexp).getBytes();
-            ob.write(Integer.toString(b.length).getBytes(Constants.UTF8));
-            ob.write(Constants.COLON);
-            ob.write(b);
+            ob.atom(((Atom)sexp).getBytes());
         } else {
-            ob.write(Constants.OPENPAREN);
             final Slist slist = (Slist) sexp;
-            marshal(ob, slist.getHead());
+            ob.beginSexp();
+            ob.atom(slist.getHead().getBytes());
             for (Sexp p: slist.getSparts()) {
                 marshal(ob, p);
             }
-            ob.write(Constants.CLOSEPAREN);
+            ob.endSexp();
         }
+    }
+
+    public static void marshal(OutputStream os, Sexp sexp) throws IOException
+    {
+        marshal(new SpkiOutputStream(os), sexp);
     }
 
     public static byte[] marshal(Sexp sexp) {
