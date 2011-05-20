@@ -3,6 +3,9 @@ package net.lshift.spki;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Tokenize an InputStream into SPKI tokens
+ */
 public class SpkiInputStream
 {
     private static final int NO_MORE_DIGITS_BOUND = (Integer.MAX_VALUE - 9)/10;
