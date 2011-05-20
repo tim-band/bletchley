@@ -53,4 +53,16 @@ public class SpkiInputStreamTest
         sis.getNext();
         sis.getBytes();
     }
+
+    @Test
+    public void assertAtomIsOKWhenNextIsAtom() throws ParseException, IOException {
+        setInput("3:foo");
+        sis.assertNext(ATOM);
+    }
+
+    @Test(expected=ParseException.class)
+    public void assertAtomFailsWhenNextIsNotAtom() throws ParseException, IOException {
+        setInput("(3:foo)");
+        sis.assertNext(ATOM);
+    }
 }

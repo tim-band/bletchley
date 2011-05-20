@@ -66,18 +66,7 @@ public class Marshal {
         throws ParseException,
             IOException
     {
-        List<SExp> resl = new ArrayList<SExp>(1);
-        unmarshal(resl, is);
-        if (resl.size() != 1)
-            throw new ParseException("Wrong number of components");
-        return resl.get(0);
-    }
-
-    public static void unmarshal(List<SExp> target, SpkiInputStream is)
-        throws ParseException,
-            IOException
-    {
-        List<SExp> current = target;
+        List<SExp> current = new ArrayList<SExp>(1);
         Stack<List<SExp>> stack = new Stack<List<SExp>>();
 
         for (;;) {
@@ -86,23 +75,24 @@ public class Marshal {
             case EOF:
                 if (!stack.isEmpty())
                     throw new ParseException("Unclosed paren");
-                return;
+                if (current.size() != 1)
+                    throw new ParseException("Wrong number of components");
+                return current.get(0);
             case ATOM:
                 current.add(new Atom(is.getBytes()));
                 break;
             case OPENPAREN:
                 stack.push(current);
                 current = new ArrayList<SExp>();
+                // First item in a SExp must be an atom
+                is.assertNext(TokenType.ATOM);
+                current.add(new Atom(is.getBytes()));
                 break;
             case CLOSEPAREN:
                 if (stack.isEmpty())
                     throw new ParseException("Overclosed paren");
-                if (current.isEmpty())
-                    throw new ParseException("Empty sexp");
-                SExp head = current.get(0);
-                if (!(head instanceof Atom))
-                    throw new ParseException("First item in sexp is not atom");
-                SList c = list((Atom) head, current.subList(1, current.size()));
+                SList c = list((Atom) current.get(0),
+                    current.subList(1, current.size()));
                 current = stack.pop();
                 current.add(c);
                 break;

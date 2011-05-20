@@ -62,4 +62,11 @@ public class SpkiInputStream
         inAtom = false;
         return res;
     }
+
+    public void assertNext(TokenType type) throws ParseException, IOException
+    {
+        if (getNext() != type) {
+            throw new ParseException("Token was of unexpected type");
+        }
+    }
 }
