@@ -24,7 +24,7 @@ public class SequenceSigningTest
         PublicSigningKey publicKey = privateKey.getPublicKey();
         SimpleMessage message = new SimpleMessage(
             SequenceSigningTest.class.getCanonicalName(),
-            "The magic words are squeamish ossifrage".getBytes(Constants.UTF8));
+            "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         sequenceItems.add(publicKey.pack());
         sequenceItems.add(message);

@@ -24,7 +24,7 @@ public class PKEncryptionTest {
         publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
         SimpleMessage message = new SimpleMessage(
             PKEncryptionTest.class.getCanonicalName(),
-            "The magic words are squeamish ossifrage".getBytes(Constants.UTF8));
+            "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         AesKey aesKey = publicKey.setupEncrypt(sequenceItems);
         sequenceItems.add(aesKey.encrypt(message));

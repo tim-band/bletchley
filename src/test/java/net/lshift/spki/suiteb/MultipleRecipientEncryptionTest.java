@@ -27,7 +27,7 @@ public class MultipleRecipientEncryptionTest
         }
         SimpleMessage message = new SimpleMessage(
             MultipleRecipientEncryptionTest.class.getCanonicalName(),
-            "The magic words are squeamish ossifrage".getBytes(Constants.UTF8));
+            "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         AesKey aesKey = AesKey.generateAESKey();
         for (PublicEncryptionKey pKey : publicKeys) {

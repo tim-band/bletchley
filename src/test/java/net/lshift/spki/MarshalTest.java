@@ -11,14 +11,14 @@ import static org.junit.Assert.assertEquals;
 public class MarshalTest {
     @Test
     public void marshalTest() {
-        byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.UTF8);
+        byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.ASCII);
         Sexp struct = list("test", atom("abcdefghijklmnopqrstuvwxyz"), atom("12345"), atom(":: ::"));
         assertArrayEquals(bytes, Marshal.marshal(struct));
     }
 
     @Test
     public void unmarshalTest() throws ParseException {
-        byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.UTF8);
+        byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.ASCII);
         Sexp struct = list("test", atom("abcdefghijklmnopqrstuvwxyz"), atom("12345"), atom(":: ::"));
         assertEquals(struct, Marshal.unmarshal(bytes));
     }

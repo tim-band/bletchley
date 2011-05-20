@@ -74,7 +74,7 @@ public class PrettyPrinter {
             // should not be possible
             throw new RuntimeException(e);
         }
-        return new String(baos.toByteArray(), Constants.UTF8);
+        return new String(baos.toByteArray(), Constants.ASCII);
     }
 
 }

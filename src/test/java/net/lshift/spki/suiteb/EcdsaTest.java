@@ -34,7 +34,7 @@ public class EcdsaTest
         ECDSASigner signer = new ECDSASigner();
         signer.init(true, senderPair.getPrivate());
         byte[] message = "The magic words are squeamish ossifrage".getBytes(
-            Constants.UTF8);
+            Constants.ASCII);
         SHA384Digest digester = new SHA384Digest();
         digester.update(message, 0, message.length);
         byte[] digest = new byte[digester.getDigestSize()];

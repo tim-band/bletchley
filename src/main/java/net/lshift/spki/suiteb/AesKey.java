@@ -22,7 +22,7 @@ public class AesKey extends PositionBeanConvertible implements SequenceItem
 {
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
-        = "8:keyid-ad".getBytes(Constants.UTF8);
+        = "8:keyid-ad".getBytes(Constants.ASCII);
     private static final byte[] ZERO_BYTES = new byte[] { };
 
     public final byte[] key;
