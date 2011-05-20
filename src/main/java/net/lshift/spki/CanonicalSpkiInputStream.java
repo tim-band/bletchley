@@ -6,12 +6,11 @@ import java.io.InputStream;
 /**
  * Tokenize an InputStream into SPKI tokens
  */
-public class CanonicalSpkiInputStream implements SpkiInputStream
+public class CanonicalSpkiInputStream extends SpkiInputStream
 {
     private static final int NO_MORE_DIGITS_BOUND = (Integer.MAX_VALUE - 9)/10;
     private final InputStream is;
     private boolean inAtom = false;
-    private boolean invalid = false;
     private int atomBytes;
 
     public CanonicalSpkiInputStream(InputStream is)
@@ -19,9 +18,6 @@ public class CanonicalSpkiInputStream implements SpkiInputStream
         this.is = is;
     }
 
-    /* (non-Javadoc)
-     * @see net.lshift.spki.SpkiInputStream#next()
-     */
     @Override
     public TokenType next() throws IOException, ParseException
     {
@@ -72,9 +68,6 @@ public class CanonicalSpkiInputStream implements SpkiInputStream
         }
     }
 
-    /* (non-Javadoc)
-     * @see net.lshift.spki.SpkiInputStream#atomBytes()
-     */
     @Override
     public byte[] atomBytes() throws IOException, ParseException
     {
@@ -92,17 +85,5 @@ public class CanonicalSpkiInputStream implements SpkiInputStream
         }
         inAtom = false;
         return res;
-    }
-
-    /* (non-Javadoc)
-     * @see net.lshift.spki.SpkiInputStream#nextAssertType(net.lshift.spki.CanonicalSpkiInputStream.TokenType)
-     */
-    @Override
-    public void nextAssertType(TokenType type) throws ParseException, IOException
-    {
-        if (next() != type) {
-            invalid = true;
-            throw new ParseException("Token was of unexpected type");
-        }
     }
 }

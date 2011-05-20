@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Interface representing a stream of SPKI tokens
  */
-public interface SpkiInputStream
+public abstract class SpkiInputStream
 {
     public enum TokenType {
         ATOM,
@@ -13,6 +13,8 @@ public interface SpkiInputStream
         CLOSEPAREN,
         EOF
     }
+
+    protected boolean invalid = false;
 
     public abstract TokenType next()
         throws IOException,
@@ -22,7 +24,13 @@ public interface SpkiInputStream
         throws IOException,
             ParseException;
 
-    public abstract void nextAssertType(TokenType type)
+    public void nextAssertType(TokenType type)
         throws ParseException,
-            IOException;
+            IOException
+    {
+        if (next() != type) {
+            invalid = true;
+            throw new ParseException("Token was of unexpected type");
+        }
+    }
 }

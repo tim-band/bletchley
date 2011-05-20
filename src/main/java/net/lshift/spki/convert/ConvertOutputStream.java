@@ -6,7 +6,7 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.SpkiOutputStream;
 
 public class ConvertOutputStream
-    implements SpkiOutputStream
+    extends SpkiOutputStream
 {
     private final SpkiOutputStream os;
     private final Registry registry;
@@ -23,13 +23,6 @@ public class ConvertOutputStream
         throws IOException
     {
         os.atom(bytes, off, len);
-    }
-
-    @Override
-    public void atom(byte[] bytes)
-        throws IOException
-    {
-        os.atom(bytes);
     }
 
     @Override
@@ -64,7 +57,9 @@ public class ConvertOutputStream
     }
 
     @SuppressWarnings("unchecked")
-    public <T> void writeUnchecked(Class<?> clazz, Object o) throws IOException {
+    public <T> void writeUnchecked(Class<?> clazz, Object o)
+        throws IOException
+    {
         ((Converter<Object>) registry.getConverter(clazz)).write(this, o);
     }
 }
