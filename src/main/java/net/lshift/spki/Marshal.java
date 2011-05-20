@@ -72,7 +72,7 @@ public class Marshal {
         Stack<List<Sexp>> stack = new Stack<List<Sexp>>();
 
         for (;;) {
-            TokenType token = is.getNext();
+            TokenType token = is.next();
             switch (token) {
             case EOF:
                 if (!stack.isEmpty())
@@ -81,14 +81,14 @@ public class Marshal {
                     throw new ParseException("Wrong number of components");
                 return current.get(0);
             case ATOM:
-                current.add(new Atom(is.getBytes()));
+                current.add(new Atom(is.atomBytes()));
                 break;
             case OPENPAREN:
                 stack.push(current);
                 current = new ArrayList<Sexp>();
                 // First item in a SExp must be an atom
-                is.getNextOfType(TokenType.ATOM);
-                current.add(new Atom(is.getBytes()));
+                is.nextAssertType(TokenType.ATOM);
+                current.add(new Atom(is.atomBytes()));
                 break;
             case CLOSEPAREN:
                 if (stack.isEmpty())

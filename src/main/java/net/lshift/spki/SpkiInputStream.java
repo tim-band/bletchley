@@ -26,7 +26,7 @@ public class SpkiInputStream
         this.is = is;
     }
 
-    public TokenType getNext() throws IOException, ParseException
+    public TokenType next() throws IOException, ParseException
     {
         if (invalid) {
             throw new ParseException("Stream is dead");
@@ -75,7 +75,7 @@ public class SpkiInputStream
         }
     }
 
-    public byte[] getBytes() throws IOException, ParseException
+    public byte[] atomBytes() throws IOException, ParseException
     {
         if (invalid) {
             throw new ParseException("Stream is dead");
@@ -93,9 +93,9 @@ public class SpkiInputStream
         return res;
     }
 
-    public void getNextOfType(TokenType type) throws ParseException, IOException
+    public void nextAssertType(TokenType type) throws ParseException, IOException
     {
-        if (getNext() != type) {
+        if (next() != type) {
             invalid = true;
             throw new ParseException("Token was of unexpected type");
         }
