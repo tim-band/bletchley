@@ -26,6 +26,6 @@ public class DateConverter
     @Override
     public Sexp toSexp(Date o)
     {
-        return Create.atom(o);
+        return Create.atom(Constants.DATE_FORMAT.format(o));
     }
 }
