@@ -85,7 +85,7 @@ public class Marshal {
                 stack.push(current);
                 current = new ArrayList<SExp>();
                 // First item in a SExp must be an atom
-                is.assertNext(TokenType.ATOM);
+                is.getNextOfType(TokenType.ATOM);
                 current.add(new Atom(is.getBytes()));
                 break;
             case CLOSEPAREN:

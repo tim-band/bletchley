@@ -54,15 +54,40 @@ public class SpkiInputStreamTest
         sis.getBytes();
     }
 
+    @Test(expected=ParseException.class)
+    public void assertMustReadAtom() throws ParseException, IOException {
+        setInput("3:foo");
+        sis.getNext();
+        sis.getNext();
+    }
+
+
     @Test
     public void assertAtomIsOKWhenNextIsAtom() throws ParseException, IOException {
         setInput("3:foo");
-        sis.assertNext(ATOM);
+        sis.getNextOfType(ATOM);
     }
 
     @Test(expected=ParseException.class)
     public void assertAtomFailsWhenNextIsNotAtom() throws ParseException, IOException {
         setInput("(3:foo)");
-        sis.assertNext(ATOM);
+        sis.getNextOfType(ATOM);
+    }
+
+    @Test(expected=ParseException.class)
+    public void assertNonDigitsFails() throws ParseException, IOException {
+        setInput("34asdf");
+        sis.getNext();
+    }
+
+    @Test(expected=ParseException.class)
+    public void assertDoesntRecover() throws ParseException, IOException {
+        setInput("34a3:foo");
+        try {
+            sis.getNext();
+        } catch (ParseException e) {
+            // ignore it
+        }
+        sis.getBytes();
     }
 }
