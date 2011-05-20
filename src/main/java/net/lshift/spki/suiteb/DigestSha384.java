@@ -3,7 +3,7 @@ package net.lshift.spki.suiteb;
 import java.util.Arrays;
 
 import net.lshift.spki.Marshal;
-import net.lshift.spki.SExp;
+import net.lshift.spki.Sexp;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.PackConvertible;
@@ -45,7 +45,7 @@ public class DigestSha384 extends PackConvertible
         return new DigestSha384(hash.value);
     }
 
-    public static DigestSha384 digest(SExp sexp)
+    public static DigestSha384 digest(Sexp sexp)
     {
         // FIXME: shouldn't need to write out the whole message to digest it
         SHA384Digest digester = new SHA384Digest();

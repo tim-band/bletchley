@@ -12,13 +12,13 @@ import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertible;
-import net.lshift.spki.convert.SExpName;
+import net.lshift.spki.convert.SexpName;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 /**
  * A key to use with AES/GCM.
  */
-public class AESKey extends PositionBeanConvertible implements SequenceItem
+public class AesKey extends PositionBeanConvertible implements SequenceItem
 {
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
@@ -27,14 +27,14 @@ public class AESKey extends PositionBeanConvertible implements SequenceItem
 
     public final byte[] key;
 
-    @SExpName("aes-gcm-key")
-    public AESKey(
+    @SexpName("aes-gcm-key")
+    public AesKey(
         @P("key") byte[] key
     ) {
         this.key = key;
     }
 
-    public AESKeyId getKeyId() {
+    public AesKeyId getKeyId() {
         try {
             GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
@@ -43,16 +43,16 @@ public class AESKey extends PositionBeanConvertible implements SequenceItem
             int resp = gcm.processBytes(ZERO_BYTES, 0, ZERO_BYTES.length,
                 ciphertext, 0);
             gcm.doFinal(ciphertext, resp);
-            return new AESKeyId(ciphertext);
+            return new AesKeyId(ciphertext);
         } catch (InvalidCipherTextException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public AESPacket encrypt(SequenceItem message)
+    public AesPacket encrypt(SequenceItem message)
     {
         try {
-            byte[] nonce = EC.randomBytes(12);
+            byte[] nonce = Ec.randomBytes(12);
             GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, nonce, ZERO_BYTES));
@@ -62,13 +62,13 @@ public class AESKey extends PositionBeanConvertible implements SequenceItem
             int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);
             gcm.doFinal(ciphertext, resp);
-            return new AESPacket(getKeyId(), nonce, ciphertext);
+            return new AesPacket(getKeyId(), nonce, ciphertext);
         } catch (InvalidCipherTextException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public SequenceItem decrypt(AESPacket packet)
+    public SequenceItem decrypt(AesPacket packet)
         throws InvalidCipherTextException,
             ParseException
     {
@@ -88,8 +88,8 @@ public class AESKey extends PositionBeanConvertible implements SequenceItem
         }
     }
 
-    public static AESKey generateAESKey()
+    public static AesKey generateAESKey()
     {
-        return new AESKey(EC.randomBytes(AES_KEY_BYTES));
+        return new AesKey(Ec.randomBytes(AES_KEY_BYTES));
     }
 }

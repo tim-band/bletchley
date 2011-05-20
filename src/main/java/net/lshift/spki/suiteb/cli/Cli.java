@@ -11,11 +11,11 @@ import java.util.List;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.SExp;
+import net.lshift.spki.Sexp;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
-import net.lshift.spki.suiteb.AESKey;
+import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -29,16 +29,16 @@ import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 /**
  * Command line interface to crypto functions
  */
-public class CLI
+public class Cli
 {
-    private static final String CLI_MESSAGE = CLI.class.toString();
+    private static final String CLI_MESSAGE = Cli.class.toString();
 
     public static void prettyPrint(Openable file)
         throws IOException,
             ParseException
     {
         PrettyPrinter.prettyPrint(System.out,
-            read(SExp.class, file));
+            read(Sexp.class, file));
     }
 
     public static void genEncryptionKey(Openable out) throws IOException
@@ -103,10 +103,10 @@ public class CLI
         Openable[] args) throws ParseException, IOException
     {
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
-        AESKey aesKey = AESKey.generateAESKey();
+        AesKey aesKey = AesKey.generateAESKey();
         for (int i = 2; i < args.length-1; i++) {
             PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
-            AESKey rKey = pKey.setupEncrypt(sequenceItems);
+            AesKey rKey = pKey.setupEncrypt(sequenceItems);
             sequenceItems.add(rKey.encrypt(aesKey));
         }
 

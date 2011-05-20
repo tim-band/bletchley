@@ -29,9 +29,9 @@ public class MultipleRecipientEncryptionTest
             MultipleRecipientEncryptionTest.class.getCanonicalName(),
             "The magic words are squeamish ossifrage".getBytes(Constants.UTF8));
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
-        AESKey aesKey = AESKey.generateAESKey();
+        AesKey aesKey = AesKey.generateAESKey();
         for (PublicEncryptionKey pKey : publicKeys) {
-            AESKey rKey = pKey.setupEncrypt(sequenceItems);
+            AesKey rKey = pKey.setupEncrypt(sequenceItems);
             sequenceItems.add(rKey.encrypt(aesKey));
         }
         sequenceItems.add(aesKey.encrypt(message));

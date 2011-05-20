@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import net.lshift.spki.convert.PackConvertible;
-import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
+import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -18,13 +18,13 @@ public class PrivateEncryptionKey extends PackConvertible {
         this.keyPair = keyPair;
     }
 
-    public static PrivateEncryptionKey unpack(ECDHPrivateKey packed) {
+    public static PrivateEncryptionKey unpack(EcdhPrivateKey packed) {
         return new PrivateEncryptionKey(packed.getKeypair());
     }
 
     @Override
-    public ECDHPrivateKey pack() {
-        return new ECDHPrivateKey(keyPair);
+    public EcdhPrivateKey pack() {
+        return new EcdhPrivateKey(keyPair);
     }
 
     // FIXME: cache this or regenerate every time?
@@ -33,14 +33,14 @@ public class PrivateEncryptionKey extends PackConvertible {
     }
 
     public static PrivateEncryptionKey generate() {
-        return new PrivateEncryptionKey(EC.generate());
+        return new PrivateEncryptionKey(Ec.generate());
     }
 
     public byte[] getKey(ECPoint ephemeralKey)
     {
         ECPublicKeyParameters pk =
-            EC.toECPublicKeyParameters(ephemeralKey);
-        return EC.sessionKey(
+            Ec.toECPublicKeyParameters(ephemeralKey);
+        return Ec.sessionKey(
             keyPair.getPublic(),
             pk,
             keyPair.getPrivate(),

@@ -13,7 +13,7 @@ import org.bouncycastle.util.encoders.Hex;
  * Pretty-print an SPKI S-expression.
  */
 public class PrettyPrinter {
-    public static void prettyPrint(PrintStream ps, String prefix, SExp sexp)
+    public static void prettyPrint(PrintStream ps, String prefix, Sexp sexp)
             throws IOException {
         if (sexp instanceof Atom) {
             byte[] bytes = ((Atom) sexp).getBytes();
@@ -41,12 +41,12 @@ public class PrettyPrinter {
                 ps.println("|");
             }
         } else {
-            List<SExp> sparts = ((SList) sexp).getSparts();
+            List<Sexp> sparts = ((Slist) sexp).getSparts();
             ps.print(prefix);
             ps.print("(\"");
-            ps.write(((SList) sexp).getHead().getBytes());
+            ps.write(((Slist) sexp).getHead().getBytes());
             ps.println("\"");
-            for (SExp part: sparts) {
+            for (Sexp part: sparts) {
                 prettyPrint(ps, prefix + "    ", part);
             }
             ps.print(prefix);
@@ -54,7 +54,7 @@ public class PrettyPrinter {
         }
     }
 
-    public static void prettyPrint(OutputStream os, SExp sexp)
+    public static void prettyPrint(OutputStream os, Sexp sexp)
     throws IOException {
         PrintStream ps;
         try {
@@ -65,7 +65,7 @@ public class PrettyPrinter {
         prettyPrint(ps, "", sexp);
     }
 
-    public static String prettyPrint(SExp sexp)
+    public static String prettyPrint(Sexp sexp)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {

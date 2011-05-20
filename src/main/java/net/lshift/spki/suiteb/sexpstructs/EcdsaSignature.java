@@ -4,18 +4,18 @@ import java.math.BigInteger;
 
 import net.lshift.spki.convert.NameBeanConvertible;
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.SExpName;
+import net.lshift.spki.convert.SexpName;
 
 /**
  * Serialization format for a raw ECDSA signature
  */
-public class ECDSASignature extends NameBeanConvertible
+public class EcdsaSignature extends NameBeanConvertible
 {
     public final BigInteger r;
     public final BigInteger s;
 
-    @SExpName("suiteb-p384-ecdsa-signature")
-    public ECDSASignature(
+    @SexpName("suiteb-p384-ecdsa-signature")
+    public EcdsaSignature(
         @P("r") BigInteger r,
         @P("s") BigInteger s
     ) {

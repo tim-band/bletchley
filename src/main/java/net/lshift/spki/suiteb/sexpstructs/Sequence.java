@@ -3,7 +3,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 import java.util.List;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.SExpName;
+import net.lshift.spki.convert.SexpName;
 import net.lshift.spki.convert.SequenceConvertible;
 
 /**
@@ -13,7 +13,7 @@ public class Sequence extends SequenceConvertible implements SequenceItem
 {
     public final List<SequenceItem> sequence;
 
-    @SExpName("sequence")
+    @SexpName("sequence")
     public Sequence(
         @P("sequence") List<SequenceItem> sequence)
     {

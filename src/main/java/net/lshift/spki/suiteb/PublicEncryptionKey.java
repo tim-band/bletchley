@@ -2,8 +2,8 @@ package net.lshift.spki.suiteb;
 
 import java.util.List;
 
-import net.lshift.spki.suiteb.sexpstructs.ECDHItem;
-import net.lshift.spki.suiteb.sexpstructs.ECDHPublicKey;
+import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
+import net.lshift.spki.suiteb.sexpstructs.EcdhPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -18,25 +18,25 @@ public class PublicEncryptionKey extends PublicKey  {
         super(publicKey);
     }
 
-    public static PublicEncryptionKey unpack(ECDHPublicKey sexp) {
+    public static PublicEncryptionKey unpack(EcdhPublicKey sexp) {
         return new PublicEncryptionKey(sexp.getParameters());
     }
 
     @Override
-    public ECDHPublicKey pack() {
-        return new ECDHPublicKey(publicKey);
+    public EcdhPublicKey pack() {
+        return new EcdhPublicKey(publicKey);
     }
 
-    public AESKey setupEncrypt(List<SequenceItem> sequence)
+    public AesKey setupEncrypt(List<SequenceItem> sequence)
     {
-        AsymmetricCipherKeyPair ephemeralKey = EC.generate();
-        AESKey res = new AESKey(
-            EC.sessionKey(
+        AsymmetricCipherKeyPair ephemeralKey = Ec.generate();
+        AesKey res = new AesKey(
+            Ec.sessionKey(
                 publicKey,
                 ephemeralKey.getPublic(),
                 ephemeralKey.getPrivate(),
                 publicKey));
-        sequence.add(new ECDHItem(
+        sequence.add(new EcdhItem(
             keyId,
             ((ECPublicKeyParameters) ephemeralKey.getPublic()).getQ()));
         return res;

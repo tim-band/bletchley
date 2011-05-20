@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 import net.lshift.spki.Create;
-import net.lshift.spki.SExp;
-import net.lshift.spki.SList;
+import net.lshift.spki.Sexp;
+import net.lshift.spki.Slist;
 
 /**
  * Converter for a class that has a single field of type List.
@@ -52,16 +52,16 @@ public class SequenceConverter<T> extends BeanConverter<T>
     }
 
     @Override
-    public T fromSexp(SExp sexp)
+    public T fromSexp(Sexp sexp)
     {
-        SList slist = (SList) sexp;
+        Slist slist = (Slist) sexp;
         if (!Create.atom(name).equals(slist.getHead())) {
             throw new ConvertException("Expected " + name +
                 " but was " + slist.getHead());
         }
-        List<SExp> tail = slist.getSparts();
+        List<Sexp> tail = slist.getSparts();
         List<Object> components = new ArrayList<Object>(tail.size());
-        for (SExp tailPart: tail) {
+        for (Sexp tailPart: tail) {
             components.add(Convert.fromSExp(contentType, tailPart));
         }
         Object[] initargs = new Object[1];
@@ -78,11 +78,11 @@ public class SequenceConverter<T> extends BeanConverter<T>
     }
 
     @Override
-    public SExp toSexp(T o)
+    public Sexp toSexp(T o)
     {
         try {
             List<?> property = (List<?>)  clazz.getField(beanName).get(o);
-            List<SExp> components = new ArrayList<SExp>(property.size());
+            List<Sexp> components = new ArrayList<Sexp>(property.size());
             for (Object v: property) {
                 components.add(Convert.toSExpUnchecked(contentType, v));
             }

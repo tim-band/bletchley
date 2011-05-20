@@ -3,8 +3,8 @@ package net.lshift.spki;
 /**
  * SPKI S-expression type.  Should have only two implementors,
  * @see Atom
- * @see SList
+ * @see Slist
  */
-public interface SExp {
+public interface Sexp {
     // Define no methods - all in Atom or SList.
 }

@@ -3,7 +3,7 @@ package net.lshift.spki.suiteb;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-import net.lshift.spki.suiteb.sexpstructs.ECDHSharedSecret;
+import net.lshift.spki.suiteb.sexpstructs.EcdhSharedSecret;
 
 import org.bouncycastle.asn1.nist.NISTNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -19,7 +19,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Static convenience functions for working with elliptic curves.
  */
-public class EC {
+public class Ec {
     private static final int KEY_ID_BYTES = 4;
 
     private static final X9ECParameters CURVE
@@ -41,7 +41,7 @@ public class EC {
 
     public static ECPublicKeyParameters toECPublicKeyParameters(ECPoint point)
     {
-        return new ECPublicKeyParameters(point, EC.DOMAIN_PARAMETERS);
+        return new ECPublicKeyParameters(point, Ec.DOMAIN_PARAMETERS);
     }
 
     public static byte[] sessionKey(
@@ -52,18 +52,18 @@ public class EC {
     ) {
         ECDHBasicAgreement senderAgreement = new ECDHBasicAgreement();
         senderAgreement.init(privateKey);
-        ECDHSharedSecret sharedSecret = new ECDHSharedSecret(
+        EcdhSharedSecret sharedSecret = new EcdhSharedSecret(
             ((ECPublicKeyParameters)receiverKey).getQ(),
             ((ECPublicKeyParameters)senderKey).getQ(),
             senderAgreement.calculateAgreement(publicKey));
         DigestSha384 hash = DigestSha384.digest(
-            ECDHSharedSecret.class, sharedSecret);
-        return Arrays.copyOf(hash.getBytes(), AESKey.AES_KEY_BYTES);
+            EcdhSharedSecret.class, sharedSecret);
+        return Arrays.copyOf(hash.getBytes(), AesKey.AES_KEY_BYTES);
     }
 
-    public static AESKeyId generateAESKeyId()
+    public static AesKeyId generateAESKeyId()
     {
-        return new AESKeyId(randomBytes(KEY_ID_BYTES));
+        return new AesKeyId(randomBytes(KEY_ID_BYTES));
     }
 
     public static byte[] randomBytes(int len)

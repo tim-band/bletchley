@@ -2,8 +2,8 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertible;
-import net.lshift.spki.convert.SExpName;
-import net.lshift.spki.suiteb.sexpstructs.ECDSASignature;
+import net.lshift.spki.convert.SexpName;
+import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 /**
@@ -15,13 +15,13 @@ public class Signature extends PositionBeanConvertible
 {
     public final DigestSha384 digest;
     public final DigestSha384 keyId;
-    public final ECDSASignature rawSignature;
+    public final EcdsaSignature rawSignature;
 
-    @SExpName("signature")
+    @SexpName("signature")
     public Signature(
         @P("digest") DigestSha384 digest,
         @P("keyId") DigestSha384 keyId,
-        @P("rawSignature") ECDSASignature rawSignature
+        @P("rawSignature") EcdsaSignature rawSignature
     ) {
         this.digest = digest;
         this.keyId = keyId;

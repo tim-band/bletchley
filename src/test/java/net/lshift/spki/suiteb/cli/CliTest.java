@@ -11,7 +11,7 @@ import net.lshift.spki.convert.OpenableUtils;
 
 import org.junit.Test;
 
-public class CLITest
+public class CliTest
 {
     @Test
     public void cliTest()
@@ -28,15 +28,15 @@ public class CLITest
         Openable packet = new ByteOpenable();
         Openable result = new ByteOpenable();
 
-        CLI.main("genSigningKey", sPrivate);
-        CLI.main("getPublicSigningKey", sPrivate, sPublic);
-        CLI.main("genEncryptionKey", ePrivate);
-        CLI.main("getPublicEncryptionKey", ePrivate, ePublic);
+        Cli.main("genSigningKey", sPrivate);
+        Cli.main("getPublicSigningKey", sPrivate, sPublic);
+        Cli.main("genEncryptionKey", ePrivate);
+        Cli.main("getPublicEncryptionKey", ePrivate, ePublic);
 
         OpenableUtils.writeBytes(message, messageBytes);
-        CLI.main("genEncryptedSignedMessage",
+        Cli.main("genEncryptedSignedMessage",
             sPrivate, message, ePublic, packet);
-        CLI.main("decryptSignedMessage",
+        Cli.main("decryptSignedMessage",
             ePrivate, sPublic, packet, result);
         byte[] resultBytes = OpenableUtils.readBytes(result);
         assertArrayEquals(messageBytes, resultBytes);

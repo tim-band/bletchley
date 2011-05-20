@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb;
 
-import net.lshift.spki.suiteb.sexpstructs.ECDSAPublicKey;
-import net.lshift.spki.suiteb.sexpstructs.ECDSASignature;
+import net.lshift.spki.suiteb.sexpstructs.EcdsaPublicKey;
+import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
@@ -18,16 +18,16 @@ public class PublicSigningKey extends PublicKey
         signer.init(false, publicKey);
     }
 
-    public static PublicSigningKey unpack(ECDSAPublicKey sexp) {
+    public static PublicSigningKey unpack(EcdsaPublicKey sexp) {
         return new PublicSigningKey(sexp.getParameters());
     }
 
     @Override
-    public ECDSAPublicKey pack() {
-        return new ECDSAPublicKey(publicKey);
+    public EcdsaPublicKey pack() {
+        return new EcdsaPublicKey(publicKey);
     }
 
-    public boolean validate(DigestSha384 digest, ECDSASignature sigVal)
+    public boolean validate(DigestSha384 digest, EcdsaSignature sigVal)
     {
         return signer.verifySignature(digest.getBytes(),
             sigVal.r, sigVal.s);

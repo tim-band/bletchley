@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * An atom in an SPKI S-expression
  */
-public final class Atom implements SExp {
+public final class Atom implements Sexp {
     private final byte[] bytes;
 
     public Atom(byte[] bytes) {

@@ -10,11 +10,11 @@ import net.lshift.spki.convert.PackConvertible;
  * Symmetrically encrypted packets carry this information so you know what
  * key to decrypt them with.
  */
-public class AESKeyId extends PackConvertible
+public class AesKeyId extends PackConvertible
 {
     public final byte[] keyId;
 
-    public AESKeyId(byte[] keyId)
+    public AesKeyId(byte[] keyId)
     {
         super();
         this.keyId = keyId;
@@ -25,8 +25,8 @@ public class AESKeyId extends PackConvertible
         return keyId;
     }
 
-    public static AESKeyId unpack(byte[] keyId) {
-        return new AESKeyId(keyId);
+    public static AesKeyId unpack(byte[] keyId) {
+        return new AesKeyId(keyId);
     }
     @Override
     public int hashCode()

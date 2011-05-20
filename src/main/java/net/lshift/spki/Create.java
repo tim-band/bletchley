@@ -9,7 +9,7 @@ import java.util.Date;
  * Designed to be imported statically.
  */
 public class Create {
-    public static SExp atom(byte[] bytes) {
+    public static Sexp atom(byte[] bytes) {
         return new Atom(bytes);
     }
 
@@ -30,23 +30,23 @@ public class Create {
         return atom(BigInteger.valueOf(i));
     }
 
-    public static SList list(Atom head, SExp... tail) {
-        return new SList(head, tail);
+    public static Slist list(Atom head, Sexp... tail) {
+        return new Slist(head, tail);
     }
 
-    public static SList list(String head, SExp... tail) {
+    public static Slist list(String head, Sexp... tail) {
         return list(atom(head), tail);
     }
 
-    public static SList list(Atom head, Collection<SExp> tail) {
-        return list(head, tail.toArray(new SExp[tail.size()]));
+    public static Slist list(Atom head, Collection<Sexp> tail) {
+        return list(head, tail.toArray(new Sexp[tail.size()]));
     }
 
-    public static SList list(String head, Collection<SExp> tail) {
+    public static Slist list(String head, Collection<Sexp> tail) {
         return list(atom(head), tail);
     }
 
-    public static SList list(String head, BigInteger value) {
+    public static Slist list(String head, BigInteger value) {
         return list(head, atom(value));
     }
 }

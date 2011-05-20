@@ -4,8 +4,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 
 import net.lshift.spki.Create;
-import net.lshift.spki.SExp;
-import net.lshift.spki.SList;
+import net.lshift.spki.Sexp;
+import net.lshift.spki.Slist;
 
 /**
  * Superclass for a converter that reads bean properties based on
@@ -29,10 +29,10 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
     }
 
     @Override
-    public SExp toSexp(T o)
+    public Sexp toSexp(T o)
     {
         try {
-            SExp[] components = new SExp[fields.length];
+            Sexp[] components = new Sexp[fields.length];
             for (int i = 0; i < fields.length; i++) {
                 final Object property =
                     clazz.getField(fields[i].getName()).get(o);
@@ -47,14 +47,14 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
         }
     }
 
-    protected abstract SExp fieldToSexp(
+    protected abstract Sexp fieldToSexp(
         FieldConvertInfo fieldConvertInfo,
-        SExp sexp);
+        Sexp sexp);
 
     @Override
-    public T fromSexp(SExp sexp)
+    public T fromSexp(Sexp sexp)
     {
-        SList slist = (SList) sexp;
+        Slist slist = (Slist) sexp;
         if (!Create.atom(name).equals(slist.getHead())) {
             throw new ConvertException("Expected " + name +
                 " but was " + slist.getHead());
@@ -75,8 +75,8 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
         }
     }
 
-    protected abstract SExp getSExp(
+    protected abstract Sexp getSExp(
         FieldConvertInfo fieldConvertInfo,
         int i,
-        SList slist);
+        Slist slist);
 }

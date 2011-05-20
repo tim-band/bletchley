@@ -8,15 +8,15 @@ import java.util.List;
  * A bracketed list in an SPKI S-expression.  Note that
  * the first item in a list must be an atom.
  */
-public final class SList implements SExp {
+public final class Slist implements Sexp {
     private final Atom head;
-    private final List<SExp> sparts;
+    private final List<Sexp> sparts;
 
-    public SList(Atom head, SExp[] sparts) {
+    public Slist(Atom head, Sexp[] sparts) {
         super();
         assert head != null;
         assert sparts != null;
-        for (SExp part: sparts) {
+        for (Sexp part: sparts) {
             assert part != null;
         }
         this.head = head;
@@ -28,7 +28,7 @@ public final class SList implements SExp {
         return head;
     }
 
-    public List<SExp> getSparts() {
+    public List<Sexp> getSparts() {
         return sparts;
     }
 
@@ -47,7 +47,7 @@ public final class SList implements SExp {
     {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        SList other = (SList) obj;
+        Slist other = (Slist) obj;
         if (head == null) {
             if (other.head != null) return false;
         } else if (!head.equals(other.head)) return false;
@@ -63,7 +63,7 @@ public final class SList implements SExp {
         StringBuilder sb = new StringBuilder();
         sb.append('(');
         sb.append(head.toString());
-        for (SExp s: sparts) {
+        for (Sexp s: sparts) {
             sb.append(' ');
             sb.append(s.toString());
         }

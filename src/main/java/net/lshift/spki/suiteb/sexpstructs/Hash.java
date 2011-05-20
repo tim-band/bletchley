@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertible;
-import net.lshift.spki.convert.SExpName;
+import net.lshift.spki.convert.SexpName;
 
 /**
  * SPKI hash value format
@@ -13,7 +13,7 @@ public class Hash
     public final String hashType;
     public final byte[] value;
 
-    @SExpName("hash")
+    @SexpName("hash")
     public Hash(
         @P("hashType") String hashType,
         @P("value") byte[] value)

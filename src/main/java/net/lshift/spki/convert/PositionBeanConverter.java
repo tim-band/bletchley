@@ -1,7 +1,7 @@
 package net.lshift.spki.convert;
 
-import net.lshift.spki.SExp;
-import net.lshift.spki.SList;
+import net.lshift.spki.Sexp;
+import net.lshift.spki.Slist;
 
 /**
  * SExp converter that lists the bean fields in a fixed order.
@@ -15,16 +15,16 @@ public class PositionBeanConverter<T>
     }
 
     @Override
-    protected SExp fieldToSexp(FieldConvertInfo fieldConvertInfo, SExp sexp)
+    protected Sexp fieldToSexp(FieldConvertInfo fieldConvertInfo, Sexp sexp)
     {
         return sexp;
     }
 
     @Override
-    protected SExp getSExp(
+    protected Sexp getSExp(
         FieldConvertInfo fieldConvertInfo,
         int i,
-        SList slist)
+        Slist slist)
     {
         return slist.getSparts().get(i);
     }

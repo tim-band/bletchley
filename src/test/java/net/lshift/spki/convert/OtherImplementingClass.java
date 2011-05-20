@@ -3,7 +3,7 @@ package net.lshift.spki.convert;
 public class OtherImplementingClass extends PositionBeanConvertible
     implements Interface
 {
-    @SExpName("other-implementing-class")
+    @SexpName("other-implementing-class")
     public OtherImplementingClass()
     {
         super();

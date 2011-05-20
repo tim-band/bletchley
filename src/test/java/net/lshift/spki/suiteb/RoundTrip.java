@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.SExp;
+import net.lshift.spki.Sexp;
 import net.lshift.spki.convert.ByteOpenable;
 
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class RoundTrip
         try {
             ByteOpenable buf = new ByteOpenable();
             write(buf, clazz, o);
-            LOG.info(PrettyPrinter.prettyPrint(read(SExp.class, buf)));
+            LOG.info(PrettyPrinter.prettyPrint(read(Sexp.class, buf)));
             return read(clazz, buf);
         } catch (SecurityException e) {
             throw new RuntimeException(e);

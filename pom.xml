@@ -22,7 +22,7 @@
                 </descriptorRefs>
                 <archive>
                     <manifest>
-                        <mainClass>net.lshift.spki.suiteb.cli.CLI</mainClass>
+                        <mainClass>net.lshift.spki.suiteb.cli.Cli</mainClass>
                     </manifest>
                 </archive>
                 </configuration>

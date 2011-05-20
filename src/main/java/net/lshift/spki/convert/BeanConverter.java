@@ -19,7 +19,7 @@ public abstract class BeanConverter<T> implements Converter<T>
         this.clazz = clazz;
         ConvertUtils.initialize(clazz);
         for (Constructor<?> c: clazz.getConstructors()) {
-            SExpName sname = c.getAnnotation(SExpName.class);
+            SexpName sname = c.getAnnotation(SexpName.class);
             if (sname != null) {
                 name = sname.value();
                 constructor = (Constructor<T>) c;

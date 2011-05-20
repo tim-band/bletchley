@@ -8,8 +8,8 @@ import java.util.Map;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.suiteb.sexpstructs.ECDHItem;
-import net.lshift.spki.suiteb.sexpstructs.ECDSAPublicKey;
+import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
+import net.lshift.spki.suiteb.sexpstructs.EcdsaPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
@@ -27,7 +27,7 @@ public class InferenceEngine
         = new HashMap<DigestSha384, PrivateEncryptionKey>();
     private Map<DigestSha384, PublicSigningKey> dsaKeys
         = new HashMap<DigestSha384, PublicSigningKey>();
-    private Map<AESKeyId, AESKey> aesKeys = new HashMap<AESKeyId, AESKey>();
+    private Map<AesKeyId, AesKey> aesKeys = new HashMap<AesKeyId, AesKey>();
     private Map<DigestSha384, SimpleMessage> messages
         = new HashMap<DigestSha384,SimpleMessage>();
     // FIXME this is pretty ugly!
@@ -39,16 +39,16 @@ public class InferenceEngine
     {
         if (item instanceof Sequence) {
             process((Sequence) item);
-        } else if (item instanceof ECDHItem) {
-            process((ECDHItem) item);
-        } else if (item instanceof AESKey) {
-            process((AESKey) item);
-        } else if (item instanceof AESPacket) {
-            process((AESPacket) item);
+        } else if (item instanceof EcdhItem) {
+            process((EcdhItem) item);
+        } else if (item instanceof AesKey) {
+            process((AesKey) item);
+        } else if (item instanceof AesPacket) {
+            process((AesPacket) item);
         } else if (item instanceof SimpleMessage) {
             process((SimpleMessage) item);
-        } else if (item instanceof ECDSAPublicKey) {
-            process((ECDSAPublicKey) item);
+        } else if (item instanceof EcdsaPublicKey) {
+            process((EcdsaPublicKey) item);
         } else if (item instanceof Signature) {
             process((Signature) item);
         } else {
@@ -70,20 +70,20 @@ public class InferenceEngine
         }
     }
 
-    public void process(ECDHItem item)
+    public void process(EcdhItem item)
     {
         PrivateEncryptionKey key = dhKeys.get(item.recipient);
         if (key != null) {
-            process(new AESKey(key.getKey(item.ephemeralKey)));
+            process(new AesKey(key.getKey(item.ephemeralKey)));
         }
     }
 
-    public void process(AESKey key)
+    public void process(AesKey key)
     {
         aesKeys.put(key.getKeyId(), key);
     }
 
-    public void process(ECDSAPublicKey key)
+    public void process(EcdsaPublicKey key)
     {
         process(PublicSigningKey.unpack(key));
     }
@@ -114,10 +114,10 @@ public class InferenceEngine
             DigestSha384.digest(SimpleMessage.class, message), message);
     }
 
-    public void process(AESPacket packet)
+    public void process(AesPacket packet)
     {
         try {
-            AESKey key = aesKeys.get(packet.keyId);
+            AesKey key = aesKeys.get(packet.keyId);
             if (key != null) {
                 process(key.decrypt(packet));
             }

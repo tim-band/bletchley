@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertible;
-import net.lshift.spki.convert.SExpName;
+import net.lshift.spki.convert.SexpName;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -16,7 +16,7 @@ public class SimpleMessage extends PositionBeanConvertible implements SequenceIt
     public final String type;
     public final byte[] content;
 
-    @SExpName("simple-message")
+    @SexpName("simple-message")
     public SimpleMessage(
         @P("type") String type,
         @P("content") byte[] content)

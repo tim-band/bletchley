@@ -8,6 +8,6 @@ import java.lang.annotation.RetentionPolicy;
  * SExp.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SExpName {
+public @interface SexpName {
     String value();
 }

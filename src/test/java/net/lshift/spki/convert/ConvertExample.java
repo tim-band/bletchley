@@ -7,7 +7,7 @@ public class ConvertExample extends PositionBeanConvertible
     public final BigInteger foo;
     public final BigInteger bar;
 
-    @SExpName("convert-example")
+    @SexpName("convert-example")
     public ConvertExample(
         @P("foo")
         BigInteger foo,

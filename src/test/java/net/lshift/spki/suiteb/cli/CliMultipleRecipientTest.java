@@ -13,7 +13,7 @@ import net.lshift.spki.convert.OpenableUtils;
 
 import org.junit.Test;
 
-public class CLIMultipleRecipientTest
+public class CliMultipleRecipientTest
 {
     @Test
     public void cliTest()
@@ -26,8 +26,8 @@ public class CLIMultipleRecipientTest
         Openable sPrivate = new ByteOpenable();
         Openable sPublic = new ByteOpenable();
 
-        CLI.main("genSigningKey", sPrivate);
-        CLI.main("getPublicSigningKey", sPrivate, sPublic);
+        Cli.main("genSigningKey", sPrivate);
+        Cli.main("getPublicSigningKey", sPrivate, sPublic);
 
         List<Openable> ePrivates = new ArrayList<Openable>();
         List<Openable> ePublics = new ArrayList<Openable>();
@@ -35,8 +35,8 @@ public class CLIMultipleRecipientTest
             Openable ePrivate = new ByteOpenable();
             Openable ePublic = new ByteOpenable();
 
-            CLI.main("genEncryptionKey", ePrivate);
-            CLI.main("getPublicEncryptionKey", ePrivate, ePublic);
+            Cli.main("genEncryptionKey", ePrivate);
+            Cli.main("getPublicEncryptionKey", ePrivate, ePublic);
             ePrivates.add(ePrivate);
             ePublics.add(ePublic);
         }
@@ -52,11 +52,11 @@ public class CLIMultipleRecipientTest
         Openable packet = new ByteOpenable();
         encryptArgs[i++] = packet;
         assert i == encryptArgs.length;
-        CLI.main("genEncryptedSignedMessage", encryptArgs);
+        Cli.main("genEncryptedSignedMessage", encryptArgs);
 
         Openable result = new ByteOpenable();
         for (Openable ePrivate: ePrivates) {
-            CLI.main("decryptSignedMessage",
+            Cli.main("decryptSignedMessage",
                 ePrivate, sPublic, packet, result);
             byte[] resultBytes = OpenableUtils.readBytes(result);
             assertArrayEquals(messageBytes, resultBytes);

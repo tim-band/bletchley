@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.SExpName;
+import net.lshift.spki.convert.SexpName;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -10,20 +10,20 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for public sig verification keys
  */
-public class ECDSAPublicKey extends ECPublicKey implements SequenceItem
+public class EcdsaPublicKey extends EcPublicKey implements SequenceItem
 {
-    @SExpName("suiteb-p384-ecdsa-public-key")
-    public ECDSAPublicKey(@P("point") ECPoint point)
+    @SexpName("suiteb-p384-ecdsa-public-key")
+    public EcdsaPublicKey(@P("point") ECPoint point)
     {
         super(point);
     }
 
-    public ECDSAPublicKey(ECPublicKeyParameters publicKey)
+    public EcdsaPublicKey(ECPublicKeyParameters publicKey)
     {
         super(publicKey);
     }
 
-    public ECDSAPublicKey(AsymmetricCipherKeyPair keyPair)
+    public EcdsaPublicKey(AsymmetricCipherKeyPair keyPair)
     {
         super(keyPair);
     }

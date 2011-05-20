@@ -17,7 +17,7 @@ import org.junit.Test;
 /**
  * Exercise the ECDH parts of the bouncycastle API
  */
-public class ECDHTest {
+public class EcdhTest {
     @Test
     public void curveTest() {
         X9ECParameters curve = NISTNamedCurves.getByName("P-384");

@@ -3,7 +3,7 @@ package net.lshift.spki.convert;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import net.lshift.spki.SExp;
+import net.lshift.spki.Sexp;
 
 /**
  * "Pack" protocol converter - convert to sexp via another object and
@@ -29,7 +29,7 @@ public class PackConverter<T extends PackConvertible>
 
     @SuppressWarnings("unchecked")
     @Override
-    public T fromSexp(SExp sexp)
+    public T fromSexp(Sexp sexp)
     {
         try {
             return (T) unpackMethod.invoke(null,
@@ -44,7 +44,7 @@ public class PackConverter<T extends PackConvertible>
     }
 
     @Override
-    public SExp toSexp(T o)
+    public Sexp toSexp(T o)
     {
         return Convert.toSExpUnchecked(otherType, o.pack());
     }

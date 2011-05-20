@@ -12,7 +12,7 @@ import static org.junit.Assert.assertArrayEquals;
 /**
  * Exercise GCM using the bouncycastle API.
  */
-public class GCMTest {
+public class GcmTest {
     private final static int MAC_BYTES = 16;
     @Test
     public void gcmTest() throws IllegalStateException, InvalidCipherTextException {

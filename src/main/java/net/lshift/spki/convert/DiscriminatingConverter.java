@@ -3,8 +3,8 @@ package net.lshift.spki.convert;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lshift.spki.SExp;
-import net.lshift.spki.SList;
+import net.lshift.spki.Sexp;
+import net.lshift.spki.Slist;
 
 /**
  * Convert to/from a superclass given a list of known subclasses
@@ -30,17 +30,17 @@ public class DiscriminatingConverter<T> implements Converter<T>
     }
 
     @Override
-    public T fromSexp(SExp sexp)
+    public T fromSexp(Sexp sexp)
     {
         // FIXME: better error handling
         Converter<? extends T> converter
-            = nameMap.get(ConvertUtils.toString(((SList)sexp).getHead()));
+            = nameMap.get(ConvertUtils.toString(((Slist)sexp).getHead()));
         return converter.fromSexp(sexp);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public SExp toSexp(T o)
+    public Sexp toSexp(T o)
     {
         final Converter<? extends T> converter = classMap.get(o.getClass());
         if (converter == null) {

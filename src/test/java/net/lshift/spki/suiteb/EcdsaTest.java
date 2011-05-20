@@ -20,7 +20,7 @@ import org.junit.Test;
 /**
  * Exercise doing ECDSA using the BouncyCastle API.
  */
-public class ECDSATest
+public class EcdsaTest
 {
     @Test
     public void curveTest() {

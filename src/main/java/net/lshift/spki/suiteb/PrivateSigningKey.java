@@ -3,8 +3,8 @@ package net.lshift.spki.suiteb;
 import java.math.BigInteger;
 
 import net.lshift.spki.convert.PackConvertible;
-import net.lshift.spki.suiteb.sexpstructs.ECDSAPrivateKey;
-import net.lshift.spki.suiteb.sexpstructs.ECDSASignature;
+import net.lshift.spki.suiteb.sexpstructs.EcdsaAPrivateKey;
+import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -24,15 +24,15 @@ public class PrivateSigningKey extends PackConvertible
         signer.init(true, keyPair.getPrivate());
     }
 
-    public static PrivateSigningKey unpack(ECDSAPrivateKey sexp)
+    public static PrivateSigningKey unpack(EcdsaAPrivateKey sexp)
     {
         return new PrivateSigningKey(sexp.getKeypair());
     }
 
     @Override
-    public ECDSAPrivateKey pack()
+    public EcdsaAPrivateKey pack()
     {
-        return new ECDSAPrivateKey(keyPair);
+        return new EcdsaAPrivateKey(keyPair);
     }
 
     public PublicSigningKey getPublicKey() {
@@ -40,13 +40,13 @@ public class PrivateSigningKey extends PackConvertible
     }
 
     public static PrivateSigningKey generate() {
-        return new PrivateSigningKey(EC.generate());
+        return new PrivateSigningKey(Ec.generate());
     }
 
-    public ECDSASignature rawSignature(DigestSha384 digest)
+    public EcdsaSignature rawSignature(DigestSha384 digest)
     {
         BigInteger[] signature = signer.generateSignature(digest.getBytes());
-        return new ECDSASignature(signature[0], signature[1]);
+        return new EcdsaSignature(signature[0], signature[1]);
     }
 
     public SequenceItem sign(SequenceItem item)

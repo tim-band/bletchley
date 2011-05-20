@@ -4,9 +4,9 @@ import java.math.BigInteger;
 
 import net.lshift.spki.convert.NameBeanConvertible;
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.SExpName;
+import net.lshift.spki.convert.SexpName;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.suiteb.EC;
+import net.lshift.spki.suiteb.Ec;
 
 import org.bouncycastle.math.ec.ECPoint;
 
@@ -18,7 +18,7 @@ public class Point extends NameBeanConvertible
     public final BigInteger x;
     public final BigInteger y;
 
-    @SExpName("point")
+    @SexpName("point")
     public Point(
         @P("x") BigInteger x,
         @P("y") BigInteger y
@@ -49,7 +49,7 @@ public class Point extends NameBeanConvertible
         @Override
         public ECPoint stepOut(Point point)
         {
-            return EC.DOMAIN_PARAMETERS.getCurve().createPoint(
+            return Ec.DOMAIN_PARAMETERS.getCurve().createPoint(
                 point.x, point.y, false);
         }
     }

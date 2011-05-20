@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertible;
-import net.lshift.spki.convert.SExpName;
+import net.lshift.spki.convert.SexpName;
 import net.lshift.spki.suiteb.DigestSha384;
 
 import org.bouncycastle.math.ec.ECPoint;
@@ -10,14 +10,14 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * An ECDH session key packet
  */
-public class ECDHItem extends PositionBeanConvertible
+public class EcdhItem extends PositionBeanConvertible
     implements SequenceItem
 {
     public final DigestSha384 recipient;
     public final ECPoint ephemeralKey;
 
-    @SExpName("suiteb-ecdh-aes-gcm-key")
-    public ECDHItem(
+    @SexpName("suiteb-ecdh-aes-gcm-key")
+    public EcdhItem(
         @P("recipient") DigestSha384 recipient,
         @P("ephemeralKey") ECPoint ephemeralKey
     ) {

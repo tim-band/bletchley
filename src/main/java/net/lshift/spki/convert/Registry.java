@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lshift.spki.SExp;
+import net.lshift.spki.Sexp;
 
 /**
  * Registry of SExp converters.  If a class implements the Convertible
@@ -31,7 +31,7 @@ public class Registry
     }
 
     {
-        register(SExp.class, new SExpConverter());
+        register(Sexp.class, new SexpConverter());
         register(byte[].class, new ByteArrayConverter());
         register(String.class, new StringConverter());
         register(BigInteger.class, new BigIntegerConverter());

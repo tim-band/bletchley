@@ -17,7 +17,7 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  * Marshal S-expressions into canonical form, and parse them out again.
  */
 public class Marshal {
-    public static void marshal(OutputStream ob, SExp sexp)
+    public static void marshal(OutputStream ob, Sexp sexp)
         throws IOException
     {
         if (sexp instanceof Atom) {
@@ -27,16 +27,16 @@ public class Marshal {
             ob.write(b);
         } else {
             ob.write(Constants.OPENPAREN);
-            final SList slist = (SList) sexp;
+            final Slist slist = (Slist) sexp;
             marshal(ob, slist.getHead());
-            for (SExp p: slist.getSparts()) {
+            for (Sexp p: slist.getSparts()) {
                 marshal(ob, p);
             }
             ob.write(Constants.CLOSEPAREN);
         }
     }
 
-    public static byte[] marshal(SExp sexp) {
+    public static byte[] marshal(Sexp sexp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             marshal(baos, sexp);
@@ -47,7 +47,7 @@ public class Marshal {
         return baos.toByteArray();
     }
 
-    public static SExp unmarshal(byte[] bytes) throws ParseException {
+    public static Sexp unmarshal(byte[] bytes) throws ParseException {
         try {
             return unmarshal(new ByteArrayInputStream(bytes));
         } catch (IOException e) {
@@ -55,19 +55,19 @@ public class Marshal {
         }
     }
 
-    public static SExp unmarshal(InputStream is)
+    public static Sexp unmarshal(InputStream is)
         throws ParseException,
             IOException
    {
         return unmarshal(new SpkiInputStream(is));
     }
 
-    public static SExp unmarshal(SpkiInputStream is)
+    public static Sexp unmarshal(SpkiInputStream is)
         throws ParseException,
             IOException
     {
-        List<SExp> current = new ArrayList<SExp>(1);
-        Stack<List<SExp>> stack = new Stack<List<SExp>>();
+        List<Sexp> current = new ArrayList<Sexp>(1);
+        Stack<List<Sexp>> stack = new Stack<List<Sexp>>();
 
         for (;;) {
             TokenType token = is.getNext();
@@ -83,7 +83,7 @@ public class Marshal {
                 break;
             case OPENPAREN:
                 stack.push(current);
-                current = new ArrayList<SExp>();
+                current = new ArrayList<Sexp>();
                 // First item in a SExp must be an atom
                 is.getNextOfType(TokenType.ATOM);
                 current.add(new Atom(is.getBytes()));
@@ -91,7 +91,7 @@ public class Marshal {
             case CLOSEPAREN:
                 if (stack.isEmpty())
                     throw new ParseException("Overclosed paren");
-                SList c = list((Atom) current.get(0),
+                Slist c = list((Atom) current.get(0),
                     current.subList(1, current.size()));
                 current = stack.pop();
                 current.add(c);

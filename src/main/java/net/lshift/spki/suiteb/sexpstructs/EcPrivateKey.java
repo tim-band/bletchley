@@ -3,7 +3,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 import java.math.BigInteger;
 
 import net.lshift.spki.convert.NameBeanConvertible;
-import net.lshift.spki.suiteb.EC;
+import net.lshift.spki.suiteb.Ec;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -12,20 +12,20 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 /**
  * Superclass for serialization formats for EC private keys
  */
-public abstract class ECPrivateKey
+public abstract class EcPrivateKey
     extends NameBeanConvertible
 {
-    public final ECPublicKey publicKey;
+    public final EcPublicKey publicKey;
     public final BigInteger d;
 
-    public ECPrivateKey(ECPublicKey publicKey, BigInteger d)
+    public EcPrivateKey(EcPublicKey publicKey, BigInteger d)
     {
         super();
         this.publicKey = publicKey;
         this.d = d;
     }
 
-    public ECPrivateKey(ECPublicKey publicKey, AsymmetricCipherKeyPair keyPair)
+    public EcPrivateKey(EcPublicKey publicKey, AsymmetricCipherKeyPair keyPair)
     {
         this(publicKey, ((ECPrivateKeyParameters)keyPair.getPrivate()).getD());
     }
@@ -34,7 +34,7 @@ public abstract class ECPrivateKey
     {
         ECPublicKeyParameters pk = publicKey.getParameters();
         ECPrivateKeyParameters privk = new ECPrivateKeyParameters(
-            d, EC.DOMAIN_PARAMETERS);
+            d, Ec.DOMAIN_PARAMETERS);
         return new AsymmetricCipherKeyPair(pk, privk);
     }
 

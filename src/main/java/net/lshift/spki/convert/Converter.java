@@ -1,6 +1,6 @@
 package net.lshift.spki.convert;
 
-import net.lshift.spki.SExp;
+import net.lshift.spki.Sexp;
 
 /**
  * Interface for an object in the class conversion registry, which can
@@ -8,7 +8,7 @@ import net.lshift.spki.SExp;
  */
 public interface Converter<T>
 {
-    public SExp toSexp(T o);
+    public Sexp toSexp(T o);
 
-    public T fromSexp(SExp sexp);
+    public T fromSexp(Sexp sexp);
 }
