@@ -6,12 +6,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * In-memory Openable suitable only for testing.
+ * In-memory Openable..
  */
 public class ByteOpenable
     implements Openable
 {
-    private ByteArrayOutputStream output;
+    private ByteArrayOutputStream output = null;
 
     @Override
     public InputStream read()
