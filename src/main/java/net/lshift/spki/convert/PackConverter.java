@@ -9,7 +9,7 @@ import net.lshift.spki.SExp;
  * "Pack" protocol converter - convert to sexp via another object and
  * "pack" or "unpack" methods.
  */
-public class PackConverter<T extends PackConvertable>
+public class PackConverter<T extends PackConvertible>
     implements Converter<T>
 {
     private final Method unpackMethod;

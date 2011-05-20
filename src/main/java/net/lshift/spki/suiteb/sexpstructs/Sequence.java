@@ -4,12 +4,12 @@ import java.util.List;
 
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SExpName;
-import net.lshift.spki.convert.SequenceConvertable;
+import net.lshift.spki.convert.SequenceConvertible;
 
 /**
  * A list of SequenceItems.  Itself a SequenceItem.
  */
-public class Sequence extends SequenceConvertable implements SequenceItem
+public class Sequence extends SequenceConvertible implements SequenceItem
 {
     public final List<SequenceItem> sequence;
 

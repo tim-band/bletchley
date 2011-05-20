@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionBeanConvertable;
+import net.lshift.spki.convert.PositionBeanConvertible;
 import net.lshift.spki.convert.SExpName;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -11,7 +11,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * Format for a simple kind of message - just identifier and data - that
  * can be encrypted and/or signed.
  */
-public class SimpleMessage extends PositionBeanConvertable implements SequenceItem
+public class SimpleMessage extends PositionBeanConvertible implements SequenceItem
 {
     public final String type;
     public final byte[] content;

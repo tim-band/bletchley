@@ -6,7 +6,7 @@ import net.lshift.spki.Marshal;
 import net.lshift.spki.SExp;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertException;
-import net.lshift.spki.convert.PackConvertable;
+import net.lshift.spki.convert.PackConvertible;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 
 import org.bouncycastle.crypto.digests.SHA384Digest;
@@ -14,7 +14,7 @@ import org.bouncycastle.crypto.digests.SHA384Digest;
 /**
  * A SHA-384 digest of a SExp.
  */
-public class DigestSha384 extends PackConvertable
+public class DigestSha384 extends PackConvertible
 {
     private static final String DIGEST_NAME = "sha384";
     private final int DIGEST_LENGTH = 48;

@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import java.math.BigInteger;
 
-import net.lshift.spki.convert.NameBeanConvertable;
+import net.lshift.spki.convert.NameBeanConvertible;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SExpName;
 import net.lshift.spki.convert.StepConverter;
@@ -13,7 +13,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for an ECPoint ie a point on an elliptic curve.
  */
-public class Point extends NameBeanConvertable
+public class Point extends NameBeanConvertible
 {
     public final BigInteger x;
     public final BigInteger y;

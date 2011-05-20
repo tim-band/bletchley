@@ -1,6 +1,6 @@
 package net.lshift.spki.suiteb;
 
-import net.lshift.spki.convert.PackConvertable;
+import net.lshift.spki.convert.PackConvertible;
 import net.lshift.spki.suiteb.sexpstructs.ECDHPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -10,7 +10,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * A private key for decrypting data.
  */
-public class PrivateEncryptionKey extends PackConvertable {
+public class PrivateEncryptionKey extends PackConvertible {
     private final AsymmetricCipherKeyPair keyPair;
 
     private PrivateEncryptionKey(AsymmetricCipherKeyPair keyPair) {

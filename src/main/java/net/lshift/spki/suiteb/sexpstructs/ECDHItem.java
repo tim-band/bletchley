@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionBeanConvertable;
+import net.lshift.spki.convert.PositionBeanConvertible;
 import net.lshift.spki.convert.SExpName;
 import net.lshift.spki.suiteb.DigestSha384;
 
@@ -10,7 +10,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * An ECDH session key packet
  */
-public class ECDHItem extends PositionBeanConvertable
+public class ECDHItem extends PositionBeanConvertible
     implements SequenceItem
 {
     public final DigestSha384 recipient;

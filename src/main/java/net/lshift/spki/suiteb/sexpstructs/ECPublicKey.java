@@ -1,6 +1,6 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
-import net.lshift.spki.convert.PositionBeanConvertable;
+import net.lshift.spki.convert.PositionBeanConvertible;
 import net.lshift.spki.suiteb.EC;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -11,7 +11,7 @@ import org.bouncycastle.math.ec.ECPoint;
  * Superclass for serialization formats for EC public keys
  */
 public abstract class ECPublicKey
-    extends PositionBeanConvertable
+    extends PositionBeanConvertible
 {
     public final ECPoint point;
 

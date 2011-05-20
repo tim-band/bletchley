@@ -2,7 +2,7 @@ package net.lshift.spki.convert;
 
 import java.math.BigInteger;
 
-public class ConvertExample extends PositionBeanConvertable
+public class ConvertExample extends PositionBeanConvertible
 {
     public final BigInteger foo;
     public final BigInteger bar;

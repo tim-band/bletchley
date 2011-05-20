@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotation for BeanConvertable constructor giving name for surrounding
+ * Annotation for BeanConvertible constructor giving name for surrounding
  * SExp.
  */
 @Retention(RetentionPolicy.RUNTIME)

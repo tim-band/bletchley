@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import java.math.BigInteger;
 
-import net.lshift.spki.convert.NameBeanConvertable;
+import net.lshift.spki.convert.NameBeanConvertible;
 import net.lshift.spki.suiteb.EC;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -13,7 +13,7 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
  * Superclass for serialization formats for EC private keys
  */
 public abstract class ECPrivateKey
-    extends NameBeanConvertable
+    extends NameBeanConvertible
 {
     public final ECPublicKey publicKey;
     public final BigInteger d;

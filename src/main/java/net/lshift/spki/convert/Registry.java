@@ -9,7 +9,7 @@ import java.util.Map;
 import net.lshift.spki.SExp;
 
 /**
- * Registry of SExp converters.  If a class implements the Convertable
+ * Registry of SExp converters.  If a class implements the Convertible
  * interface, that means it knows how to convert itself and so doesn't
  * need to be registered in advance.
  */
@@ -42,7 +42,7 @@ public class Registry
     public synchronized <T> Converter<T> getConverter(Class<T> clazz) {
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
-            if (!Convertable.class.isAssignableFrom(clazz)) {
+            if (!Convertible.class.isAssignableFrom(clazz)) {
                 throw new ConvertException("Don't know how to serialize class:"
                     + clazz.getCanonicalName());
             }

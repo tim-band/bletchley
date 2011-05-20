@@ -3,13 +3,13 @@ package net.lshift.spki.suiteb;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
-import net.lshift.spki.convert.PackConvertable;
+import net.lshift.spki.convert.PackConvertible;
 
 /**
  * A superclass for PublicKey objects
  */
 public abstract class PublicKey
-    extends PackConvertable
+    extends PackConvertible
 {
     protected final ECPublicKeyParameters publicKey;
     protected final DigestSha384 keyId;

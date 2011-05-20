@@ -1,14 +1,14 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionBeanConvertable;
+import net.lshift.spki.convert.PositionBeanConvertible;
 import net.lshift.spki.convert.SExpName;
 
 /**
  * SPKI hash value format
  */
 public class Hash
-    extends PositionBeanConvertable
+    extends PositionBeanConvertible
 {
     public final String hashType;
     public final byte[] value;

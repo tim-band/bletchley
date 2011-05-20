@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionBeanConvertable;
+import net.lshift.spki.convert.PositionBeanConvertible;
 import net.lshift.spki.convert.SExpName;
 import net.lshift.spki.suiteb.sexpstructs.ECDSASignature;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -10,7 +10,7 @@ import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
  * An SPKI signature, including the digest of the target object and
  * the id of the signing key.
  */
-public class Signature extends PositionBeanConvertable
+public class Signature extends PositionBeanConvertible
     implements SequenceItem
 {
     public final DigestSha384 digest;
