@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.lshift.spki.Constants;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 import net.lshift.spki.Slist;
+import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
  * Convert to/from a superclass given a list of known subclasses
@@ -50,5 +53,21 @@ public class DiscriminatingConverter<T> implements Converter<T>
                 + o.getClass().getCanonicalName());
         }
         ((Converter<T>)converter).write(out, o);
+    }
+
+    @Override
+    public T read(ConvertInputStream in)
+        throws ParseException,
+            IOException
+    {
+        in.nextAssertType(TokenType.OPENPAREN);
+        in.nextAssertType(TokenType.ATOM);
+        byte[] discrim = in.atomBytes();
+        Converter<? extends T> converter
+            = nameMap.get(new String(discrim, Constants.UTF8));
+        in.pushback(discrim);
+        in.pushback(TokenType.ATOM);
+        in.pushback(TokenType.OPENPAREN);
+        return converter.read(in);
     }
 }

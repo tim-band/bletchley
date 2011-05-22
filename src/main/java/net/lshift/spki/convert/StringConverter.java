@@ -1,7 +1,11 @@
 package net.lshift.spki.convert;
 
+import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
+
 import java.io.IOException;
 
+import net.lshift.spki.Constants;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 
 /**
@@ -21,5 +25,14 @@ public class StringConverter
         throws IOException
     {
         out.atom(o);
+    }
+
+    @Override
+    public String read(ConvertInputStream in)
+        throws ParseException,
+            IOException
+    {
+        in.nextAssertType(ATOM);
+        return new String(in.atomBytes(), Constants.UTF8);
     }
 }

@@ -54,13 +54,12 @@ public class SpkiInputStreamTest
         sis.atomBytes();
     }
 
-    @Test(expected=ParseException.class)
+    @Test(expected=IllegalStateException.class)
     public void assertMustReadAtom() throws ParseException, IOException {
         setInput("3:foo");
         sis.next();
         sis.next();
     }
-
 
     @Test
     public void assertAtomIsOKWhenNextIsAtom() throws ParseException, IOException {
@@ -80,7 +79,7 @@ public class SpkiInputStreamTest
         sis.next();
     }
 
-    @Test(expected=ParseException.class)
+    @Test(expected=IllegalStateException.class)
     public void assertDoesntRecover() throws ParseException, IOException {
         setInput("34a3:foo");
         try {

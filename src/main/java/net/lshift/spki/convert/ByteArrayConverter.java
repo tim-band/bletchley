@@ -1,7 +1,10 @@
 package net.lshift.spki.convert;
 
+import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
+
 import java.io.IOException;
 
+import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 
 /**
@@ -21,5 +24,14 @@ public class ByteArrayConverter
         throws IOException
     {
         out.atom(o);
+    }
+
+    @Override
+    public byte[] read(ConvertInputStream in)
+        throws ParseException,
+            IOException
+    {
+        in.nextAssertType(ATOM);
+        return in.atomBytes();
     }
 }

@@ -10,8 +10,10 @@ import java.util.Collections;
 import java.util.List;
 
 import net.lshift.spki.Create;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 import net.lshift.spki.Slist;
+import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
  * Converter for a class that has a single field of type List.
@@ -94,6 +96,40 @@ public class SequenceConverter<T> extends BeanConverter<T>
             throw new ConvertReflectionException(e);
         } catch (NoSuchFieldException e) {
             throw new ConvertReflectionException(e);
+        }
+    }
+
+    @Override
+    public T read(ConvertInputStream in)
+        throws ParseException,
+            IOException
+    {
+        in.nextAssertType(TokenType.OPENPAREN);
+        in.assertAtom(name);
+        List<Object> components = new ArrayList<Object>();
+        for (;;) {
+            final TokenType token = in.next();
+            switch (token) {
+            case ATOM:
+            case OPENPAREN:
+                in.pushback(token);
+                components.add(in.read(contentType));
+                break;
+            case CLOSEPAREN:
+                Object[] initargs = new Object[1];
+                initargs[0] = Collections.unmodifiableList(components);
+                try {
+                    return constructor.newInstance(initargs);
+                } catch (InstantiationException e) {
+                    throw new ConvertReflectionException(e);
+                } catch (IllegalAccessException e) {
+                    throw new ConvertReflectionException(e);
+                } catch (InvocationTargetException e) {
+                    throw new ConvertReflectionException(e);
+                }
+            default:
+                throw new ParseException("Unexpected token in sequence");
+            }
         }
     }
 

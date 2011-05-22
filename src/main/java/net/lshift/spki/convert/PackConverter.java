@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 
 /**
@@ -49,5 +50,23 @@ public class PackConverter<T extends PackConvertible>
         throws IOException
     {
         out.writeUnchecked(otherType, o.pack());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T read(ConvertInputStream in)
+        throws ParseException,
+            IOException
+    {
+        try {
+            return (T) unpackMethod.invoke(null,
+                in.read(otherType));
+        } catch (IllegalArgumentException e) {
+            throw new ConvertReflectionException(e);
+        } catch (IllegalAccessException e) {
+            throw new ConvertReflectionException(e);
+        } catch (InvocationTargetException e) {
+            throw new ConvertReflectionException(e);
+        }
     }
 }

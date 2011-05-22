@@ -5,10 +5,15 @@ import static net.lshift.spki.Create.atom;
 import java.io.IOException;
 import java.util.List;
 
+import org.bouncycastle.util.Arrays;
+
 import net.lshift.spki.Atom;
+import net.lshift.spki.Constants;
 import net.lshift.spki.Create;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 import net.lshift.spki.Slist;
+import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
  * SExp converter that produces a SExp that looks like key-value pairs
@@ -62,5 +67,33 @@ public class NameBeanConverter<T>
         }
         throw new ConvertException("No sexp with key " + fieldName
                 + " found in sexp " + slist.getHead());
+    }
+
+    @Override
+    protected void read(ConvertInputStream in, Object[] initargs)
+        throws ParseException,
+            IOException
+    {
+        in.nextAssertType(TokenType.OPENPAREN);
+        in.assertAtom(name);
+        for (int i = 0; i < fields.length; i++) {
+            in.nextAssertType(TokenType.OPENPAREN);
+            in.nextAssertType(TokenType.ATOM);
+            FieldConvertInfo field = getField(in.atomBytes());
+            initargs[field.getIndex()] = in.read(field.getType());
+            in.nextAssertType(TokenType.CLOSEPAREN);
+        }
+        in.nextAssertType(TokenType.CLOSEPAREN);
+    }
+
+    private FieldConvertInfo getField(byte[] bytes) throws ParseException
+    {
+        for (FieldConvertInfo field: fields) {
+            final byte[] nameBytes = field.getName().getBytes(Constants.UTF8);
+            if (Arrays.areEqual(nameBytes, bytes)) {
+                return field;
+            }
+        }
+        throw new ParseException("No field matching name found");
     }
 }

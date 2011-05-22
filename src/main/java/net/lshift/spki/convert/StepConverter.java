@@ -2,6 +2,7 @@ package net.lshift.spki.convert;
 
 import java.io.IOException;
 
+import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 
 /**
@@ -21,6 +22,14 @@ public abstract class StepConverter<TResult, TStep>
         throws IOException
     {
         out.write(getStepClass(), stepIn(o));
+    }
+
+    @Override
+    public TResult read(ConvertInputStream in)
+        throws ParseException,
+            IOException
+    {
+        return stepOut(in.read(getStepClass()));
     }
 
     public void registerSelf()

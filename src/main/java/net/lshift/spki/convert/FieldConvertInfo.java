@@ -7,13 +7,15 @@ import org.apache.commons.lang.StringUtils;
  */
 public class FieldConvertInfo
 {
-    protected final String name;
-    protected final Class<?> type;
+    private final int index;
+    private final String name;
+    private final Class<?> type;
     private final String hyphenatedName;
 
-    public FieldConvertInfo(String name, Class<?> type)
+    public FieldConvertInfo(int index, String name, Class<?> type)
     {
         super();
+        this.index = index;
         this.name = name;
         this.type = type;
         String[] c = StringUtils.splitByCharacterTypeCamelCase(name);
@@ -36,5 +38,10 @@ public class FieldConvertInfo
     public String getHyphenatedName()
     {
         return hyphenatedName;
+    }
+
+    public int getIndex()
+    {
+        return index;
     }
 }

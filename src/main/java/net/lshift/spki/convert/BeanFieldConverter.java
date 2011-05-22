@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 
 import net.lshift.spki.Create;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 import net.lshift.spki.Slist;
 
@@ -14,7 +15,7 @@ import net.lshift.spki.Slist;
  */
 public abstract class BeanFieldConverter<T> extends BeanConverter<T>
 {
-    private final FieldConvertInfo[] fields;
+    protected final FieldConvertInfo[] fields;
 
     public BeanFieldConverter(Class<T> clazz)
     {
@@ -24,7 +25,7 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
         assert parameters.length == annotations.length;
         fields = new FieldConvertInfo[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
-            fields[i] = new FieldConvertInfo(
+            fields[i] = new FieldConvertInfo(i,
                 getPAnnotation(annotations[i]), parameters[i]);
         }
     }
@@ -86,4 +87,26 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
         FieldConvertInfo fieldConvertInfo,
         int i,
         Slist slist);
+
+    @Override
+    public T read(ConvertInputStream in)
+        throws ParseException,
+            IOException
+    {
+        Object[] initargs = new Object[fields.length];
+        read(in, initargs);
+        try {
+            return constructor.newInstance(initargs);
+        } catch (InstantiationException e) {
+            throw new ConvertReflectionException(e);
+        } catch (IllegalAccessException e) {
+            throw new ConvertReflectionException(e);
+        } catch (InvocationTargetException e) {
+            throw new ConvertReflectionException(e);
+        }
+    }
+
+    protected abstract void read(ConvertInputStream in, Object[] initargs)
+        throws ParseException,
+            IOException;
 }
