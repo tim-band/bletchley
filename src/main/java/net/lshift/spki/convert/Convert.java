@@ -1,23 +1,43 @@
 package net.lshift.spki.convert;
 
 
-import net.lshift.spki.Sexp;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.lshift.spki.CanonicalSpkiInputStream;
+import net.lshift.spki.ParseException;
 
 /**
  * Static utilities for converting between classes and SExps based on
  * a registry of converters for classes.
+ * FIXME: work out division of labour between this and ConvertUtils.
  */
 public class Convert
 {
     public static final Registry REGISTRY = new Registry();
 
-    private static <T> Converter<T> getConverter(Class<T> clazz)
+    public static <T> T read(Class<T> clazz, InputStream is)
+        throws ParseException,
+            IOException
     {
-        return REGISTRY.getConverter(clazz);
+        try {
+            ConvertInputStream in
+                = new ConvertInputStream(new CanonicalSpkiInputStream(is));
+            return in.read(clazz);
+        } finally {
+            is.close();
+        }
     }
 
-    public static <T> T fromSExp(Class<T> clazz, Sexp sexp)
+    public static <T> T fromBytes(
+        Class<T> clazz,
+        byte [] bytes) throws ParseException
     {
-        return getConverter(clazz).fromSexp(sexp);
+        try {
+            return read(clazz, new ByteArrayInputStream(bytes));
+        } catch (IOException e) {
+            throw new RuntimeException("CANTHAPPEN", e);
+        }
     }
 }

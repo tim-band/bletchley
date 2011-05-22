@@ -9,10 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.lshift.spki.Create;
 import net.lshift.spki.ParseException;
-import net.lshift.spki.Sexp;
-import net.lshift.spki.Slist;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -52,32 +49,6 @@ public class SequenceConverter<T> extends BeanConverter<T>
                 + clazz.getCanonicalName());
         }
         contentType = (Class<?>) typeArgs[0];
-    }
-
-    @Override
-    public T fromSexp(Sexp sexp)
-    {
-        Slist slist = (Slist) sexp;
-        if (!Create.atom(name).equals(slist.getHead())) {
-            throw new ConvertException("Expected " + name +
-                " but was " + slist.getHead());
-        }
-        List<Sexp> tail = slist.getSparts();
-        List<Object> components = new ArrayList<Object>(tail.size());
-        for (Sexp tailPart: tail) {
-            components.add(Convert.fromSExp(contentType, tailPart));
-        }
-        Object[] initargs = new Object[1];
-        initargs[0] = Collections.unmodifiableList(components);
-        try {
-            return constructor.newInstance(initargs);
-        } catch (InstantiationException e) {
-            throw new ConvertReflectionException(e);
-        } catch (IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
-        } catch (InvocationTargetException e) {
-            throw new ConvertReflectionException(e);
-        }
     }
 
     @Override

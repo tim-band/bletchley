@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 
-import net.lshift.spki.Create;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 import net.lshift.spki.Slist;
@@ -58,30 +57,6 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
     protected abstract Sexp fieldToSexp(
         FieldConvertInfo fieldConvertInfo,
         Sexp sexp);
-
-    @Override
-    public T fromSexp(Sexp sexp)
-    {
-        Slist slist = (Slist) sexp;
-        if (!Create.atom(name).equals(slist.getHead())) {
-            throw new ConvertException("Expected " + name +
-                " but was " + slist.getHead());
-        }
-        Object[] initargs = new Object[fields.length];
-        for (int i = 0; i < fields.length; i++) {
-            initargs[i] = Convert.fromSExp(fields[i].getType(),
-                getSExp(fields[i], i, slist));
-        }
-        try {
-            return constructor.newInstance(initargs);
-        } catch (InstantiationException e) {
-            throw new ConvertReflectionException(e);
-        } catch (IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
-        } catch (InvocationTargetException e) {
-            throw new ConvertReflectionException(e);
-        }
-    }
 
     protected abstract Sexp getSExp(
         FieldConvertInfo fieldConvertInfo,

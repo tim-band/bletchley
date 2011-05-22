@@ -6,8 +6,6 @@ import java.util.Map;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
-import net.lshift.spki.Sexp;
-import net.lshift.spki.Slist;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -31,15 +29,6 @@ public class DiscriminatingConverter<T> implements Converter<T>
                 ((BeanConverter<? extends T>) converter).getName(),
                 converter);
         }
-    }
-
-    @Override
-    public T fromSexp(Sexp sexp)
-    {
-        // FIXME: better error handling
-        Converter<? extends T> converter
-            = nameMap.get(ConvertUtils.toString(((Slist)sexp).getHead()));
-        return converter.fromSexp(sexp);
     }
 
     @SuppressWarnings("unchecked")

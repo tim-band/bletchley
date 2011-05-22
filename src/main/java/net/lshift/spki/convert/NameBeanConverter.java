@@ -89,7 +89,7 @@ public class NameBeanConverter<T>
     private FieldConvertInfo getField(byte[] bytes) throws ParseException
     {
         for (FieldConvertInfo field: fields) {
-            final byte[] nameBytes = field.getName().getBytes(Constants.UTF8);
+            final byte[] nameBytes = field.getHyphenatedName().getBytes(Constants.UTF8);
             if (Arrays.areEqual(nameBytes, bytes)) {
                 return field;
             }

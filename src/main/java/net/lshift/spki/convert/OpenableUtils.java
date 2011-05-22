@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import net.lshift.spki.CanonicalSpkiOutputStream;
-import net.lshift.spki.Marshal;
 import net.lshift.spki.ParseException;
 
 import org.apache.commons.io.IOUtils;
@@ -42,11 +41,7 @@ public class OpenableUtils
             IOException
     {
         final InputStream is = open.read();
-        try {
-            return Convert.fromSExp(clazz, Marshal.unmarshal(is));
-        } finally {
-            is.close();
-        }
+        return Convert.read(clazz, is);
     }
 
     public static <T> void write(Openable open, Class<T> clazz, T o)

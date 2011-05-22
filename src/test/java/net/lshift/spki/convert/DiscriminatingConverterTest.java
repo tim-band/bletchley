@@ -4,6 +4,10 @@ import static net.lshift.spki.Create.list;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.io.IOException;
+
+import net.lshift.spki.ParseException;
+
 import org.junit.Test;
 
 @SuppressWarnings("unchecked")
@@ -23,15 +27,23 @@ public class DiscriminatingConverterTest
     }
 
     @Test
-    public void canConvertSexpToImplementingClass() {
+    public void canConvertSexpToImplementingClass()
+        throws ParseException,
+            IOException
+    {
         assertEquals(new ImplementingClass(),
-            converter.fromSexp(list("implementing-class")));
+            converter.read(TestUtils.toConvert(
+                list("implementing-class"))));
     }
 
     @Test
-    public void canConvertSexpToOtherImplementingClass() {
+    public void canConvertSexpToOtherImplementingClass()
+        throws ParseException,
+            IOException
+    {
         assertEquals(new OtherImplementingClass(),
-            converter.fromSexp(list("other-implementing-class")));
+            converter.read(TestUtils.toConvert(
+                list("other-implementing-class"))));
     }
 
 //    @Test

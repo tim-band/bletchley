@@ -6,12 +6,11 @@ import java.io.IOException;
 import net.lshift.spki.Atom;
 import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.Constants;
-import net.lshift.spki.Marshal;
-import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 
 /**
  * Static utilities for conversion between SExps and objects.
+ * FIXME: work out division of labour between this and Convert
  */
 public class ConvertUtils
 {
@@ -50,12 +49,5 @@ public class ConvertUtils
             throw new RuntimeException(
                 "ByteArrayOutputStream cannot throw IOException", e);
         }
-    }
-
-    public static ConvertExample fromBytes(
-        Class<ConvertExample> clazz,
-        byte[] bytes) throws ParseException
-    {
-        return Convert.fromSExp(clazz, Marshal.unmarshal(bytes));
     }
 }

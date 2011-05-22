@@ -20,12 +20,6 @@ public class SexpConverter
     implements Converter<Sexp>
 {
     @Override
-    public Sexp fromSexp(Sexp sexp)
-    {
-        return sexp;
-    }
-
-    @Override
     public void write(ConvertOutputStream out, Sexp o)
         throws IOException
     {
@@ -65,8 +59,9 @@ public class SexpConverter
                     break;
                 case OPENPAREN:
                     in.nextAssertType(ATOM);
-                    in.pushback(in.atomBytes());
-                    tail.add(in.read(Sexp.class));
+                    in.pushback(ATOM);
+                    in.pushback(TokenType.OPENPAREN);
+                   tail.add(in.read(Sexp.class));
                     break;
                 case EOF:
                     throw new ParseException("Unexpected EOF");
