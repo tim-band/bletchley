@@ -3,7 +3,6 @@ package net.lshift.spki.convert;
 import java.io.ByteArrayInputStream;
 
 import net.lshift.spki.CanonicalSpkiInputStream;
-import net.lshift.spki.Marshal;
 import net.lshift.spki.Sexp;
 
 public class TestUtils
@@ -13,6 +12,6 @@ public class TestUtils
         return new ConvertInputStream(
             new CanonicalSpkiInputStream(
                 new ByteArrayInputStream(
-                    Marshal.marshal(sexp))));
+                    ConvertUtils.toBytes(Sexp.class, sexp))));
     }
 }
