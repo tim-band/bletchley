@@ -45,6 +45,6 @@ public class OpenableUtils
     public static <T> void write(Openable open, Class<T> clazz, T o)
         throws IOException
     {
-        ConvertUtils.write(open.write(), clazz, o);
+        ConvertUtils.write(clazz, open.write(), o);
     }
 }

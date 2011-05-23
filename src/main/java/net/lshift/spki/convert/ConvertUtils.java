@@ -57,7 +57,7 @@ public class ConvertUtils
         }
     }
 
-    public static <T> void write(OutputStream os, Class<T> clazz, T o)
+    public static <T> void write(Class<T> clazz, OutputStream os, T o)
         throws IOException
     {
         ConvertOutputStream out
@@ -85,7 +85,7 @@ public class ConvertUtils
     {
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            write(os, clazz, o);
+            write(clazz, os, o);
             return os.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(
