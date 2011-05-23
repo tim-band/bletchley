@@ -4,7 +4,6 @@ import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
 
 import java.io.IOException;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
 
 /**
@@ -26,6 +25,6 @@ public class StringConverter
             IOException
     {
         in.nextAssertType(ATOM);
-        return new String(in.atomBytes(), Constants.UTF8);
+        return ConvertUtils.string(in.atomBytes());
     }
 }

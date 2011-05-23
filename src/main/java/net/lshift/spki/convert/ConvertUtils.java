@@ -4,17 +4,44 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CharsetDecoder;
 
 import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.CanonicalSpkiOutputStream;
+import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
 
 /**
  * Static utilities for conversion between SExps and objects.
- * FIXME: work out division of labour between this and Convert
  */
 public class ConvertUtils
 {
+    private static final CharsetDecoder UTF8_DECODER
+        = Constants.UTF8.newDecoder();
+
+    public static byte[] bytes(String s) {
+        return s.getBytes(Constants.UTF8);
+    }
+
+    public static String string(byte[] bytes) throws ParseException {
+        try {
+            return UTF8_DECODER.decode(ByteBuffer.wrap(bytes)).toString();
+        } catch (CharacterCodingException e) {
+            throw new ParseException("Cannot convert bytes to string", e);
+        }
+    }
+
+    // Useful for comparison
+    public static String stringOrNull(byte[] bytes) {
+        try {
+            return UTF8_DECODER.decode(ByteBuffer.wrap(bytes)).toString();
+        } catch (CharacterCodingException e) {
+            return null;
+        }
+    }
+
     public static <T> void initialize(Class<T> clazz)
         throws AssertionError
     {

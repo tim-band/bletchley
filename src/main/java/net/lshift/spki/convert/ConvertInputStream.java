@@ -3,9 +3,6 @@ package net.lshift.spki.convert;
 import java.io.IOException;
 import java.util.Stack;
 
-import org.bouncycastle.util.Arrays;
-
-import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream;
 
@@ -81,7 +78,7 @@ public class ConvertInputStream extends SpkiInputStream
             IOException
     {
         nextAssertType(TokenType.ATOM);
-        if (!Arrays.areEqual(name.getBytes(Constants.UTF8), atomBytes())) {
+        if (!name.equals(ConvertUtils.stringOrNull(atomBytes()))) {
             throw new ParseException("Did not see expected atom: " + name);
         }
     }

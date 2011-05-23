@@ -2,7 +2,6 @@ package net.lshift.spki.convert;
 
 import java.io.IOException;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.SpkiOutputStream;
 
 public class ConvertOutputStream
@@ -49,7 +48,7 @@ public class ConvertOutputStream
 
     public void atom(String string) throws IOException
     {
-        os.atom(string.getBytes(Constants.UTF8));
+        os.atom(ConvertUtils.bytes(string));
     }
 
     public <T> void write(Class<T> clazz, T o) throws IOException {

@@ -2,11 +2,8 @@ package net.lshift.spki.convert;
 
 import java.io.IOException;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream.TokenType;
-
-import org.bouncycastle.util.Arrays;
 
 /**
  * SExp converter that produces a SExp that looks like key-value pairs
@@ -50,12 +47,12 @@ public class NameBeanConverter<T>
 
     private FieldConvertInfo getField(byte[] bytes) throws ParseException
     {
+        String string = ConvertUtils.stringOrNull(bytes);
         for (FieldConvertInfo field: fields) {
-            final byte[] nameBytes = field.getHyphenatedName().getBytes(Constants.UTF8);
-            if (Arrays.areEqual(nameBytes, bytes)) {
+            if (field.getHyphenatedName().equals(string)) {
                 return field;
             }
         }
-        throw new ParseException("No field matching name found");
+        throw new ParseException("No field matching name found: " + string);
     }
 }

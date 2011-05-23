@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
@@ -53,7 +52,10 @@ public class DiscriminatingConverter<T> implements Converter<T>
         in.nextAssertType(TokenType.ATOM);
         byte[] discrim = in.atomBytes();
         Converter<? extends T> converter
-            = nameMap.get(new String(discrim, Constants.UTF8));
+            = nameMap.get(ConvertUtils.stringOrNull(discrim));
+        if (converter == null) {
+            throw new ParseException("Unable to find converter");
+        }
         in.pushback(discrim);
         in.pushback(TokenType.ATOM);
         in.pushback(TokenType.OPENPAREN);
