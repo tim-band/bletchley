@@ -49,7 +49,7 @@ public class ConvertInputStream extends SpkiInputStream
         throws ParseException,
             IOException
     {
-        return Convert.REGISTRY.getConverter(clazz).read(this);
+        return Registry.REGISTRY.getConverter(clazz).read(this);
     }
 
     public void pushback(TokenType token)

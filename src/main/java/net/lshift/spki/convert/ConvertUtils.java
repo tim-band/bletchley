@@ -1,12 +1,13 @@
 package net.lshift.spki.convert;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
-import net.lshift.spki.Atom;
+import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.CanonicalSpkiOutputStream;
-import net.lshift.spki.Constants;
-import net.lshift.spki.Sexp;
+import net.lshift.spki.ParseException;
 
 /**
  * Static utilities for conversion between SExps and objects.
@@ -14,15 +15,6 @@ import net.lshift.spki.Sexp;
  */
 public class ConvertUtils
 {
-    public static byte[] toBytes(Sexp sexp) {
-        return ((Atom)sexp).getBytes();
-    }
-
-    public static String toString(Sexp sexp)
-    {
-        return new String(ConvertUtils.toBytes(sexp), Constants.UTF8);
-    }
-
     public static <T> void initialize(Class<T> clazz)
         throws AssertionError
     {
@@ -48,6 +40,30 @@ public class ConvertUtils
         } catch (IOException e) {
             throw new RuntimeException(
                 "ByteArrayOutputStream cannot throw IOException", e);
+        }
+    }
+
+    public static <T> T read(Class<T> clazz, InputStream is)
+        throws ParseException,
+            IOException
+    {
+        try {
+            ConvertInputStream in
+                = new ConvertInputStream(new CanonicalSpkiInputStream(is));
+            return in.read(clazz);
+        } finally {
+            is.close();
+        }
+    }
+
+    public static <T> T fromBytes(
+        Class<T> clazz,
+        byte [] bytes) throws ParseException
+    {
+        try {
+            return read(clazz, new ByteArrayInputStream(bytes));
+        } catch (IOException e) {
+            throw new RuntimeException("CANTHAPPEN", e);
         }
     }
 }

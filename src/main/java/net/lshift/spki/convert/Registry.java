@@ -15,6 +15,8 @@ import net.lshift.spki.Sexp;
  */
 public class Registry
 {
+    public static final Registry REGISTRY = new Registry();
+
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 

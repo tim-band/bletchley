@@ -23,7 +23,7 @@ public class DiscriminatingConverter<T> implements Converter<T>
     {
         for (Class<? extends T> clazz: classes) {
             Converter<? extends T> converter
-                = Convert.REGISTRY.getConverter(clazz);
+                = Registry.REGISTRY.getConverter(clazz);
             classMap.put(clazz, converter);
             nameMap.put(
                 ((BeanConverter<? extends T>) converter).getName(),

@@ -41,7 +41,7 @@ public class OpenableUtils
             IOException
     {
         final InputStream is = open.read();
-        return Convert.read(clazz, is);
+        return ConvertUtils.read(clazz, is);
     }
 
     public static <T> void write(Openable open, Class<T> clazz, T o)

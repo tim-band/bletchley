@@ -16,7 +16,7 @@ public class ConvertTest
             BigInteger.valueOf(3), BigInteger.valueOf(17));
         byte[] bytes = ConvertUtils.toBytes(ConvertExample.class, test);
         //PrettyPrinter.prettyPrint(System.out, sexp);
-        ConvertExample changeBack = Convert.fromBytes(
+        ConvertExample changeBack = ConvertUtils.fromBytes(
             ConvertExample.class, bytes);
         assertEquals(test, changeBack);
     }

@@ -2,7 +2,6 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.PositionBeanConvertible;
@@ -81,7 +80,7 @@ public class AesKey extends PositionBeanConvertible implements SequenceItem
             int pp = gcm.processBytes(packet.ciphertext, 0,
                 packet.ciphertext.length, newtext, 0);
             gcm.doFinal(newtext, pp);
-            return Convert.fromBytes(SequenceItem.class, newtext);
+            return ConvertUtils.fromBytes(SequenceItem.class, newtext);
         } catch (IllegalStateException e) {
             throw new RuntimeException(e);
         }

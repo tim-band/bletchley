@@ -15,7 +15,7 @@ public class ConvertOutputStream
     {
         super();
         this.os = os;
-        this.registry = Convert.REGISTRY;
+        this.registry = Registry.REGISTRY;
     }
 
     @Override
