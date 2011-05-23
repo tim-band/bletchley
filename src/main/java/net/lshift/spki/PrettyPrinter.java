@@ -2,6 +2,7 @@ package net.lshift.spki;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 
 import net.lshift.spki.SpkiInputStream.TokenType;
@@ -55,14 +56,7 @@ public class PrettyPrinter {
     private static void printBytes(PrintStream ps, byte[] bytes)
         throws IOException
     {
-        boolean text = (bytes.length > 0);
-        for (int i = 0; text && i < bytes.length; i++) {
-            if (bytes[i] < 0x20 || bytes[i] >= 0x7f
-                    || bytes[i] == Constants.DOUBLEQUOTE
-                    || bytes[i] == Constants.BACKSLASH)
-                text = false;
-        }
-        if (text) {
+        if (isText(bytes)) {
             ps.print("\"");
             ps.write(bytes);
             ps.println("\"");
@@ -77,12 +71,33 @@ public class PrettyPrinter {
         }
     }
 
-    public static String prettyPrint(
-        CanonicalSpkiInputStream stream) throws ParseException
+    private static boolean isText(byte[] bytes)
+    {
+        if (bytes.length ==  0) {
+            return false;
+        }
+        for (int i = 0; i < bytes.length; i++) {
+            if (bytes[i] < 0x20 || bytes[i] >= 0x7f
+                    || bytes[i] == Constants.DOUBLEQUOTE
+                    || bytes[i] == Constants.BACKSLASH)
+                return false;
+        }
+        return true;
+    }
+
+    public static void prettyPrint(PrintStream out, InputStream read)
+        throws IOException,
+            ParseException
+    {
+        prettyPrint(out, new CanonicalSpkiInputStream(read));
+    }
+
+    public static String prettyPrint(InputStream read)
+        throws ParseException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            prettyPrint(new PrintStream(baos), stream);
+            prettyPrint(new PrintStream(baos), read);
         } catch (IOException e) {
             // should not be possible
             throw new RuntimeException(e);
