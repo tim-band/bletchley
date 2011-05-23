@@ -1,12 +1,17 @@
 package net.lshift.spki.convert;
 
 import static net.lshift.spki.Create.list;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.ParseException;
+import net.lshift.spki.Sexp;
 
 import org.junit.Test;
 
@@ -46,16 +51,14 @@ public class DiscriminatingConverterTest
                 list("other-implementing-class"))));
     }
 
-//    @Test
-//    public void canConvertImplementingClassToSexp() throws IOException {
-//        SpkiOutputStream stream = mock(SpkiOutputStream.class);
-//        ConvertOutputStream conv = new ConvertOutputStream(stream);
-//        converter.write(conv, new ImplementingClass());
-//        InOrder inOrder = Mockito.inOrder(stream);
-//        inOrder.verify(stream).beginSexp();
-//        inOrder.verify(stream).atom(
-//            "implementing-class".getBytes(Constants.ASCII));
-//        inOrder.verify(stream).endSexp();
-//        verifyNoMoreInteractions(stream);
-//    }
+    @Test
+    public void canConvertImplementingClassToSexp() throws IOException {
+        byte[] expected = ConvertUtils.toBytes(Sexp.class,
+            list("implementing-class"));
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ConvertOutputStream conv = new ConvertOutputStream(
+            new CanonicalSpkiOutputStream(baos));
+        converter.write(conv, new ImplementingClass());
+        assertThat(baos.toByteArray(), is(expected));
+    }
 }
