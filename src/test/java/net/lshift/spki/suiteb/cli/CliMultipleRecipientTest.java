@@ -41,7 +41,7 @@ public class CliMultipleRecipientTest
             ePublics.add(ePublic);
         }
         Openable message = new ByteOpenable();
-        OpenableUtils.writeBytes(message, messageBytes);
+        OpenableUtils.writeBytes(messageBytes, message);
         Openable[] encryptArgs = new Openable[ePublics.size() + 3];
         int i = 0;
         encryptArgs[i++] = sPrivate;

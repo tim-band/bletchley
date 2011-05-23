@@ -23,7 +23,7 @@ public class RoundTrip
     {
         try {
             ByteOpenable buf = new ByteOpenable();
-            write(buf, clazz, o);
+            write(clazz, o, buf);
             LOG.info(PrettyPrinter.prettyPrint(buf.read()));
             return read(clazz, buf);
         } catch (SecurityException e) {

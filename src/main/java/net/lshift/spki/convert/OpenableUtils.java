@@ -22,7 +22,7 @@ public class OpenableUtils {
         }
     }
 
-    public static void writeBytes(Openable out, final byte[] messageBytes)
+    public static void writeBytes(final byte[] messageBytes, Openable out)
         throws IOException {
         OutputStream os = out.write();
         try {
@@ -38,7 +38,7 @@ public class OpenableUtils {
         return ConvertUtils.read(clazz, open.read());
     }
 
-    public static <T> void write(Openable open, Class<T> clazz, T o)
+    public static <T> void write(Class<T> clazz, T o, Openable open)
         throws IOException {
         ConvertUtils.write(clazz, o, open.write());
     }

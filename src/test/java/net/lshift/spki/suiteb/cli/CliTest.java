@@ -33,7 +33,7 @@ public class CliTest
         Cli.main("genEncryptionKey", ePrivate);
         Cli.main("getPublicEncryptionKey", ePrivate, ePublic);
 
-        OpenableUtils.writeBytes(message, messageBytes);
+        OpenableUtils.writeBytes(messageBytes, message);
         Cli.main("genEncryptedSignedMessage",
             sPrivate, message, ePublic, packet);
         Cli.main("decryptSignedMessage",

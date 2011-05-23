@@ -39,8 +39,8 @@ public class Cli {
 
     public static void genEncryptionKey(Openable out)
         throws IOException {
-        write(out, PrivateEncryptionKey.class,
-            PrivateEncryptionKey.generate());
+        write(PrivateEncryptionKey.class, PrivateEncryptionKey.generate(),
+            out);
     }
 
     public static void getPublicEncryptionKey(Openable privk, Openable pubk)
@@ -48,19 +48,19 @@ public class Cli {
             IOException {
         final PrivateEncryptionKey privatek
             = read(PrivateEncryptionKey.class, privk);
-        write(pubk, PublicEncryptionKey.class, privatek.getPublicKey());
+        write(PublicEncryptionKey.class, privatek.getPublicKey(), pubk);
     }
 
     public static void genSigningKey(Openable out)
         throws IOException {
-        write(out, PrivateSigningKey.class, PrivateSigningKey.generate());
+        write(PrivateSigningKey.class, PrivateSigningKey.generate(), out);
     }
 
     public static void getPublicSigningKey(Openable privk, Openable pubk)
         throws ParseException,
             IOException {
         final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
-        write(pubk, PublicSigningKey.class, privatek.getPublicKey());
+        write(PublicSigningKey.class, privatek.getPublicKey(), pubk);
     }
 
     public static void decryptSignedMessage(
@@ -88,7 +88,7 @@ public class Cli {
         if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message was not of expected type");
         }
-        OpenableUtils.writeBytes(out, message.content);
+        OpenableUtils.writeBytes(message.content, out);
     }
 
     private static void genEncryptedSignedMessage(
@@ -114,7 +114,7 @@ public class Cli {
 
         sequenceItems.add(aesKey.encrypt(new Sequence(encryptedSequenceItems)));
 
-        write(args[args.length-1], Sequence.class, new Sequence(sequenceItems));
+        write(Sequence.class, new Sequence(sequenceItems), args[args.length-1]);
     }
 
     public static void main(String command, Openable... args)

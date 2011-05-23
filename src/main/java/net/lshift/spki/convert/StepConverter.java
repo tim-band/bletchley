@@ -30,7 +30,7 @@ public abstract class StepConverter<TResult, TStep>
 
     protected abstract Class<TStep> getStepClass();
 
-    protected abstract TResult stepOut(TStep fromSExp);
+    protected abstract TResult stepOut(TStep fromSExp) throws ParseException;
 
     protected abstract TStep stepIn(TResult o);
 }
