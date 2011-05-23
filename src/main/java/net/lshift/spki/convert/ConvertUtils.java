@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
@@ -12,6 +13,7 @@ import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
+import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
  * Static utilities for conversion between SExps and objects.
@@ -55,19 +57,13 @@ public class ConvertUtils
         }
     }
 
-    public static <T> byte[] toBytes(Class<T> clazz, T o)
+    public static <T> void write(OutputStream os, Class<T> clazz, T o)
+        throws IOException
     {
-        try {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ConvertOutputStream out
-                = new ConvertOutputStream(new CanonicalSpkiOutputStream(os));
-            out.write(clazz, o);
-            out.close();
-            return os.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException(
-                "ByteArrayOutputStream cannot throw IOException", e);
-        }
+        ConvertOutputStream out
+            = new ConvertOutputStream(new CanonicalSpkiOutputStream(os));
+        out.write(clazz, o);
+        out.close();
     }
 
     public static <T> T read(Class<T> clazz, InputStream is)
@@ -77,9 +73,23 @@ public class ConvertUtils
         try {
             ConvertInputStream in
                 = new ConvertInputStream(new CanonicalSpkiInputStream(is));
-            return in.read(clazz);
+            final T res = in.read(clazz);
+            in.nextAssertType(TokenType.EOF);
+            return res;
         } finally {
             is.close();
+        }
+    }
+
+    public static <T> byte[] toBytes(Class<T> clazz, T o)
+    {
+        try {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            write(os, clazz, o);
+            return os.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(
+                "ByteArrayOutputStream cannot throw IOException", e);
         }
     }
 

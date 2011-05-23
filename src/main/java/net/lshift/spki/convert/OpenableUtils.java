@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.ParseException;
 
 import org.apache.commons.io.IOUtils;
@@ -40,21 +39,12 @@ public class OpenableUtils
         throws ParseException,
             IOException
     {
-        final InputStream is = open.read();
-        return ConvertUtils.read(clazz, is);
+        return ConvertUtils.read(clazz, open.read());
     }
 
     public static <T> void write(Openable open, Class<T> clazz, T o)
         throws IOException
     {
-        final OutputStream os = open.write();
-        try {
-            ConvertOutputStream out
-                = new ConvertOutputStream(new CanonicalSpkiOutputStream(os));
-            out.write(clazz, o);
-            out.close();
-        } finally {
-            os.close();
-        }
+        ConvertUtils.write(open.write(), clazz, o);
     }
 }
