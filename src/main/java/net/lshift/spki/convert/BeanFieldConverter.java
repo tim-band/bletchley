@@ -5,8 +5,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.Sexp;
-import net.lshift.spki.Slist;
 
 /**
  * Superclass for a converter that reads bean properties based on
@@ -53,15 +51,6 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
         ConvertOutputStream out,
         FieldConvertInfo fieldConvertInfo,
         Object property) throws IOException;
-
-    protected abstract Sexp fieldToSexp(
-        FieldConvertInfo fieldConvertInfo,
-        Sexp sexp);
-
-    protected abstract Sexp getSExp(
-        FieldConvertInfo fieldConvertInfo,
-        int i,
-        Slist slist);
 
     @Override
     public T read(ConvertInputStream in)

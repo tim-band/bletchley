@@ -3,8 +3,6 @@ package net.lshift.spki.convert;
 import java.io.IOException;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.Sexp;
-import net.lshift.spki.Slist;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -16,21 +14,6 @@ public class PositionBeanConverter<T>
     public PositionBeanConverter(Class<T> clazz)
     {
         super(clazz);
-    }
-
-    @Override
-    protected Sexp fieldToSexp(FieldConvertInfo fieldConvertInfo, Sexp sexp)
-    {
-        return sexp;
-    }
-
-    @Override
-    protected Sexp getSExp(
-        FieldConvertInfo fieldConvertInfo,
-        int i,
-        Slist slist)
-    {
-        return slist.getSparts().get(i);
     }
 
     @Override
