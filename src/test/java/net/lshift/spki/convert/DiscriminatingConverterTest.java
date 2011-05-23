@@ -37,7 +37,7 @@ public class DiscriminatingConverterTest
             IOException
     {
         assertEquals(new ImplementingClass(),
-            converter.read(TestUtils.toConvert(
+            converter.read(ConvertTestHelper.toConvert(
                 list("implementing-class"))));
     }
 
@@ -47,7 +47,7 @@ public class DiscriminatingConverterTest
             IOException
     {
         assertEquals(new OtherImplementingClass(),
-            converter.read(TestUtils.toConvert(
+            converter.read(ConvertTestHelper.toConvert(
                 list("other-implementing-class"))));
     }
 

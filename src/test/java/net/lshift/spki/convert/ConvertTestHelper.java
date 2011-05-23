@@ -5,7 +5,7 @@ import java.io.ByteArrayInputStream;
 import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.Sexp;
 
-public class TestUtils
+public class ConvertTestHelper
 {
     public static ConvertInputStream toConvert(Sexp sexp)
     {
