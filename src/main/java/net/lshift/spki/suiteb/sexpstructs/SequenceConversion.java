@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.DiscriminatingConverter;
+import net.lshift.spki.convert.Registry;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesPacket;
 import net.lshift.spki.suiteb.Signature;
@@ -15,7 +15,7 @@ import net.lshift.spki.suiteb.Signature;
 public class SequenceConversion
 {
     static {
-        Convert.REGISTRY.register(SequenceItem.class,
+        Registry.REGISTRY.register(SequenceItem.class,
             new DiscriminatingConverter<SequenceItem>(
                 Sequence.class,
                 EcdhItem.class,

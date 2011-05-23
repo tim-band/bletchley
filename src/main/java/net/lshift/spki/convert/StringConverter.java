@@ -1,7 +1,10 @@
 package net.lshift.spki.convert;
 
-import net.lshift.spki.Create;
-import net.lshift.spki.Sexp;
+import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
+
+import java.io.IOException;
+
+import net.lshift.spki.ParseException;
 
 /**
  * Convert between a String and a SExp
@@ -10,14 +13,18 @@ public class StringConverter
     implements Converter<String>
 {
     @Override
-    public String fromSexp(Sexp sexp)
+    public void write(ConvertOutputStream out, String o)
+        throws IOException
     {
-        return ConvertUtils.toString(sexp);
+        out.atom(o);
     }
 
     @Override
-    public Sexp toSexp(String string)
+    public String read(ConvertInputStream in)
+        throws ParseException,
+            IOException
     {
-        return Create.atom(string);
+        in.nextAssertType(ATOM);
+        return ConvertUtils.string(in.atomBytes());
     }
 }

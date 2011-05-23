@@ -1,19 +1,18 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.spki.Constants;
+import net.lshift.spki.ParseException;
+import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.convert.P;
+import net.lshift.spki.convert.PositionBeanConvertible;
+import net.lshift.spki.convert.SexpName;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESFastEngine;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
-
-import net.lshift.spki.Constants;
-import net.lshift.spki.Marshal;
-import net.lshift.spki.ParseException;
-import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionBeanConvertible;
-import net.lshift.spki.convert.SexpName;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 /**
  * A key to use with AES/GCM.
@@ -56,8 +55,8 @@ public class AesKey extends PositionBeanConvertible implements SequenceItem
             GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, nonce, ZERO_BYTES));
-            byte[] plaintext = Marshal.marshal(
-                Convert.toSExp(SequenceItem.class, message));
+            byte[] plaintext =
+                ConvertUtils.toBytes(SequenceItem.class, message);
             byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
             int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);
@@ -81,8 +80,7 @@ public class AesKey extends PositionBeanConvertible implements SequenceItem
             int pp = gcm.processBytes(packet.ciphertext, 0,
                 packet.ciphertext.length, newtext, 0);
             gcm.doFinal(newtext, pp);
-            return Convert.fromSExp(
-                SequenceItem.class, Marshal.unmarshal(newtext));
+            return ConvertUtils.fromBytes(SequenceItem.class, newtext);
         } catch (IllegalStateException e) {
             throw new RuntimeException(e);
         }

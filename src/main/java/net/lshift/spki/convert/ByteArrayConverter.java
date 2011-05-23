@@ -1,7 +1,10 @@
 package net.lshift.spki.convert;
 
-import net.lshift.spki.Create;
-import net.lshift.spki.Sexp;
+import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
+
+import java.io.IOException;
+
+import net.lshift.spki.ParseException;
 
 /**
  * Convert between a byte[] and a SExp
@@ -10,14 +13,18 @@ public class ByteArrayConverter
     implements Converter<byte[]>
 {
     @Override
-    public byte[] fromSexp(Sexp sexp)
+    public void write(ConvertOutputStream out, byte[] o)
+        throws IOException
     {
-        return ConvertUtils.toBytes(sexp);
+        out.atom(o);
     }
 
     @Override
-    public Sexp toSexp(byte[] o)
+    public byte[] read(ConvertInputStream in)
+        throws ParseException,
+            IOException
     {
-        return Create.atom(o);
+        in.nextAssertType(ATOM);
+        return in.atomBytes();
     }
 }

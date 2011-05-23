@@ -1,9 +1,11 @@
 package net.lshift.spki.convert;
 
+import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
+
+import java.io.IOException;
 import java.math.BigInteger;
 
-import net.lshift.spki.Create;
-import net.lshift.spki.Sexp;
+import net.lshift.spki.ParseException;
 
 /**
  * Convert between a BigInteger and a SExp
@@ -12,14 +14,17 @@ public class BigIntegerConverter
     implements Converter<BigInteger>
 {
     @Override
-    public BigInteger fromSexp(Sexp sexp)
+    public void write(ConvertOutputStream out, BigInteger o) throws IOException
     {
-        return new BigInteger(ConvertUtils.toBytes(sexp));
+        out.atom(o.toByteArray());
     }
 
     @Override
-    public Sexp toSexp(BigInteger o)
+    public BigInteger read(ConvertInputStream in)
+        throws ParseException,
+            IOException
     {
-        return Create.atom(o.toByteArray());
+        in.nextAssertType(ATOM);
+        return new BigInteger(in.atomBytes());
     }
 }

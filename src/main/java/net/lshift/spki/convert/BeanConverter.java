@@ -1,5 +1,6 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 
@@ -33,6 +34,10 @@ public abstract class BeanConverter<T> implements Converter<T>
     public String getName()
     {
         return name;
+    }
+
+    protected void writeName(ConvertOutputStream out) throws IOException {
+        out.atom(name);
     }
 
     protected String getPAnnotation(Annotation[] annotations)

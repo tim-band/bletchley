@@ -1,19 +1,12 @@
 package net.lshift.spki;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
- * Tokenize an InputStream into SPKI tokens
+ * Interface representing a stream of SPKI tokens
  */
-public class SpkiInputStream
+public abstract class SpkiInputStream
 {
-    private static final int NO_MORE_DIGITS_BOUND = (Integer.MAX_VALUE - 9)/10;
-    private final InputStream is;
-    private boolean inAtom = false;
-    private boolean invalid = false;
-    private int atomBytes;
-
     public enum TokenType {
         ATOM,
         OPENPAREN,
@@ -21,83 +14,75 @@ public class SpkiInputStream
         EOF
     }
 
-    public SpkiInputStream(InputStream is)
-    {
-        this.is = is;
+    protected enum State {
+        TOKEN,
+        ATOM,
+        FINISHED,
+        INVALID
     }
 
-    public TokenType next() throws IOException, ParseException
+    protected State state = State.TOKEN;
+
+    protected void invalidate()
     {
-        if (invalid) {
-            throw new ParseException("Stream is dead");
+        state = State.INVALID;
+    }
+
+    protected void assertState(State asserted)
+    {
+        if (this.state != asserted) {
+            final State current = this.state;
+            invalidate();
+            throw new IllegalStateException("State should be "
+                + asserted + " but is " + current);
         }
-        if (inAtom) {
-            invalid = true;
-            throw new ParseException("Must read atom first");
-        }
-        int next = is.read();
-        switch (next) {
-        case '(':
-            return TokenType.OPENPAREN;
-        case ')':
-            return TokenType.CLOSEPAREN;
-        case -1:
-            return TokenType.EOF;
+    }
+
+    public TokenType next()
+        throws IOException,
+            ParseException
+    {
+        assertState(State.TOKEN);
+        TokenType res = doNext();
+        switch (res) {
+        case ATOM:
+            state = State.ATOM;
+            break;
+        case EOF:
+            state = State.FINISHED;
+            break;
         default:
-            atomBytes = readInteger(next);
-            inAtom = true;
-            return TokenType.ATOM;
+            break;
         }
-    }
-
-    private int readInteger(int next)
-        throws ParseException,
-            IOException
-    {
-        int c = next;
-        int r = 0;
-        for (;;) {
-            if (c < Constants.DIGITBASE || c >= Constants.DIGITBASE + 10) {
-                invalid = true;
-                throw new ParseException("Bad s-expression format");
-            }
-            r += c - Constants.DIGITBASE;
-            c = is.read();
-            if (c == Constants.COLON)
-                return r;
-            if (r > NO_MORE_DIGITS_BOUND) {
-                // Could strictly speaking handle it so long as
-                // next digit is 0..7 and is last, but let's not go mad.
-                invalid = true;
-                throw new ParseException("Integer too large");
-            }
-            r *= 10;
-        }
-    }
-
-    public byte[] atomBytes() throws IOException, ParseException
-    {
-        if (invalid) {
-            throw new ParseException("Stream is dead");
-        }
-        if (!inAtom) {
-            throw new ParseException("Not in an atom");
-        }
-        byte[] res = new byte[atomBytes];
-        int c = is.read(res);
-        if (c != atomBytes) {
-            invalid = true;
-            throw new ParseException("Failed to read enough bytes");
-        }
-        inAtom = false;
         return res;
     }
 
-    public void nextAssertType(TokenType type) throws ParseException, IOException
+
+    public void nextAssertType(TokenType type)
+        throws ParseException,
+            IOException
     {
         if (next() != type) {
-            invalid = true;
+            invalidate();
             throw new ParseException("Token was of unexpected type");
         }
     }
+
+    public byte[] atomBytes()
+    throws IOException,
+        ParseException {
+        assertState(State.ATOM);
+        byte[] res = doAtomBytes();
+        state = State.TOKEN;
+        return res;
+    }
+
+
+    protected abstract TokenType doNext()
+    throws IOException,
+        ParseException;
+
+    protected abstract byte[] doAtomBytes()
+        throws IOException,
+            ParseException;
 }

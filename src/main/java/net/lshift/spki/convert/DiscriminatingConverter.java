@@ -1,10 +1,11 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lshift.spki.Sexp;
-import net.lshift.spki.Slist;
+import net.lshift.spki.ParseException;
+import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
  * Convert to/from a superclass given a list of known subclasses
@@ -21,7 +22,7 @@ public class DiscriminatingConverter<T> implements Converter<T>
     {
         for (Class<? extends T> clazz: classes) {
             Converter<? extends T> converter
-                = Convert.REGISTRY.getConverter(clazz);
+                = Registry.REGISTRY.getConverter(clazz);
             classMap.put(clazz, converter);
             nameMap.put(
                 ((BeanConverter<? extends T>) converter).getName(),
@@ -29,24 +30,35 @@ public class DiscriminatingConverter<T> implements Converter<T>
         }
     }
 
-    @Override
-    public T fromSexp(Sexp sexp)
-    {
-        // FIXME: better error handling
-        Converter<? extends T> converter
-            = nameMap.get(ConvertUtils.toString(((Slist)sexp).getHead()));
-        return converter.fromSexp(sexp);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
-    public Sexp toSexp(T o)
+    public void write(ConvertOutputStream out, T o)
+        throws IOException
     {
         final Converter<? extends T> converter = classMap.get(o.getClass());
         if (converter == null) {
             throw new ConvertException("Don't know how to convert from: "
                 + o.getClass().getCanonicalName());
         }
-        return ((Converter<T>)converter).toSexp(o);
+        ((Converter<T>)converter).write(out, o);
+    }
+
+    @Override
+    public T read(ConvertInputStream in)
+        throws ParseException,
+            IOException
+    {
+        in.nextAssertType(TokenType.OPENPAREN);
+        in.nextAssertType(TokenType.ATOM);
+        byte[] discrim = in.atomBytes();
+        Converter<? extends T> converter
+            = nameMap.get(ConvertUtils.stringOrNull(discrim));
+        if (converter == null) {
+            throw new ParseException("Unable to find converter");
+        }
+        in.pushback(discrim);
+        in.pushback(TokenType.ATOM);
+        in.pushback(TokenType.OPENPAREN);
+        return converter.read(in);
     }
 }

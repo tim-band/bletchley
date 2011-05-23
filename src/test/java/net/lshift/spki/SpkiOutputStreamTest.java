@@ -11,7 +11,7 @@ import org.junit.Test;
 public class SpkiOutputStreamTest
 {
     public ByteArrayOutputStream output = new ByteArrayOutputStream();
-    public SpkiOutputStream sos = new SpkiOutputStream(output);
+    public CanonicalSpkiOutputStream sos = new CanonicalSpkiOutputStream(output);
 
     public byte[] getOutput() {
         return output.toByteArray();

@@ -1,21 +1,20 @@
 package net.lshift.spki.suiteb.cli;
 
-import net.lshift.spki.convert.ByteOpenable;
 import static net.lshift.spki.convert.OpenableUtils.read;
 import static net.lshift.spki.convert.OpenableUtils.write;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.Sexp;
+import net.lshift.spki.convert.ByteOpenable;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
@@ -29,53 +28,64 @@ import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceConversion;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
-import net.lshift.cli.CommandLineParser;
+
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.NotImplementedException;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 
 /**
  * Command line interface to crypto functions
  */
-public class Cli {
-
-    private static final String CLI_MESSAGE = Cli.class.toString();
+public class Cli
+{
+    static final String CLI_MESSAGE = Cli.class.toString();
 
     public static void prettyPrint(Openable file)
-            throws IOException,
-            ParseException {
-        PrettyPrinter.prettyPrint(System.out,
-                read(Sexp.class, file));
+        throws IOException,
+            ParseException
+    {
+        PrettyPrinter.prettyPrint(System.out, file.read());
     }
 
-    public static void genEncryptionKey(Openable out) throws IOException {
+    public static void genEncryptionKey(Openable out) throws IOException
+    {
         write(out, PrivateEncryptionKey.class,
                 PrivateEncryptionKey.generate());
     }
 
     public static void getPublicEncryptionKey(Openable privk, Openable pubk)
-            throws ParseException,
-            IOException {
+        throws ParseException,
+            IOException
+    {
         final PrivateEncryptionKey privatek
                 = read(PrivateEncryptionKey.class, privk);
         write(pubk, PublicEncryptionKey.class, privatek.getPublicKey());
     }
 
-    public static void genSigningKey(Openable out) throws IOException {
+    public static void genSigningKey(Openable out) throws IOException
+    {
         write(out, PrivateSigningKey.class, PrivateSigningKey.generate());
     }
 
     public static void getPublicSigningKey(Openable privk, Openable pubk)
-            throws ParseException,
-            IOException {
+        throws ParseException,
+            IOException
+    {
         final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
         write(pubk, PublicSigningKey.class, privatek.getPublicKey());
     }
+
     public static void decryptSignedMessage(
-            String messageType,
-            PrivateEncryptionKey encryptionKey,
-            PublicSigningKey signingKey,
-            Openable packet,
-            Openable out) throws IOException, ParseException {
+        String messageType,
+        PrivateEncryptionKey encryptionKey,
+        PublicSigningKey signingKey,
+        Openable packet,
+        Openable out)
+        throws ParseException,
+            IOException
+    {
         InferenceEngine inference = new InferenceEngine();
         inference.process(signingKey);
         inference.process(encryptionKey);
@@ -94,22 +104,25 @@ public class Cli {
         }
         OpenableUtils.writeBytes(out, message.content);
     }
+
     public static void decryptSignedMessage(
-            String messageType,
-            Openable ePrivate,
-            Openable sPublic,
-            Openable packet,
-            Openable out)
-            throws ParseException,
-            IOException {
+        String messageType,
+        Openable ePrivate,
+        Openable sPublic,
+        Openable packet,
+        Openable out)
+        throws ParseException,
+            IOException
+    {
         PrivateEncryptionKey encryptionKey = read(PrivateEncryptionKey.class, ePrivate);
         PublicSigningKey signingKey = read(PublicSigningKey.class, sPublic);
         decryptSignedMessage(messageType, encryptionKey, signingKey, packet, out);
     }
 
     private static void genEncryptedSignedMessage(
-            String messageType,
-            Openable[] args) throws ParseException, IOException {
+        String messageType,
+        Openable[] args) throws ParseException, IOException
+    {
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         AesKey aesKey = AesKey.generateAESKey();
         for (int i = 2; i < args.length - 1; i++) {
@@ -132,9 +145,10 @@ public class Cli {
     }
 
     public static void main(String command, Openable... args)
-            throws FileNotFoundException,
+        throws FileNotFoundException,
             ParseException,
-            IOException {
+            IOException
+    {
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
         } else if ("genSigningKey".equals(command)) {
@@ -147,7 +161,6 @@ public class Cli {
             getPublicEncryptionKey(args[0], args[1]);
         } else if ("decryptSignedMessage".equals(command)) {
             decryptSignedMessage(CLI_MESSAGE,
-
                     args[0], args[1], args[2], args[3]);
         } else if ("genEncryptedSignedMessage".equals(command)) {
             genEncryptedSignedMessage(CLI_MESSAGE, args);
@@ -190,7 +203,8 @@ public class Cli {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         String command = "<no valid command>";
         try {
             int i = 0;

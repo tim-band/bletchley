@@ -1,6 +1,8 @@
 package net.lshift.spki.convert;
 
-import net.lshift.spki.Sexp;
+import java.io.IOException;
+
+import net.lshift.spki.ParseException;
 
 /**
  * Interface for an object in the class conversion registry, which can
@@ -8,7 +10,7 @@ import net.lshift.spki.Sexp;
  */
 public interface Converter<T>
 {
-    public Sexp toSexp(T o);
+    public void write(ConvertOutputStream out, T o) throws IOException;
 
-    public T fromSexp(Sexp sexp);
+    public T read(ConvertInputStream in) throws ParseException, IOException;
 }

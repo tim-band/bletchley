@@ -2,11 +2,7 @@ package net.lshift.spki;
 
 import static net.lshift.spki.Create.list;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -31,37 +27,6 @@ public class Marshal {
             }
             ob.endSexp();
         }
-    }
-
-    public static void marshal(OutputStream os, Sexp sexp) throws IOException
-    {
-        marshal(new SpkiOutputStream(os), sexp);
-    }
-
-    public static byte[] marshal(Sexp sexp) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            marshal(baos, sexp);
-        } catch (IOException e) {
-            throw new RuntimeException(
-                "A ByteArrayOutputStream should never throw an IOException", e);
-        }
-        return baos.toByteArray();
-    }
-
-    public static Sexp unmarshal(byte[] bytes) throws ParseException {
-        try {
-            return unmarshal(new ByteArrayInputStream(bytes));
-        } catch (IOException e) {
-            throw new RuntimeException("Impossible!", e);
-        }
-    }
-
-    public static Sexp unmarshal(InputStream is)
-        throws ParseException,
-            IOException
-   {
-        return unmarshal(new SpkiInputStream(is));
     }
 
     public static Sexp unmarshal(SpkiInputStream is)

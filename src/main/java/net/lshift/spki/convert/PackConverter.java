@@ -1,13 +1,15 @@
 package net.lshift.spki.convert;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import net.lshift.spki.Sexp;
+import net.lshift.spki.ParseException;
 
 /**
  * "Pack" protocol converter - convert to sexp via another object and
  * "pack" or "unpack" methods.
+ * FIXME: base this on StepConverter
  */
 public class PackConverter<T extends PackConvertible>
     implements Converter<T>
@@ -27,13 +29,22 @@ public class PackConverter<T extends PackConvertible>
         }
     }
 
+    @Override
+    public void write(ConvertOutputStream out, T o)
+        throws IOException
+    {
+        out.writeUnchecked(otherType, o.pack());
+    }
+
     @SuppressWarnings("unchecked")
     @Override
-    public T fromSexp(Sexp sexp)
+    public T read(ConvertInputStream in)
+        throws ParseException,
+            IOException
     {
         try {
             return (T) unpackMethod.invoke(null,
-                Convert.fromSExp(otherType, sexp));
+                in.read(otherType));
         } catch (IllegalArgumentException e) {
             throw new ConvertReflectionException(e);
         } catch (IllegalAccessException e) {
@@ -41,11 +52,5 @@ public class PackConverter<T extends PackConvertible>
         } catch (InvocationTargetException e) {
             throw new ConvertReflectionException(e);
         }
-    }
-
-    @Override
-    public Sexp toSexp(T o)
-    {
-        return Convert.toSExpUnchecked(otherType, o.pack());
     }
 }

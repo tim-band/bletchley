@@ -1,6 +1,8 @@
 package net.lshift.spki.convert;
 
-import net.lshift.spki.Sexp;
+import java.io.IOException;
+
+import net.lshift.spki.ParseException;
 
 /**
  * Convert TResult to SExp by first converting it to TStep using stepIn/stepOut
@@ -9,20 +11,23 @@ public abstract class StepConverter<TResult, TStep>
     implements Converter<TResult>
 {
     @Override
-    public TResult fromSexp(Sexp sexp)
+    public void write(ConvertOutputStream out, TResult o)
+        throws IOException
     {
-        return stepOut(Convert.fromSExp(getStepClass(), sexp));
+        out.write(getStepClass(), stepIn(o));
     }
 
     @Override
-    public Sexp toSexp(TResult o)
+    public TResult read(ConvertInputStream in)
+        throws ParseException,
+            IOException
     {
-        return Convert.toSExp(getStepClass(), stepIn(o));
+        return stepOut(in.read(getStepClass()));
     }
 
     public void registerSelf()
     {
-        Convert.REGISTRY.register(getResultClass(), this);
+        Registry.REGISTRY.register(getResultClass(), this);
     }
 
     protected abstract Class<TResult> getResultClass();
