@@ -36,6 +36,9 @@ public class NameBeanConverter<T>
             in.nextAssertType(TokenType.OPENPAREN);
             in.nextAssertType(TokenType.ATOM);
             FieldConvertInfo field = getField(in.atomBytes());
+            if (initargs[field.getIndex()] != null) {
+                throw new ParseException("Repeated field");
+            }
             initargs[field.getIndex()] = in.read(field.getType());
             in.nextAssertType(TokenType.CLOSEPAREN);
         }
