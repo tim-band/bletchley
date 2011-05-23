@@ -2,6 +2,7 @@ package net.lshift.spki;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 
 import net.lshift.spki.SpkiInputStream.TokenType;
@@ -84,12 +85,19 @@ public class PrettyPrinter {
         return true;
     }
 
-    public static String prettyPrint(
-        CanonicalSpkiInputStream stream) throws ParseException
+    public static void prettyPrint(PrintStream out, InputStream read)
+        throws IOException,
+            ParseException
+    {
+        prettyPrint(out, new CanonicalSpkiInputStream(read));
+    }
+
+    public static String prettyPrint(InputStream read)
+        throws ParseException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            prettyPrint(new PrintStream(baos), stream);
+            prettyPrint(new PrintStream(baos), read);
         } catch (IOException e) {
             // should not be possible
             throw new RuntimeException(e);

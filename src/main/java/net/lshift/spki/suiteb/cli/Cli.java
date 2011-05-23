@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.FileOpenable;
@@ -37,8 +36,7 @@ public class Cli
         throws IOException,
             ParseException
     {
-        PrettyPrinter.prettyPrint(System.out,
-            new CanonicalSpkiInputStream(file.read()));
+        PrettyPrinter.prettyPrint(System.out, file.read());
     }
 
     public static void genEncryptionKey(Openable out) throws IOException
