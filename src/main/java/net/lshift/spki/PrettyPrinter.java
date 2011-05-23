@@ -55,14 +55,7 @@ public class PrettyPrinter {
     private static void printBytes(PrintStream ps, byte[] bytes)
         throws IOException
     {
-        boolean text = (bytes.length > 0);
-        for (int i = 0; text && i < bytes.length; i++) {
-            if (bytes[i] < 0x20 || bytes[i] >= 0x7f
-                    || bytes[i] == Constants.DOUBLEQUOTE
-                    || bytes[i] == Constants.BACKSLASH)
-                text = false;
-        }
-        if (text) {
+        if (isText(bytes)) {
             ps.print("\"");
             ps.write(bytes);
             ps.println("\"");
@@ -75,6 +68,20 @@ public class PrettyPrinter {
             ps.write(Base64.encode(bytes));
             ps.println("|");
         }
+    }
+
+    private static boolean isText(byte[] bytes)
+    {
+        if (bytes.length ==  0) {
+            return false;
+        }
+        for (int i = 0; i < bytes.length; i++) {
+            if (bytes[i] < 0x20 || bytes[i] >= 0x7f
+                    || bytes[i] == Constants.DOUBLEQUOTE
+                    || bytes[i] == Constants.BACKSLASH)
+                return false;
+        }
+        return true;
     }
 
     public static String prettyPrint(
