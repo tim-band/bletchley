@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import net.lshift.spki.SpkiInputStream.TokenType;
+
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -20,27 +22,7 @@ public class PrettyPrinter {
             switch (stream.next()) {
             case ATOM:
                 printPrefix(ps, indent);
-                byte[] bytes = stream.atomBytes();
-                boolean text = (bytes.length > 0);
-                for (int i = 0; text && i < bytes.length; i++) {
-                    if (bytes[i] < 0x20 || bytes[i] >= 0x7f
-                            || bytes[i] == Constants.DOUBLEQUOTE
-                            || bytes[i] == Constants.BACKSLASH)
-                        text = false;
-                }
-                if (text) {
-                    ps.print("\"");
-                    ps.write(bytes);
-                    ps.println("\"");
-                } else if (bytes.length < 10) {
-                    ps.print("#");
-                    ps.write(Hex.encode(bytes));
-                    ps.println("#");
-                } else {
-                    ps.print("|");
-                    ps.write(Base64.encode(bytes));
-                    ps.println("|");
-                }
+                printBytes(ps, stream.atomBytes());
                 break;
             case CLOSEPAREN:
                 if (indent == 0) {
@@ -52,7 +34,9 @@ public class PrettyPrinter {
                 break;
             case OPENPAREN:
                 printPrefix(ps, indent);
-                ps.println("(");
+                ps.print("(");
+                stream.nextAssertType(TokenType.ATOM);
+                printBytes(ps, stream.atomBytes());
                 indent += 1;
                 break;
             case EOF:
@@ -65,6 +49,31 @@ public class PrettyPrinter {
     {
         for (int i = 0; i < indent; i++) {
             ps.print("    ");
+        }
+    }
+
+    private static void printBytes(PrintStream ps, byte[] bytes)
+        throws IOException
+    {
+        boolean text = (bytes.length > 0);
+        for (int i = 0; text && i < bytes.length; i++) {
+            if (bytes[i] < 0x20 || bytes[i] >= 0x7f
+                    || bytes[i] == Constants.DOUBLEQUOTE
+                    || bytes[i] == Constants.BACKSLASH)
+                text = false;
+        }
+        if (text) {
+            ps.print("\"");
+            ps.write(bytes);
+            ps.println("\"");
+        } else if (bytes.length < 10) {
+            ps.print("#");
+            ps.write(Hex.encode(bytes));
+            ps.println("#");
+        } else {
+            ps.print("|");
+            ps.write(Base64.encode(bytes));
+            ps.println("|");
         }
     }
 
