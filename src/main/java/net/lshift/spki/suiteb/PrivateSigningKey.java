@@ -3,7 +3,7 @@ package net.lshift.spki.suiteb;
 import java.math.BigInteger;
 
 import net.lshift.spki.convert.PackConvertible;
-import net.lshift.spki.suiteb.sexpstructs.EcdsaAPrivateKey;
+import net.lshift.spki.suiteb.sexpstructs.EcdsaPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
@@ -24,13 +24,13 @@ public class PrivateSigningKey
         signer.init(true, keyPair.getPrivate());
     }
 
-    public static PrivateSigningKey unpack(EcdsaAPrivateKey sexp) {
+    public static PrivateSigningKey unpack(EcdsaPrivateKey sexp) {
         return new PrivateSigningKey(sexp.getKeypair());
     }
 
     @Override
-    public EcdsaAPrivateKey pack() {
-        return new EcdsaAPrivateKey(keyPair);
+    public EcdsaPrivateKey pack() {
+        return new EcdsaPrivateKey(keyPair);
     }
 
     public PublicSigningKey getPublicKey() {
