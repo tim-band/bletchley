@@ -11,19 +11,17 @@ import net.lshift.spki.ParseException;
  * Convert between a BigInteger and a SExp
  */
 public class BigIntegerConverter
-    implements Converter<BigInteger>
-{
+    implements Converter<BigInteger> {
     @Override
-    public void write(ConvertOutputStream out, BigInteger o) throws IOException
-    {
+    public void write(ConvertOutputStream out, BigInteger o)
+        throws IOException {
         out.atom(o.toByteArray());
     }
 
     @Override
     public BigInteger read(ConvertInputStream in)
         throws ParseException,
-            IOException
-    {
+            IOException {
         in.nextAssertType(ATOM);
         return new BigInteger(in.atomBytes());
     }

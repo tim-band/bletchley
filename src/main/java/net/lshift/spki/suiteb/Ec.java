@@ -31,6 +31,7 @@ public class Ec {
 
     private static SecureRandom random = new SecureRandom();
     private static ECKeyPairGenerator gen = new ECKeyPairGenerator();
+
     static {
         gen.init(new ECKeyGenerationParameters(DOMAIN_PARAMETERS, random));
     }
@@ -39,8 +40,7 @@ public class Ec {
         return gen.generateKeyPair();
     }
 
-    public static ECPublicKeyParameters toECPublicKeyParameters(ECPoint point)
-    {
+    public static ECPublicKeyParameters toECPublicKeyParameters(ECPoint point) {
         return new ECPublicKeyParameters(point, Ec.DOMAIN_PARAMETERS);
     }
 
@@ -61,13 +61,11 @@ public class Ec {
         return Arrays.copyOf(hash.getBytes(), AesKey.AES_KEY_BYTES);
     }
 
-    public static AesKeyId generateAESKeyId()
-    {
+    public static AesKeyId generateAESKeyId() {
         return new AesKeyId(randomBytes(KEY_ID_BYTES));
     }
 
-    public static byte[] randomBytes(int len)
-    {
+    public static byte[] randomBytes(int len) {
         byte[] res = new byte[len];
         random.nextBytes(res);
         return res;

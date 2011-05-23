@@ -13,8 +13,8 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 /**
  * A private key for signing
  */
-public class PrivateSigningKey extends PackConvertible
-{
+public class PrivateSigningKey
+    extends PackConvertible {
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();
 
@@ -24,14 +24,12 @@ public class PrivateSigningKey extends PackConvertible
         signer.init(true, keyPair.getPrivate());
     }
 
-    public static PrivateSigningKey unpack(EcdsaAPrivateKey sexp)
-    {
+    public static PrivateSigningKey unpack(EcdsaAPrivateKey sexp) {
         return new PrivateSigningKey(sexp.getKeypair());
     }
 
     @Override
-    public EcdsaAPrivateKey pack()
-    {
+    public EcdsaAPrivateKey pack() {
         return new EcdsaAPrivateKey(keyPair);
     }
 
@@ -43,14 +41,12 @@ public class PrivateSigningKey extends PackConvertible
         return new PrivateSigningKey(Ec.generate());
     }
 
-    public EcdsaSignature rawSignature(DigestSha384 digest)
-    {
+    public EcdsaSignature rawSignature(DigestSha384 digest) {
         BigInteger[] signature = signer.generateSignature(digest.getBytes());
         return new EcdsaSignature(signature[0], signature[1]);
     }
 
-    public SequenceItem sign(SequenceItem item)
-    {
+    public SequenceItem sign(SequenceItem item) {
         DigestSha384 digest = DigestSha384.digest(SequenceItem.class, item);
         return new Signature(digest, getPublicKey().getKeyId(),
             rawSignature(digest));

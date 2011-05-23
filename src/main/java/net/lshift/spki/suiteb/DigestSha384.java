@@ -15,14 +15,13 @@ import org.bouncycastle.util.encoders.Hex;
 /**
  * A SHA-384 digest of a SExp.
  */
-public class DigestSha384 extends PackConvertible
-{
+public class DigestSha384
+    extends PackConvertible {
     private static final String DIGEST_NAME = "sha384";
     private final int DIGEST_LENGTH = 48;
     private final byte[] bytes;
 
-    public DigestSha384(byte[] bytes)
-    {
+    public DigestSha384(byte[] bytes) {
         super();
         if (bytes.length != DIGEST_LENGTH) {
             throw new RuntimeException("Wrong number of bytes, expected"
@@ -31,14 +30,12 @@ public class DigestSha384 extends PackConvertible
         this.bytes = bytes;
     }
 
-    public byte[] getBytes()
-    {
+    public byte[] getBytes() {
         return bytes;
     }
 
     @Override
-    public Hash pack()
-    {
+    public Hash pack() {
         return new Hash(DIGEST_NAME, bytes);
     }
 
@@ -49,8 +46,7 @@ public class DigestSha384 extends PackConvertible
         return new DigestSha384(hash.value);
     }
 
-    public static <T> DigestSha384 digest(Class<T> clazz, T o)
-    {
+    public static <T> DigestSha384 digest(Class<T> clazz, T o) {
         SHA384Digest sha = new SHA384Digest();
         DigestOutputStream digester = new DigestOutputStream(
             new DevnullOutputStream(), sha);
@@ -65,20 +61,17 @@ public class DigestSha384 extends PackConvertible
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "DigestSha384 [bytes=" + new String(Hex.encode(bytes)) + "]";
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Arrays.hashCode(bytes);
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;

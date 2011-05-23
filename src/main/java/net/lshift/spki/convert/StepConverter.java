@@ -8,25 +8,21 @@ import net.lshift.spki.ParseException;
  * Convert TResult to SExp by first converting it to TStep using stepIn/stepOut
  */
 public abstract class StepConverter<TResult, TStep>
-    implements Converter<TResult>
-{
+    implements Converter<TResult> {
     @Override
     public void write(ConvertOutputStream out, TResult o)
-        throws IOException
-    {
+        throws IOException {
         out.write(getStepClass(), stepIn(o));
     }
 
     @Override
     public TResult read(ConvertInputStream in)
         throws ParseException,
-            IOException
-    {
+            IOException {
         return stepOut(in.read(getStepClass()));
     }
 
-    public void registerSelf()
-    {
+    public void registerSelf() {
         Registry.REGISTRY.register(getResultClass(), this);
     }
 

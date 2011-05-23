@@ -10,9 +10,9 @@ import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
  * An SPKI signature, including the digest of the target object and
  * the id of the signing key.
  */
-public class Signature extends PositionBeanConvertible
-    implements SequenceItem
-{
+public class Signature
+    extends PositionBeanConvertible
+    implements SequenceItem {
     public final DigestSha384 digest;
     public final DigestSha384 keyId;
     public final EcdsaSignature rawSignature;

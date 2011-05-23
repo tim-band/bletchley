@@ -13,25 +13,21 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
  * Superclass for serialization formats for EC private keys
  */
 public abstract class EcPrivateKey
-    extends NameBeanConvertible
-{
+    extends NameBeanConvertible {
     public final EcPublicKey publicKey;
     public final BigInteger d;
 
-    public EcPrivateKey(EcPublicKey publicKey, BigInteger d)
-    {
+    public EcPrivateKey(EcPublicKey publicKey, BigInteger d) {
         super();
         this.publicKey = publicKey;
         this.d = d;
     }
 
-    public EcPrivateKey(EcPublicKey publicKey, AsymmetricCipherKeyPair keyPair)
-    {
+    public EcPrivateKey(EcPublicKey publicKey, AsymmetricCipherKeyPair keyPair) {
         this(publicKey, ((ECPrivateKeyParameters)keyPair.getPrivate()).getD());
     }
 
-    public AsymmetricCipherKeyPair getKeypair()
-    {
+    public AsymmetricCipherKeyPair getKeypair() {
         ECPublicKeyParameters pk = publicKey.getParameters();
         ECPrivateKeyParameters privk = new ECPrivateKeyParameters(
             d, Ec.DOMAIN_PARAMETERS);

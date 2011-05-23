@@ -9,8 +9,8 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 /**
  * A public key for verifying signatures
  */
-public class PublicSigningKey extends PublicKey
-{
+public class PublicSigningKey
+    extends PublicKey {
     private final ECDSASigner signer = new ECDSASigner();
 
     PublicSigningKey(CipherParameters publicKey) {
@@ -27,8 +27,7 @@ public class PublicSigningKey extends PublicKey
         return new EcdsaPublicKey(publicKey);
     }
 
-    public boolean validate(DigestSha384 digest, EcdsaSignature sigVal)
-    {
+    public boolean validate(DigestSha384 digest, EcdsaSignature sigVal) {
         return signer.verifySignature(digest.getBytes(),
             sigVal.r, sigVal.s);
     }

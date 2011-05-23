@@ -9,10 +9,8 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  * SExp converter that produces a SExp that looks like key-value pairs
  */
 public class NameBeanConverter<T>
-    extends BeanFieldConverter<T>
-{
-    public NameBeanConverter(Class<T> clazz)
-    {
+    extends BeanFieldConverter<T> {
+    public NameBeanConverter(Class<T> clazz) {
         super(clazz);
     }
 
@@ -20,8 +18,8 @@ public class NameBeanConverter<T>
     protected void writeField(
         ConvertOutputStream out,
         FieldConvertInfo field,
-        Object property) throws IOException
-    {
+        Object property)
+        throws IOException {
         out.beginSexp();
         out.atom(field.getHyphenatedName());
         out.writeUnchecked(field.getType(), property);
@@ -31,8 +29,7 @@ public class NameBeanConverter<T>
     @Override
     protected void read(ConvertInputStream in, Object[] initargs)
         throws ParseException,
-            IOException
-    {
+            IOException {
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
         for (int i = 0; i < fields.length; i++) {
@@ -45,8 +42,8 @@ public class NameBeanConverter<T>
         in.nextAssertType(TokenType.CLOSEPAREN);
     }
 
-    private FieldConvertInfo getField(byte[] bytes) throws ParseException
-    {
+    private FieldConvertInfo getField(byte[] bytes)
+        throws ParseException {
         String string = ConvertUtils.stringOrNull(bytes);
         for (FieldConvertInfo field: fields) {
             if (field.getHyphenatedName().equals(string)) {

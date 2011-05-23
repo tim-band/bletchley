@@ -12,8 +12,8 @@ import net.lshift.spki.convert.SexpName;
  * Serialization format for ECDH shared secret before it's hashed into
  * a GCM key.
  */
-public class EcdhSharedSecret extends PositionBeanConvertible
-{
+public class EcdhSharedSecret
+    extends PositionBeanConvertible {
     public final ECPoint receiverKey;
     public final ECPoint senderKey;
     public final BigInteger sharedSecret;
@@ -22,8 +22,8 @@ public class EcdhSharedSecret extends PositionBeanConvertible
     public EcdhSharedSecret(
         @P("receiverKey") ECPoint receiverKey,
         @P("senderKey") ECPoint senderKey,
-        @P("sharedSecret") BigInteger sharedSecret)
-   {
+        @P("sharedSecret") BigInteger sharedSecret
+    ) {
         super();
         this.receiverKey = receiverKey;
         this.senderKey = senderKey;

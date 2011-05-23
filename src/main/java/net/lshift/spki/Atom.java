@@ -41,8 +41,7 @@ public final class Atom implements Sexp {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('"');
         for (byte b: bytes) {

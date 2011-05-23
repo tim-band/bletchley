@@ -9,8 +9,8 @@ import net.lshift.spki.convert.SexpName;
 /**
  * Serialization format for a raw ECDSA signature
  */
-public class EcdsaSignature extends NameBeanConvertible
-{
+public class EcdsaSignature
+    extends NameBeanConvertible {
     public final BigInteger r;
     public final BigInteger s;
 

@@ -10,8 +10,8 @@ import net.lshift.spki.ParseException;
  * Superclass for a converter that reads bean properties based on
  * an annotated constructor.
  */
-public abstract class BeanFieldConverter<T> extends BeanConverter<T>
-{
+public abstract class BeanFieldConverter<T>
+    extends BeanConverter<T> {
     protected final FieldConvertInfo[] fields;
 
     public BeanFieldConverter(Class<T> clazz)
@@ -29,8 +29,7 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
 
     @Override
     public void write(ConvertOutputStream out, T o)
-        throws IOException
-    {
+        throws IOException {
         try {
             out.beginSexp();
             writeName(out);
@@ -55,8 +54,7 @@ public abstract class BeanFieldConverter<T> extends BeanConverter<T>
     @Override
     public T read(ConvertInputStream in)
         throws ParseException,
-            IOException
-    {
+            IOException {
         Object[] initargs = new Object[fields.length];
         read(in, initargs);
         try {

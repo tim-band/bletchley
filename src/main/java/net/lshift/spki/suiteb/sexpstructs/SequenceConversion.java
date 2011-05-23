@@ -12,8 +12,7 @@ import net.lshift.spki.suiteb.Signature;
  * is loaded.
  */
 @SuppressWarnings("unchecked")
-public class SequenceConversion
-{
+public class SequenceConversion {
     static {
         Registry.REGISTRY.register(SequenceItem.class,
             new DiscriminatingConverter<SequenceItem>(

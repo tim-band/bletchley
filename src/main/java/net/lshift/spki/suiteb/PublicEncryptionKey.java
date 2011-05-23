@@ -27,8 +27,7 @@ public class PublicEncryptionKey extends PublicKey  {
         return new EcdhPublicKey(publicKey);
     }
 
-    public AesKey setupEncrypt(List<SequenceItem> sequence)
-    {
+    public AesKey setupEncrypt(List<SequenceItem> sequence) {
         AsymmetricCipherKeyPair ephemeralKey = Ec.generate();
         AesKey res = new AesKey(
             Ec.sessionKey(

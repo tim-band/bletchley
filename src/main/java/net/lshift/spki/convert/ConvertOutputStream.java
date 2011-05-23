@@ -5,13 +5,11 @@ import java.io.IOException;
 import net.lshift.spki.SpkiOutputStream;
 
 public class ConvertOutputStream
-    extends SpkiOutputStream
-{
+    extends SpkiOutputStream {
     private final SpkiOutputStream os;
     private final Registry registry;
 
-    public ConvertOutputStream(SpkiOutputStream os)
-    {
+    public ConvertOutputStream(SpkiOutputStream os) {
         super();
         this.os = os;
         this.registry = Registry.REGISTRY;
@@ -19,35 +17,31 @@ public class ConvertOutputStream
 
     @Override
     public void atom(byte[] bytes, int off, int len)
-        throws IOException
-    {
+        throws IOException {
         os.atom(bytes, off, len);
     }
 
     @Override
     public void beginSexp()
-        throws IOException
-    {
+        throws IOException {
         os.beginSexp();
     }
 
 
     @Override
     public void close()
-        throws IOException
-    {
+        throws IOException {
         os.close();
     }
 
     @Override
     public void endSexp()
-        throws IOException
-    {
+        throws IOException {
         os.endSexp();
     }
 
-    public void atom(String string) throws IOException
-    {
+    public void atom(String string)
+        throws IOException {
         os.atom(ConvertUtils.bytes(string));
     }
 
@@ -57,8 +51,7 @@ public class ConvertOutputStream
 
     @SuppressWarnings("unchecked")
     public <T> void writeUnchecked(Class<?> clazz, Object o)
-        throws IOException
-    {
+        throws IOException {
         ((Converter<Object>) registry.getConverter(clazz)).write(this, o);
     }
 }

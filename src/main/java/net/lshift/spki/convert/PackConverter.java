@@ -12,13 +12,11 @@ import net.lshift.spki.ParseException;
  * FIXME: base this on StepConverter
  */
 public class PackConverter<T extends PackConvertible>
-    implements Converter<T>
-{
+    implements Converter<T> {
     private final Method unpackMethod;
     private final Class<?> otherType;
 
-    public PackConverter(Class<T> clazz)
-    {
+    public PackConverter(Class<T> clazz) {
         try {
             otherType = clazz.getMethod("pack").getReturnType();
             unpackMethod = clazz.getMethod("unpack", otherType);
@@ -31,8 +29,7 @@ public class PackConverter<T extends PackConvertible>
 
     @Override
     public void write(ConvertOutputStream out, T o)
-        throws IOException
-    {
+        throws IOException {
         out.writeUnchecked(otherType, o.pack());
     }
 
@@ -40,8 +37,7 @@ public class PackConverter<T extends PackConvertible>
     @Override
     public T read(ConvertInputStream in)
         throws ParseException,
-            IOException
-    {
+            IOException {
         try {
             return (T) unpackMethod.invoke(null,
                 in.read(otherType));

@@ -13,8 +13,8 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for an ECPoint ie a point on an elliptic curve.
  */
-public class Point extends NameBeanConvertible
-{
+public class Point
+    extends NameBeanConvertible {
     public final BigInteger x;
     public final BigInteger y;
 
@@ -29,8 +29,7 @@ public class Point extends NameBeanConvertible
     }
 
     public static class ECPointConverter
-        extends StepConverter<ECPoint, Point>
-    {
+        extends StepConverter<ECPoint, Point> {
         public ECPointConverter() { super(); }
 
         @Override
@@ -40,15 +39,13 @@ public class Point extends NameBeanConvertible
         public Class<ECPoint> getResultClass() { return ECPoint.class; }
 
         @Override
-        public Point stepIn(ECPoint q)
-        {
+        public Point stepIn(ECPoint q) {
             return new Point(
                 q.getX().toBigInteger(), q.getY().toBigInteger());
         }
 
         @Override
-        public ECPoint stepOut(Point point)
-        {
+        public ECPoint stepOut(Point point) {
             return Ec.DOMAIN_PARAMETERS.getCurve().createPoint(
                 point.x, point.y, false);
         }

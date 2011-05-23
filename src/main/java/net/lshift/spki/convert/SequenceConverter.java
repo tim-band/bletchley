@@ -15,13 +15,12 @@ import net.lshift.spki.SpkiInputStream.TokenType;
 /**
  * Converter for a class that has a single field of type List.
  */
-public class SequenceConverter<T> extends BeanConverter<T>
-{
+public class SequenceConverter<T>
+    extends BeanConverter<T> {
     private final String beanName;
     private final Class<?> contentType;
 
-    public SequenceConverter(Class<T> clazz)
-    {
+    public SequenceConverter(Class<T> clazz) {
         super(clazz);
         Annotation[][] annotations = constructor.getParameterAnnotations();
         if (annotations.length != 1) {
@@ -53,8 +52,7 @@ public class SequenceConverter<T> extends BeanConverter<T>
 
     @Override
     public void write(ConvertOutputStream out, T o)
-        throws IOException
-    {
+        throws IOException {
         try {
             out.beginSexp();
             writeName(out);
@@ -73,8 +71,7 @@ public class SequenceConverter<T> extends BeanConverter<T>
     @Override
     public T read(ConvertInputStream in)
         throws ParseException,
-            IOException
-    {
+            IOException {
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
         List<Object> components = new ArrayList<Object>();
@@ -103,5 +100,4 @@ public class SequenceConverter<T> extends BeanConverter<T>
             }
         }
     }
-
 }

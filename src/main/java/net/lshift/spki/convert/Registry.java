@@ -13,17 +13,13 @@ import net.lshift.spki.Sexp;
  * interface, that means it knows how to convert itself and so doesn't
  * need to be registered in advance.
  */
-public class Registry
-{
+public class Registry {
     public static final Registry REGISTRY = new Registry();
 
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 
-    public synchronized <T> void register(
-        Class<T> clazz,
-        Converter<T> converter)
-    {
+    public synchronized <T> void register(Class<T> clazz, Converter<T> converter) {
         Converter<?> already = converterMap.get(clazz);
         if (already != null) {
             assert already.equals(converter);

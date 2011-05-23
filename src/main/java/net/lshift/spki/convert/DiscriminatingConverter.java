@@ -11,15 +11,14 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  * Convert to/from a superclass given a list of known subclasses
  * each with a different SExpName
  */
-public class DiscriminatingConverter<T> implements Converter<T>
-{
+public class DiscriminatingConverter<T>
+    implements Converter<T> {
     private final Map<String, Converter<? extends T>> nameMap
         = new HashMap<String, Converter<? extends T>>();
     private final HashMap<Class<? extends T>, Converter<? extends T>> classMap
         = new HashMap<Class<? extends T>, Converter<? extends T>>();
 
-    public DiscriminatingConverter(Class<? extends T>... classes)
-    {
+    public DiscriminatingConverter(Class<? extends T>... classes) {
         for (Class<? extends T> clazz: classes) {
             Converter<? extends T> converter
                 = Registry.REGISTRY.getConverter(clazz);
@@ -33,8 +32,7 @@ public class DiscriminatingConverter<T> implements Converter<T>
     @SuppressWarnings("unchecked")
     @Override
     public void write(ConvertOutputStream out, T o)
-        throws IOException
-    {
+        throws IOException {
         final Converter<? extends T> converter = classMap.get(o.getClass());
         if (converter == null) {
             throw new ConvertException("Don't know how to convert from: "
@@ -46,8 +44,7 @@ public class DiscriminatingConverter<T> implements Converter<T>
     @Override
     public T read(ConvertInputStream in)
         throws ParseException,
-            IOException
-    {
+            IOException {
         in.nextAssertType(TokenType.OPENPAREN);
         in.nextAssertType(TokenType.ATOM);
         byte[] discrim = in.atomBytes();

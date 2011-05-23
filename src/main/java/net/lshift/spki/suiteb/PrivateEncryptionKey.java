@@ -36,8 +36,7 @@ public class PrivateEncryptionKey extends PackConvertible {
         return new PrivateEncryptionKey(Ec.generate());
     }
 
-    public byte[] getKey(ECPoint ephemeralKey)
-    {
+    public byte[] getKey(ECPoint ephemeralKey) {
         ECPublicKeyParameters pk =
             Ec.toECPublicKeyParameters(ephemeralKey);
         return Ec.sessionKey(
