@@ -9,14 +9,13 @@ import net.lshift.spki.convert.SequenceConvertible;
 /**
  * A list of SequenceItems.  Itself a SequenceItem.
  */
-public class Sequence extends SequenceConvertible implements SequenceItem
-{
+public class Sequence
+    extends SequenceConvertible
+    implements SequenceItem {
     public final List<SequenceItem> sequence;
 
     @SexpName("sequence")
-    public Sequence(
-        @P("sequence") List<SequenceItem> sequence)
-    {
+    public Sequence(@P("sequence") List<SequenceItem> sequence) {
         super();
         this.sequence = sequence;
     }

@@ -10,18 +10,17 @@ import net.lshift.spki.convert.SexpName;
 /**
  * Serialization format for private signing keys
  */
-public class EcdsaAPrivateKey extends EcPrivateKey
-{
+public class EcdsaPrivateKey
+    extends EcPrivateKey {
     @SexpName("suiteb-p384-ecdsa-private-key")
-    public EcdsaAPrivateKey(
+    public EcdsaPrivateKey(
         @P("publicKey") EcdsaPublicKey publicKey,
-        @P("d") BigInteger d)
-    {
+        @P("d") BigInteger d
+    ) {
         super(publicKey, d);
     }
 
-    public EcdsaAPrivateKey(AsymmetricCipherKeyPair keyPair)
-    {
+    public EcdsaPrivateKey(AsymmetricCipherKeyPair keyPair) {
         super(new EcdsaPublicKey(keyPair), keyPair);
     }
 }

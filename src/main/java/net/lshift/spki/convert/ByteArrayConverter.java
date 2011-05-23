@@ -10,20 +10,17 @@ import net.lshift.spki.ParseException;
  * Convert between a byte[] and a SExp
  */
 public class ByteArrayConverter
-    implements Converter<byte[]>
-{
+    implements Converter<byte[]> {
     @Override
     public void write(ConvertOutputStream out, byte[] o)
-        throws IOException
-    {
+        throws IOException {
         out.atom(o);
     }
 
     @Override
     public byte[] read(ConvertInputStream in)
         throws ParseException,
-            IOException
-    {
+            IOException {
         in.nextAssertType(ATOM);
         return in.atomBytes();
     }

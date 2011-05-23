@@ -10,9 +10,9 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * An ECDH session key packet
  */
-public class EcdhItem extends PositionBeanConvertible
-    implements SequenceItem
-{
+public class EcdhItem
+    extends PositionBeanConvertible
+    implements SequenceItem {
     public final DigestSha384 recipient;
     public final ECPoint ephemeralKey;
 

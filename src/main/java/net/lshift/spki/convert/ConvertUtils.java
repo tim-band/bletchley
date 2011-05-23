@@ -18,8 +18,7 @@ import net.lshift.spki.SpkiInputStream.TokenType;
 /**
  * Static utilities for conversion between SExps and objects.
  */
-public class ConvertUtils
-{
+public class ConvertUtils {
     private static final CharsetDecoder UTF8_DECODER
         = Constants.UTF8.newDecoder();
 
@@ -45,8 +44,7 @@ public class ConvertUtils
     }
 
     public static <T> void initialize(Class<T> clazz)
-        throws AssertionError
-    {
+        throws AssertionError {
         // Ensure the class is initialized
         // in case it statically registers converters
         // http://java.sun.com/j2se/1.5.0/compatibility.html
@@ -58,8 +56,7 @@ public class ConvertUtils
     }
 
     public static <T> void write(Class<T> clazz, T o, OutputStream os)
-        throws IOException
-    {
+        throws IOException {
         ConvertOutputStream out
             = new ConvertOutputStream(new CanonicalSpkiOutputStream(os));
         out.write(clazz, o);
@@ -68,8 +65,7 @@ public class ConvertUtils
 
     public static <T> T read(Class<T> clazz, InputStream is)
         throws ParseException,
-            IOException
-    {
+            IOException {
         try {
             ConvertInputStream in
                 = new ConvertInputStream(new CanonicalSpkiInputStream(is));
@@ -81,8 +77,7 @@ public class ConvertUtils
         }
     }
 
-    public static <T> byte[] toBytes(Class<T> clazz, T o)
-    {
+    public static <T> byte[] toBytes(Class<T> clazz, T o) {
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             write(clazz, o, os);
@@ -93,10 +88,8 @@ public class ConvertUtils
         }
     }
 
-    public static <T> T fromBytes(
-        Class<T> clazz,
-        byte [] bytes) throws ParseException
-    {
+    public static <T> T fromBytes(Class<T> clazz, byte[] bytes)
+        throws ParseException {
         try {
             return read(clazz, new ByteArrayInputStream(bytes));
         } catch (IOException e) {

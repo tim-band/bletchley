@@ -10,21 +10,18 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for public encryption keys
  */
-public class EcdhPublicKey extends EcPublicKey
-{
+public class EcdhPublicKey
+    extends EcPublicKey {
     @SexpName("suiteb-p384-ecdh-public-key")
-    public EcdhPublicKey(@P("point") ECPoint point)
-    {
+    public EcdhPublicKey(@P("point") ECPoint point) {
         super(point);
     }
 
-    public EcdhPublicKey(ECPublicKeyParameters publicKey)
-    {
+    public EcdhPublicKey(ECPublicKeyParameters publicKey) {
         super(publicKey);
     }
 
-    public EcdhPublicKey(AsymmetricCipherKeyPair keyPair)
-    {
+    public EcdhPublicKey(AsymmetricCipherKeyPair keyPair) {
         super(keyPair);
     }
 }

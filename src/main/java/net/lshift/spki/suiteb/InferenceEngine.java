@@ -21,8 +21,7 @@ import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
  * Full of limitations, but the principle is there, the limitations can be
  * fixed and it will do for now.
  */
-public class InferenceEngine
-{
+public class InferenceEngine {
     private Map<DigestSha384, PrivateEncryptionKey> dhKeys
         = new HashMap<DigestSha384, PrivateEncryptionKey>();
     private Map<DigestSha384, PublicSigningKey> dsaKeys
@@ -35,8 +34,7 @@ public class InferenceEngine
         = new HashMap<DigestSha384, List<SequenceItem>>();
 
     // FIXME: use dynamic dispatch here
-    public void process(SequenceItem item)
-    {
+    public void process(SequenceItem item) {
         if (item instanceof Sequence) {
             process((Sequence) item);
         } else if (item instanceof EcdhItem) {
@@ -58,43 +56,36 @@ public class InferenceEngine
         }
     }
 
-    public void process(PrivateEncryptionKey privateKey)
-    {
+    public void process(PrivateEncryptionKey privateKey) {
         dhKeys.put(privateKey.getPublicKey().getKeyId(), privateKey);
     }
 
-    public void process(Sequence items)
-    {
+    public void process(Sequence items) {
         for (SequenceItem item: items.sequence) {
             process(item);
         }
     }
 
-    public void process(EcdhItem item)
-    {
+    public void process(EcdhItem item) {
         PrivateEncryptionKey key = dhKeys.get(item.recipient);
         if (key != null) {
             process(new AesKey(key.getKey(item.ephemeralKey)));
         }
     }
 
-    public void process(AesKey key)
-    {
+    public void process(AesKey key) {
         aesKeys.put(key.getKeyId(), key);
     }
 
-    public void process(EcdsaPublicKey key)
-    {
+    public void process(EcdsaPublicKey key) {
         process(PublicSigningKey.unpack(key));
     }
 
-    public void process(PublicSigningKey pKey)
-    {
+    public void process(PublicSigningKey pKey) {
         dsaKeys.put(pKey.getKeyId(), pKey);
     }
 
-    public void process(Signature sig)
-    {
+    public void process(Signature sig) {
         PublicSigningKey pKey = dsaKeys.get(sig.keyId);
         if (pKey == null) return;
         SimpleMessage message = messages.get(sig.digest);
@@ -114,8 +105,7 @@ public class InferenceEngine
             DigestSha384.digest(SimpleMessage.class, message), message);
     }
 
-    public void process(AesPacket packet)
-    {
+    public void process(AesPacket packet) {
         try {
             AesKey key = aesKeys.get(packet.keyId);
             if (key != null) {
@@ -128,13 +118,11 @@ public class InferenceEngine
         }
     }
 
-    public List<SimpleMessage> getMessages()
-    {
+    public List<SimpleMessage> getMessages() {
         return new ArrayList<SimpleMessage>(messages.values());
     }
 
-    public List<SequenceItem> getSignedBy(DigestSha384 keyId)
-    {
+    public List<SequenceItem> getSignedBy(DigestSha384 keyId) {
         return signedBy.get(keyId);
     }
 }

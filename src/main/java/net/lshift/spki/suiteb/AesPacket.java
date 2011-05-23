@@ -8,8 +8,9 @@ import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 /**
  * A SequenceItem encrypted with AES/GCM.
  */
-public class AesPacket extends PositionBeanConvertible implements SequenceItem
-{
+public class AesPacket
+    extends PositionBeanConvertible
+    implements SequenceItem {
     public final AesKeyId keyId;
     public final byte[] nonce;
     public final byte[] ciphertext;
@@ -18,8 +19,8 @@ public class AesPacket extends PositionBeanConvertible implements SequenceItem
     public AesPacket(
         @P("keyId") AesKeyId keyId,
         @P("nonce") byte[] nonce,
-        @P("ciphertext") byte[] ciphertext)
-    {
+        @P("ciphertext") byte[] ciphertext
+    ) {
         super();
         this.keyId = keyId;
         this.nonce = nonce;

@@ -17,12 +17,10 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  * Convert to/from Sexp representation
  */
 public class SexpConverter
-    implements Converter<Sexp>
-{
+    implements Converter<Sexp> {
     @Override
     public void write(ConvertOutputStream out, Sexp o)
-        throws IOException
-    {
+        throws IOException {
         if (o instanceof Atom) {
             out.atom(((Atom)o).getBytes());
         } else {
@@ -39,8 +37,7 @@ public class SexpConverter
     @Override
     public Sexp read(ConvertInputStream in)
         throws ParseException,
-            IOException
-    {
+            IOException {
         TokenType token = in.next();
         switch (token) {
         case ATOM:

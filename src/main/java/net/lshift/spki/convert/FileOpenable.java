@@ -8,18 +8,16 @@ import java.io.IOException;
 /**
  * Adapt File to the Openable interface.
  */
-public class FileOpenable implements Openable
-{
+public class FileOpenable
+    implements Openable {
     private final File file;
 
-    public FileOpenable(File file)
-    {
+    public FileOpenable(File file) {
         super();
         this.file = file;
     }
 
-    public File getFile()
-    {
+    public File getFile() {
         return file;
     }
 

@@ -38,41 +38,37 @@ import com.sun.net.httpserver.HttpServer;
 /**
  * Command line interface to crypto functions
  */
-public class Cli
-{
+public class Cli {
     static final String CLI_MESSAGE = Cli.class.toString();
 
     public static void prettyPrint(Openable file)
         throws IOException,
-            ParseException
-    {
+            ParseException {
         PrettyPrinter.prettyPrint(System.out, file.read());
     }
 
-    public static void genEncryptionKey(Openable out) throws IOException
-    {
+    public static void genEncryptionKey(Openable out)
+        throws IOException {
         write(out, PrivateEncryptionKey.class,
                 PrivateEncryptionKey.generate());
     }
 
     public static void getPublicEncryptionKey(Openable privk, Openable pubk)
         throws ParseException,
-            IOException
-    {
+            IOException {
         final PrivateEncryptionKey privatek
                 = read(PrivateEncryptionKey.class, privk);
         write(pubk, PublicEncryptionKey.class, privatek.getPublicKey());
     }
 
-    public static void genSigningKey(Openable out) throws IOException
-    {
+    public static void genSigningKey(Openable out)
+        throws IOException {
         write(out, PrivateSigningKey.class, PrivateSigningKey.generate());
     }
 
     public static void getPublicSigningKey(Openable privk, Openable pubk)
         throws ParseException,
-            IOException
-    {
+            IOException {
         final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
         write(pubk, PublicSigningKey.class, privatek.getPublicKey());
     }
@@ -84,8 +80,7 @@ public class Cli
         Openable packet,
         Openable out)
         throws ParseException,
-            IOException
-    {
+            IOException {
         InferenceEngine inference = new InferenceEngine();
         inference.process(signingKey);
         inference.process(encryptionKey);
@@ -112,8 +107,7 @@ public class Cli
         Openable packet,
         Openable out)
         throws ParseException,
-            IOException
-    {
+            IOException {
         PrivateEncryptionKey encryptionKey = read(PrivateEncryptionKey.class, ePrivate);
         PublicSigningKey signingKey = read(PublicSigningKey.class, sPublic);
         decryptSignedMessage(messageType, encryptionKey, signingKey, packet, out);
@@ -121,8 +115,9 @@ public class Cli
 
     private static void genEncryptedSignedMessage(
         String messageType,
-        Openable[] args) throws ParseException, IOException
-    {
+        Openable[] args)
+        throws ParseException,
+            IOException {
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         AesKey aesKey = AesKey.generateAESKey();
         for (int i = 2; i < args.length - 1; i++) {
@@ -147,8 +142,7 @@ public class Cli
     public static void main(String command, Openable... args)
         throws FileNotFoundException,
             ParseException,
-            IOException
-    {
+            IOException {
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
         } else if ("genSigningKey".equals(command)) {
@@ -203,8 +197,7 @@ public class Cli
 
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         String command = "<no valid command>";
         try {
             int i = 0;

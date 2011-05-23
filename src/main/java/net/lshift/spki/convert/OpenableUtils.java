@@ -11,11 +11,9 @@ import org.apache.commons.io.IOUtils;
 /**
  * Utilities for acting on Openable objects
  */
-public class OpenableUtils
-{
+public class OpenableUtils {
     public static byte[] readBytes(Openable message)
-        throws IOException
-    {
+        throws IOException {
         final InputStream is = message.read();
         try {
             return IOUtils.toByteArray(is);
@@ -25,8 +23,7 @@ public class OpenableUtils
     }
 
     public static void writeBytes(Openable out, final byte[] messageBytes)
-        throws IOException
-    {
+        throws IOException {
         OutputStream os = out.write();
         try {
             os.write(messageBytes);
@@ -37,14 +34,12 @@ public class OpenableUtils
 
     public static <T> T read(Class<T> clazz, Openable open)
         throws ParseException,
-            IOException
-    {
+            IOException {
         return ConvertUtils.read(clazz, open.read());
     }
 
     public static <T> void write(Openable open, Class<T> clazz, T o)
-        throws IOException
-    {
+        throws IOException {
         ConvertUtils.write(clazz, o, open.write());
     }
 }

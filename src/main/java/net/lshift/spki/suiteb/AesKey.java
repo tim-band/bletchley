@@ -17,8 +17,9 @@ import org.bouncycastle.crypto.params.KeyParameter;
 /**
  * A key to use with AES/GCM.
  */
-public class AesKey extends PositionBeanConvertible implements SequenceItem
-{
+public class AesKey
+    extends PositionBeanConvertible
+    implements SequenceItem {
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
         = "8:keyid-ad".getBytes(Constants.ASCII);
@@ -48,8 +49,7 @@ public class AesKey extends PositionBeanConvertible implements SequenceItem
         }
     }
 
-    public AesPacket encrypt(SequenceItem message)
-    {
+    public AesPacket encrypt(SequenceItem message) {
         try {
             byte[] nonce = Ec.randomBytes(12);
             GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
@@ -69,8 +69,7 @@ public class AesKey extends PositionBeanConvertible implements SequenceItem
 
     public SequenceItem decrypt(AesPacket packet)
         throws InvalidCipherTextException,
-            ParseException
-    {
+            ParseException {
         try {
             GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(false, new AEADParameters(
@@ -86,8 +85,7 @@ public class AesKey extends PositionBeanConvertible implements SequenceItem
         }
     }
 
-    public static AesKey generateAESKey()
-    {
+    public static AesKey generateAESKey() {
         return new AesKey(Ec.randomBytes(AES_KEY_BYTES));
     }
 }

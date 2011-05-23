@@ -6,20 +6,19 @@ import java.io.InputStream;
 /**
  * Tokenize an InputStream into SPKI tokens
  */
-public class CanonicalSpkiInputStream extends SpkiInputStream
-{
+public class CanonicalSpkiInputStream extends SpkiInputStream {
     private static final int NO_MORE_DIGITS_BOUND = (Integer.MAX_VALUE - 9)/10;
     private final InputStream is;
     private int atomBytes;
 
-    public CanonicalSpkiInputStream(InputStream is)
-    {
+    public CanonicalSpkiInputStream(InputStream is) {
         this.is = is;
     }
 
     @Override
-    public TokenType doNext() throws IOException, ParseException
-    {
+    public TokenType doNext()
+        throws IOException,
+            ParseException {
         int next = is.read();
         switch (next) {
         case '(':
@@ -36,8 +35,7 @@ public class CanonicalSpkiInputStream extends SpkiInputStream
 
     private int readInteger(int next)
         throws ParseException,
-            IOException
-    {
+            IOException {
         int c = next;
         int r = 0;
         for (;;) {
@@ -60,8 +58,9 @@ public class CanonicalSpkiInputStream extends SpkiInputStream
     }
 
     @Override
-    public byte[] doAtomBytes() throws IOException, ParseException
-    {
+    public byte[] doAtomBytes()
+        throws IOException,
+            ParseException {
         byte[] res = new byte[atomBytes];
         int c = is.read(res);
         if (c != atomBytes) {

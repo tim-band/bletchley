@@ -9,8 +9,7 @@ import net.lshift.spki.convert.PackConvertible;
  * A superclass for PublicKey objects
  */
 public abstract class PublicKey
-    extends PackConvertible
-{
+    extends PackConvertible {
     protected final ECPublicKeyParameters publicKey;
     protected final DigestSha384 keyId;
 
@@ -21,8 +20,7 @@ public abstract class PublicKey
             (Class<PublicKey>) this.getClass(), this);
     }
 
-    public DigestSha384 getKeyId()
-    {
+    public DigestSha384 getKeyId() {
         return keyId;
     }
 }

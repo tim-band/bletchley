@@ -6,14 +6,13 @@ import java.util.Stack;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream;
 
-public class ConvertInputStream extends SpkiInputStream
-{
+public class ConvertInputStream
+    extends SpkiInputStream {
     private final SpkiInputStream delegate;
     private Stack<TokenType> tokenStack = new Stack<TokenType>();
     private Stack<byte[]> byteStack = new Stack<byte[]>();
 
-    public ConvertInputStream(SpkiInputStream delegate)
-    {
+    public ConvertInputStream(SpkiInputStream delegate) {
         super();
         this.delegate = delegate;
     }
@@ -21,8 +20,7 @@ public class ConvertInputStream extends SpkiInputStream
     @Override
     public TokenType doNext()
         throws IOException,
-            ParseException
-    {
+            ParseException {
         if (tokenStack.isEmpty()) {
             return delegate.next();
         } else {
@@ -33,8 +31,7 @@ public class ConvertInputStream extends SpkiInputStream
     @Override
     public byte[] doAtomBytes()
         throws IOException,
-            ParseException
-    {
+            ParseException {
         if (byteStack.isEmpty()) {
             return delegate.atomBytes();
         } else {
@@ -44,13 +41,11 @@ public class ConvertInputStream extends SpkiInputStream
 
     public <T> T read(Class<T> clazz)
         throws ParseException,
-            IOException
-    {
+            IOException {
         return Registry.REGISTRY.getConverter(clazz).read(this);
     }
 
-    public void pushback(TokenType token)
-    {
+    public void pushback(TokenType token) {
         switch (token) {
         case EOF:
             assertState(State.FINISHED);
@@ -66,8 +61,7 @@ public class ConvertInputStream extends SpkiInputStream
         state = State.TOKEN;
     }
 
-    public void pushback(byte[] atom)
-    {
+    public void pushback(byte[] atom) {
         assertState(State.TOKEN);
         byteStack.push(atom);
         state = State.ATOM;
@@ -75,8 +69,7 @@ public class ConvertInputStream extends SpkiInputStream
 
     public void assertAtom(String name)
         throws ParseException,
-            IOException
-    {
+            IOException {
         nextAssertType(TokenType.ATOM);
         if (!name.equals(ConvertUtils.stringOrNull(atomBytes()))) {
             throw new ParseException("Did not see expected atom: " + name);

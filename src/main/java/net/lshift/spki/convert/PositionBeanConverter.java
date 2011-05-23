@@ -9,10 +9,8 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  * SExp converter that lists the bean fields in a fixed order.
  */
 public class PositionBeanConverter<T>
-    extends BeanFieldConverter<T>
-{
-    public PositionBeanConverter(Class<T> clazz)
-    {
+    extends BeanFieldConverter<T> {
+    public PositionBeanConverter(Class<T> clazz) {
         super(clazz);
     }
 
@@ -21,16 +19,14 @@ public class PositionBeanConverter<T>
         ConvertOutputStream out,
         FieldConvertInfo field,
         Object property)
-        throws IOException
-    {
+        throws IOException {
         out.writeUnchecked(field.getType(), property);
     }
 
     @Override
     protected void read(ConvertInputStream in, Object[] initargs)
         throws ParseException,
-            IOException
-    {
+            IOException {
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
         for (int i = 0; i < fields.length; i++) {

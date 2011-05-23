@@ -8,15 +8,14 @@ import java.lang.reflect.Constructor;
  * Superclass for converters that look for a constructor
  * annotated with the sexp name.
  */
-public abstract class BeanConverter<T> implements Converter<T>
-{
+public abstract class BeanConverter<T>
+    implements Converter<T> {
     protected final Class<T> clazz;
     protected final String name;
     protected final Constructor<T> constructor;
 
     @SuppressWarnings("unchecked")
-    public BeanConverter(Class<T> clazz)
-    {
+    public BeanConverter(Class<T> clazz) {
         this.clazz = clazz;
         ConvertUtils.initialize(clazz);
         for (Constructor<?> c: clazz.getConstructors()) {
@@ -31,17 +30,16 @@ public abstract class BeanConverter<T> implements Converter<T>
                         clazz.getCanonicalName());
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    protected void writeName(ConvertOutputStream out) throws IOException {
+    protected void writeName(ConvertOutputStream out)
+        throws IOException {
         out.atom(name);
     }
 
-    protected String getPAnnotation(Annotation[] annotations)
-    {
+    protected String getPAnnotation(Annotation[] annotations) {
         for (Annotation a: annotations) {
             if (a instanceof P) {
                 return ((P)a).value();

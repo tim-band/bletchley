@@ -11,27 +11,22 @@ import org.bouncycastle.math.ec.ECPoint;
  * Superclass for serialization formats for EC public keys
  */
 public abstract class EcPublicKey
-    extends PositionBeanConvertible
-{
+    extends PositionBeanConvertible {
     public final ECPoint point;
 
-    public EcPublicKey(ECPoint point)
-    {
+    public EcPublicKey(ECPoint point) {
         this.point = point;
     }
 
-    public EcPublicKey(ECPublicKeyParameters params)
-    {
+    public EcPublicKey(ECPublicKeyParameters params) {
         this(params.getQ());
     }
 
-    public EcPublicKey(AsymmetricCipherKeyPair keyPair)
-    {
+    public EcPublicKey(AsymmetricCipherKeyPair keyPair) {
         this((ECPublicKeyParameters) keyPair.getPublic());
     }
 
-    public ECPublicKeyParameters getParameters()
-    {
+    public ECPublicKeyParameters getParameters() {
         return Ec.toECPublicKeyParameters(point);
     }
 

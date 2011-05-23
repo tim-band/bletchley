@@ -10,21 +10,19 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for public sig verification keys
  */
-public class EcdsaPublicKey extends EcPublicKey implements SequenceItem
-{
+public class EcdsaPublicKey
+    extends EcPublicKey
+    implements SequenceItem {
     @SexpName("suiteb-p384-ecdsa-public-key")
-    public EcdsaPublicKey(@P("point") ECPoint point)
-    {
+    public EcdsaPublicKey(@P("point") ECPoint point) {
         super(point);
     }
 
-    public EcdsaPublicKey(ECPublicKeyParameters publicKey)
-    {
+    public EcdsaPublicKey(ECPublicKeyParameters publicKey) {
         super(publicKey);
     }
 
-    public EcdsaPublicKey(AsymmetricCipherKeyPair keyPair)
-    {
+    public EcdsaPublicKey(AsymmetricCipherKeyPair keyPair) {
         super(keyPair);
     }
 }
