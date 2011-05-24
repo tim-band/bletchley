@@ -108,9 +108,9 @@ public class Cli {
             = new ArrayList<SequenceItem>();
         SimpleMessage message = new SimpleMessage(
             messageType, OpenableUtils.readBytes(args[1]));
-        encryptedSequenceItems.add(message);
         PrivateSigningKey privateKey = read(PrivateSigningKey.class, args[0]);
         encryptedSequenceItems.add(privateKey.sign(message));
+        encryptedSequenceItems.add(message);
 
         sequenceItems.add(aesKey.encrypt(new Sequence(encryptedSequenceItems)));
 

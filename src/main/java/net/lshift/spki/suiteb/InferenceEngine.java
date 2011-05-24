@@ -27,14 +27,23 @@ public class InferenceEngine {
     private Map<DigestSha384, PublicSigningKey> dsaKeys
         = new HashMap<DigestSha384, PublicSigningKey>();
     private Map<AesKeyId, AesKey> aesKeys = new HashMap<AesKeyId, AesKey>();
+    // FIXME this is pretty ugly!
+    private Map<DigestSha384, List<Signature>> signatures
+        = new HashMap<DigestSha384, List<Signature>>();
+    private Map<DigestSha384, List<SequenceItem>> signedBy
+        = new HashMap<DigestSha384, List<SequenceItem>>();
     private Map<DigestSha384, SimpleMessage> messages
         = new HashMap<DigestSha384,SimpleMessage>();
-    // FIXME this is pretty ugly!
-    private HashMap<DigestSha384, List<SequenceItem>> signedBy
-        = new HashMap<DigestSha384, List<SequenceItem>>();
 
     // FIXME: use dynamic dispatch here
     public void process(SequenceItem item) {
+        DigestSha384 digest = DigestSha384.digest(SequenceItem.class, item);
+        List<Signature> sigs = signatures.get(digest);
+        if (sigs != null) {
+            for (Signature sig: sigs) {
+                listPut(signedBy, sig.keyId, item);
+            }
+        }
         if (item instanceof Sequence) {
             process((Sequence) item);
         } else if (item instanceof EcdhItem) {
@@ -88,16 +97,9 @@ public class InferenceEngine {
     public void process(Signature sig) {
         PublicSigningKey pKey = dsaKeys.get(sig.keyId);
         if (pKey == null) return;
-        SimpleMessage message = messages.get(sig.digest);
-        if (message == null) return;
         if (!pKey.validate(sig.digest, sig.rawSignature))
             throw new RuntimeException("Sig validation failure");
-        List<SequenceItem> sigs = signedBy.get(sig.keyId);
-        if (sigs == null) {
-            sigs = new ArrayList<SequenceItem>();
-            signedBy.put(sig.keyId, sigs);
-        }
-        sigs.add(message);
+        listPut(signatures, sig.digest, sig);
     }
 
     public void process(SimpleMessage message) {
@@ -124,5 +126,16 @@ public class InferenceEngine {
 
     public List<SequenceItem> getSignedBy(DigestSha384 keyId) {
         return signedBy.get(keyId);
+    }
+
+    private <K,V> void listPut(Map<K,List<V>> map,
+        K key, V value)
+    {
+        List<V> list = map.get(key);
+        if (list == null) {
+            list = new ArrayList<V>();
+            map.put(key, list);
+        }
+        list.add(value);
     }
 }

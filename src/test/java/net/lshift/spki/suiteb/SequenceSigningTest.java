@@ -27,8 +27,8 @@ public class SequenceSigningTest
             "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         sequenceItems.add(publicKey.pack());
-        sequenceItems.add(message);
         sequenceItems.add(privateKey.sign(message));
+        sequenceItems.add(message);
         Sequence sequence = new Sequence(sequenceItems);
         sequence = roundTrip(Sequence.class, sequence);
 
