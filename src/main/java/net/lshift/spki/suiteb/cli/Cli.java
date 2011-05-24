@@ -91,7 +91,7 @@ public class Cli {
         OpenableUtils.writeBytes(message.content, out);
     }
 
-    private static void genEncryptedSignedMessage(
+    public static void genEncryptedSignedMessage(
         String messageType,
         Openable[] args)
         throws ParseException,
@@ -117,6 +117,10 @@ public class Cli {
         write(Sequence.class, new Sequence(sequenceItems), args[args.length-1]);
     }
 
+    public static void speedTest() throws ParseException {
+        new SpeedTester().speedTest();
+    }
+
     public static void main(String command, Openable... args)
         throws FileNotFoundException,
             ParseException,
@@ -136,6 +140,8 @@ public class Cli {
                 args[0], args[1], args[2], args[3]);
         } else if ("genEncryptedSignedMessage".equals(command)) {
             genEncryptedSignedMessage(CLI_MESSAGE, args);
+        } else if ("speedTest".equals(command)) {
+            speedTest();
         } else {
             throw new RuntimeException("Command not recognised: " + command);
         }
