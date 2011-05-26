@@ -194,6 +194,7 @@ public class Cli {
         });
         server.setExecutor(null); // creates a default executor
         server.start();
+        System.out.println("Running on port " + port);
 
     }
 
