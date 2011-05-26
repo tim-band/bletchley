@@ -178,8 +178,8 @@ public class Cli {
                 ByteOpenable iso = new ByteOpenable();
                 iso.write().write(IOUtils.toByteArray(is));
                 OutputStream os = t.getResponseBody();
-                if (!t.getRequestMethod().equals("PUT")) {
-                    writeResponse(t, os, 400, "Expected PUT request".getBytes("ASCII"));
+                if (!t.getRequestMethod().equals("POST")) {
+                    writeResponse(t, os, 400, "Expected POST request".getBytes("ASCII"));
                     return;
                 }
                 ByteOpenable oso = new ByteOpenable();
@@ -201,6 +201,7 @@ public class Cli {
         server.setExecutor(null); // creates a default executor
         server.start();
         System.out.println("Running on port " + port);
+        System.out.flush();
     }
 
     public static void main(String[] args) {
