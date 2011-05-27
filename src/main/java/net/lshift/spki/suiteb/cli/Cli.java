@@ -19,6 +19,7 @@ import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.suiteb.AesKey;
+import net.lshift.spki.suiteb.EncryptionSetup;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -122,8 +123,9 @@ public class Cli {
         AesKey aesKey = AesKey.generateAESKey();
         for (int i = 2; i < args.length - 1; i++) {
             PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
-            AesKey rKey = pKey.setupEncrypt(sequenceItems);
-            sequenceItems.add(rKey.encrypt(aesKey));
+            EncryptionSetup rKey = pKey.setupEncrypt();
+            sequenceItems.add(rKey.encryptedKey);
+            sequenceItems.add(rKey.key.encrypt(aesKey));
         }
 
         List<SequenceItem> encryptedSequenceItems

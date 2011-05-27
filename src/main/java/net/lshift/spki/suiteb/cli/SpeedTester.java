@@ -1,16 +1,14 @@
 package net.lshift.spki.suiteb.cli;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.AesKey;
+import net.lshift.spki.suiteb.EncryptionSetup;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
+import net.lshift.spki.suiteb.SequenceUtils;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
 public class SpeedTester {
@@ -42,23 +40,22 @@ public class SpeedTester {
     }
 
     private void doRun() throws ParseException {
-        List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         AesKey aesKey = AesKey.generateAESKey();
         PublicEncryptionKey pKey
             = ConvertUtils.fromBytes(PublicEncryptionKey.class, publicKeyBytes);
-        AesKey rKey = pKey.setupEncrypt(sequenceItems);
-        sequenceItems.add(rKey.encrypt(aesKey));
+        EncryptionSetup rKey = pKey.setupEncrypt();
 
-        List<SequenceItem> encryptedSequenceItems
-            = new ArrayList<SequenceItem>();
         SimpleMessage message = new SimpleMessage(
             MESSAGE_TYPE, messageBytes);
-        encryptedSequenceItems.add(privateKey.sign(message));
-        encryptedSequenceItems.add(message);
 
-        sequenceItems.add(aesKey.encrypt(new Sequence(encryptedSequenceItems)));
-
-        ConvertUtils.toBytes(Sequence.class, new Sequence(sequenceItems));
+        final Sequence sequence = SequenceUtils.sequence(
+            rKey.encryptedKey,
+            rKey.key.encrypt(aesKey),
+            aesKey.encrypt(SequenceUtils.sequence(
+                privateKey.sign(message),
+                message
+        )));
+        ConvertUtils.toBytes(Sequence.class, sequence);
     }
 
 }

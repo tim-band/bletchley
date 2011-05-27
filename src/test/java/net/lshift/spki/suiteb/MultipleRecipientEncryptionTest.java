@@ -31,8 +31,9 @@ public class MultipleRecipientEncryptionTest
         List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         AesKey aesKey = AesKey.generateAESKey();
         for (PublicEncryptionKey pKey : publicKeys) {
-            AesKey rKey = pKey.setupEncrypt(sequenceItems);
-            sequenceItems.add(rKey.encrypt(aesKey));
+            EncryptionSetup rKey = pKey.setupEncrypt();
+            sequenceItems.add(rKey.encryptedKey);
+            sequenceItems.add(rKey.key.encrypt(aesKey));
         }
         sequenceItems.add(aesKey.encrypt(message));
         SequenceItem packet
