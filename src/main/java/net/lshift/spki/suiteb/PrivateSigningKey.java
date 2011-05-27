@@ -46,9 +46,12 @@ public class PrivateSigningKey
         return new EcdsaSignature(signature[0], signature[1]);
     }
 
-    public SequenceItem sign(SequenceItem item) {
-        DigestSha384 digest = DigestSha384.digest(SequenceItem.class, item);
+    public SequenceItem signDigest(DigestSha384 digest) {
         return new Signature(digest, getPublicKey().getKeyId(),
             rawSignature(digest));
+    }
+
+    public SequenceItem sign(SequenceItem item) {
+        return signDigest(DigestSha384.digest(item));
     }
 }

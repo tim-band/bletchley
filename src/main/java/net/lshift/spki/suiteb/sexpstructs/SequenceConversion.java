@@ -22,7 +22,8 @@ public class SequenceConversion {
                 AesKey.class,
                 SimpleMessage.class,
                 EcdsaPublicKey.class,
-                Signature.class));
+                Signature.class,
+                Hash.class));
     }
 
     public static void ensureInstalled() {

@@ -10,6 +10,7 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPublicKey;
+import net.lshift.spki.suiteb.sexpstructs.Hash;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
@@ -28,36 +29,43 @@ public class InferenceEngine {
         = new HashMap<DigestSha384, PublicSigningKey>();
     private Map<AesKeyId, AesKey> aesKeys = new HashMap<AesKeyId, AesKey>();
     // FIXME this is pretty ugly!
-    private Map<DigestSha384, List<Signature>> signatures
-        = new HashMap<DigestSha384, List<Signature>>();
-    private Map<DigestSha384, List<SequenceItem>> signedBy
+    private Map<DigestSha384, DigestSha384> signedBy
+        = new HashMap<DigestSha384, DigestSha384>();
+    private Map<DigestSha384, List<SequenceItem>> hasSigned
         = new HashMap<DigestSha384, List<SequenceItem>>();
-    private Map<DigestSha384, SimpleMessage> messages
-        = new HashMap<DigestSha384,SimpleMessage>();
+    // FIXME: this should go altogether - we should provide no way
+    // of accessing unsigned content
+    private List<SimpleMessage> messages
+        = new ArrayList<SimpleMessage>();
+
+    public void process(SequenceItem item) {
+        process(item, null);
+    }
 
     // FIXME: use dynamic dispatch here
-    public void process(SequenceItem item) {
-        DigestSha384 digest = DigestSha384.digest(SequenceItem.class, item);
-        List<Signature> sigs = signatures.get(digest);
-        if (sigs != null) {
-            for (Signature sig: sigs) {
-                listPut(signedBy, sig.keyId, item);
-            }
+    public void process(SequenceItem item, DigestSha384 contextSigner) {
+        DigestSha384 signer = contextSigner;
+        if (signer == null) {
+            DigestSha384 digest = DigestSha384.digest(item);
+            signer = signedBy.get(digest);
         }
         if (item instanceof Sequence) {
-            process((Sequence) item);
+            process((Sequence) item, signer);
         } else if (item instanceof EcdhItem) {
             process((EcdhItem) item);
         } else if (item instanceof AesKey) {
             process((AesKey) item);
         } else if (item instanceof AesPacket) {
+            // Propagate signer?
             process((AesPacket) item);
         } else if (item instanceof SimpleMessage) {
-            process((SimpleMessage) item);
+            process((SimpleMessage) item, signer);
         } else if (item instanceof EcdsaPublicKey) {
             process((EcdsaPublicKey) item);
         } else if (item instanceof Signature) {
             process((Signature) item);
+        } else if (item instanceof Hash) {
+            process((Hash) item, signer);
         } else {
             throw new RuntimeException(
                 "Don't know how to process sequence item: "
@@ -69,9 +77,9 @@ public class InferenceEngine {
         dhKeys.put(privateKey.getPublicKey().getKeyId(), privateKey);
     }
 
-    public void process(Sequence items) {
+    public void process(Sequence items, DigestSha384 signer) {
         for (SequenceItem item: items.sequence) {
-            process(item);
+            process(item, signer);
         }
     }
 
@@ -99,12 +107,15 @@ public class InferenceEngine {
         if (pKey == null) return;
         if (!pKey.validate(sig.digest, sig.rawSignature))
             throw new RuntimeException("Sig validation failure");
-        listPut(signatures, sig.digest, sig);
+        // FIXME: assert that it's not already signed?
+        signedBy.put(sig.digest, sig.keyId);
     }
 
-    public void process(SimpleMessage message) {
-        messages.put(
-            DigestSha384.digest(SimpleMessage.class, message), message);
+    public void process(SimpleMessage message, DigestSha384 signer) {
+        messages.add(message);
+        if (signer != null) {
+            listPut(hasSigned, signer, message);
+        }
     }
 
     public void process(AesPacket packet) {
@@ -120,12 +131,19 @@ public class InferenceEngine {
         }
     }
 
+    public void process(Hash packet, DigestSha384 signer) {
+        if (signer != null) {
+            DigestSha384 digest = DigestSha384.unpack(packet);
+            signedBy.put(digest, signer);
+        }
+    }
+
     public List<SimpleMessage> getMessages() {
-        return new ArrayList<SimpleMessage>(messages.values());
+        return messages;
     }
 
     public List<SequenceItem> getSignedBy(DigestSha384 keyId) {
-        return signedBy.get(keyId);
+        return hasSigned.get(keyId);
     }
 
     private <K,V> void listPut(Map<K,List<V>> map,

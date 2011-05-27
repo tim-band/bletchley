@@ -8,7 +8,8 @@ import net.lshift.spki.convert.SexpName;
  * SPKI hash value format
  */
 public class Hash
-    extends PositionBeanConvertible {
+    extends PositionBeanConvertible
+    implements SequenceItem {
     public final String hashType;
     public final byte[] value;
 

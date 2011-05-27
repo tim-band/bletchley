@@ -7,6 +7,7 @@ import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.PackConvertible;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.io.DigestOutputStream;
@@ -58,6 +59,10 @@ public class DigestSha384
         byte[] digest = new byte[sha.getDigestSize()];
         sha.doFinal(digest, 0);
         return new DigestSha384(digest);
+    }
+
+    public static DigestSha384 digest(SequenceItem item) {
+        return digest(SequenceItem.class, item);
     }
 
     @Override
