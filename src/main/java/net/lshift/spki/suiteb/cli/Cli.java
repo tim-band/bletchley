@@ -123,9 +123,8 @@ public class Cli {
         AesKey aesKey = AesKey.generateAESKey();
         for (int i = 2; i < args.length - 1; i++) {
             PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
-            EncryptionSetup rKey = pKey.setupEncrypt();
-            sequenceItems.add(rKey.encryptedKey);
-            sequenceItems.add(rKey.key.encrypt(aesKey));
+            AesKey rKey = pKey.setupEncrypt(sequenceItems);
+            sequenceItems.add(rKey.encrypt(aesKey));
         }
 
         List<SequenceItem> encryptedSequenceItems

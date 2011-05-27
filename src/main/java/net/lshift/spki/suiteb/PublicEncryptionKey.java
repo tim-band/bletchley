@@ -1,7 +1,10 @@
 package net.lshift.spki.suiteb;
 
+import java.util.List;
+
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPublicKey;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.CipherParameters;
@@ -38,5 +41,11 @@ public class PublicEncryptionKey extends PublicKey  {
         return new EncryptionSetup(
             encryptedKey,
             key);
+    }
+
+    public AesKey setupEncrypt(List<SequenceItem> toSend) {
+        EncryptionSetup setup = setupEncrypt();
+        toSend.add(setup.encryptedKey);
+        return setup.key;
     }
 }
