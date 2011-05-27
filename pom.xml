@@ -75,4 +75,17 @@
         <version>2.0.1</version>
       </dependency>
   </dependencies>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>lshift-snapshot</id>
+      <name>LShift Snapshot repository</name>
+      <url>http://mvn.lshift.net/snapshot</url>
+    </snapshotRepository>
+    <repository>
+      <id>lshift</id>
+      <name>LShift Internal Repository</name>
+      <url>dav:http://mvn.lshift.net/mvn</url>
+    </repository>
+  </distributionManagement>
+  
 </project>
