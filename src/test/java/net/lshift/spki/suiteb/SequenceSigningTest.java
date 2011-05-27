@@ -3,7 +3,6 @@ package net.lshift.spki.suiteb;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.lshift.spki.Constants;
@@ -13,7 +12,6 @@ import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
 import org.junit.Test;
-
 
 public class SequenceSigningTest
 {
@@ -25,11 +23,10 @@ public class SequenceSigningTest
         SimpleMessage message = new SimpleMessage(
             SequenceSigningTest.class.getCanonicalName(),
             "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
-        List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
-        sequenceItems.add(publicKey.pack());
-        sequenceItems.add(privateKey.sign(message));
-        sequenceItems.add(message);
-        Sequence sequence = new Sequence(sequenceItems);
+        Sequence sequence = SequenceUtils.sequence(
+            publicKey.pack(),
+            privateKey.sign(message),
+            message);
         sequence = roundTrip(Sequence.class, sequence);
 
         InferenceEngine inference = new InferenceEngine();
