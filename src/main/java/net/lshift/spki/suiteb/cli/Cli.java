@@ -19,7 +19,6 @@ import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.suiteb.AesKey;
-import net.lshift.spki.suiteb.EncryptionSetup;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
