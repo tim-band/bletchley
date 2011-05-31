@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import net.lshift.spki.Sexp;
 
@@ -15,7 +16,7 @@ import net.lshift.spki.Sexp;
  */
 public class Registry {
     public static final Registry REGISTRY = new Registry();
-
+    
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 
@@ -34,6 +35,7 @@ public class Registry {
         register(String.class, new StringConverter());
         register(BigInteger.class, new BigIntegerConverter());
         register(Date.class, new DateConverter());
+        register(UUID.class, new UUIDConverter());
     }
 
     @SuppressWarnings("unchecked")
