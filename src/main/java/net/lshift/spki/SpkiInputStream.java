@@ -69,18 +69,17 @@ public abstract class SpkiInputStream
     }
 
     public byte[] atomBytes()
-    throws IOException,
-        ParseException {
+        throws IOException,
+            ParseException {
         assertState(State.ATOM);
         byte[] res = doAtomBytes();
         state = State.TOKEN;
         return res;
     }
 
-
     protected abstract TokenType doNext()
-    throws IOException,
-        ParseException;
+        throws IOException,
+            ParseException;
 
     protected abstract byte[] doAtomBytes()
         throws IOException,
