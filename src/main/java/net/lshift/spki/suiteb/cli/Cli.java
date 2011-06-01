@@ -188,9 +188,10 @@ public class Cli {
                     decryptSignedMessage(CLI_MESSAGE, encryptionKey, signingKey, iso, oso);
                     byte[] ans = IOUtils.toByteArray(oso.read());
                     writeResponse(t, os, 200, ans);
-                } catch (ParseException e) {
+                } catch (Exception e) {
                     writeResponse(t, os, 400,
-                            ("Could not decrypt and verify: " + e.getMessage()).getBytes("ascii"));
+                   ("Could not decrypt and verify: " +
+                    e.getClass().getName() + e.getMessage()).getBytes("ascii"));
                 }
             }
             void writeResponse(HttpExchange t, OutputStream os, int responseCode, byte[] ans) throws IOException {
