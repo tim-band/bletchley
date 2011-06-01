@@ -3,12 +3,15 @@ package net.lshift.spki.convert;
 import static net.lshift.spki.Create.atom;
 import static net.lshift.spki.Create.list;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.math.BigInteger;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
 
+import net.lshift.spki.suiteb.cli.Cli;
 import org.junit.Test;
 
 public class ConvertTest
@@ -35,5 +38,9 @@ public class ConvertTest
     public void extraBytesMeansParseException() throws ParseException {
         byte[] bytes = ConvertUtils.bytes("(3:foo)1:o");
         ConvertUtils.fromBytes(Sexp.class, bytes);
+    }
+    @Test
+    public void CanDecryptMessageIWrote() throws ParseException{
+       assertNotNull(this.getClass().getClassLoader().getResourceAsStream("bad_message.spki"));
     }
 }

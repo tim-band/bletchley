@@ -3,11 +3,7 @@ package net.lshift.spki.suiteb.cli;
 import static net.lshift.spki.convert.OpenableUtils.read;
 import static net.lshift.spki.convert.OpenableUtils.write;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -169,7 +165,7 @@ public class Cli {
         }
     }
 
-    public static void serve(int port, final PrivateEncryptionKey encryptionKey, final PublicSigningKey signingKey) throws Exception {
+    public static void serve(int port, final String messageType, final PrivateEncryptionKey encryptionKey, final PublicSigningKey signingKey) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), -1);
         server.createContext("/decryptAndVerify", new HttpHandler() {
             @Override
@@ -184,13 +180,15 @@ public class Cli {
                 }
                 ByteOpenable oso = new ByteOpenable();
                 try {
-                    decryptSignedMessage(CLI_MESSAGE, encryptionKey, signingKey, iso, oso);
+                    decryptSignedMessage(messageType, encryptionKey, signingKey, iso, oso);
                     byte[] ans = IOUtils.toByteArray(oso.read());
                     writeResponse(t, os, 200, ans);
                 } catch (Exception e) {
+                    StringWriter sw = new StringWriter();
+                    e.printStackTrace(new PrintWriter(sw));
                     writeResponse(t, os, 400,
-                   ("Could not decrypt and verify: " +
-                    e.getClass().getName() + e.getMessage()).getBytes("ascii"));
+                            ("Could not decrypt and verify: " +
+                                    e.getClass().getName() + e.getMessage() + "\n" + sw.toString()).getBytes("ascii"));
                 }
             }
             void writeResponse(HttpExchange t, OutputStream os, int responseCode, byte[] ans) throws IOException {
@@ -212,9 +210,10 @@ public class Cli {
             command = args[i++];
             if (command.equals("server")) {
                 final int port = Integer.parseInt(args[i++]);
+                final String messageType = args[i++];
                 final PrivateEncryptionKey encryptionKey = read(PrivateEncryptionKey.class, new FileOpenable(new File(args[i++])));
                 final PublicSigningKey signingKey = read(PublicSigningKey.class, new FileOpenable(new File(args[i++])));
-                serve(port, encryptionKey, signingKey);
+                serve(port, messageType, encryptionKey, signingKey);
             } else {
                 List<Openable> openables = new ArrayList<Openable>();
                 for (;i < args.length; i++) {
