@@ -21,8 +21,8 @@ public class NameBeanConverter<T>
         Object property)
         throws IOException {
         out.beginSexp();
-        out.atom(field.getHyphenatedName());
-        out.writeUnchecked(field.getType(), property);
+        out.atom(field.hyphenatedName);
+        out.writeUnchecked(field.type, property);
         out.endSexp();
     }
 
@@ -36,10 +36,10 @@ public class NameBeanConverter<T>
             in.nextAssertType(TokenType.OPENPAREN);
             in.nextAssertType(TokenType.ATOM);
             FieldConvertInfo field = getField(in.atomBytes());
-            if (initargs[field.getIndex()] != null) {
+            if (initargs[field.index] != null) {
                 throw new ParseException("Repeated field");
             }
-            initargs[field.getIndex()] = in.read(field.getType());
+            initargs[field.index] = in.read(field.type);
             in.nextAssertType(TokenType.CLOSEPAREN);
         }
         in.nextAssertType(TokenType.CLOSEPAREN);
@@ -49,7 +49,7 @@ public class NameBeanConverter<T>
         throws ParseException {
         String string = ConvertUtils.stringOrNull(bytes);
         for (FieldConvertInfo field: fields) {
-            if (field.getHyphenatedName().equals(string)) {
+            if (field.hyphenatedName.equals(string)) {
                 return field;
             }
         }
