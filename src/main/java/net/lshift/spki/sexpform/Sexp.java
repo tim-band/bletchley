@@ -1,4 +1,4 @@
-package net.lshift.spki;
+package net.lshift.spki.sexpform;
 
 /**
  * SPKI S-expression type.  Should have only two implementors,

@@ -1,4 +1,4 @@
-package net.lshift.spki;
+package net.lshift.spki.sexpform;
 
 import java.util.Arrays;
 

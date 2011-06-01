@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lshift.spki.Sexp;
+import net.lshift.spki.sexpform.Sexp;
 
 /**
  * Registry of SExp converters.  If a class implements the Convertible

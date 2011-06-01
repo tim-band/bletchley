@@ -1,12 +1,12 @@
 package net.lshift.spki.convert;
 
-import static net.lshift.spki.Create.atom;
-import static net.lshift.spki.Create.list;
+import static net.lshift.spki.sexpform.Create.atom;
+import static net.lshift.spki.sexpform.Create.list;
 
 import java.io.IOException;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.Sexp;
+import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.suiteb.sexpstructs.Point;
 
 import org.junit.Test;

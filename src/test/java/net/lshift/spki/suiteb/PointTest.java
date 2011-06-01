@@ -1,14 +1,14 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.Create.atom;
-import static net.lshift.spki.Create.list;
+import static net.lshift.spki.sexpform.Create.atom;
+import static net.lshift.spki.sexpform.Create.list;
 
 import java.io.IOException;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.Sexp;
 import net.lshift.spki.convert.ByteOpenable;
 import net.lshift.spki.convert.OpenableUtils;
+import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.suiteb.sexpstructs.Point;
 
 import org.bouncycastle.math.ec.ECPoint;

@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.Atom;
-import net.lshift.spki.Create;
 import net.lshift.spki.ParseException;
-import net.lshift.spki.Sexp;
-import net.lshift.spki.Slist;
 import net.lshift.spki.SpkiInputStream.TokenType;
+import net.lshift.spki.sexpform.Atom;
+import net.lshift.spki.sexpform.Create;
+import net.lshift.spki.sexpform.Sexp;
+import net.lshift.spki.sexpform.Slist;
 
 /**
  * Convert to/from Sexp representation
