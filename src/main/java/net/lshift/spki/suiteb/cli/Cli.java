@@ -19,7 +19,6 @@ import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.suiteb.AesKey;
-import net.lshift.spki.suiteb.EncryptionSetup;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -188,9 +187,10 @@ public class Cli {
                     decryptSignedMessage(CLI_MESSAGE, encryptionKey, signingKey, iso, oso);
                     byte[] ans = IOUtils.toByteArray(oso.read());
                     writeResponse(t, os, 200, ans);
-                } catch (ParseException e) {
+                } catch (Exception e) {
                     writeResponse(t, os, 400,
-                            ("Could not decrypt and verify: " + e.getMessage()).getBytes("ascii"));
+                   ("Could not decrypt and verify: " +
+                    e.getClass().getName() + e.getMessage()).getBytes("ascii"));
                 }
             }
             void writeResponse(HttpExchange t, OutputStream os, int responseCode, byte[] ans) throws IOException {
