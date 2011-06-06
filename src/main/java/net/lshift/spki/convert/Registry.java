@@ -2,10 +2,8 @@ package net.lshift.spki.convert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import net.lshift.spki.sexpform.Sexp;
 
@@ -29,13 +27,13 @@ public class Registry {
         }
     }
 
-    {
-        register(Sexp.class, new SexpConverter());
-        register(byte[].class, new ByteArrayConverter());
-        register(String.class, new StringConverter());
-        register(BigInteger.class, new BigIntegerConverter());
-        register(Date.class, new DateConverter());
-        register(UUID.class, new UUIDConverter());
+    static {
+        REGISTRY.register(Sexp.class, new SexpConverter());
+        REGISTRY.register(byte[].class, new ByteArrayConverter());
+        REGISTRY.register(String.class, new StringConverter());
+        REGISTRY.register(BigInteger.class, new BigIntegerConverter());
+        new DateConverter().registerSelf();
+        new UUIDConverter().registerSelf();
     }
 
     @SuppressWarnings("unchecked")
