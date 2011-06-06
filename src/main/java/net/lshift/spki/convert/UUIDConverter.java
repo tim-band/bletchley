@@ -2,8 +2,9 @@ package net.lshift.spki.convert;
 
 import java.util.UUID;
 
-import net.lshift.spki.ParseException;
-
+/**
+ * Serialize/deserialize a UUID
+ */
 public class UUIDConverter
     extends StepConverter<UUID, String>
 {
@@ -14,13 +15,8 @@ public class UUIDConverter
     protected Class<String> getStepClass() { return String.class; }
 
     @Override
-    protected String stepIn(UUID o) {
-        return o.toString();
-    }
+    protected String stepIn(UUID o) { return o.toString(); }
 
     @Override
-    protected UUID stepOut(String fromSExp)
-        throws ParseException {
-        return UUID.fromString(fromSExp);
-    }
+    protected UUID stepOut(String s) { return UUID.fromString(s); }
 }
