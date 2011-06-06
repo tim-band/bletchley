@@ -1,37 +1,26 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.LongBuffer;
 import java.util.UUID;
 
 import net.lshift.spki.ParseException;
 
-
 public class UUIDConverter
-    implements Converter<UUID>
+    extends StepConverter<UUID, String>
 {
-
+    @Override
+    protected Class<UUID> getResultClass() { return UUID.class; }
 
     @Override
-    public void write(ConvertOutputStream out, UUID o)
-        throws IOException
-    {
-        ByteBuffer bytes = ByteBuffer.wrap(new byte[16]);
-        LongBuffer longs = bytes.asLongBuffer();
-        longs.put(o.getMostSignificantBits());
-        longs.put(o.getLeastSignificantBits());
-        out.atom(bytes.array());
-        
+    protected Class<String> getStepClass() { return String.class; }
+
+    @Override
+    protected String stepIn(UUID o) {
+        return o.toString();
     }
 
     @Override
-    public UUID read(ConvertInputStream in)
-        throws ParseException,
-            IOException
-    {
-        LongBuffer longs = ByteBuffer.wrap(in.atomBytes()).asLongBuffer();
-        return new UUID(longs.get(), longs.get());
+    protected UUID stepOut(String fromSExp)
+        throws ParseException {
+        return UUID.fromString(fromSExp);
     }
-
 }

@@ -56,8 +56,7 @@ public class DiscriminatingConverterTest
         byte[] expected = ConvertUtils.toBytes(Sexp.class,
             list("implementing-class"));
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ConvertOutputStream conv = new ConvertOutputStream(
-            new CanonicalSpkiOutputStream(baos));
+        ConvertOutputStream conv = new ConvertOutputStream(baos);
         converter.write(conv, new ImplementingClass());
         assertThat(baos.toByteArray(), is(expected));
     }

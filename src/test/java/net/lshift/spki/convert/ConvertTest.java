@@ -5,6 +5,7 @@ import static net.lshift.spki.Create.list;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
+import java.util.UUID;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.Sexp;
@@ -35,5 +36,22 @@ public class ConvertTest
     public void extraBytesMeansParseException() throws ParseException {
         byte[] bytes = ConvertUtils.bytes("(3:foo)1:o");
         ConvertUtils.fromBytes(Sexp.class, bytes);
+    }
+
+    @Test
+    public void convertFromUUID() throws ParseException {
+        final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
+        UUID uuid = UUID.fromString(uidstring);
+        byte[] uBytes = ConvertUtils.toBytes(UUID.class, uuid);
+        assertEquals(atom(uidstring),
+            ConvertUtils.fromBytes(Sexp.class, uBytes));
+    }
+
+    @Test
+    public void convertToUUID() throws ParseException {
+        final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
+        byte[] uBytes = ConvertUtils.toBytes(Sexp.class, atom(uidstring));
+        assertEquals(UUID.fromString(uidstring),
+            ConvertUtils.fromBytes(UUID.class, uBytes));
     }
 }

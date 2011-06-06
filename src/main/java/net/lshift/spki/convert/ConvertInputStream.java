@@ -1,8 +1,10 @@
 package net.lshift.spki.convert;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Stack;
 
+import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream;
 
@@ -15,6 +17,10 @@ public class ConvertInputStream
     public ConvertInputStream(SpkiInputStream delegate) {
         super();
         this.delegate = delegate;
+    }
+
+    public ConvertInputStream(InputStream is) {
+        this(new CanonicalSpkiInputStream(is));
     }
 
     @Override
