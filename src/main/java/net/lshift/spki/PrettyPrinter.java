@@ -13,73 +13,96 @@ import org.bouncycastle.util.encoders.Hex;
 /**
  * Pretty-print an SPKI S-expression.
  */
-public class PrettyPrinter {
-    public static void prettyPrint(PrintStream ps, SpkiInputStream stream)
-        throws IOException,
-            ParseException
-    {
-        int indent = 0;
-        for (;;) {
-            switch (stream.next()) {
-            case ATOM:
-                printPrefix(ps, indent);
-                printBytes(ps, stream.atomBytes());
-                break;
-            case CLOSEPAREN:
-                if (indent == 0) {
-                    throw new ParseException("Too many closeparens");
-                }
-                indent -= 1;
-                printPrefix(ps, indent);
-                ps.println(")");
-                break;
-            case OPENPAREN:
-                printPrefix(ps, indent);
-                ps.print("(");
-                stream.nextAssertType(TokenType.ATOM);
-                printBytes(ps, stream.atomBytes());
-                indent += 1;
-                break;
-            case EOF:
-                return;
-            }
-        }
+public class PrettyPrinter extends SpkiOutputStream {
+    private final PrintStream ps;
+    private int indent = 0;
+    private boolean firstAtom = false;
+
+    public PrettyPrinter(PrintStream ps) {
+        super();
+        this.ps = ps;
     }
 
-    private static void printPrefix(PrintStream ps, int indent)
+    @Override
+    public void atom(byte[] bytes, int off, int len)
+        throws IOException {
+        if (firstAtom) {
+            firstAtom = false;
+        } else {
+            printPrefix();
+        }
+        printBytes(bytes, off, len);
+    }
+
+    @Override
+    public void beginSexp()
+        throws IOException {
+        if (firstAtom) {
+            firstAtom = false;
+            ps.println();
+        }
+        printPrefix();
+        ps.print('(');
+        indent += 1;
+        firstAtom = true;
+    }
+
+    @Override
+    public void endSexp()
+        throws IOException {
+        if (firstAtom) {
+            firstAtom = false;
+            ps.println();
+        }
+        if (indent == 0) {
+            throw new RuntimeException("Too many closeparens");
+        }
+        indent -= 1;
+        printPrefix();
+        ps.println(")");
+    }
+
+    @Override
+    public void close()
+        throws IOException {
+        // Do nothing - don't close underlying PrintStream!
+        // Should we assert indent == 0 here?
+    }
+
+    private void printPrefix()
     {
         for (int i = 0; i < indent; i++) {
             ps.print("    ");
         }
     }
 
-    private static void printBytes(PrintStream ps, byte[] bytes)
+    private void printBytes(byte[] bytes, int off, int len)
         throws IOException
     {
-        if (isText(bytes)) {
+        if (isText(bytes, off, len)) {
             ps.print("\"");
-            ps.write(bytes);
+            ps.write(bytes, off, len);
             ps.println("\"");
-        } else if (bytes.length < 10) {
+        } else if (len < 10) {
             ps.print("#");
-            ps.write(Hex.encode(bytes));
+            ps.write(Hex.encode(bytes, off, len));
             ps.println("#");
         } else {
             ps.print("|");
-            ps.write(Base64.encode(bytes));
+            Base64.encode(bytes, off, len, ps);
             ps.println("|");
         }
     }
 
-    private static boolean isText(byte[] bytes)
+    private static boolean isText(byte[] bytes, int off, int len)
     {
-        if (bytes.length ==  0) {
+        if (len ==  0) {
             return false;
         }
-        for (int i = 0; i < bytes.length; i++) {
-            if (bytes[i] < 0x20 || bytes[i] >= 0x7f
-                    || bytes[i] == Constants.DOUBLEQUOTE
-                    || bytes[i] == Constants.BACKSLASH)
+        for (int i = 0; i < len; i++) {
+            if (bytes[off + i] < 0x20 || bytes[off + i] >= 0x7f
+                    || bytes[off + i] == Constants.DOUBLEQUOTE
+                    || bytes[off + i] == Constants.BACKSLASH)
                 return false;
         }
         return true;
@@ -90,6 +113,12 @@ public class PrettyPrinter {
             ParseException
     {
         prettyPrint(out, new CanonicalSpkiInputStream(read));
+    }
+
+    private static void prettyPrint(
+        PrintStream out,
+        SpkiInputStream stream) throws IOException, ParseException {
+        copyStream(stream, new PrettyPrinter(out));
     }
 
     public static String prettyPrint(InputStream read)
@@ -105,4 +134,25 @@ public class PrettyPrinter {
         return new String(baos.toByteArray(), Constants.ASCII);
     }
 
+    public static void copyStream(
+        SpkiInputStream input,
+        SpkiOutputStream output) throws IOException, ParseException {
+        for (;;) {
+            TokenType token = input.next();
+            switch (token) {
+            case ATOM:
+                output.atom(input.atomBytes());
+                break;
+            case OPENPAREN:
+                output.beginSexp();
+                break;
+            case CLOSEPAREN:
+                output.endSexp();
+                break;
+            case EOF:
+                output.close();
+                return;
+            }
+        }
+    }
 }
