@@ -1,10 +1,10 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.Create.atom;
-import static net.lshift.spki.Create.list;
+import static net.lshift.spki.sexpform.Create.atom;
+import static net.lshift.spki.sexpform.Create.list;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import net.lshift.spki.Sexp;
+import net.lshift.spki.sexpform.Sexp;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;

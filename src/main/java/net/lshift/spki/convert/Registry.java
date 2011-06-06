@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import net.lshift.spki.Sexp;
+import net.lshift.spki.sexpform.Sexp;
 
 /**
  * Registry of SExp converters.  If a class implements the Convertible
@@ -16,7 +16,7 @@ import net.lshift.spki.Sexp;
  */
 public class Registry {
     public static final Registry REGISTRY = new Registry();
-    
+
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 

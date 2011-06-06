@@ -1,6 +1,6 @@
 package net.lshift.spki.convert;
 
-import static net.lshift.spki.Create.list;
+import static net.lshift.spki.sexpform.Create.list;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.ParseException;
-import net.lshift.spki.Sexp;
+import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 

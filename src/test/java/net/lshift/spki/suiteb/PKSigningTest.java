@@ -1,9 +1,9 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.Create.atom;
+import static net.lshift.spki.sexpform.Create.atom;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static org.junit.Assert.assertTrue;
-import net.lshift.spki.Sexp;
+import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
 import org.junit.Test;

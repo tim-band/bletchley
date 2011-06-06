@@ -3,7 +3,7 @@ package net.lshift.spki.convert;
 import java.io.ByteArrayInputStream;
 
 import net.lshift.spki.CanonicalSpkiInputStream;
-import net.lshift.spki.Sexp;
+import net.lshift.spki.sexpform.Sexp;
 
 public class ConvertTestHelper
 {

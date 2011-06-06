@@ -1,6 +1,8 @@
-package net.lshift.spki;
+package net.lshift.spki.sexpform;
 
 import java.util.Collection;
+
+import net.lshift.spki.Constants;
 
 /**
  * Static methods useful for creating S-expression structures.

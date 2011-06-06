@@ -20,7 +20,7 @@ public class PositionBeanConverter<T>
         FieldConvertInfo field,
         Object property)
         throws IOException {
-        out.writeUnchecked(field.getType(), property);
+        out.writeUnchecked(field.type, property);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class PositionBeanConverter<T>
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
         for (int i = 0; i < fields.length; i++) {
-            initargs[i] = in.read(fields[i].getType());
+            initargs[i] = in.read(fields[i].type);
         }
         in.nextAssertType(TokenType.CLOSEPAREN);
     }

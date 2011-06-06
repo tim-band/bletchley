@@ -35,7 +35,7 @@ public abstract class BeanFieldConverter<T>
             writeName(out);
             for (int i = 0; i < fields.length; i++) {
                 final Object property =
-                    clazz.getField(fields[i].getName()).get(o);
+                    clazz.getField(fields[i].name).get(o);
                 writeField(out, fields[i], property);
             }
             out.endSexp();

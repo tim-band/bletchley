@@ -20,8 +20,6 @@ import org.bouncycastle.math.ec.ECPoint;
  * Static convenience functions for working with elliptic curves.
  */
 public class Ec {
-    private static final int KEY_ID_BYTES = 4;
-
     private static final X9ECParameters CURVE
         = NISTNamedCurves.getByName("P-384");
 
@@ -59,10 +57,6 @@ public class Ec {
         DigestSha384 hash = DigestSha384.digest(
             EcdhSharedSecret.class, sharedSecret);
         return Arrays.copyOf(hash.getBytes(), AesKey.AES_KEY_BYTES);
-    }
-
-    public static AesKeyId generateAESKeyId() {
-        return new AesKeyId(randomBytes(KEY_ID_BYTES));
     }
 
     public static byte[] randomBytes(int len) {
