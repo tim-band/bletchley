@@ -9,7 +9,6 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.sexpform.Sexp;
 
