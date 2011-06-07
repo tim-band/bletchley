@@ -1,16 +1,16 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionBeanConvertible;
 import net.lshift.spki.convert.SexpName;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 /**
  * A SequenceItem encrypted with AES/GCM.
  */
-public class AesPacket
-    extends PositionBeanConvertible
-    implements SequenceItem {
+@Convert.ByPosition
+public class AesPacket implements SequenceItem {
+
     public final AesKeyId keyId;
     public final byte[] nonce;
     public final byte[] ciphertext;

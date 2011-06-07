@@ -2,15 +2,15 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import java.math.BigInteger;
 
-import net.lshift.spki.convert.NameBeanConvertible;
+import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SexpName;
 
 /**
  * Serialization format for a raw ECDSA signature
  */
-public class EcdsaSignature
-    extends NameBeanConvertible {
+@Convert.ByName
+public class EcdsaSignature {
     public final BigInteger r;
     public final BigInteger s;
 

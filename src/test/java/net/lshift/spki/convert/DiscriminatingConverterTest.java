@@ -9,21 +9,15 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-@SuppressWarnings("unchecked")
 public class DiscriminatingConverterTest
 {
-    // http://stackoverflow.com/questions/1445233
-    // Is it possible to solve the “A generic array of T is created for a
-    // varargs parameter” compiler warning?
     Converter<Interface> converter
-        = new DiscriminatingConverter<Interface>(
-                        ImplementingClass.class, OtherImplementingClass.class);
+        = new DiscriminatingConverterFactory().converter(Interface.class);
 
     @Test
     public void testAssertDistinguishesExampleClasses() {

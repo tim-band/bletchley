@@ -2,9 +2,9 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
+import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.PositionBeanConvertible;
 import net.lshift.spki.convert.SexpName;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
@@ -17,9 +17,9 @@ import org.bouncycastle.crypto.params.KeyParameter;
 /**
  * A key to use with AES/GCM.
  */
-public class AesKey
-    extends PositionBeanConvertible
-    implements SequenceItem {
+@Convert.ByPosition
+public class AesKey implements SequenceItem {
+
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
         = "8:keyid-ad".getBytes(Constants.ASCII);

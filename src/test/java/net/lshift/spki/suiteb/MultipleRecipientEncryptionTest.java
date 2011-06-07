@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SequenceConversion;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
@@ -50,7 +49,5 @@ public class MultipleRecipientEncryptionTest
         }
     }
 
-    static {
-        SequenceConversion.ensureInstalled();
-    }
+
 }

@@ -1,5 +1,6 @@
 package net.lshift.spki.convert;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.Date;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.lshift.spki.convert.Convert.ConverterFactoryClass;
 import net.lshift.spki.sexpform.Sexp;
 
 /**
@@ -48,19 +50,30 @@ public class Registry {
             }
             try {
                 // Should be a static method
-                res = (Converter<T>) clazz.getMethod(
-                    "getConverter", Class.class).invoke(null, clazz);
+                ConverterFactoryClass factoryClass = clazz.getAnnotation(Convert.ConverterFactoryClass.class);
+                for(Annotation a: clazz.getAnnotations()) {
+                        if(factoryClass != null) break;
+                        factoryClass = a.getClass().getAnnotation(Convert.ConverterFactoryClass.class);
+                }
+
+                if(factoryClass != null) {
+                    ConverterFactory factory = factoryClass.value().newInstance();
+                    res = factory.converter(clazz);
+                }
+                else {
+                    throw new ConvertReflectionException("Could not resolve converter for " + clazz.getName());
+                }
+
             } catch (SecurityException e) {
-                throw new ConvertReflectionException(e);
-            } catch (NoSuchMethodException e) {
                 throw new ConvertReflectionException(e);
             } catch (IllegalArgumentException e) {
                 throw new ConvertReflectionException(e);
             } catch (IllegalAccessException e) {
                 throw new ConvertReflectionException(e);
-            } catch (InvocationTargetException e) {
+            } catch (InstantiationException e) {
                 throw new ConvertReflectionException(e);
             }
+
             converterMap.put(clazz, res);
         }
         return res;

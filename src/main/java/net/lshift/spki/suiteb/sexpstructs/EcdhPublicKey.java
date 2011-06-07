@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
+import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SexpName;
 
@@ -10,8 +11,9 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for public encryption keys
  */
-public class EcdhPublicKey
-    extends EcPublicKey {
+@Convert.ByPosition
+public class EcdhPublicKey extends EcPublicKey {
+
     @SexpName("suiteb-p384-ecdh-public-key")
     public EcdhPublicKey(@P("point") ECPoint point) {
         super(point);

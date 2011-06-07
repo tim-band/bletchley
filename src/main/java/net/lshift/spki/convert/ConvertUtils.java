@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
 
-import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream.TokenType;

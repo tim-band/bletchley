@@ -18,7 +18,8 @@ public class DiscriminatingConverter<T>
     private final HashMap<Class<? extends T>, Converter<? extends T>> classMap
         = new HashMap<Class<? extends T>, Converter<? extends T>>();
 
-    public DiscriminatingConverter(Class<? extends T>... classes) {
+
+    public DiscriminatingConverter(Class<? extends T> [] classes) {
         for (Class<? extends T> clazz: classes) {
             Converter<? extends T> converter
                 = Registry.REGISTRY.getConverter(clazz);
