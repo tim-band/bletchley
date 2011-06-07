@@ -50,16 +50,13 @@ public class PrivateSigningKey {
 
     public static class Step
         extends StepConverter<PrivateSigningKey, EcdsaPrivateKey> {
-
         @Override
         protected Class<PrivateSigningKey> getResultClass() {
-            // TODO Auto-generated method stub
             return PrivateSigningKey.class;
         }
 
         @Override
         protected Class<EcdsaPrivateKey> getStepClass() {
-            // TODO Auto-generated method stub
             return EcdsaPrivateKey.class;
         }
 

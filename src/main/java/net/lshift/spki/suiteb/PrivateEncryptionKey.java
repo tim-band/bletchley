@@ -50,7 +50,6 @@ public class PrivateEncryptionKey {
 
         @Override
         protected Class<EcdhPrivateKey> getStepClass() {
-            // TODO Auto-generated method stub
             return EcdhPrivateKey.class;
         }
 
