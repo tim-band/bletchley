@@ -18,6 +18,9 @@ import net.lshift.spki.sexpform.Slist;
  */
 public class SexpConverter
     implements Converter<Sexp> {
+    // Not a sexp converter, has no name
+    @Override public String getName() { return null; }
+
     @Override
     public void write(ConvertOutputStream out, Sexp o)
         throws IOException {

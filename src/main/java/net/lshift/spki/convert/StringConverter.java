@@ -11,6 +11,9 @@ import net.lshift.spki.ParseException;
  */
 public class StringConverter
     implements Converter<String> {
+    // Not a sexp converter, has no name
+    @Override public String getName() { return null; }
+
     @Override
     public void write(ConvertOutputStream out, String o)
         throws IOException {

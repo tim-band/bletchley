@@ -4,12 +4,14 @@ import java.math.BigInteger;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 
+import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.SexpName;
 
 /**
  * Serialization format for private encryption keys
  */
+@Convert.ByName
 public class EcdhPrivateKey
     extends EcPrivateKey {
     @SexpName("suiteb-p384-ecdh-private-key")

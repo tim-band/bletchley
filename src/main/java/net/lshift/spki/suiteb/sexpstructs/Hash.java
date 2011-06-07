@@ -8,7 +8,7 @@ import net.lshift.spki.convert.SexpName;
  * SPKI hash value format
  */
 @Convert.ByPosition
-public class Hash implements SequenceItem {
+public class Hash {
     public final String hashType;
     public final byte[] value;
 

@@ -2,7 +2,9 @@ package net.lshift.spki.suiteb;
 
 import java.math.BigInteger;
 
-import net.lshift.spki.convert.PackConvertible;
+import net.lshift.spki.ParseException;
+import net.lshift.spki.convert.StepConverter;
+import net.lshift.spki.convert.Convert.StepConverted;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -13,8 +15,8 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 /**
  * A private key for signing
  */
-public class PrivateSigningKey
-    extends PackConvertible {
+@StepConverted(PrivateSigningKey.Step.class)
+public class PrivateSigningKey {
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();
 
@@ -22,15 +24,6 @@ public class PrivateSigningKey
         super();
         this.keyPair = keyPair;
         signer.init(true, keyPair.getPrivate());
-    }
-
-    public static PrivateSigningKey unpack(EcdsaPrivateKey sexp) {
-        return new PrivateSigningKey(sexp.getKeypair());
-    }
-
-    @Override
-    public EcdsaPrivateKey pack() {
-        return new EcdsaPrivateKey(keyPair);
     }
 
     public PublicSigningKey getPublicKey() {
@@ -53,5 +46,34 @@ public class PrivateSigningKey
 
     public SequenceItem sign(SequenceItem item) {
         return signDigest(DigestSha384.digest(item));
+    }
+
+    public static class Step
+        extends StepConverter<PrivateSigningKey, EcdsaPrivateKey> {
+
+        @Override
+        protected Class<PrivateSigningKey> getResultClass() {
+            // TODO Auto-generated method stub
+            return PrivateSigningKey.class;
+        }
+
+        @Override
+        protected Class<EcdsaPrivateKey> getStepClass() {
+            // TODO Auto-generated method stub
+            return EcdsaPrivateKey.class;
+        }
+
+        @SuppressWarnings("synthetic-access")
+        @Override
+        protected EcdsaPrivateKey stepIn(PrivateSigningKey o) {
+            return new EcdsaPrivateKey(o.keyPair);
+        }
+
+        @SuppressWarnings("synthetic-access")
+        @Override
+        protected PrivateSigningKey stepOut(EcdsaPrivateKey s)
+            throws ParseException {
+            return new PrivateSigningKey(s.getKeypair());
+        }
     }
 }

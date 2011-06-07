@@ -24,9 +24,12 @@ public class DiscriminatingConverter<T>
             Converter<? extends T> converter
                 = Registry.REGISTRY.getConverter(clazz);
             classMap.put(clazz, converter);
-            nameMap.put(
-                ((BeanConverter<? extends T>) converter).getName(),
-                converter);
+            final String name = converter.getName();
+            if (name == null) {
+                throw new ConvertReflectionException(
+                    "Class has no sexp name: " + clazz.getCanonicalName());
+            }
+            nameMap.put(name, converter);
         }
     }
 
@@ -58,5 +61,11 @@ public class DiscriminatingConverter<T>
         in.pushback(TokenType.ATOM);
         in.pushback(TokenType.OPENPAREN);
         return converter.read(in);
+    }
+
+    @Override
+    public String getName() {
+        // Cannot generate a name for this converter, can be several
+        return null;
     }
 }

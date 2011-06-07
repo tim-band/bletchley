@@ -1,7 +1,6 @@
 package net.lshift.spki.convert;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,26 +43,11 @@ public class Registry {
     public synchronized <T> Converter<T> getConverter(Class<T> clazz) {
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
-            if (!Convertible.class.isAssignableFrom(clazz)) {
-                throw new ConvertException("Don't know how to serialize class:"
-                    + clazz.getCanonicalName());
-            }
             try {
-                // Should be a static method
-                ConverterFactoryClass factoryClass = clazz.getAnnotation(Convert.ConverterFactoryClass.class);
-                for(Annotation a: clazz.getAnnotations()) {
-                        if(factoryClass != null) break;
-                        factoryClass = a.getClass().getAnnotation(Convert.ConverterFactoryClass.class);
-                }
-
-                if(factoryClass != null) {
-                    ConverterFactory factory = factoryClass.value().newInstance();
-                    res = factory.converter(clazz);
-                }
-                else {
-                    throw new ConvertReflectionException("Could not resolve converter for " + clazz.getName());
-                }
-
+                final ConverterFactory factoryInstance
+                    = getConverterFactory(clazz).value().newInstance();
+                res = factoryInstance.converter(clazz);
+                assert res != null;
             } catch (SecurityException e) {
                 throw new ConvertReflectionException(e);
             } catch (IllegalArgumentException e) {
@@ -73,9 +57,26 @@ public class Registry {
             } catch (InstantiationException e) {
                 throw new ConvertReflectionException(e);
             }
-
             converterMap.put(clazz, res);
         }
         return res;
+    }
+
+    private <T> ConverterFactoryClass getConverterFactory(
+        Class<T> clazz) {
+        ConverterFactoryClass factoryClass
+            = clazz.getAnnotation(Convert.ConverterFactoryClass.class);
+        if (factoryClass != null) {
+            return factoryClass;
+        }
+        for (Annotation a: clazz.getAnnotations()) {
+            factoryClass = a.annotationType().getAnnotation(
+                Convert.ConverterFactoryClass.class);
+            if (factoryClass != null) {
+                return factoryClass;
+            }
+        }
+        throw new ConvertReflectionException(
+            "Could not resolve converter for " + clazz.getName());
     }
 }

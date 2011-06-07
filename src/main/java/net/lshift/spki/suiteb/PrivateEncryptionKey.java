@@ -1,6 +1,8 @@
 package net.lshift.spki.suiteb;
 
-import net.lshift.spki.convert.PackConvertible;
+import net.lshift.spki.ParseException;
+import net.lshift.spki.convert.StepConverter;
+import net.lshift.spki.convert.Convert.StepConverted;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -10,21 +12,13 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * A private key for decrypting data.
  */
-public class PrivateEncryptionKey extends PackConvertible {
+@StepConverted(PrivateEncryptionKey.Step.class)
+public class PrivateEncryptionKey {
     private final AsymmetricCipherKeyPair keyPair;
 
     private PrivateEncryptionKey(AsymmetricCipherKeyPair keyPair) {
         super();
         this.keyPair = keyPair;
-    }
-
-    public static PrivateEncryptionKey unpack(EcdhPrivateKey packed) {
-        return new PrivateEncryptionKey(packed.getKeypair());
-    }
-
-    @Override
-    public EcdhPrivateKey pack() {
-        return new EcdhPrivateKey(keyPair);
     }
 
     // FIXME: cache this or regenerate every time?
@@ -44,5 +38,34 @@ public class PrivateEncryptionKey extends PackConvertible {
             pk,
             keyPair.getPrivate(),
             pk);
+    }
+
+    public static class Step
+        extends StepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
+
+        @Override
+        protected Class<PrivateEncryptionKey> getResultClass() {
+            return PrivateEncryptionKey.class;
+        }
+
+        @Override
+        protected Class<EcdhPrivateKey> getStepClass() {
+            // TODO Auto-generated method stub
+            return EcdhPrivateKey.class;
+        }
+
+        @SuppressWarnings("synthetic-access")
+        @Override
+        protected EcdhPrivateKey stepIn(PrivateEncryptionKey o) {
+            return new EcdhPrivateKey(o.keyPair);
+        }
+
+        @SuppressWarnings("synthetic-access")
+        @Override
+        protected PrivateEncryptionKey stepOut(EcdhPrivateKey s)
+            throws ParseException {
+            return new PrivateEncryptionKey(s.getKeypair());
+        }
+
     }
 }

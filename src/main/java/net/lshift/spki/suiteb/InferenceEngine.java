@@ -5,15 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bouncycastle.crypto.InvalidCipherTextException;
-
 import net.lshift.spki.ParseException;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
-import net.lshift.spki.suiteb.sexpstructs.EcdsaPublicKey;
-import net.lshift.spki.suiteb.sexpstructs.Hash;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
+
+import org.bouncycastle.crypto.InvalidCipherTextException;
 
 /**
  * Take a bunch of SequenceItems and figure out what you can infer from them.
@@ -60,12 +58,12 @@ public class InferenceEngine {
             process((AesPacket) item);
         } else if (item instanceof SimpleMessage) {
             process((SimpleMessage) item, signer);
-        } else if (item instanceof EcdsaPublicKey) {
-            process((EcdsaPublicKey) item);
+        } else if (item instanceof PublicSigningKey) {
+            process((PublicSigningKey) item);
         } else if (item instanceof Signature) {
             process((Signature) item);
-        } else if (item instanceof Hash) {
-            process((Hash) item, signer);
+        } else if (item instanceof DigestSha384) {
+            process((DigestSha384) item, signer);
         } else {
             throw new RuntimeException(
                 "Don't know how to process sequence item: "
@@ -92,10 +90,6 @@ public class InferenceEngine {
 
     public void process(AesKey key) {
         aesKeys.put(key.getKeyId(), key);
-    }
-
-    public void process(EcdsaPublicKey key) {
-        process(PublicSigningKey.unpack(key));
     }
 
     public void process(PublicSigningKey pKey) {
@@ -131,9 +125,8 @@ public class InferenceEngine {
         }
     }
 
-    public void process(Hash packet, DigestSha384 signer) {
+    public void process(DigestSha384 digest, DigestSha384 signer) {
         if (signer != null) {
-            DigestSha384 digest = DigestSha384.unpack(packet);
             signedBy.put(digest, signer);
         }
     }

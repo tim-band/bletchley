@@ -23,7 +23,7 @@ public class SequenceSigningTest
             SequenceSigningTest.class.getCanonicalName(),
             "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
         Sequence sequence = SequenceUtils.sequence(
-            publicKey.pack(),
+            publicKey,
             privateKey.sign(message),
             message);
         sequence = roundTrip(Sequence.class, sequence);

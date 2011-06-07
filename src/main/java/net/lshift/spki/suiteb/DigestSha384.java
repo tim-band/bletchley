@@ -3,9 +3,11 @@ package net.lshift.spki.suiteb;
 import java.io.IOException;
 import java.util.Arrays;
 
+import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.PackConvertible;
+import net.lshift.spki.convert.StepConverter;
+import net.lshift.spki.convert.Convert.StepConverted;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
@@ -16,8 +18,9 @@ import org.bouncycastle.util.encoders.Hex;
 /**
  * A SHA-384 digest of a SExp.
  */
-public class DigestSha384
-    extends PackConvertible {
+@StepConverted(DigestSha384.Step.class)
+public class DigestSha384 implements SequenceItem {
+    public static final Step STEP = new Step();
     private static final String DIGEST_NAME = "sha384";
     private final int DIGEST_LENGTH = 48;
     private final byte[] bytes;
@@ -33,18 +36,6 @@ public class DigestSha384
 
     public byte[] getBytes() {
         return bytes;
-    }
-
-    @Override
-    public Hash pack() {
-        return new Hash(DIGEST_NAME, bytes);
-    }
-
-    public static DigestSha384 unpack(Hash hash) {
-        if (!DIGEST_NAME.equals(hash.hashType)) {
-            throw new ConvertException("Unexpected hash type: " + hash.hashType);
-        }
-        return new DigestSha384(hash.value);
     }
 
     public static <T> DigestSha384 digest(Class<T> clazz, T o) {
@@ -63,6 +54,36 @@ public class DigestSha384
 
     public static DigestSha384 digest(SequenceItem item) {
         return digest(SequenceItem.class, item);
+    }
+
+    public static class Step
+        extends StepConverter<DigestSha384, Hash> {
+
+        @Override
+        protected Class<DigestSha384> getResultClass() {
+            return DigestSha384.class;
+        }
+
+        @Override
+        protected Class<Hash> getStepClass() {
+            return Hash.class;
+        }
+
+        @SuppressWarnings("synthetic-access")
+        @Override
+        protected Hash stepIn(DigestSha384 o) {
+            return new Hash(DIGEST_NAME, o.bytes);
+        }
+
+        @Override
+        protected DigestSha384 stepOut(Hash hash)
+            throws ParseException {
+            if (!DIGEST_NAME.equals(hash.hashType)) {
+                throw new ConvertException("Unexpected hash type: " + hash.hashType);
+            }
+            return new DigestSha384(hash.value);
+        }
+
     }
 
     @Override

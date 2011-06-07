@@ -23,11 +23,11 @@ public class ChainedSigningTest
             ChainedSigningTest.class.getCanonicalName(),
             "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
         Sequence subsequence = SequenceUtils.sequence(
-            DigestSha384.digest(message).pack(),
-            publicKey.keyId.pack() // Some rubbish
+            DigestSha384.digest(message),
+            publicKey.keyId // Some rubbish
         );
         Sequence sequence = SequenceUtils.sequence(
-            publicKey.pack(),
+            publicKey,
             privateKey.sign(subsequence),
             subsequence,
             message);
@@ -39,6 +39,4 @@ public class ChainedSigningTest
         assertEquals(1, signedBy.size());
         assertEquals(message, signedBy.get(0));
     }
-
-
 }
