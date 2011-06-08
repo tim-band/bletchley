@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import net.lshift.spki.ParseException;
@@ -45,7 +44,7 @@ public class DiscriminatingConverterTest
     }
 
     @Test
-    public void canConvertImplementingClassToSexp() throws IOException {
+    public void canConvertImplementingClassToSexp() {
         byte[] expected = ConvertUtils.toBytes(Sexp.class,
             list("implementing-class"));
         byte[] actual = ConvertUtils.toBytes(Interface.class,
