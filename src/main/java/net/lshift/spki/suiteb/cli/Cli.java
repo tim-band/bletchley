@@ -36,19 +36,19 @@ import com.sun.net.httpserver.HttpServer;
 public class Cli {
     static final String CLI_MESSAGE = Cli.class.toString();
 
-    public static void prettyPrint(Openable file)
+    public static void prettyPrint(final Openable file)
         throws IOException,
             ParseException {
         PrettyPrinter.prettyPrint(System.out, file.read());
     }
 
-    public static void genEncryptionKey(Openable out)
+    public static void genEncryptionKey(final Openable out)
         throws IOException {
         write(PrivateEncryptionKey.class, PrivateEncryptionKey.generate(),
             out);
     }
 
-    public static void getPublicEncryptionKey(Openable privk, Openable pubk)
+    public static void getPublicEncryptionKey(final Openable privk, final Openable pubk)
         throws ParseException,
             IOException {
         final PrivateEncryptionKey privatek
@@ -56,12 +56,12 @@ public class Cli {
         write(PublicEncryptionKey.class, privatek.getPublicKey(), pubk);
     }
 
-    public static void genSigningKey(Openable out)
+    public static void genSigningKey(final Openable out)
         throws IOException {
         write(PrivateSigningKey.class, PrivateSigningKey.generate(), out);
     }
 
-    public static void getPublicSigningKey(Openable privk, Openable pubk)
+    public static void getPublicSigningKey(final Openable privk, final Openable pubk)
         throws ParseException,
             IOException {
         final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
@@ -69,18 +69,18 @@ public class Cli {
     }
 
     public static void decryptSignedMessage(
-        String messageType,
-        PrivateEncryptionKey encryptionKey,
-        PublicSigningKey signingKey,
-        Openable packet,
-        Openable out)
+        final String messageType,
+        final PrivateEncryptionKey encryptionKey,
+        final PublicSigningKey signingKey,
+        final Openable packet,
+        final Openable out)
         throws ParseException,
             IOException {
-        InferenceEngine inference = new InferenceEngine();
+        final InferenceEngine inference = new InferenceEngine();
         inference.process(signingKey);
         inference.process(encryptionKey);
         inference.process(read(SequenceItem.class, packet));
-        List<SequenceItem> signedBy
+        final List<SequenceItem> signedBy
             = inference.getSignedBy(signingKey.getKeyId());
         if (signedBy.size() != 1) {
             throw new RuntimeException("Did not find exactly one signed message");
@@ -88,7 +88,7 @@ public class Cli {
         if (!(signedBy.get(0) instanceof SimpleMessage)) {
             throw new RuntimeException("Signed object was not message");
         }
-        SimpleMessage message = (SimpleMessage) signedBy.get(0);
+        final SimpleMessage message = (SimpleMessage) signedBy.get(0);
         if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message was not of expected type");
         }
@@ -96,36 +96,36 @@ public class Cli {
     }
 
     public static void decryptSignedMessage(
-        String messageType,
-        Openable ePrivate,
-        Openable sPublic,
-        Openable packet,
-        Openable out)
+        final String messageType,
+        final Openable ePrivate,
+        final Openable sPublic,
+        final Openable packet,
+        final Openable out)
         throws ParseException,
             IOException {
-        PrivateEncryptionKey encryptionKey = read(PrivateEncryptionKey.class, ePrivate);
-        PublicSigningKey signingKey = read(PublicSigningKey.class, sPublic);
+        final PrivateEncryptionKey encryptionKey = read(PrivateEncryptionKey.class, ePrivate);
+        final PublicSigningKey signingKey = read(PublicSigningKey.class, sPublic);
         decryptSignedMessage(messageType, encryptionKey, signingKey, packet, out);
     }
 
     public static void genEncryptedSignedMessage(
-        String messageType,
-        Openable[] args)
+        final String messageType,
+        final Openable[] args)
         throws ParseException,
             IOException {
-        List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
-        AesKey aesKey = AesKey.generateAESKey();
+        final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
+        final AesKey aesKey = AesKey.generateAESKey();
         for (int i = 2; i < args.length - 1; i++) {
-            PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
-            AesKey rKey = pKey.setupEncrypt(sequenceItems);
+            final PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
+            final AesKey rKey = pKey.setupEncrypt(sequenceItems);
             sequenceItems.add(rKey.encrypt(aesKey));
         }
 
-        List<SequenceItem> encryptedSequenceItems
+        final List<SequenceItem> encryptedSequenceItems
             = new ArrayList<SequenceItem>();
-        SimpleMessage message = new SimpleMessage(
+        final SimpleMessage message = new SimpleMessage(
             messageType, OpenableUtils.readBytes(args[1]));
-        PrivateSigningKey privateKey = read(PrivateSigningKey.class, args[0]);
+        final PrivateSigningKey privateKey = read(PrivateSigningKey.class, args[0]);
         encryptedSequenceItems.add(privateKey.sign(message));
         encryptedSequenceItems.add(message);
 
@@ -138,7 +138,7 @@ public class Cli {
         new SpeedTester().speedTest();
     }
 
-    public static void main(String command, Openable... args)
+    public static void main(final String command, final Openable... args)
         throws FileNotFoundException,
             ParseException,
             IOException {
@@ -164,33 +164,33 @@ public class Cli {
         }
     }
 
-    public static void serve(int port, final String messageType, final PrivateEncryptionKey encryptionKey, final PublicSigningKey signingKey) throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), -1);
+    public static void serve(final int port, final String messageType, final PrivateEncryptionKey encryptionKey, final PublicSigningKey signingKey) throws Exception {
+        final HttpServer server = HttpServer.create(new InetSocketAddress(port), -1);
         server.createContext("/decryptAndVerify", new HttpHandler() {
             @Override
-            public void handle(HttpExchange t) throws IOException {
-                InputStream is = t.getRequestBody();
-                ByteOpenable iso = new ByteOpenable();
+            public void handle(final HttpExchange t) throws IOException {
+                final InputStream is = t.getRequestBody();
+                final ByteOpenable iso = new ByteOpenable();
                 iso.write().write(IOUtils.toByteArray(is));
-                OutputStream os = t.getResponseBody();
+                final OutputStream os = t.getResponseBody();
                 if (!t.getRequestMethod().equals("POST")) {
                     writeResponse(t, os, 400, "Expected POST request".getBytes("ASCII"));
                     return;
                 }
-                ByteOpenable oso = new ByteOpenable();
+                final ByteOpenable oso = new ByteOpenable();
                 try {
                     decryptSignedMessage(messageType, encryptionKey, signingKey, iso, oso);
-                    byte[] ans = IOUtils.toByteArray(oso.read());
+                    final byte[] ans = IOUtils.toByteArray(oso.read());
                     writeResponse(t, os, 200, ans);
-                } catch (Exception e) {
-                    StringWriter sw = new StringWriter();
+                } catch (final Exception e) {
+                    final StringWriter sw = new StringWriter();
                     e.printStackTrace(new PrintWriter(sw));
                     writeResponse(t, os, 400,
                             ("Could not decrypt and verify: " +
                                     e.getClass().getName() + e.getMessage() + "\n" + sw.toString()).getBytes("ascii"));
                 }
             }
-            void writeResponse(HttpExchange t, OutputStream os, int responseCode, byte[] ans) throws IOException {
+            void writeResponse(final HttpExchange t, final OutputStream os, final int responseCode, final byte[] ans) throws IOException {
                 t.sendResponseHeaders(responseCode, ans.length);
                 os.write(ans);
                 os.close();
@@ -202,7 +202,7 @@ public class Cli {
         System.out.flush();
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         String command = "<no valid command>";
         try {
             int i = 0;
@@ -214,14 +214,14 @@ public class Cli {
                 final PublicSigningKey signingKey = read(PublicSigningKey.class, new FileOpenable(new File(args[i++])));
                 serve(port, messageType, encryptionKey, signingKey);
             } else {
-                List<Openable> openables = new ArrayList<Openable>();
+                final List<Openable> openables = new ArrayList<Openable>();
                 for (;i < args.length; i++) {
                     openables.add(new FileOpenable(new File(args[i])));
                 }
                 main(command, openables.toArray(new Openable[0]));
             }
 
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             System.err.println("Could not '" + command + "':");
             ex.printStackTrace();
             System.exit(2);

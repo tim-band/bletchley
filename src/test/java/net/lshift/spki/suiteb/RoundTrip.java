@@ -19,18 +19,18 @@ public class RoundTrip
 {
     private static final Logger LOG = LoggerFactory.getLogger(RoundTrip.class);
 
-    public static <T> T roundTrip(Class<T> clazz, T o)
+    public static <T> T roundTrip(final Class<T> clazz, final T o)
     {
         try {
-            ByteOpenable buf = new ByteOpenable();
+            final ByteOpenable buf = new ByteOpenable();
             write(clazz, o, buf);
             LOG.info(PrettyPrinter.prettyPrint(buf.read()));
             return read(clazz, buf);
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }

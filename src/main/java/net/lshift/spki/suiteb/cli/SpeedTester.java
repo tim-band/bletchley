@@ -28,9 +28,9 @@ public class SpeedTester {
 
     public void speedTest() throws ParseException {
         doRun();
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         for (int i = 0; ; i++) {
-            long end = System.currentTimeMillis();
+            final long end = System.currentTimeMillis();
             if (end - start > 5000) {
                 System.out.println("Time (ms): " + (end-start)*1.0/i);
                 break;
@@ -40,12 +40,12 @@ public class SpeedTester {
     }
 
     private void doRun() throws ParseException {
-        AesKey aesKey = AesKey.generateAESKey();
-        PublicEncryptionKey pKey
+        final AesKey aesKey = AesKey.generateAESKey();
+        final PublicEncryptionKey pKey
             = ConvertUtils.fromBytes(PublicEncryptionKey.class, publicKeyBytes);
-        EncryptionSetup rKey = pKey.setupEncrypt();
+        final EncryptionSetup rKey = pKey.setupEncrypt();
 
-        SimpleMessage message = new SimpleMessage(
+        final SimpleMessage message = new SimpleMessage(
             MESSAGE_TYPE, messageBytes);
 
         final Sequence sequence = SequenceUtils.sequence(

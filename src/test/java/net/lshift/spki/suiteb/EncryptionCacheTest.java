@@ -20,21 +20,21 @@ public class EncryptionCacheTest {
         privateKey = roundTrip(PrivateEncryptionKey.class, privateKey);
         PublicEncryptionKey publicKey = privateKey.getPublicKey();
         publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
-        SimpleMessage message = new SimpleMessage(
+        final SimpleMessage message = new SimpleMessage(
             EncryptionCacheTest.class.getCanonicalName(),
             "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
-        EncryptionCache cache = new EncryptionCache();
-        EncryptionSetup aesKey = cache.setupEncrypt(publicKey);
-        EncryptionSetup aesKey2 = cache.setupEncrypt(publicKey);
+        final EncryptionCache cache = new EncryptionCache();
+        final EncryptionSetup aesKey = cache.setupEncrypt(publicKey);
+        final EncryptionSetup aesKey2 = cache.setupEncrypt(publicKey);
         assertSame(aesKey, aesKey2);
         Sequence sequence = SequenceUtils.sequence(
             aesKey.encryptedKey,
             aesKey.key.encrypt(message));
         sequence = roundTrip(Sequence.class, sequence);
-        InferenceEngine inferenceEngine = new InferenceEngine();
+        final InferenceEngine inferenceEngine = new InferenceEngine();
         inferenceEngine.process(privateKey);
         inferenceEngine.process(sequence);
-        List<SimpleMessage> messages = inferenceEngine.getMessages();
+        final List<SimpleMessage> messages = inferenceEngine.getMessages();
         assertEquals(1, messages.size());
         assertEquals(message, messages.get(0));
     }

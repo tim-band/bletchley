@@ -7,7 +7,7 @@ import net.lshift.spki.sexpform.Sexp;
 
 public class ConvertTestHelper
 {
-    public static InputStream toConvert(Sexp sexp)
+    public static InputStream toConvert(final Sexp sexp)
     {
         return new ByteArrayInputStream(
             ConvertUtils.toBytes(Sexp.class, sexp));

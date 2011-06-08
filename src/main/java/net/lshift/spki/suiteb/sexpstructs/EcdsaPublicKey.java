@@ -12,15 +12,15 @@ import org.bouncycastle.math.ec.ECPoint;
 @Convert.ByPosition(name="suiteb-p384-ecdsa-public-key", fields={"point"})
 public class EcdsaPublicKey
     extends EcPublicKey {
-    public EcdsaPublicKey(ECPoint point) {
+    public EcdsaPublicKey(final ECPoint point) {
         super(point);
     }
 
-    public EcdsaPublicKey(ECPublicKeyParameters publicKey) {
+    public EcdsaPublicKey(final ECPublicKeyParameters publicKey) {
         super(publicKey);
     }
 
-    public EcdsaPublicKey(AsymmetricCipherKeyPair keyPair) {
+    public EcdsaPublicKey(final AsymmetricCipherKeyPair keyPair) {
         super(keyPair);
     }
 }

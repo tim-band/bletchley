@@ -15,8 +15,8 @@ public class SimpleMessage implements SequenceItem {
     public final byte[] content;
 
     public SimpleMessage(
-        String type,
-        byte[] content
+        final String type,
+        final byte[] content
     ) {
         super();
         this.type = type;
@@ -29,7 +29,7 @@ public class SimpleMessage implements SequenceItem {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 }
