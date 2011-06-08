@@ -1,13 +1,13 @@
 package net.lshift.spki.convert;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream.TokenType;
@@ -20,22 +20,20 @@ public class SequenceConverter<T>
     private final String beanName;
     private final Class<?> contentType;
 
-    public SequenceConverter(Class<T> clazz) {
-        super(clazz);
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        if (annotations.length != 1) {
+    public SequenceConverter(Class<T> clazz, String name) {
+        super(clazz, name);
+        Field[] fields = clazz.getDeclaredFields();
+        if (fields.length != 1) {
+            throw new ConvertReflectionException(clazz,
+                "Class must have one field");
+        }
+        beanName = fields[0].getName();
+        if (!(fields[0].getGenericType() instanceof ParameterizedType)) {
             throw new ConvertException(
-                "Constructor must be one argument:"
+                "Field must be parameterized List type:"
                 + clazz.getCanonicalName());
         }
-        beanName = getPAnnotation(annotations[0]);
-        Type[] pTypes = constructor.getGenericParameterTypes();
-        if (!(pTypes[0] instanceof ParameterizedType)) {
-            throw new ConvertException(
-                "Constructor argument must be parameterized List type:"
-                + clazz.getCanonicalName());
-        }
-        ParameterizedType pType = (ParameterizedType) pTypes[0];
+        ParameterizedType pType = (ParameterizedType) fields[0].getGenericType();
         if (!List.class.equals(pType.getRawType())) {
             throw new ConvertException(
                 "Constructor argument must be List type:"
@@ -84,15 +82,19 @@ public class SequenceConverter<T>
                 components.add(in.read(contentType));
                 break;
             case CLOSEPAREN:
-                Object[] initargs = new Object[1];
-                initargs[0] = Collections.unmodifiableList(components);
                 try {
-                    return constructor.newInstance(initargs);
+                    Map<Field, Object> fields = new HashMap<Field, Object>();
+                    fields.put(clazz.getDeclaredField(beanName), components);
+                    return DeserializingConstructor.make(clazz, fields);
                 } catch (InstantiationException e) {
                     throw new ConvertReflectionException(e);
                 } catch (IllegalAccessException e) {
                     throw new ConvertReflectionException(e);
-                } catch (InvocationTargetException e) {
+                } catch (SecurityException e) {
+                    throw new ConvertReflectionException(e);
+                } catch (IllegalArgumentException e) {
+                    throw new ConvertReflectionException(e);
+                } catch (NoSuchFieldException e) {
                     throw new ConvertReflectionException(e);
                 }
             default:

@@ -4,8 +4,6 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.SexpName;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -17,7 +15,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 /**
  * A key to use with AES/GCM.
  */
-@Convert.ByPosition
+@Convert.ByPosition(name="aes-gcm-key", fields={"key"})
 public class AesKey implements SequenceItem {
 
     public static final int AES_KEY_BYTES = 32;
@@ -26,14 +24,12 @@ public class AesKey implements SequenceItem {
     private static final byte[] ZERO_BYTES = new byte[] { };
 
     public final byte[] key;
-    private final AesKeyId keyId;
+    private AesKeyId keyId;
 
-    @SexpName("aes-gcm-key")
     public AesKey(
-        @P("key") byte[] key
+        byte[] key
     ) {
         this.key = key;
-        this.keyId = genKeyId();
     }
 
     private AesKeyId genKeyId() {
@@ -51,7 +47,10 @@ public class AesKey implements SequenceItem {
         }
     }
 
-    public AesKeyId getKeyId() {
+    public synchronized AesKeyId getKeyId() {
+        if (keyId == null) {
+            keyId = genKeyId();
+        }
         return keyId;
     }
 
@@ -67,7 +66,7 @@ public class AesKey implements SequenceItem {
             int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);
             gcm.doFinal(ciphertext, resp);
-            return new AesPacket(keyId, nonce, ciphertext);
+            return new AesPacket(getKeyId(), nonce, ciphertext);
         } catch (InvalidCipherTextException e) {
             throw new RuntimeException(e);
         }

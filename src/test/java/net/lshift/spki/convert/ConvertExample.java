@@ -2,17 +2,14 @@ package net.lshift.spki.convert;
 
 import java.math.BigInteger;
 
-@Convert.ByPosition
+@Convert.ByPosition(name="convert-example", fields={"foo", "bar"})
 public class ConvertExample
 {
     public final BigInteger foo;
     public final BigInteger bar;
 
-    @SexpName("convert-example")
     public ConvertExample(
-        @P("foo")
         BigInteger foo,
-        @P("bar")
         BigInteger bar
     ) {
         super();

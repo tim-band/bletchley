@@ -16,17 +16,24 @@ public class Convert
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE})
     @ConverterFactoryClass(PositionBeanConverterFactory.class)
-    public @interface ByPosition { /* no arguments */}
+    public @interface ByPosition {
+        String name();
+        String[] fields();
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE})
     @ConverterFactoryClass(NameBeanConverterFactory.class)
-    public @interface ByName { /* no arguments */ }
+    public @interface ByName {
+        String value();
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE})
     @ConverterFactoryClass(SequenceConverterFactory.class)
-    public @interface SequenceConverted { /* no arguments */ }
+    public @interface SequenceConverted {
+        String value();
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE})

@@ -5,12 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
+import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -92,5 +94,13 @@ public class ConvertUtils {
         } catch (IOException e) {
             throw new RuntimeException("CANTHAPPEN", e);
         }
+    }
+
+    public static <T> void prettyPrint(Class<T> clazz, T o, PrintStream ps)
+        throws IOException {
+        ConvertOutputStream out
+            = new ConvertOutputStream(new PrettyPrinter(ps));
+        out.write(clazz, o);
+        out.close();
     }
 }

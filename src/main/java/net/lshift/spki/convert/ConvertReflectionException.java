@@ -16,8 +16,9 @@ public class ConvertReflectionException
         this.type = clazz;
     }
 
-    private static String context(Converter<?> converter, Class<?> type)
-    {
+    private static String context(
+        @SuppressWarnings("unused") Converter<?> converter,
+        Class<?> type)    {
         return "error converting " + type.getCanonicalName();
     }
 

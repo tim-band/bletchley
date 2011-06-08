@@ -89,6 +89,14 @@ public class InferenceEngine {
     }
 
     public void process(AesKey key) {
+//        try {
+//            System.out.println("Processing key:");
+//            ConvertUtils.prettyPrint(AesKey.class, key, System.out);
+//            System.out.println("ID:");
+//            ConvertUtils.prettyPrint(AesKeyId.class, key.getKeyId(), System.out);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         aesKeys.put(key.getKeyId(), key);
     }
 
@@ -114,9 +122,22 @@ public class InferenceEngine {
 
     public void process(AesPacket packet) {
         try {
+//            try {
+//                System.out.println("Packet encrypted with:");
+//                ConvertUtils.prettyPrint(AesKeyId.class, packet.keyId, System.out);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
             AesKey key = aesKeys.get(packet.keyId);
             if (key != null) {
-                process(key.decrypt(packet));
+                final SequenceItem contents = key.decrypt(packet);
+//                try {
+//                    System.out.println("Contents:");
+//                    ConvertUtils.prettyPrint(SequenceItem.class, contents, System.out);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+                process(contents);
             }
         } catch (InvalidCipherTextException e) {
             throw new RuntimeException(e);
