@@ -32,7 +32,7 @@ public class PublicSigningKey
         extends StepConverter<PublicSigningKey, EcdsaPublicKey> {
 
         @Override
-        protected Class<PublicSigningKey> getResultClass() {
+        public Class<PublicSigningKey> getResultClass() {
             return PublicSigningKey.class;
         }
 

@@ -44,7 +44,7 @@ public class PrivateEncryptionKey {
         extends StepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
 
         @Override
-        protected Class<PrivateEncryptionKey> getResultClass() {
+        public Class<PrivateEncryptionKey> getResultClass() {
             return PrivateEncryptionKey.class;
         }
 

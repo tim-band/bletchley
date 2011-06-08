@@ -34,7 +34,7 @@ public class AesKeyId {
     public static class Step
         extends StepConverter<AesKeyId, byte[]> {
         @Override
-        protected Class<AesKeyId> getResultClass() {
+        public Class<AesKeyId> getResultClass() {
             return AesKeyId.class;
         }
 

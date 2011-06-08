@@ -26,15 +26,17 @@ public class AesKey implements SequenceItem {
     private static final byte[] ZERO_BYTES = new byte[] { };
 
     public final byte[] key;
+    private final AesKeyId keyId;
 
     @SexpName("aes-gcm-key")
     public AesKey(
         @P("key") byte[] key
     ) {
         this.key = key;
+        this.keyId = genKeyId();
     }
 
-    public AesKeyId getKeyId() {
+    private AesKeyId genKeyId() {
         try {
             GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
@@ -49,6 +51,10 @@ public class AesKey implements SequenceItem {
         }
     }
 
+    public AesKeyId getKeyId() {
+        return keyId;
+    }
+
     public AesPacket encrypt(SequenceItem message) {
         try {
             byte[] nonce = Ec.randomBytes(12);
@@ -61,7 +67,7 @@ public class AesKey implements SequenceItem {
             int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);
             gcm.doFinal(ciphertext, resp);
-            return new AesPacket(getKeyId(), nonce, ciphertext);
+            return new AesPacket(keyId, nonce, ciphertext);
         } catch (InvalidCipherTextException e) {
             throw new RuntimeException(e);
         }

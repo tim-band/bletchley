@@ -60,7 +60,7 @@ public class DigestSha384 implements SequenceItem {
         extends StepConverter<DigestSha384, Hash> {
 
         @Override
-        protected Class<DigestSha384> getResultClass() {
+        public Class<DigestSha384> getResultClass() {
             return DigestSha384.class;
         }
 

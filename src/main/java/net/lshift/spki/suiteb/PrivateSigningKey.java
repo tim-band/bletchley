@@ -51,7 +51,7 @@ public class PrivateSigningKey {
     public static class Step
         extends StepConverter<PrivateSigningKey, EcdsaPrivateKey> {
         @Override
-        protected Class<PrivateSigningKey> getResultClass() {
+        public Class<PrivateSigningKey> getResultClass() {
             return PrivateSigningKey.class;
         }
 

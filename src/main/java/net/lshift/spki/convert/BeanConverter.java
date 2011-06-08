@@ -30,6 +30,11 @@ public abstract class BeanConverter<T>
                         clazz.getCanonicalName());
     }
 
+    @Override
+    public Class<T> getResultClass() {
+        return clazz;
+    }
+
     public String getName() {
         return name;
     }

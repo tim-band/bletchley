@@ -16,6 +16,11 @@ public class BigIntegerConverter
     @Override public String getName() { return null; }
 
     @Override
+    public Class<BigInteger> getResultClass() {
+        return BigInteger.class;
+    }
+
+    @Override
     public void write(ConvertOutputStream out, BigInteger o)
         throws IOException {
         out.atom(o.toByteArray());

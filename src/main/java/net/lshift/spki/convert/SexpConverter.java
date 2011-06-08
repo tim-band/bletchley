@@ -22,6 +22,11 @@ public class SexpConverter
     @Override public String getName() { return null; }
 
     @Override
+    public Class<Sexp> getResultClass() {
+        return Sexp.class;
+    }
+
+    @Override
     public void write(ConvertOutputStream out, Sexp o)
         throws IOException {
         if (o instanceof Atom) {

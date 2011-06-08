@@ -13,13 +13,17 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  */
 public class DiscriminatingConverter<T>
     implements Converter<T> {
+    private final Class<T> superclass;
     private final Map<String, Converter<? extends T>> nameMap
         = new HashMap<String, Converter<? extends T>>();
     private final HashMap<Class<? extends T>, Converter<? extends T>> classMap
         = new HashMap<Class<? extends T>, Converter<? extends T>>();
 
 
-    public DiscriminatingConverter(Class<? extends T> [] classes) {
+    public DiscriminatingConverter(
+        Class<T> superclass,
+        Class<? extends T>[] classes) {
+        this.superclass = superclass;
         for (Class<? extends T> clazz: classes) {
             Converter<? extends T> converter
                 = Registry.REGISTRY.getConverter(clazz);
@@ -31,6 +35,11 @@ public class DiscriminatingConverter<T>
             }
             nameMap.put(name, converter);
         }
+    }
+
+    @Override
+    public Class<T> getResultClass() {
+        return superclass;
     }
 
     @SuppressWarnings("unchecked")

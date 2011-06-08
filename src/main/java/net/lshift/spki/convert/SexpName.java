@@ -10,4 +10,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SexpName {
     String value();
+
+    public static String foo = "foo";
 }

@@ -47,7 +47,7 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
     public static class Step
         extends StepConverter<PublicEncryptionKey, EcdhPublicKey> {
         @Override
-        protected Class<PublicEncryptionKey> getResultClass() {
+        public Class<PublicEncryptionKey> getResultClass() {
             return PublicEncryptionKey.class;
         }
 

@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.P;
+import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.SexpName;
 import net.lshift.spki.convert.StepConverter;
 import net.lshift.spki.suiteb.Ec;
@@ -62,7 +63,7 @@ public class Point {
     }
 
     static {
-        new ECPointConverter().registerSelf();
+        Registry.register(new ECPointConverter());
     }
 
     public static void ensureRegistered() {

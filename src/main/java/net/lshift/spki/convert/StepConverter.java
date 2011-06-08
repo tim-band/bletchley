@@ -27,11 +27,7 @@ public abstract class StepConverter<TResult, TStep>
         return stepOut(in.read(getStepClass()));
     }
 
-    public void registerSelf() {
-        Registry.REGISTRY.register(getResultClass(), this);
-    }
-
-    protected abstract Class<TResult> getResultClass();
+    public abstract Class<TResult> getResultClass();
 
     protected abstract Class<TStep> getStepClass();
 

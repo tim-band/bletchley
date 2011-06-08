@@ -15,6 +15,11 @@ public class StringConverter
     @Override public String getName() { return null; }
 
     @Override
+    public Class<String> getResultClass() {
+        return String.class;
+    }
+
+    @Override
     public void write(ConvertOutputStream out, String o)
         throws IOException {
         out.atom(o);
