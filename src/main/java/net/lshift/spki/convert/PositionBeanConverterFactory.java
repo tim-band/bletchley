@@ -10,28 +10,28 @@ import net.lshift.spki.convert.Convert.ByPosition;
 public class PositionBeanConverterFactory
 implements ConverterFactory
 {
-    public <T> Converter<T> converter(Class<T> clazz, Annotation a) {
-        ByPosition aa = (Convert.ByPosition) a;
-        List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
-        for (String fname: aa.fields()) {
+    public <T> Converter<T> converter(final Class<T> clazz, final Annotation a) {
+        final ByPosition aa = (Convert.ByPosition) a;
+        final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
+        for (final String fname: aa.fields()) {
             try {
                 fields.add(new FieldConvertInfo(
                     getField(clazz, fname)));
-            } catch (SecurityException e) {
+            } catch (final SecurityException e) {
                 throw new ConvertReflectionException(e);
-            } catch (NoSuchFieldException e) {
+            } catch (final NoSuchFieldException e) {
                 throw new ConvertReflectionException(e);
             }
         }
         return new PositionBeanConverter<T>(clazz, aa.name(), fields);
     }
 
-    private <T> Field getField(Class<T> clazz, String fname)
+    private <T> Field getField(final Class<T> clazz, final String fname)
         throws NoSuchFieldException {
         try {
             return clazz.getDeclaredField(fname);
-        } catch (NoSuchFieldException e) {
-            Class<? super T> sup = clazz.getSuperclass();
+        } catch (final NoSuchFieldException e) {
+            final Class<? super T> sup = clazz.getSuperclass();
             if (sup == null) {
                 throw e;
             }

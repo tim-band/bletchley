@@ -16,7 +16,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class AesKeyId {
     public final byte[] keyId;
 
-    public AesKeyId(byte[] keyId) {
+    public AesKeyId(final byte[] keyId) {
         super();
         this.keyId = keyId;
     }
@@ -27,7 +27,7 @@ public class AesKeyId {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
@@ -44,12 +44,12 @@ public class AesKeyId {
         }
 
         @Override
-        protected byte[] stepIn(AesKeyId o) {
+        protected byte[] stepIn(final AesKeyId o) {
             return o.keyId;
         }
 
         @Override
-        protected AesKeyId stepOut(byte[] s)
+        protected AesKeyId stepOut(final byte[] s)
             throws ParseException {
             return new AesKeyId(s);
         }

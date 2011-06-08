@@ -11,7 +11,7 @@ public abstract class PublicKey {
     protected final DigestSha384 keyId;
 
     @SuppressWarnings("unchecked")
-    PublicKey(CipherParameters publicKey) {
+    PublicKey(final CipherParameters publicKey) {
         this.publicKey = (ECPublicKeyParameters) publicKey;
         keyId = DigestSha384.digest(
             (Class<PublicKey>) this.getClass(), this);

@@ -12,7 +12,7 @@ import org.apache.commons.io.IOUtils;
  * Utilities for acting on Openable objects
  */
 public class OpenableUtils {
-    public static byte[] readBytes(Openable message)
+    public static byte[] readBytes(final Openable message)
         throws IOException {
         final InputStream is = message.read();
         try {
@@ -22,9 +22,9 @@ public class OpenableUtils {
         }
     }
 
-    public static void writeBytes(final byte[] messageBytes, Openable out)
+    public static void writeBytes(final byte[] messageBytes, final Openable out)
         throws IOException {
-        OutputStream os = out.write();
+        final OutputStream os = out.write();
         try {
             os.write(messageBytes);
         } finally {
@@ -32,13 +32,13 @@ public class OpenableUtils {
         }
     }
 
-    public static <T> T read(Class<T> clazz, Openable open)
+    public static <T> T read(final Class<T> clazz, final Openable open)
         throws ParseException,
             IOException {
         return ConvertUtils.read(clazz, open.read());
     }
 
-    public static <T> void write(Class<T> clazz, T o, Openable open)
+    public static <T> void write(final Class<T> clazz, final T o, final Openable open)
         throws IOException {
         ConvertUtils.write(clazz, o, open.write());
     }

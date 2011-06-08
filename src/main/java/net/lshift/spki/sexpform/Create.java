@@ -9,27 +9,27 @@ import net.lshift.spki.Constants;
  * Designed to be imported statically.
  */
 public class Create {
-    public static Sexp atom(byte[] bytes) {
+    public static Sexp atom(final byte[] bytes) {
         return new Atom(bytes);
     }
 
-    public static Atom atom(String name) {
+    public static Atom atom(final String name) {
         return new Atom(name.getBytes(Constants.UTF8));
     }
 
-    public static Slist list(Atom head, Sexp... tail) {
+    public static Slist list(final Atom head, final Sexp... tail) {
         return new Slist(head, tail);
     }
 
-    public static Slist list(String head, Sexp... tail) {
+    public static Slist list(final String head, final Sexp... tail) {
         return list(atom(head), tail);
     }
 
-    public static Slist list(Atom head, Collection<Sexp> tail) {
+    public static Slist list(final Atom head, final Collection<Sexp> tail) {
         return list(head, tail.toArray(new Sexp[tail.size()]));
     }
 
-    public static Slist list(String head, Collection<Sexp> tail) {
+    public static Slist list(final String head, final Collection<Sexp> tail) {
         return list(atom(head), tail);
     }
 }

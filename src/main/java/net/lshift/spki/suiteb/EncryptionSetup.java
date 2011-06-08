@@ -6,7 +6,7 @@ public class EncryptionSetup {
     public final EcdhItem encryptedKey;
     public final AesKey key;
 
-    public EncryptionSetup(EcdhItem encryptedKey, AesKey key) {
+    public EncryptionSetup(final EcdhItem encryptedKey, final AesKey key) {
         super();
         this.encryptedKey = encryptedKey;
         this.key = key;

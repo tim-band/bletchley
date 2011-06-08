@@ -21,7 +21,7 @@ public abstract class SpkiOutputStream implements Closeable
     public abstract void endSexp()
         throws IOException;
 
-    public void atom(byte[] bytes)
+    public void atom(final byte[] bytes)
         throws IOException {
         atom(bytes, 0, bytes.length);
     }

@@ -11,19 +11,19 @@ public class ConvertOutputStream
     private final SpkiOutputStream os;
     private final Registry registry;
 
-    public ConvertOutputStream(SpkiOutputStream os) {
+    public ConvertOutputStream(final SpkiOutputStream os) {
         super();
         this.os = os;
         this.registry = Registry.REGISTRY;
     }
 
-    public ConvertOutputStream(OutputStream out)
+    public ConvertOutputStream(final OutputStream out)
     {
         this(new CanonicalSpkiOutputStream(out));
     }
 
     @Override
-    public void atom(byte[] bytes, int off, int len)
+    public void atom(final byte[] bytes, final int off, final int len)
         throws IOException {
         os.atom(bytes, off, len);
     }
@@ -47,17 +47,17 @@ public class ConvertOutputStream
         os.endSexp();
     }
 
-    public void atom(String string)
+    public void atom(final String string)
         throws IOException {
         os.atom(ConvertUtils.bytes(string));
     }
 
-    public <T> void write(Class<T> clazz, T o) throws IOException {
+    public <T> void write(final Class<T> clazz, final T o) throws IOException {
         registry.getConverter(clazz).write(this, o);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> void writeUnchecked(Class<?> clazz, Object o)
+    public <T> void writeUnchecked(final Class<?> clazz, final Object o)
         throws IOException {
         ((Converter<Object>) registry.getConverter(clazz)).write(this, o);
     }

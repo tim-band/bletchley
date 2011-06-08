@@ -38,29 +38,29 @@ public class Ec {
         return gen.generateKeyPair();
     }
 
-    public static ECPublicKeyParameters toECPublicKeyParameters(ECPoint point) {
+    public static ECPublicKeyParameters toECPublicKeyParameters(final ECPoint point) {
         return new ECPublicKeyParameters(point, Ec.DOMAIN_PARAMETERS);
     }
 
     public static byte[] sessionKey(
-            CipherParameters receiverKey,
-            CipherParameters senderKey,
-            CipherParameters privateKey,
-            ECPublicKeyParameters publicKey
+            final CipherParameters receiverKey,
+            final CipherParameters senderKey,
+            final CipherParameters privateKey,
+            final ECPublicKeyParameters publicKey
     ) {
-        ECDHBasicAgreement senderAgreement = new ECDHBasicAgreement();
+        final ECDHBasicAgreement senderAgreement = new ECDHBasicAgreement();
         senderAgreement.init(privateKey);
-        EcdhSharedSecret sharedSecret = new EcdhSharedSecret(
+        final EcdhSharedSecret sharedSecret = new EcdhSharedSecret(
             ((ECPublicKeyParameters)receiverKey).getQ(),
             ((ECPublicKeyParameters)senderKey).getQ(),
             senderAgreement.calculateAgreement(publicKey));
-        DigestSha384 hash = DigestSha384.digest(
+        final DigestSha384 hash = DigestSha384.digest(
             EcdhSharedSecret.class, sharedSecret);
         return Arrays.copyOf(hash.getBytes(), AesKey.AES_KEY_BYTES);
     }
 
-    public static byte[] randomBytes(int len) {
-        byte[] res = new byte[len];
+    public static byte[] randomBytes(final int len) {
+        final byte[] res = new byte[len];
         random.nextBytes(res);
         return res;
     }

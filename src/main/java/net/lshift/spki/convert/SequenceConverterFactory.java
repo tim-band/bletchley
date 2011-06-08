@@ -8,8 +8,8 @@ public class SequenceConverterFactory
     implements ConverterFactory {
 
     @Override
-    public <T> Converter<T> converter(Class<T> c, Annotation a) {
-        SequenceConverted aa = (Convert.SequenceConverted) a;
+    public <T> Converter<T> converter(final Class<T> c, final Annotation a) {
+        final SequenceConverted aa = (Convert.SequenceConverted) a;
         return new SequenceConverter<T>(c, aa.value());
     }
 

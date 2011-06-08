@@ -22,8 +22,8 @@ public class Registry {
         = new HashMap<Class<?>, Converter<?>>();
 
     private synchronized <T> void register(
-        Class<T> clazz, Converter<T> converter) {
-        Converter<?> already = converterMap.get(clazz);
+        final Class<T> clazz, final Converter<T> converter) {
+        final Converter<?> already = converterMap.get(clazz);
         if (already != null) {
             assert already.equals(converter);
         } else {
@@ -31,7 +31,7 @@ public class Registry {
         }
     }
 
-    public static <T> void register(Converter<T> converter) {
+    public static <T> void register(final Converter<T> converter) {
         REGISTRY.register(converter.getResultClass(), converter);
     }
 
@@ -45,7 +45,7 @@ public class Registry {
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized <T> Converter<T> getConverter(Class<T> clazz) {
+    public synchronized <T> Converter<T> getConverter(final Class<T> clazz) {
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
             res = generateConverter(clazz);
@@ -54,9 +54,9 @@ public class Registry {
         return res;
     }
 
-    private <T> Converter<T> generateConverter(Class<T> clazz) {
+    private <T> Converter<T> generateConverter(final Class<T> clazz) {
         try {
-            for (Annotation a : clazz.getAnnotations()) {
+            for (final Annotation a : clazz.getAnnotations()) {
                 final ConverterFactoryClass factoryClass
                     = a.annotationType().getAnnotation(
                         Convert.ConverterFactoryClass.class);
@@ -64,20 +64,20 @@ public class Registry {
                     // FIXME: cache these?
                     final ConverterFactory factoryInstance
                         = factoryClass.value().newInstance();
-                    Converter<T> res = factoryInstance.converter(clazz, a);
+                    final Converter<T> res = factoryInstance.converter(clazz, a);
                     assert res.getResultClass().equals(clazz);
                     return res;
                 }
             }
             throw new ConvertReflectionException(clazz,
                             "Could not resolve converter");
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             throw new ConvertReflectionException(e);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             throw new ConvertReflectionException(e);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(e);
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             throw new ConvertReflectionException(e);
         }
     }

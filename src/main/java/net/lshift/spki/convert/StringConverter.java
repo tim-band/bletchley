@@ -20,13 +20,13 @@ public class StringConverter
     }
 
     @Override
-    public void write(ConvertOutputStream out, String o)
+    public void write(final ConvertOutputStream out, final String o)
         throws IOException {
         out.atom(o);
     }
 
     @Override
-    public String read(ConvertInputStream in)
+    public String read(final ConvertInputStream in)
         throws ParseException,
             IOException {
         in.nextAssertType(ATOM);

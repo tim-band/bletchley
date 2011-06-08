@@ -10,24 +10,24 @@ import net.lshift.spki.convert.Convert.ByName;
 public class NameBeanConverterFactory
 implements ConverterFactory
 {
-    public <T> Converter<T> converter(Class<T> clazz, Annotation a) {
-        ByName aa = (Convert.ByName)a;
-        List<FieldConvertInfo> fields = getFieldMap(clazz);
+    public <T> Converter<T> converter(final Class<T> clazz, final Annotation a) {
+        final ByName aa = (Convert.ByName)a;
+        final List<FieldConvertInfo> fields = getFieldMap(clazz);
         return new NameBeanConverter<T>(clazz, aa.value(), fields);
     }
 
-    private <T> List<FieldConvertInfo> getFieldMap(Class<T> clazz) {
-        List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
+    private <T> List<FieldConvertInfo> getFieldMap(final Class<T> clazz) {
+        final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
         addFields(clazz, fields);
         return fields;
     }
 
-    private <T> void addFields(Class<T> clazz, List<FieldConvertInfo> fields) {
-        Class<? super T> sup = clazz.getSuperclass();
+    private <T> void addFields(final Class<T> clazz, final List<FieldConvertInfo> fields) {
+        final Class<? super T> sup = clazz.getSuperclass();
         if (sup != null) {
             addFields(sup, fields);
         }
-        for (Field f: clazz.getDeclaredFields()) {
+        for (final Field f: clazz.getDeclaredFields()) {
             fields.add(new FieldConvertInfo(f));
         }
     }

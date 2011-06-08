@@ -8,7 +8,7 @@ public class DiscriminatingConverterFactory
     implements ConverterFactory
 {
     @SuppressWarnings("unchecked")
-    public <T> Converter<T> converter(Class<T> c, Annotation a) {
+    public <T> Converter<T> converter(final Class<T> c, final Annotation a) {
         return new DiscriminatingConverter<T>(
             c, (Class<? extends T>[]) ((Discriminated)a).value());
     }

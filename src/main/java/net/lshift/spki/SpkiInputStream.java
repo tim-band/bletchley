@@ -28,7 +28,7 @@ public abstract class SpkiInputStream
         state = State.INVALID;
     }
 
-    protected void assertState(State asserted)
+    protected void assertState(final State asserted)
     {
         if (this.state != asserted) {
             final State current = this.state;
@@ -43,7 +43,7 @@ public abstract class SpkiInputStream
             ParseException
     {
         assertState(State.TOKEN);
-        TokenType res = doNext();
+        final TokenType res = doNext();
         switch (res) {
         case ATOM:
             state = State.ATOM;
@@ -58,7 +58,7 @@ public abstract class SpkiInputStream
     }
 
 
-    public void nextAssertType(TokenType type)
+    public void nextAssertType(final TokenType type)
         throws ParseException,
             IOException
     {
@@ -72,7 +72,7 @@ public abstract class SpkiInputStream
         throws IOException,
             ParseException {
         assertState(State.ATOM);
-        byte[] res = doAtomBytes();
+        final byte[] res = doAtomBytes();
         state = State.TOKEN;
         return res;
     }
