@@ -26,8 +26,8 @@ public class DiscriminatingConverter<T>
             classMap.put(clazz, converter);
             final String name = converter.getName();
             if (name == null) {
-                throw new ConvertReflectionException(
-                    "Class has no sexp name: " + clazz.getCanonicalName());
+                throw new ConvertReflectionException(this, clazz, 
+                    "Class has no sexp name");
             }
             nameMap.put(name, converter);
         }

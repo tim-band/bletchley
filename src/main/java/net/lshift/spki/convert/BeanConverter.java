@@ -45,6 +45,6 @@ public abstract class BeanConverter<T>
                 return ((P)a).value();
             }
         }
-        throw new ConvertException("No P annotation found");
+        throw new ConvertException("No P annotation found for " + clazz.getCanonicalName());
     }
 }

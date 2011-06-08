@@ -22,8 +22,14 @@ public abstract class BeanFieldConverter<T>
         assert parameters.length == annotations.length;
         fields = new FieldConvertInfo[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
-            fields[i] = new FieldConvertInfo(i,
-                getPAnnotation(annotations[i]), parameters[i]);
+            try {
+                fields[i] = new FieldConvertInfo(clazz, i,
+                    getPAnnotation(annotations[i]), parameters[i]);
+            } catch (SecurityException e) {
+                throw new ConvertReflectionException(this, clazz, e);
+            } catch (NoSuchFieldException e) {
+                throw new ConvertReflectionException(this, clazz, e);
+            }
         }
     }
 
@@ -35,14 +41,12 @@ public abstract class BeanFieldConverter<T>
             writeName(out);
             for (int i = 0; i < fields.length; i++) {
                 final Object property =
-                    clazz.getField(fields[i].name).get(o);
+                    fields[i].field.get(o);
                 writeField(out, fields[i], property);
             }
             out.endSexp();
         } catch (IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
-        } catch (NoSuchFieldException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(this, clazz, e);
         }
     }
 
