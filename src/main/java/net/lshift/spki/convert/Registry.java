@@ -81,7 +81,7 @@ public class Registry {
                 return factoryClass;
             }
         }
-        throw new ConvertReflectionException(
-            "Could not resolve converter for " + clazz.getName());
+        throw new ConvertReflectionException(clazz,
+            "Could not resolve converter ");
     }
 }
