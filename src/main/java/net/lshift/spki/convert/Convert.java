@@ -37,8 +37,8 @@ public class Convert
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE})
-    @ConverterFactoryClass(StepConverterFactory.class)
-    public @interface StepConverted {
+    @ConverterFactoryClass(ConvertClassFactory.class)
+    public @interface ConvertClass {
         // FIXME: why doesn't Class<StepConverter<?,?>> work?
         Class<?> value();
     }

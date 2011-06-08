@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.StepConverted;
+import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -13,7 +13,7 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 /**
  * A public key for verifying signatures
  */
-@StepConverted(PublicSigningKey.Step.class)
+@ConvertClass(PublicSigningKey.Step.class)
 public class PublicSigningKey
     extends PublicKey
     implements SequenceItem {

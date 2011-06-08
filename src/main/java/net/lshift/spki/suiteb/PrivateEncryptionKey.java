@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.StepConverted;
+import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -12,7 +12,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * A private key for decrypting data.
  */
-@StepConverted(PrivateEncryptionKey.Step.class)
+@ConvertClass(PrivateEncryptionKey.Step.class)
 public class PrivateEncryptionKey {
     private final AsymmetricCipherKeyPair keyPair;
 

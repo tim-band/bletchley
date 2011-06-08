@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.StepConverted;
+import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -15,7 +15,7 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 /**
  * A private key for signing
  */
-@StepConverted(PrivateSigningKey.Step.class)
+@ConvertClass(PrivateSigningKey.Step.class)
 public class PrivateSigningKey {
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();

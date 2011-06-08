@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.StepConverted;
+import net.lshift.spki.convert.Convert.ConvertClass;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -12,7 +12,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * Symmetrically encrypted packets carry this information so you know what
  * key to decrypt them with.
  */
-@StepConverted(AesKeyId.Step.class)
+@ConvertClass(AesKeyId.Step.class)
 public class AesKeyId {
     public final byte[] keyId;
 

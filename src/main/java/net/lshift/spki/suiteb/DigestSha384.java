@@ -7,7 +7,7 @@ import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.StepConverted;
+import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
@@ -18,7 +18,7 @@ import org.bouncycastle.util.encoders.Hex;
 /**
  * A SHA-384 digest of a SExp.
  */
-@StepConverted(DigestSha384.Step.class)
+@ConvertClass(DigestSha384.Step.class)
 public class DigestSha384 implements SequenceItem {
     public static final Step STEP = new Step();
     private static final String DIGEST_NAME = "sha384";
