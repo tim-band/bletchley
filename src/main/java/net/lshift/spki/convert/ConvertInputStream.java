@@ -45,6 +45,12 @@ public class ConvertInputStream
         }
     }
 
+    @Override
+    public void close()
+        throws IOException {
+        delegate.close();
+    }
+
     public <T> T read(final Class<T> clazz)
         throws ParseException,
             IOException {
@@ -80,11 +86,5 @@ public class ConvertInputStream
         if (!name.equals(ConvertUtils.stringOrNull(atomBytes()))) {
             throw new ParseException("Did not see expected atom: " + name);
         }
-    }
-
-    public void close()
-    throws IOException
-    {
-        this.delegate.close();
     }
 }
