@@ -54,7 +54,7 @@ public class ConvertInputStream
 
     public <T> T read(final Class<T> clazz)
         throws IOException, InvalidInputException {
-        return Registry.REGISTRY.getConverter(clazz).read(this);
+        return Registry.getConverter(clazz).read(this);
     }
 
     public void pushback(final TokenType token) {
