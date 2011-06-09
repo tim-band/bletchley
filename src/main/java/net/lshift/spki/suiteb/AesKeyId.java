@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.StepConverted;
+import net.lshift.spki.convert.Convert.ConvertClass;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -12,11 +12,11 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * Symmetrically encrypted packets carry this information so you know what
  * key to decrypt them with.
  */
-@StepConverted(AesKeyId.Step.class)
+@ConvertClass(AesKeyId.Step.class)
 public class AesKeyId {
     public final byte[] keyId;
 
-    public AesKeyId(byte[] keyId) {
+    public AesKeyId(final byte[] keyId) {
         super();
         this.keyId = keyId;
     }
@@ -27,14 +27,14 @@ public class AesKeyId {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
     public static class Step
         extends StepConverter<AesKeyId, byte[]> {
         @Override
-        protected Class<AesKeyId> getResultClass() {
+        public Class<AesKeyId> getResultClass() {
             return AesKeyId.class;
         }
 
@@ -44,12 +44,12 @@ public class AesKeyId {
         }
 
         @Override
-        protected byte[] stepIn(AesKeyId o) {
+        protected byte[] stepIn(final AesKeyId o) {
             return o.keyId;
         }
 
         @Override
-        protected AesKeyId stepOut(byte[] s)
+        protected AesKeyId stepOut(final byte[] s)
             throws ParseException {
             return new AesKeyId(s);
         }

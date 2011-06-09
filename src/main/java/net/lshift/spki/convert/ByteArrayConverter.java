@@ -15,13 +15,18 @@ public class ByteArrayConverter
     @Override public String getName() { return null; }
 
     @Override
-    public void write(ConvertOutputStream out, byte[] o)
+    public Class<byte[]> getResultClass() {
+        return byte[].class;
+    }
+
+    @Override
+    public void write(final ConvertOutputStream out, final byte[] o)
         throws IOException {
         out.atom(o);
     }
 
     @Override
-    public byte[] read(ConvertInputStream in)
+    public byte[] read(final ConvertInputStream in)
         throws ParseException,
             IOException {
         in.nextAssertType(ATOM);

@@ -1,6 +1,10 @@
 package net.lshift.spki.convert;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream.TokenType;
@@ -10,28 +14,33 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  */
 public class PositionBeanConverter<T>
     extends BeanFieldConverter<T> {
-    public PositionBeanConverter(Class<T> clazz) {
-        super(clazz);
+    public PositionBeanConverter(
+        final Class<T> clazz,
+        final String name,
+        final List<FieldConvertInfo> fields) {
+        super(clazz, name, fields);
     }
 
     @Override
     protected void writeField(
-        ConvertOutputStream out,
-        FieldConvertInfo field,
-        Object property)
+        final ConvertOutputStream out,
+        final FieldConvertInfo field,
+        final Object property)
         throws IOException {
-        out.writeUnchecked(field.type, property);
+        out.writeUnchecked(field.field.getType(), property);
     }
 
     @Override
-    protected void read(ConvertInputStream in, Object[] initargs)
+    protected Map<Field, Object> readFields(final ConvertInputStream in)
         throws ParseException,
             IOException {
+        final Map<Field, Object> res = new HashMap<Field, Object>(fields.size());
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
-        for (int i = 0; i < fields.length; i++) {
-            initargs[i] = in.read(fields[i].type);
+        for (final FieldConvertInfo f: fields) {
+            res.put(f.field, in.read(f.field.getType()));
         }
         in.nextAssertType(TokenType.CLOSEPAREN);
+        return res;
     }
 }

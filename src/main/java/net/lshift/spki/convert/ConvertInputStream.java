@@ -11,15 +11,15 @@ import net.lshift.spki.SpkiInputStream;
 public class ConvertInputStream
     extends SpkiInputStream {
     private final SpkiInputStream delegate;
-    private Stack<TokenType> tokenStack = new Stack<TokenType>();
-    private Stack<byte[]> byteStack = new Stack<byte[]>();
+    private final Stack<TokenType> tokenStack = new Stack<TokenType>();
+    private final Stack<byte[]> byteStack = new Stack<byte[]>();
 
-    public ConvertInputStream(SpkiInputStream delegate) {
+    public ConvertInputStream(final SpkiInputStream delegate) {
         super();
         this.delegate = delegate;
     }
 
-    public ConvertInputStream(InputStream is) {
+    public ConvertInputStream(final InputStream is) {
         this(new CanonicalSpkiInputStream(is));
     }
 
@@ -45,13 +45,13 @@ public class ConvertInputStream
         }
     }
 
-    public <T> T read(Class<T> clazz)
+    public <T> T read(final Class<T> clazz)
         throws ParseException,
             IOException {
         return Registry.REGISTRY.getConverter(clazz).read(this);
     }
 
-    public void pushback(TokenType token) {
+    public void pushback(final TokenType token) {
         switch (token) {
         case EOF:
             assertState(State.FINISHED);
@@ -67,13 +67,13 @@ public class ConvertInputStream
         state = State.TOKEN;
     }
 
-    public void pushback(byte[] atom) {
+    public void pushback(final byte[] atom) {
         assertState(State.TOKEN);
         byteStack.push(atom);
         state = State.ATOM;
     }
 
-    public void assertAtom(String name)
+    public void assertAtom(final String name)
         throws ParseException,
             IOException {
         nextAssertType(TokenType.ATOM);

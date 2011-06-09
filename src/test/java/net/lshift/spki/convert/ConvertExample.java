@@ -2,18 +2,15 @@ package net.lshift.spki.convert;
 
 import java.math.BigInteger;
 
-@Convert.ByPosition
+@Convert.ByPosition(name="convert-example", fields={"foo", "bar"})
 public class ConvertExample
 {
     public final BigInteger foo;
     public final BigInteger bar;
 
-    @SexpName("convert-example")
     public ConvertExample(
-        @P("foo")
-        BigInteger foo,
-        @P("bar")
-        BigInteger bar
+        final BigInteger foo,
+        final BigInteger bar
     ) {
         super();
         this.foo = foo;
@@ -31,12 +28,12 @@ public class ConvertExample
     }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        ConvertExample other = (ConvertExample) obj;
+        final ConvertExample other = (ConvertExample) obj;
         if (bar == null) {
             if (other.bar != null) return false;
         } else if (!bar.equals(other.bar)) return false;

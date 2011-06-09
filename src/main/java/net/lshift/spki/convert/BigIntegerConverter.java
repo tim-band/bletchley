@@ -16,13 +16,18 @@ public class BigIntegerConverter
     @Override public String getName() { return null; }
 
     @Override
-    public void write(ConvertOutputStream out, BigInteger o)
+    public Class<BigInteger> getResultClass() {
+        return BigInteger.class;
+    }
+
+    @Override
+    public void write(final ConvertOutputStream out, final BigInteger o)
         throws IOException {
         out.atom(o.toByteArray());
     }
 
     @Override
-    public BigInteger read(ConvertInputStream in)
+    public BigInteger read(final ConvertInputStream in)
         throws ParseException,
             IOException {
         in.nextAssertType(ATOM);

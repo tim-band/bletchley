@@ -1,13 +1,13 @@
 package net.lshift.spki.convert;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream.TokenType;
@@ -20,28 +20,21 @@ public class SequenceConverter<T>
     private final String beanName;
     private final Class<?> contentType;
 
-    public SequenceConverter(Class<T> clazz) {
-        super(clazz);
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        if (annotations.length != 1) {
+    public SequenceConverter(final Class<T> clazz, final String name, final Field field) {
+        super(clazz, name);
+        beanName = field.getName();
+        if (!(field.getGenericType() instanceof ParameterizedType)) {
             throw new ConvertException(
-                "Constructor must be one argument:"
+                "Field must be parameterized List type:"
                 + clazz.getCanonicalName());
         }
-        beanName = getPAnnotation(annotations[0]);
-        Type[] pTypes = constructor.getGenericParameterTypes();
-        if (!(pTypes[0] instanceof ParameterizedType)) {
-            throw new ConvertException(
-                "Constructor argument must be parameterized List type:"
-                + clazz.getCanonicalName());
-        }
-        ParameterizedType pType = (ParameterizedType) pTypes[0];
+        final ParameterizedType pType = (ParameterizedType) field.getGenericType();
         if (!List.class.equals(pType.getRawType())) {
             throw new ConvertException(
                 "Constructor argument must be List type:"
                 + clazz.getCanonicalName());
         }
-        Type[] typeArgs = pType.getActualTypeArguments();
+        final Type[] typeArgs = pType.getActualTypeArguments();
         if (typeArgs.length != 1) {
             throw new ConvertException(
                 "Constructor type must have one parameter"
@@ -51,30 +44,30 @@ public class SequenceConverter<T>
     }
 
     @Override
-    public void write(ConvertOutputStream out, T o)
+    public void write(final ConvertOutputStream out, final T o)
         throws IOException {
         try {
             out.beginSexp();
             writeName(out);
-            List<?> property = (List<?>) clazz.getField(beanName).get(o);
-            for (Object v: property) {
+            final List<?> property = (List<?>) clazz.getField(beanName).get(o);
+            for (final Object v: property) {
                 out.writeUnchecked(contentType, v);
             }
         out.endSexp();
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(e);
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             throw new ConvertReflectionException(e);
         }
     }
 
     @Override
-    public T read(ConvertInputStream in)
+    public T read(final ConvertInputStream in)
         throws ParseException,
             IOException {
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
-        List<Object> components = new ArrayList<Object>();
+        final List<Object> components = new ArrayList<Object>();
         for (;;) {
             final TokenType token = in.next();
             switch (token) {
@@ -84,15 +77,19 @@ public class SequenceConverter<T>
                 components.add(in.read(contentType));
                 break;
             case CLOSEPAREN:
-                Object[] initargs = new Object[1];
-                initargs[0] = Collections.unmodifiableList(components);
                 try {
-                    return constructor.newInstance(initargs);
-                } catch (InstantiationException e) {
+                    final Map<Field, Object> fields = new HashMap<Field, Object>();
+                    fields.put(clazz.getDeclaredField(beanName), components);
+                    return DeserializingConstructor.make(clazz, fields);
+                } catch (final InstantiationException e) {
                     throw new ConvertReflectionException(e);
-                } catch (IllegalAccessException e) {
+                } catch (final IllegalAccessException e) {
                     throw new ConvertReflectionException(e);
-                } catch (InvocationTargetException e) {
+                } catch (final SecurityException e) {
+                    throw new ConvertReflectionException(e);
+                } catch (final IllegalArgumentException e) {
+                    throw new ConvertReflectionException(e);
+                } catch (final NoSuchFieldException e) {
                     throw new ConvertReflectionException(e);
                 }
             default:

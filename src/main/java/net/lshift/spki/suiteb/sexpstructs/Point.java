@@ -4,8 +4,7 @@ import java.math.BigInteger;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.SexpName;
+import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.StepConverter;
 import net.lshift.spki.suiteb.Ec;
 
@@ -16,15 +15,14 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for an ECPoint ie a point on an elliptic curve.
  */
-@Convert.ByName
+@Convert.ByName("point")
 public class Point {
     public final BigInteger x;
     public final BigInteger y;
 
-    @SexpName("point")
     public Point(
-        @P("x") BigInteger x,
-        @P("y") BigInteger y
+        final BigInteger x,
+        final BigInteger y
     ) {
         super();
         this.x = x;
@@ -42,17 +40,17 @@ public class Point {
         public Class<ECPoint> getResultClass() { return ECPoint.class; }
 
         @Override
-        public Point stepIn(ECPoint q) {
+        public Point stepIn(final ECPoint q) {
             return new Point(
                 q.getX().toBigInteger(), q.getY().toBigInteger());
         }
 
         @Override
-        public ECPoint stepOut(Point point) throws ParseException {
+        public ECPoint stepOut(final Point point) throws ParseException {
             final ECCurve curve = Ec.DOMAIN_PARAMETERS.getCurve();
             final ECPoint res = curve.createPoint(
                 point.x, point.y, false);
-            ECFieldElement x = res.getX();
+            final ECFieldElement x = res.getX();
             if (!res.getY().square().equals(
                 x.multiply(x.square().add(curve.getA())).add(curve.getB()))) {
                 throw new ParseException("Point is not on curve");
@@ -62,7 +60,7 @@ public class Point {
     }
 
     static {
-        new ECPointConverter().registerSelf();
+        Registry.register(new ECPointConverter());
     }
 
     public static void ensureRegistered() {

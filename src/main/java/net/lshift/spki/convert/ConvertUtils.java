@@ -5,12 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.ParseException;
+import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -20,51 +22,51 @@ public class ConvertUtils {
     private static final CharsetDecoder UTF8_DECODER
         = Constants.UTF8.newDecoder();
 
-    public static byte[] bytes(String s) {
+    public static byte[] bytes(final String s) {
         return s.getBytes(Constants.UTF8);
     }
 
-    public static String string(byte[] bytes) throws ParseException {
+    public static String string(final byte[] bytes) throws ParseException {
         try {
             return UTF8_DECODER.decode(ByteBuffer.wrap(bytes)).toString();
-        } catch (CharacterCodingException e) {
+        } catch (final CharacterCodingException e) {
             throw new ParseException("Cannot convert bytes to string", e);
         }
     }
 
     // Useful for comparison
-    public static String stringOrNull(byte[] bytes) {
+    public static String stringOrNull(final byte[] bytes) {
         try {
             return UTF8_DECODER.decode(ByteBuffer.wrap(bytes)).toString();
-        } catch (CharacterCodingException e) {
+        } catch (final CharacterCodingException e) {
             return null;
         }
     }
 
-    public static <T> void initialize(Class<T> clazz)
+    public static <T> void initialize(final Class<T> clazz)
         throws AssertionError {
         // Ensure the class is initialized
         // in case it statically registers converters
         // http://java.sun.com/j2se/1.5.0/compatibility.html
         try {
             Class.forName(clazz.getName(), true, clazz.getClassLoader());
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             throw new AssertionError(e);  // Can't happen
         }
     }
 
-    public static <T> void write(Class<T> clazz, T o, OutputStream os)
+    public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
         throws IOException {
-        ConvertOutputStream out = new ConvertOutputStream(os);
+        final ConvertOutputStream out = new ConvertOutputStream(os);
         out.write(clazz, o);
         out.close();
     }
 
-    public static <T> T read(Class<T> clazz, InputStream is)
+    public static <T> T read(final Class<T> clazz, final InputStream is)
         throws ParseException,
             IOException {
         try {
-            ConvertInputStream in
+            final ConvertInputStream in
                 = new ConvertInputStream(is);
             final T res = in.read(clazz);
             in.nextAssertType(TokenType.EOF);
@@ -74,23 +76,31 @@ public class ConvertUtils {
         }
     }
 
-    public static <T> byte[] toBytes(Class<T> clazz, T o) {
+    public static <T> byte[] toBytes(final Class<T> clazz, final T o) {
         try {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            final ByteArrayOutputStream os = new ByteArrayOutputStream();
             write(clazz, o, os);
             return os.toByteArray();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(
                 "ByteArrayOutputStream cannot throw IOException", e);
         }
     }
 
-    public static <T> T fromBytes(Class<T> clazz, byte[] bytes)
+    public static <T> T fromBytes(final Class<T> clazz, final byte[] bytes)
         throws ParseException {
         try {
             return read(clazz, new ByteArrayInputStream(bytes));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("CANTHAPPEN", e);
         }
+    }
+
+    public static <T> void prettyPrint(final Class<T> clazz, final T o, final PrintStream ps)
+        throws IOException {
+        final ConvertOutputStream out
+            = new ConvertOutputStream(new PrettyPrinter(ps));
+        out.write(clazz, o);
+        out.close();
     }
 }

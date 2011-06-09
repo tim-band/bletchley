@@ -2,27 +2,25 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import java.math.BigInteger;
 
-import org.bouncycastle.math.ec.ECPoint;
-
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.P;
-import net.lshift.spki.convert.SexpName;
+
+import org.bouncycastle.math.ec.ECPoint;
 
 /**
  * Serialization format for ECDH shared secret before it's hashed into
  * a GCM key.
  */
-@Convert.ByPosition
+@Convert.ByPosition(name="suiteb-p384-ecdh-shared-secret",
+    fields={"receiverKey", "senderKey", "sharedSecret"})
 public class EcdhSharedSecret {
     public final ECPoint receiverKey;
     public final ECPoint senderKey;
     public final BigInteger sharedSecret;
 
-    @SexpName("suiteb-p384-ecdh-shared-secret")
     public EcdhSharedSecret(
-        @P("receiverKey") ECPoint receiverKey,
-        @P("senderKey") ECPoint senderKey,
-        @P("sharedSecret") BigInteger sharedSecret
+        final ECPoint receiverKey,
+        final ECPoint senderKey,
+        final BigInteger sharedSecret
     ) {
         super();
         this.receiverKey = receiverKey;

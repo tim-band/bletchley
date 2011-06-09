@@ -1,10 +1,9 @@
 package net.lshift.spki.convert;
 
-@Convert.ByPosition
+@Convert.ByPosition(name="other-implementing-class", fields={})
 public class OtherImplementingClass
     implements Interface
 {
-    @SexpName("other-implementing-class")
     public OtherImplementingClass()
     {
         super();
@@ -17,7 +16,7 @@ public class OtherImplementingClass
     }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if (this == obj) return true;
         if (obj == null) return false;

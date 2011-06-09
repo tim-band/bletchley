@@ -22,15 +22,20 @@ public class SexpConverter
     @Override public String getName() { return null; }
 
     @Override
-    public void write(ConvertOutputStream out, Sexp o)
+    public Class<Sexp> getResultClass() {
+        return Sexp.class;
+    }
+
+    @Override
+    public void write(final ConvertOutputStream out, final Sexp o)
         throws IOException {
         if (o instanceof Atom) {
             out.atom(((Atom)o).getBytes());
         } else {
-            Slist slist = (Slist)o;
+            final Slist slist = (Slist)o;
             out.beginSexp();
             out.atom(slist.getHead().getBytes());
-            for (Sexp i: slist.getSparts()) {
+            for (final Sexp i: slist.getSparts()) {
                 out.write(Sexp.class, i);
             }
             out.endSexp();
@@ -38,19 +43,19 @@ public class SexpConverter
     }
 
     @Override
-    public Sexp read(ConvertInputStream in)
+    public Sexp read(final ConvertInputStream in)
         throws ParseException,
             IOException {
-        TokenType token = in.next();
+        final TokenType token = in.next();
         switch (token) {
         case ATOM:
             return new Atom(in.atomBytes());
         case OPENPAREN:
             in.nextAssertType(ATOM);
-            byte [] head = in.atomBytes();
-            List<Sexp> tail = new ArrayList<Sexp>();
+            final byte [] head = in.atomBytes();
+            final List<Sexp> tail = new ArrayList<Sexp>();
             for (;;) {
-                TokenType stoken = in.next();
+                final TokenType stoken = in.next();
                 switch (stoken) {
                 case CLOSEPAREN:
                     return Create.list(new Atom(head), tail);

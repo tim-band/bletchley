@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.StepConverted;
+import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -12,11 +12,11 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * A private key for decrypting data.
  */
-@StepConverted(PrivateEncryptionKey.Step.class)
+@ConvertClass(PrivateEncryptionKey.Step.class)
 public class PrivateEncryptionKey {
     private final AsymmetricCipherKeyPair keyPair;
 
-    private PrivateEncryptionKey(AsymmetricCipherKeyPair keyPair) {
+    private PrivateEncryptionKey(final AsymmetricCipherKeyPair keyPair) {
         super();
         this.keyPair = keyPair;
     }
@@ -30,8 +30,8 @@ public class PrivateEncryptionKey {
         return new PrivateEncryptionKey(Ec.generate());
     }
 
-    public byte[] getKey(ECPoint ephemeralKey) {
-        ECPublicKeyParameters pk =
+    public byte[] getKey(final ECPoint ephemeralKey) {
+        final ECPublicKeyParameters pk =
             Ec.toECPublicKeyParameters(ephemeralKey);
         return Ec.sessionKey(
             keyPair.getPublic(),
@@ -44,7 +44,7 @@ public class PrivateEncryptionKey {
         extends StepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
 
         @Override
-        protected Class<PrivateEncryptionKey> getResultClass() {
+        public Class<PrivateEncryptionKey> getResultClass() {
             return PrivateEncryptionKey.class;
         }
 
@@ -55,13 +55,13 @@ public class PrivateEncryptionKey {
 
         @SuppressWarnings("synthetic-access")
         @Override
-        protected EcdhPrivateKey stepIn(PrivateEncryptionKey o) {
+        protected EcdhPrivateKey stepIn(final PrivateEncryptionKey o) {
             return new EcdhPrivateKey(o.keyPair);
         }
 
         @SuppressWarnings("synthetic-access")
         @Override
-        protected PrivateEncryptionKey stepOut(EcdhPrivateKey s)
+        protected PrivateEncryptionKey stepOut(final EcdhPrivateKey s)
             throws ParseException {
             return new PrivateEncryptionKey(s.getKeypair());
         }

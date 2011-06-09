@@ -18,8 +18,8 @@ public class SequenceSigningTest
     public void testSequenceBasedSigningAndVerification() {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
         privateKey = roundTrip(PrivateSigningKey.class, privateKey);
-        PublicSigningKey publicKey = privateKey.getPublicKey();
-        SimpleMessage message = new SimpleMessage(
+        final PublicSigningKey publicKey = privateKey.getPublicKey();
+        final SimpleMessage message = new SimpleMessage(
             SequenceSigningTest.class.getCanonicalName(),
             "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
         Sequence sequence = SequenceUtils.sequence(
@@ -28,9 +28,9 @@ public class SequenceSigningTest
             message);
         sequence = roundTrip(Sequence.class, sequence);
 
-        InferenceEngine inference = new InferenceEngine();
+        final InferenceEngine inference = new InferenceEngine();
         inference.process(sequence);
-        List<SequenceItem> signedBy = inference.getSignedBy(publicKey.getKeyId());
+        final List<SequenceItem> signedBy = inference.getSignedBy(publicKey.getKeyId());
         assertEquals(1, signedBy.size());
         assertEquals(message, signedBy.get(0));
     }

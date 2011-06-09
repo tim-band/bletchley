@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.StepConverted;
+import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -16,9 +16,9 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 /**
  * A public key for encrypting data.
  */
-@StepConverted(PublicEncryptionKey.Step.class)
+@ConvertClass(PublicEncryptionKey.Step.class)
 public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
-    PublicEncryptionKey(CipherParameters publicKey) {
+    PublicEncryptionKey(final CipherParameters publicKey) {
         super(publicKey);
     }
 
@@ -38,8 +38,8 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
             key);
     }
 
-    public AesKey setupEncrypt(List<SequenceItem> toSend) {
-        EncryptionSetup setup = setupEncrypt();
+    public AesKey setupEncrypt(final List<SequenceItem> toSend) {
+        final EncryptionSetup setup = setupEncrypt();
         toSend.add(setup.encryptedKey);
         return setup.key;
     }
@@ -47,7 +47,7 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
     public static class Step
         extends StepConverter<PublicEncryptionKey, EcdhPublicKey> {
         @Override
-        protected Class<PublicEncryptionKey> getResultClass() {
+        public Class<PublicEncryptionKey> getResultClass() {
             return PublicEncryptionKey.class;
         }
 
@@ -57,12 +57,12 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
         }
 
         @Override
-        protected EcdhPublicKey stepIn(PublicEncryptionKey o) {
+        protected EcdhPublicKey stepIn(final PublicEncryptionKey o) {
             return new EcdhPublicKey(o.publicKey);
         }
 
         @Override
-        protected PublicEncryptionKey stepOut(EcdhPublicKey s)
+        protected PublicEncryptionKey stepOut(final EcdhPublicKey s)
             throws ParseException {
             return new PublicEncryptionKey(s.getParameters());
         }

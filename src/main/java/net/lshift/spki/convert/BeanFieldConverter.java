@@ -1,8 +1,9 @@
 package net.lshift.spki.convert;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 
 import net.lshift.spki.ParseException;
 
@@ -12,40 +13,32 @@ import net.lshift.spki.ParseException;
  */
 public abstract class BeanFieldConverter<T>
     extends BeanConverter<T> {
-    protected final FieldConvertInfo[] fields;
+    protected final List<FieldConvertInfo> fields;
 
-    public BeanFieldConverter(Class<T> clazz)
+    public BeanFieldConverter(final Class<T> clazz, final String name, final List<FieldConvertInfo> fields)
     {
-        super(clazz);
-        Class<?>[] parameters = constructor.getParameterTypes();
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        assert parameters.length == annotations.length;
-        fields = new FieldConvertInfo[parameters.length];
-        for (int i = 0; i < parameters.length; i++) {
-            try {
-                fields[i] = new FieldConvertInfo(clazz, i,
-                    getPAnnotation(annotations[i]), parameters[i]);
-            } catch (SecurityException e) {
-                throw new ConvertReflectionException(this, clazz, e);
-            } catch (NoSuchFieldException e) {
-                throw new ConvertReflectionException(this, clazz, e);
-            }
-        }
+        super(clazz, name);
+        this.fields = fields;
+//        System.out.println("Fields for: " +  clazz.getCanonicalName());
+//        for (FieldConvertInfo f: fields) {
+//            System.out.println(f.hyphenatedName + " " + f.field.getType().getCanonicalName());
+//        }
+//        System.out.println("----------- " +  clazz.getCanonicalName());
     }
 
     @Override
-    public void write(ConvertOutputStream out, T o)
+    public void write(final ConvertOutputStream out, final T o)
         throws IOException {
         try {
             out.beginSexp();
             writeName(out);
-            for (int i = 0; i < fields.length; i++) {
+            for (final FieldConvertInfo f: fields) {
                 final Object property =
-                    fields[i].field.get(o);
-                writeField(out, fields[i], property);
+                    f.field.get(o);
+                writeField(out, f, property);
             }
             out.endSexp();
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(this, clazz, e);
         }
     }
@@ -56,23 +49,23 @@ public abstract class BeanFieldConverter<T>
         Object property) throws IOException;
 
     @Override
-    public T read(ConvertInputStream in)
+    public T read(final ConvertInputStream in)
         throws ParseException,
             IOException {
-        Object[] initargs = new Object[fields.length];
-        read(in, initargs);
         try {
-            return constructor.newInstance(initargs);
-        } catch (InstantiationException e) {
+            return DeserializingConstructor.make(clazz, readFields(in));
+        } catch (final InstantiationException e) {
             throw new ConvertReflectionException(e);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(e);
-        } catch (InvocationTargetException e) {
+        } catch (final SecurityException e) {
+            throw new ConvertReflectionException(e);
+        } catch (final IllegalArgumentException e) {
             throw new ConvertReflectionException(e);
         }
     }
 
-    protected abstract void read(ConvertInputStream in, Object[] initargs)
+    protected abstract Map<Field, Object> readFields(ConvertInputStream in)
         throws ParseException,
             IOException;
 }

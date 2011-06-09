@@ -7,7 +7,7 @@ import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.StepConverted;
+import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
@@ -18,14 +18,14 @@ import org.bouncycastle.util.encoders.Hex;
 /**
  * A SHA-384 digest of a SExp.
  */
-@StepConverted(DigestSha384.Step.class)
+@ConvertClass(DigestSha384.Step.class)
 public class DigestSha384 implements SequenceItem {
     public static final Step STEP = new Step();
     private static final String DIGEST_NAME = "sha384";
     private final int DIGEST_LENGTH = 48;
     private final byte[] bytes;
 
-    public DigestSha384(byte[] bytes) {
+    public DigestSha384(final byte[] bytes) {
         super();
         if (bytes.length != DIGEST_LENGTH) {
             throw new RuntimeException("Wrong number of bytes, expected"
@@ -38,21 +38,21 @@ public class DigestSha384 implements SequenceItem {
         return bytes;
     }
 
-    public static <T> DigestSha384 digest(Class<T> clazz, T o) {
-        SHA384Digest sha = new SHA384Digest();
-        DigestOutputStream digester = new DigestOutputStream(
+    public static <T> DigestSha384 digest(final Class<T> clazz, final T o) {
+        final SHA384Digest sha = new SHA384Digest();
+        final DigestOutputStream digester = new DigestOutputStream(
             new DevnullOutputStream(), sha);
         try {
             ConvertUtils.write(clazz, o, digester);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new AssertionError("CANTHAPPEN:" + e);
         }
-        byte[] digest = new byte[sha.getDigestSize()];
+        final byte[] digest = new byte[sha.getDigestSize()];
         sha.doFinal(digest, 0);
         return new DigestSha384(digest);
     }
 
-    public static DigestSha384 digest(SequenceItem item) {
+    public static DigestSha384 digest(final SequenceItem item) {
         return digest(SequenceItem.class, item);
     }
 
@@ -60,7 +60,7 @@ public class DigestSha384 implements SequenceItem {
         extends StepConverter<DigestSha384, Hash> {
 
         @Override
-        protected Class<DigestSha384> getResultClass() {
+        public Class<DigestSha384> getResultClass() {
             return DigestSha384.class;
         }
 
@@ -71,12 +71,12 @@ public class DigestSha384 implements SequenceItem {
 
         @SuppressWarnings("synthetic-access")
         @Override
-        protected Hash stepIn(DigestSha384 o) {
+        protected Hash stepIn(final DigestSha384 o) {
             return new Hash(DIGEST_NAME, o.bytes);
         }
 
         @Override
-        protected DigestSha384 stepOut(Hash hash)
+        protected DigestSha384 stepOut(final Hash hash)
             throws ParseException {
             if (!DIGEST_NAME.equals(hash.hashType)) {
                 throw new ConvertException("Unexpected hash type: " + hash.hashType);
@@ -97,11 +97,11 @@ public class DigestSha384 implements SequenceItem {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        DigestSha384 other = (DigestSha384) obj;
+        final DigestSha384 other = (DigestSha384) obj;
         if (!Arrays.equals(bytes, other.bytes)) return false;
         return true;
     }

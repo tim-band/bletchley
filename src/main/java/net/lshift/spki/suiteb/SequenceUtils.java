@@ -9,10 +9,10 @@ import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 public class SequenceUtils
 {
     public static Sequence sequence(
-        SequenceItem... items
+        final SequenceItem... items
     ) {
-        List<SequenceItem> sequence = new ArrayList<SequenceItem>();
-        for (SequenceItem item: items) {
+        final List<SequenceItem> sequence = new ArrayList<SequenceItem>();
+        for (final SequenceItem item: items) {
             sequence.add(item);
         }
         return new Sequence(sequence);

@@ -9,46 +9,47 @@ public class ConvertReflectionException
 
     private final Converter<?> converter;
     private final Class<?> type;
-    
-    public ConvertReflectionException(Class<?> clazz, String message) {
+
+    public ConvertReflectionException(final Class<?> clazz, final String message) {
         super("error converting " + clazz.getCanonicalName() + ": " + message);
         this.converter = null;
         this.type = clazz;
     }
 
-    private static String context(Converter<?> converter, Class<?> type)
-    {
+    private static String context(
+        @SuppressWarnings("unused") final Converter<?> converter,
+        final Class<?> type)    {
         return "error converting " + type.getCanonicalName();
     }
 
-    public ConvertReflectionException(Throwable cause) {
+    public ConvertReflectionException(final Throwable cause) {
         super(cause);
         this.converter = null;
         this.type = null;
     }
-    
+
     public ConvertReflectionException(
-        Converter<?> converter, 
-        Class<?> type, 
-        String message, 
-        Throwable cause) {
+        final Converter<?> converter,
+        final Class<?> type,
+        final String message,
+        final Throwable cause) {
         super(prefix(converter, type, message), cause);
         this.converter = converter;
         this.type = type;
     }
 
     private static String prefix(
-        Converter<?> converter,
-        Class<?> type,
-        String message)
+        final Converter<?> converter,
+        final Class<?> type,
+        final String message)
     {
         return context(converter, type) + ": " + message;
     }
 
     public ConvertReflectionException(
-        Converter<?> converter, 
-        Class<?> type, 
-        String message) {
+        final Converter<?> converter,
+        final Class<?> type,
+        final String message) {
         super(prefix(converter, type, message));
         this.converter = converter;
         this.type = type;
@@ -56,9 +57,9 @@ public class ConvertReflectionException
 
 
     public ConvertReflectionException(
-        Converter<?> converter, 
-        Class<?> type, 
-        Throwable cause) {
+        final Converter<?> converter,
+        final Class<?> type,
+        final Throwable cause) {
         super(context(converter, type), cause);
         this.converter = converter;
         this.type = type;
@@ -73,6 +74,6 @@ public class ConvertReflectionException
     {
         return type;
     }
-    
-    
+
+
 }

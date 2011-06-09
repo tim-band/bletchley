@@ -17,8 +17,8 @@ import org.junit.Test;
 public class PointTest {
     @Test(expected=ParseException.class)
     public void badPointRejected() throws IOException, ParseException {
-        ByteOpenable example = new ByteOpenable();
-        Sexp sexp = list("point",
+        final ByteOpenable example = new ByteOpenable();
+        final Sexp sexp = list("point",
             list("x", atom("asdf")),
             list("y", atom("qwert")));
         OpenableUtils.write(Sexp.class, sexp, example);

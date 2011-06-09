@@ -15,13 +15,18 @@ public class StringConverter
     @Override public String getName() { return null; }
 
     @Override
-    public void write(ConvertOutputStream out, String o)
+    public Class<String> getResultClass() {
+        return String.class;
+    }
+
+    @Override
+    public void write(final ConvertOutputStream out, final String o)
         throws IOException {
         out.atom(o);
     }
 
     @Override
-    public String read(ConvertInputStream in)
+    public String read(final ConvertInputStream in)
         throws ParseException,
             IOException {
         in.nextAssertType(ATOM);

@@ -13,29 +13,38 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  */
 public class DiscriminatingConverter<T>
     implements Converter<T> {
+    private final Class<T> superclass;
     private final Map<String, Converter<? extends T>> nameMap
         = new HashMap<String, Converter<? extends T>>();
     private final HashMap<Class<? extends T>, Converter<? extends T>> classMap
         = new HashMap<Class<? extends T>, Converter<? extends T>>();
 
 
-    public DiscriminatingConverter(Class<? extends T> [] classes) {
-        for (Class<? extends T> clazz: classes) {
-            Converter<? extends T> converter
+    public DiscriminatingConverter(
+        final Class<T> superclass,
+        final Class<? extends T>[] classes) {
+        this.superclass = superclass;
+        for (final Class<? extends T> clazz: classes) {
+            final Converter<? extends T> converter
                 = Registry.REGISTRY.getConverter(clazz);
             classMap.put(clazz, converter);
             final String name = converter.getName();
             if (name == null) {
-                throw new ConvertReflectionException(this, clazz, 
+                throw new ConvertReflectionException(this, clazz,
                     "Class has no sexp name");
             }
             nameMap.put(name, converter);
         }
     }
 
+    @Override
+    public Class<T> getResultClass() {
+        return superclass;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
-    public void write(ConvertOutputStream out, T o)
+    public void write(final ConvertOutputStream out, final T o)
         throws IOException {
         final Converter<? extends T> converter = classMap.get(o.getClass());
         if (converter == null) {
@@ -46,13 +55,13 @@ public class DiscriminatingConverter<T>
     }
 
     @Override
-    public T read(ConvertInputStream in)
+    public T read(final ConvertInputStream in)
         throws ParseException,
             IOException {
         in.nextAssertType(TokenType.OPENPAREN);
         in.nextAssertType(TokenType.ATOM);
-        byte[] discrim = in.atomBytes();
-        Converter<? extends T> converter
+        final byte[] discrim = in.atomBytes();
+        final Converter<? extends T> converter
             = nameMap.get(ConvertUtils.stringOrNull(discrim));
         if (converter == null) {
             throw new ParseException("Unable to find converter");

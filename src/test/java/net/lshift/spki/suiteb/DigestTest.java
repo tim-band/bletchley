@@ -13,7 +13,7 @@ public class DigestTest
 {
     @Test
     public void digestValueMatches() {
-        DigestSha384 digest
+        final DigestSha384 digest
             = DigestSha384.digest(Sexp.class, list(atom("foo")));
         assertThat(digest, is(new DigestSha384(Hex.decode(
             "7da6c98a1ec8e81aa6e5aab9f27094e4434c468f5fba4650" +

@@ -21,30 +21,30 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
  * fixed and it will do for now.
  */
 public class InferenceEngine {
-    private Map<DigestSha384, PrivateEncryptionKey> dhKeys
+    private final Map<DigestSha384, PrivateEncryptionKey> dhKeys
         = new HashMap<DigestSha384, PrivateEncryptionKey>();
-    private Map<DigestSha384, PublicSigningKey> dsaKeys
+    private final Map<DigestSha384, PublicSigningKey> dsaKeys
         = new HashMap<DigestSha384, PublicSigningKey>();
-    private Map<AesKeyId, AesKey> aesKeys = new HashMap<AesKeyId, AesKey>();
+    private final Map<AesKeyId, AesKey> aesKeys = new HashMap<AesKeyId, AesKey>();
     // FIXME this is pretty ugly!
-    private Map<DigestSha384, DigestSha384> signedBy
+    private final Map<DigestSha384, DigestSha384> signedBy
         = new HashMap<DigestSha384, DigestSha384>();
-    private Map<DigestSha384, List<SequenceItem>> hasSigned
+    private final Map<DigestSha384, List<SequenceItem>> hasSigned
         = new HashMap<DigestSha384, List<SequenceItem>>();
     // FIXME: this should go altogether - we should provide no way
     // of accessing unsigned content
-    private List<SimpleMessage> messages
+    private final List<SimpleMessage> messages
         = new ArrayList<SimpleMessage>();
 
-    public void process(SequenceItem item) {
+    public void process(final SequenceItem item) {
         process(item, null);
     }
 
     // FIXME: use dynamic dispatch here
-    public void process(SequenceItem item, DigestSha384 contextSigner) {
+    public void process(final SequenceItem item, final DigestSha384 contextSigner) {
         DigestSha384 signer = contextSigner;
         if (signer == null) {
-            DigestSha384 digest = DigestSha384.digest(item);
+            final DigestSha384 digest = DigestSha384.digest(item);
             signer = signedBy.get(digest);
         }
         if (item instanceof Sequence) {
@@ -71,33 +71,41 @@ public class InferenceEngine {
         }
     }
 
-    public void process(PrivateEncryptionKey privateKey) {
+    public void process(final PrivateEncryptionKey privateKey) {
         dhKeys.put(privateKey.getPublicKey().getKeyId(), privateKey);
     }
 
-    public void process(Sequence items, DigestSha384 signer) {
-        for (SequenceItem item: items.sequence) {
+    public void process(final Sequence items, final DigestSha384 signer) {
+        for (final SequenceItem item: items.sequence) {
             process(item, signer);
         }
     }
 
-    public void process(EcdhItem item) {
-        PrivateEncryptionKey key = dhKeys.get(item.recipient);
+    public void process(final EcdhItem item) {
+        final PrivateEncryptionKey key = dhKeys.get(item.recipient);
         if (key != null) {
             process(new AesKey(key.getKey(item.ephemeralKey)));
         }
     }
 
-    public void process(AesKey key) {
+    public void process(final AesKey key) {
+//        try {
+//            System.out.println("Processing key:");
+//            ConvertUtils.prettyPrint(AesKey.class, key, System.out);
+//            System.out.println("ID:");
+//            ConvertUtils.prettyPrint(AesKeyId.class, key.getKeyId(), System.out);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         aesKeys.put(key.getKeyId(), key);
     }
 
-    public void process(PublicSigningKey pKey) {
+    public void process(final PublicSigningKey pKey) {
         dsaKeys.put(pKey.getKeyId(), pKey);
     }
 
-    public void process(Signature sig) {
-        PublicSigningKey pKey = dsaKeys.get(sig.keyId);
+    public void process(final Signature sig) {
+        final PublicSigningKey pKey = dsaKeys.get(sig.keyId);
         if (pKey == null) return;
         if (!pKey.validate(sig.digest, sig.rawSignature))
             throw new RuntimeException("Sig validation failure");
@@ -105,27 +113,40 @@ public class InferenceEngine {
         signedBy.put(sig.digest, sig.keyId);
     }
 
-    public void process(SimpleMessage message, DigestSha384 signer) {
+    public void process(final SimpleMessage message, final DigestSha384 signer) {
         messages.add(message);
         if (signer != null) {
             listPut(hasSigned, signer, message);
         }
     }
 
-    public void process(AesPacket packet) {
+    public void process(final AesPacket packet) {
         try {
-            AesKey key = aesKeys.get(packet.keyId);
+//            try {
+//                System.out.println("Packet encrypted with:");
+//                ConvertUtils.prettyPrint(AesKeyId.class, packet.keyId, System.out);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+            final AesKey key = aesKeys.get(packet.keyId);
             if (key != null) {
-                process(key.decrypt(packet));
+                final SequenceItem contents = key.decrypt(packet);
+//                try {
+//                    System.out.println("Contents:");
+//                    ConvertUtils.prettyPrint(SequenceItem.class, contents, System.out);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+                process(contents);
             }
-        } catch (InvalidCipherTextException e) {
+        } catch (final InvalidCipherTextException e) {
             throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void process(DigestSha384 digest, DigestSha384 signer) {
+    public void process(final DigestSha384 digest, final DigestSha384 signer) {
         if (signer != null) {
             signedBy.put(digest, signer);
         }
@@ -135,12 +156,12 @@ public class InferenceEngine {
         return messages;
     }
 
-    public List<SequenceItem> getSignedBy(DigestSha384 keyId) {
+    public List<SequenceItem> getSignedBy(final DigestSha384 keyId) {
         return hasSigned.get(keyId);
     }
 
-    private <K,V> void listPut(Map<K,List<V>> map,
-        K key, V value)
+    private <K,V> void listPut(final Map<K,List<V>> map,
+        final K key, final V value)
     {
         List<V> list = map.get(key);
         if (list == null) {
