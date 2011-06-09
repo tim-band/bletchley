@@ -2,7 +2,7 @@ package net.lshift.spki.convert;
 
 import java.io.IOException;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 
 /**
  * Interface for an object in the class conversion registry, which can
@@ -15,5 +15,6 @@ public interface Converter<T> {
 
     public void write(ConvertOutputStream out, T o) throws IOException;
 
-    public T read(ConvertInputStream in) throws ParseException, IOException;
+    public T read(ConvertInputStream in)
+        throws IOException, InvalidInputException;
 }

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Stack;
 
 import net.lshift.spki.CanonicalSpkiInputStream;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream;
 
@@ -52,8 +53,7 @@ public class ConvertInputStream
     }
 
     public <T> T read(final Class<T> clazz)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         return Registry.REGISTRY.getConverter(clazz).read(this);
     }
 

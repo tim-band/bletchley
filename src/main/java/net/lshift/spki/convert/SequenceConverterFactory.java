@@ -11,6 +11,7 @@ public class SequenceConverterFactory
     @Override
     public <T> Converter<T> converter(final Class<T> clazz, final Annotation a) {
         final SequenceConverted aa = (Convert.SequenceConverted) a;
+        // FIXME: this is a rather ugly way to do it!
         List<FieldConvertInfo> m = NameBeanConverterFactory.getFieldMap(clazz);
         if (m.size() != 1) {
             throw new ConvertReflectionException(clazz,

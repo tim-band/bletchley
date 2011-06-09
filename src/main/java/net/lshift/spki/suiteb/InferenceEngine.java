@@ -5,13 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
-
-import org.bouncycastle.crypto.InvalidCipherTextException;
 
 /**
  * Take a bunch of SequenceItems and figure out what you can infer from them.
@@ -36,12 +34,12 @@ public class InferenceEngine {
     private final List<SimpleMessage> messages
         = new ArrayList<SimpleMessage>();
 
-    public void process(final SequenceItem item) {
+    public void process(final SequenceItem item) throws InvalidInputException {
         process(item, null);
     }
 
     // FIXME: use dynamic dispatch here
-    public void process(final SequenceItem item, final DigestSha384 contextSigner) {
+    public void process(final SequenceItem item, final DigestSha384 contextSigner) throws InvalidInputException {
         DigestSha384 signer = contextSigner;
         if (signer == null) {
             final DigestSha384 digest = DigestSha384.digest(item);
@@ -65,7 +63,7 @@ public class InferenceEngine {
         } else if (item instanceof DigestSha384) {
             process((DigestSha384) item, signer);
         } else {
-            throw new RuntimeException(
+            throw new InvalidInputException(
                 "Don't know how to process sequence item: "
                 + item.getClass().getCanonicalName());
         }
@@ -75,7 +73,8 @@ public class InferenceEngine {
         dhKeys.put(privateKey.getPublicKey().getKeyId(), privateKey);
     }
 
-    public void process(final Sequence items, final DigestSha384 signer) {
+    public void process(final Sequence items, final DigestSha384 signer)
+        throws InvalidInputException {
         for (final SequenceItem item: items.sequence) {
             process(item, signer);
         }
@@ -104,11 +103,11 @@ public class InferenceEngine {
         dsaKeys.put(pKey.getKeyId(), pKey);
     }
 
-    public void process(final Signature sig) {
+    public void process(final Signature sig) throws InvalidInputException {
         final PublicSigningKey pKey = dsaKeys.get(sig.keyId);
         if (pKey == null) return;
         if (!pKey.validate(sig.digest, sig.rawSignature))
-            throw new RuntimeException("Sig validation failure");
+            throw new InvalidInputException("Sig validation failure");
         // FIXME: assert that it's not already signed?
         signedBy.put(sig.digest, sig.keyId);
     }
@@ -120,29 +119,24 @@ public class InferenceEngine {
         }
     }
 
-    public void process(final AesPacket packet) {
-        try {
+    public void process(final AesPacket packet) throws InvalidInputException {
+//        try {
+//            System.out.println("Packet encrypted with:");
+//            ConvertUtils.prettyPrint(AesKeyId.class, packet.keyId, System.out);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        final AesKey key = aesKeys.get(packet.keyId);
+        if (key != null) {
+            final SequenceItem contents = key.decrypt(packet);
 //            try {
-//                System.out.println("Packet encrypted with:");
-//                ConvertUtils.prettyPrint(AesKeyId.class, packet.keyId, System.out);
+//                System.out.println("Contents:");
+//                ConvertUtils.prettyPrint(SequenceItem.class, contents,
+//                    System.out);
 //            } catch (IOException e) {
 //                throw new RuntimeException(e);
 //            }
-            final AesKey key = aesKeys.get(packet.keyId);
-            if (key != null) {
-                final SequenceItem contents = key.decrypt(packet);
-//                try {
-//                    System.out.println("Contents:");
-//                    ConvertUtils.prettyPrint(SequenceItem.class, contents, System.out);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-                process(contents);
-            }
-        } catch (final InvalidCipherTextException e) {
-            throw new RuntimeException(e);
-        } catch (final ParseException e) {
-            throw new RuntimeException(e);
+            process(contents);
         }
     }
 

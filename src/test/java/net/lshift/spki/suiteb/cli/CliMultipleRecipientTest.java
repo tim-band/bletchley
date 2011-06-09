@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ByteOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
@@ -17,8 +17,7 @@ public class CliMultipleRecipientTest
 {
     @Test
     public void cliTest()
-        throws ParseException,
-            IOException
+        throws IOException, InvalidInputException
     {
         final byte[] messageBytes
             = "the magic words are squeamish ossifrage".getBytes();

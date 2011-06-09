@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.lshift.spki.Constants;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -17,7 +18,7 @@ import org.junit.Test;
 public class MultipleRecipientEncryptionTest
 {
     @Test
-    public void test() throws IOException
+    public void test() throws IOException, InvalidInputException
     {
         final List<PrivateEncryptionKey> keys = new ArrayList<PrivateEncryptionKey>();
         final List<PublicEncryptionKey> publicKeys = new ArrayList<PublicEncryptionKey>();

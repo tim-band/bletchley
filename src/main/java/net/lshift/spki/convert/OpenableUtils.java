@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 
 import org.apache.commons.io.IOUtils;
 
@@ -33,8 +33,7 @@ public class OpenableUtils {
     }
 
     public static <T> T read(final Class<T> clazz, final Openable open)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         return ConvertUtils.read(clazz, open.read());
     }
 

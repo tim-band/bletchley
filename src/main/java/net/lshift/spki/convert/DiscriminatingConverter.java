@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -46,17 +46,18 @@ public class DiscriminatingConverter<T>
     @Override
     public void write(final ConvertOutputStream out, final T o)
         throws IOException {
-        final Converter<? extends T> converter = classMap.get(o.getClass());
+        final Class<? extends T> clazz = (Class<? extends T>) o.getClass();
+        final Converter<? extends T> converter = classMap.get(clazz);
         if (converter == null) {
-            throw new ConvertException("Don't know how to convert from: "
-                + o.getClass().getCanonicalName());
+            throw new ConvertReflectionException(clazz,
+                "Class not known to discriminator");
         }
         ((Converter<T>)converter).write(out, o);
     }
 
     @Override
     public T read(final ConvertInputStream in)
-        throws ParseException,
+        throws InvalidInputException,
             IOException {
         in.nextAssertType(TokenType.OPENPAREN);
         in.nextAssertType(TokenType.ATOM);
@@ -64,7 +65,8 @@ public class DiscriminatingConverter<T>
         final Converter<? extends T> converter
             = nameMap.get(ConvertUtils.stringOrNull(discrim));
         if (converter == null) {
-            throw new ParseException("Unable to find converter");
+            throw new ConvertException(
+                "Unable to find converter: " + discrim);
         }
         in.pushback(discrim);
         in.pushback(TokenType.ATOM);

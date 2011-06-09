@@ -74,14 +74,10 @@ public class Registry {
             }
             throw new ConvertReflectionException(clazz,
                             "Could not resolve converter");
-        } catch (final SecurityException e) {
-            throw new ConvertReflectionException(e);
-        } catch (final IllegalArgumentException e) {
-            throw new ConvertReflectionException(e);
         } catch (final IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(clazz, e);
         } catch (final InstantiationException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(clazz, e);
         }
     }
 }

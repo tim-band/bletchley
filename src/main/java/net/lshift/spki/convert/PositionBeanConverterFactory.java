@@ -14,28 +14,24 @@ implements ConverterFactory
         final ByPosition aa = (Convert.ByPosition) a;
         final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
         for (final String fname: aa.fields()) {
-            try {
-                fields.add(new FieldConvertInfo(
-                    getField(clazz, fname)));
-            } catch (final SecurityException e) {
-                throw new ConvertReflectionException(e);
-            } catch (final NoSuchFieldException e) {
-                throw new ConvertReflectionException(e);
-            }
+            fields.add(new FieldConvertInfo(
+                getField(clazz, clazz, fname)));
         }
         return new PositionBeanConverter<T>(clazz, aa.name(), fields);
     }
 
-    private <T> Field getField(final Class<T> clazz, final String fname)
-        throws NoSuchFieldException {
+    private <T> Field getField(
+        final Class<T> clazz,
+        final Class<? super T> c,
+        final String fname) {
         try {
-            return clazz.getDeclaredField(fname);
+            return c.getDeclaredField(fname);
         } catch (final NoSuchFieldException e) {
-            final Class<? super T> sup = clazz.getSuperclass();
+            final Class<? super T> sup = c.getSuperclass();
             if (sup == null) {
-                throw e;
+                throw new ConvertReflectionException(clazz, e);
             }
-            return getField(sup, fname);
+            return getField(clazz, sup, fname);
         }
     }
 }

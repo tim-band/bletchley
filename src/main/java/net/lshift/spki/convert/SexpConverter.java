@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.SpkiInputStream.TokenType;
 import net.lshift.spki.sexpform.Atom;
 import net.lshift.spki.sexpform.Create;
@@ -44,8 +44,7 @@ public class SexpConverter
 
     @Override
     public Sexp read(final ConvertInputStream in)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         final TokenType token = in.next();
         switch (token) {
         case ATOM:
@@ -69,11 +68,11 @@ public class SexpConverter
                    tail.add(in.read(Sexp.class));
                     break;
                 case EOF:
-                    throw new ParseException("Unexpected EOF");
+                    throw new ConvertException("Unexpected EOF");
                 }
             }
         default:
-            throw new ParseException("Unexpected token");
+            throw new ConvertException("Unexpected token");
         }
     }
 }

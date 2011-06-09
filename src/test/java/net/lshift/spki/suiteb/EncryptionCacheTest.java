@@ -7,6 +7,7 @@ import static org.junit.Assert.assertSame;
 import java.util.List;
 
 import net.lshift.spki.Constants;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
@@ -14,7 +15,7 @@ import org.junit.Test;
 
 public class EncryptionCacheTest {
     @Test
-    public void test()
+    public void test() throws InvalidInputException
     {
         PrivateEncryptionKey privateKey = PrivateEncryptionKey.generate();
         privateKey = roundTrip(PrivateEncryptionKey.class, privateKey);

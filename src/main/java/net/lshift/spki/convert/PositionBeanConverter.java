@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -32,8 +32,7 @@ public class PositionBeanConverter<T>
 
     @Override
     protected Map<Field, Object> readFields(final ConvertInputStream in)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         final Map<Field, Object> res = new HashMap<Field, Object>(fields.size());
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
