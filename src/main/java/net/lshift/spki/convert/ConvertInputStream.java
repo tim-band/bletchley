@@ -81,4 +81,10 @@ public class ConvertInputStream
             throw new ParseException("Did not see expected atom: " + name);
         }
     }
+
+    public void close()
+    throws IOException
+    {
+        this.delegate.close();
+    }
 }

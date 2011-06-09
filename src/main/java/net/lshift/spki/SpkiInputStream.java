@@ -84,4 +84,8 @@ public abstract class SpkiInputStream
     protected abstract byte[] doAtomBytes()
         throws IOException,
             ParseException;
+
+    public abstract void close()
+    throws IOException;
+
 }
