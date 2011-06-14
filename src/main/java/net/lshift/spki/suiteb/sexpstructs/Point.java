@@ -4,9 +4,7 @@ import java.math.BigInteger;
 
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.P;
 import net.lshift.spki.convert.Registry;
-import net.lshift.spki.convert.SexpName;
 import net.lshift.spki.convert.StepConverter;
 import net.lshift.spki.suiteb.Ec;
 
@@ -17,15 +15,14 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for an ECPoint ie a point on an elliptic curve.
  */
-@Convert.ByName
+@Convert.ByName("point")
 public class Point {
     public final BigInteger x;
     public final BigInteger y;
 
-    @SexpName("point")
     public Point(
-        @P("x") BigInteger x,
-        @P("y") BigInteger y
+        BigInteger x,
+        BigInteger y
     ) {
         super();
         this.x = x;

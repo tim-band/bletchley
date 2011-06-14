@@ -48,40 +48,46 @@ public class Registry {
     public synchronized <T> Converter<T> getConverter(Class<T> clazz) {
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
-            try {
-                final ConverterFactory factoryInstance
-                    = getConverterFactory(clazz).value().newInstance();
-                res = factoryInstance.converter(clazz);
-                assert res.getResultClass().equals(clazz);
-            } catch (SecurityException e) {
-                throw new ConvertReflectionException(e);
-            } catch (IllegalArgumentException e) {
-                throw new ConvertReflectionException(e);
-            } catch (IllegalAccessException e) {
-                throw new ConvertReflectionException(e);
-            } catch (InstantiationException e) {
-                throw new ConvertReflectionException(e);
-            }
+            res = generateConverter(clazz);
             converterMap.put(clazz, res);
         }
         return res;
     }
 
-    private <T> ConverterFactoryClass getConverterFactory(
-        Class<T> clazz) {
-        ConverterFactoryClass factoryClass
-            = clazz.getAnnotation(Convert.ConverterFactoryClass.class);
-        if (factoryClass != null) {
-            return factoryClass;
-        }
-        for (Annotation a: clazz.getAnnotations()) {
-            factoryClass = a.annotationType().getAnnotation(
-                Convert.ConverterFactoryClass.class);
-            if (factoryClass != null) {
-                return factoryClass;
+    private <T, A extends Annotation> Converter<T> generateConverter(Class<T> clazz) {
+        try {
+            for (Annotation a : clazz.getAnnotations()) {
+                final ConverterFactoryClass factoryClass
+                    = a.annotationType().getAnnotation(
+                        Convert.ConverterFactoryClass.class);
+                if (factoryClass != null) {
+                    return getMethod(clazz, a, factoryClass);
+                }
             }
+            throw new ConvertReflectionException(clazz,
+                            "Could not resolve converter");
+        } catch (SecurityException e) {
+            throw new ConvertReflectionException(e);
+        } catch (IllegalArgumentException e) {
+            throw new ConvertReflectionException(e);
+        } catch (IllegalAccessException e) {
+            throw new ConvertReflectionException(e);
+        } catch (InstantiationException e) {
+            throw new ConvertReflectionException(e);
         }
-        throw new ConvertReflectionException(
-            "Could not resolve converter for " + clazz.getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T, A extends Annotation> Converter<T> getMethod(
+        Class<T> clazz,
+        A a,
+        ConverterFactoryClass factoryClass)
+        throws InstantiationException, IllegalAccessException {
+        // FIXME: cache these?
+        final ConverterFactory<A> factoryInstance
+            = (ConverterFactory<A>) factoryClass.value().newInstance();
+        Converter<T> res = factoryInstance.converter(clazz, a);
+        assert res.getResultClass().equals(clazz);
+        return res;
     }
 }

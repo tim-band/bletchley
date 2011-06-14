@@ -1,17 +1,15 @@
 package net.lshift.spki.convert;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
-import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.sexpform.Sexp;
 
 public class ConvertTestHelper
 {
-    public static ConvertInputStream toConvert(Sexp sexp)
+    public static InputStream toConvert(Sexp sexp)
     {
-        return new ConvertInputStream(
-            new CanonicalSpkiInputStream(
-                new ByteArrayInputStream(
-                    ConvertUtils.toBytes(Sexp.class, sexp))));
+        return new ByteArrayInputStream(
+            ConvertUtils.toBytes(Sexp.class, sexp));
     }
 }

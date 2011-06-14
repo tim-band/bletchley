@@ -1,10 +1,9 @@
 package net.lshift.spki.convert;
 
-@Convert.ByPosition
+@Convert.ByPosition(name = "implementing-class", fields={})
 public class ImplementingClass
     implements Interface
 {
-    @SexpName("implementing-class")
     public ImplementingClass()
     {
         super();

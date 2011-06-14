@@ -1,10 +1,10 @@
 package net.lshift.spki.convert;
 
-public class ConvertClassFactory implements ConverterFactory {
+public class ConvertClassFactory implements ConverterFactory<Convert.ConvertClass> {
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Converter<T> converter(Class<T> c) {
-        Class<?> t = c.getAnnotation(Convert.ConvertClass.class).value();
+    public <T> Converter<T> converter(Class<T> c, Convert.ConvertClass a) {
+        Class<?> t = a.value();
         try {
             return (Converter<T>) t.newInstance();
         } catch (InstantiationException e) {

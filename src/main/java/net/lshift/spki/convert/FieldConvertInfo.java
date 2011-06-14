@@ -1,21 +1,23 @@
 package net.lshift.spki.convert;
 
+import java.lang.reflect.Field;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
  * Information stored by the BeanConverter for each field of the class.
  */
 class FieldConvertInfo {
-    public final int index;
     public final String name;
-    public final Class<?> type;
     public final String hyphenatedName;
+    public final Field field;
 
-    public FieldConvertInfo(int index, String name, Class<?> type) {
+    public FieldConvertInfo(Field field)
+        throws SecurityException {
         super();
-        this.index = index;
-        this.name = name;
-        this.type = type;
+        this.field = field;
+        this.field.setAccessible(true);
+        this.name = field.getName();
         String[] c = StringUtils.splitByCharacterTypeCamelCase(name);
         for (int i = 0; i < c.length; i++) {
             c[i] = StringUtils.lowerCase(c[i]);

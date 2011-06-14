@@ -1,8 +1,9 @@
 package net.lshift.spki.convert;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
 
 import net.lshift.spki.ParseException;
 
@@ -12,19 +13,12 @@ import net.lshift.spki.ParseException;
  */
 public abstract class BeanFieldConverter<T>
     extends BeanConverter<T> {
-    protected final FieldConvertInfo[] fields;
+    protected final List<FieldConvertInfo> fields;
 
-    public BeanFieldConverter(Class<T> clazz)
+    public BeanFieldConverter(Class<T> clazz, String name, List<FieldConvertInfo> fields)
     {
-        super(clazz);
-        Class<?>[] parameters = constructor.getParameterTypes();
-        Annotation[][] annotations = constructor.getParameterAnnotations();
-        assert parameters.length == annotations.length;
-        fields = new FieldConvertInfo[parameters.length];
-        for (int i = 0; i < parameters.length; i++) {
-            fields[i] = new FieldConvertInfo(i,
-                getPAnnotation(annotations[i]), parameters[i]);
-        }
+        super(clazz, name);
+        this.fields = fields;
     }
 
     @Override
@@ -33,16 +27,14 @@ public abstract class BeanFieldConverter<T>
         try {
             out.beginSexp();
             writeName(out);
-            for (int i = 0; i < fields.length; i++) {
+            for (FieldConvertInfo f: fields) {
                 final Object property =
-                    clazz.getField(fields[i].name).get(o);
-                writeField(out, fields[i], property);
+                    f.field.get(o);
+                writeField(out, f, property);
             }
             out.endSexp();
         } catch (IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
-        } catch (NoSuchFieldException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(this, clazz, e);
         }
     }
 
@@ -55,20 +47,20 @@ public abstract class BeanFieldConverter<T>
     public T read(ConvertInputStream in)
         throws ParseException,
             IOException {
-        Object[] initargs = new Object[fields.length];
-        read(in, initargs);
         try {
-            return constructor.newInstance(initargs);
+            return DeserializingConstructor.make(clazz, readFields(in));
         } catch (InstantiationException e) {
             throw new ConvertReflectionException(e);
         } catch (IllegalAccessException e) {
             throw new ConvertReflectionException(e);
-        } catch (InvocationTargetException e) {
+        } catch (SecurityException e) {
+            throw new ConvertReflectionException(e);
+        } catch (IllegalArgumentException e) {
             throw new ConvertReflectionException(e);
         }
     }
 
-    protected abstract void read(ConvertInputStream in, Object[] initargs)
+    protected abstract Map<Field, Object> readFields(ConvertInputStream in)
         throws ParseException,
             IOException;
 }
