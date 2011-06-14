@@ -31,15 +31,27 @@ public class PrettyPrinter extends SpkiOutputStream {
         } else {
             printPrefix();
         }
-        printBytes(bytes, off, len);
+        if (isText(bytes, off, len)) {
+            ps.print("\"");
+            ps.write(bytes, off, len);
+            ps.println("\"");
+        } else if (len < 10) {
+            ps.print("#");
+            Hex.encode(bytes, off, len, ps);
+            ps.println("#");
+        } else {
+            ps.print("|");
+            Base64.encode(bytes, off, len, ps);
+            ps.println("|");
+        }
     }
 
     @Override
     public void beginSexp()
         throws IOException {
         if (firstAtom) {
-            firstAtom = false;
             ps.println();
+            firstAtom = false;
         }
         printPrefix();
         ps.print('(');
@@ -51,8 +63,8 @@ public class PrettyPrinter extends SpkiOutputStream {
     public void endSexp()
         throws IOException {
         if (firstAtom) {
-            firstAtom = false;
             ps.println();
+            firstAtom = false;
         }
         if (indent == 0) {
             throw new RuntimeException("Too many closeparens");
@@ -76,33 +88,16 @@ public class PrettyPrinter extends SpkiOutputStream {
         }
     }
 
-    private void printBytes(byte[] bytes, int off, int len)
-        throws IOException
-    {
-        if (isText(bytes, off, len)) {
-            ps.print("\"");
-            ps.write(bytes, off, len);
-            ps.println("\"");
-        } else if (len < 10) {
-            ps.print("#");
-            ps.write(Hex.encode(bytes, off, len));
-            ps.println("#");
-        } else {
-            ps.print("|");
-            Base64.encode(bytes, off, len, ps);
-            ps.println("|");
-        }
-    }
-
     private static boolean isText(byte[] bytes, int off, int len)
     {
         if (len ==  0) {
             return false;
         }
         for (int i = 0; i < len; i++) {
-            if (bytes[off + i] < 0x20 || bytes[off + i] >= 0x7f
-                    || bytes[off + i] == Constants.DOUBLEQUOTE
-                    || bytes[off + i] == Constants.BACKSLASH)
+            final byte b = bytes[off + i];
+            if (b < 0x20 || b >= 0x7f
+                    || b == Constants.DOUBLEQUOTE
+                    || b == Constants.BACKSLASH)
                 return false;
         }
         return true;
