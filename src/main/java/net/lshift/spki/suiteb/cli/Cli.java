@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.ByteOpenable;
@@ -49,8 +50,7 @@ public class Cli {
     }
 
     public static void getPublicEncryptionKey(final Openable privk, final Openable pubk)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         final PrivateEncryptionKey privatek
             = read(PrivateEncryptionKey.class, privk);
         write(PublicEncryptionKey.class, privatek.getPublicKey(), pubk);
@@ -62,8 +62,7 @@ public class Cli {
     }
 
     public static void getPublicSigningKey(final Openable privk, final Openable pubk)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
         write(PublicSigningKey.class, privatek.getPublicKey(), pubk);
     }
@@ -74,8 +73,7 @@ public class Cli {
         final PublicSigningKey signingKey,
         final Openable packet,
         final Openable out)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         final InferenceEngine inference = new InferenceEngine();
         inference.process(signingKey);
         inference.process(encryptionKey);
@@ -101,8 +99,7 @@ public class Cli {
         final Openable sPublic,
         final Openable packet,
         final Openable out)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         final PrivateEncryptionKey encryptionKey = read(PrivateEncryptionKey.class, ePrivate);
         final PublicSigningKey signingKey = read(PublicSigningKey.class, sPublic);
         decryptSignedMessage(messageType, encryptionKey, signingKey, packet, out);
@@ -111,8 +108,7 @@ public class Cli {
     public static void genEncryptedSignedMessage(
         final String messageType,
         final Openable[] args)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         final AesKey aesKey = AesKey.generateAESKey();
         for (int i = 2; i < args.length - 1; i++) {
@@ -134,14 +130,13 @@ public class Cli {
         write(Sequence.class, new Sequence(sequenceItems), args[args.length - 1]);
     }
 
-    public static void speedTest() throws ParseException {
+    public static void speedTest() throws InvalidInputException {
         new SpeedTester().speedTest();
     }
 
     public static void main(final String command, final Openable... args)
         throws FileNotFoundException,
-            ParseException,
-            IOException {
+            IOException, InvalidInputException {
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
         } else if ("genSigningKey".equals(command)) {

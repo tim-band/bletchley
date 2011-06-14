@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 
 /**
  * Superclass for a converter that reads bean properties based on
@@ -50,22 +50,16 @@ public abstract class BeanFieldConverter<T>
 
     @Override
     public T read(final ConvertInputStream in)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         try {
             return DeserializingConstructor.make(clazz, readFields(in));
         } catch (final InstantiationException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(clazz, e);
         } catch (final IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
-        } catch (final SecurityException e) {
-            throw new ConvertReflectionException(e);
-        } catch (final IllegalArgumentException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(clazz, e);
         }
     }
 
     protected abstract Map<Field, Object> readFields(ConvertInputStream in)
-        throws ParseException,
-            IOException;
+        throws IOException, InvalidInputException;
 }

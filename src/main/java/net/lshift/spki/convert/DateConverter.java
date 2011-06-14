@@ -21,7 +21,7 @@ public class DateConverter
     }
 
     @Override
-    protected Date stepOut(final String o) {
+    protected Date stepOut(final String o) throws ConvertException {
         try {
             return Constants.DATE_FORMAT.parse(o);
         } catch (final java.text.ParseException e) {

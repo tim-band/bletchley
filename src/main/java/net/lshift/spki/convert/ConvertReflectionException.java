@@ -7,11 +7,26 @@ public class ConvertReflectionException
     extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    private final Converter<?> converter;
     private final Class<?> type;
+    private final Converter<?> converter;
 
     public ConvertReflectionException(final Class<?> clazz, final String message) {
         super("error converting " + clazz.getCanonicalName() + ": " + message);
+        this.converter = null;
+        this.type = clazz;
+    }
+
+    public ConvertReflectionException(final Class<?> clazz, Throwable t) {
+        super("error converting " + clazz.getCanonicalName(), t);
+        this.converter = null;
+        this.type = clazz;
+    }
+
+    public ConvertReflectionException(
+        Class<?> clazz,
+        String message,
+        Throwable t) {
+        super("error converting " + clazz.getCanonicalName() + ": " + message, t);
         this.converter = null;
         this.type = clazz;
     }
@@ -20,12 +35,6 @@ public class ConvertReflectionException
         @SuppressWarnings("unused") final Converter<?> converter,
         final Class<?> type)    {
         return "error converting " + type.getCanonicalName();
-    }
-
-    public ConvertReflectionException(final Throwable cause) {
-        super(cause);
-        this.converter = null;
-        this.type = null;
     }
 
     public ConvertReflectionException(
@@ -74,6 +83,4 @@ public class ConvertReflectionException
     {
         return type;
     }
-
-
 }

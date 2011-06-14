@@ -1,6 +1,6 @@
 package net.lshift.spki.suiteb.cli;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.EncryptionSetup;
@@ -26,7 +26,7 @@ public class SpeedTester {
         this.messageBytes = new byte[100];
     }
 
-    public void speedTest() throws ParseException {
+    public void speedTest() throws InvalidInputException {
         doRun();
         final long start = System.currentTimeMillis();
         for (int i = 0; ; i++) {
@@ -39,7 +39,7 @@ public class SpeedTester {
         }
     }
 
-    private void doRun() throws ParseException {
+    private void doRun() throws InvalidInputException {
         final AesKey aesKey = AesKey.generateAESKey();
         final PublicEncryptionKey pKey
             = ConvertUtils.fromBytes(PublicEncryptionKey.class, publicKeyBytes);

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 import java.io.IOException;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ByteOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
@@ -15,8 +15,7 @@ public class CliTest
 {
     @Test
     public void cliTest()
-        throws ParseException,
-            IOException
+        throws IOException, InvalidInputException
     {
         final byte[] messageBytes
             = "the magic words are squeamish ossifrage".getBytes();

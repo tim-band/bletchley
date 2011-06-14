@@ -5,7 +5,7 @@ import static net.lshift.spki.convert.OpenableUtils.write;
 
 import java.io.IOException;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.ByteOpenable;
 
@@ -26,11 +26,9 @@ public class RoundTrip
             write(clazz, o, buf);
             LOG.info(PrettyPrinter.prettyPrint(buf.read()));
             return read(clazz, buf);
-        } catch (final SecurityException e) {
-            throw new RuntimeException(e);
-        } catch (final ParseException e) {
-            throw new RuntimeException(e);
         } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } catch (final InvalidInputException e) {
             throw new RuntimeException(e);
         }
     }

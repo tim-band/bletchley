@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -24,21 +24,18 @@ public class SequenceConverter<T>
         super(clazz, name);
         beanName = field.getName();
         if (!(field.getGenericType() instanceof ParameterizedType)) {
-            throw new ConvertException(
-                "Field must be parameterized List type:"
-                + clazz.getCanonicalName());
+            throw new ConvertReflectionException(clazz,
+                "Field must be parameterized List type");
         }
         final ParameterizedType pType = (ParameterizedType) field.getGenericType();
         if (!List.class.equals(pType.getRawType())) {
-            throw new ConvertException(
-                "Constructor argument must be List type:"
-                + clazz.getCanonicalName());
+            throw new ConvertReflectionException(clazz,
+                "Constructor argument must be List type");
         }
         final Type[] typeArgs = pType.getActualTypeArguments();
         if (typeArgs.length != 1) {
-            throw new ConvertException(
-                "Constructor type must have one parameter"
-                + clazz.getCanonicalName());
+            throw new ConvertReflectionException(clazz,
+                "Constructor type must have one parameter");
         }
         contentType = (Class<?>) typeArgs[0];
     }
@@ -53,18 +50,17 @@ public class SequenceConverter<T>
             for (final Object v: property) {
                 out.writeUnchecked(contentType, v);
             }
-        out.endSexp();
+            out.endSexp();
         } catch (final IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(clazz, e);
         } catch (final NoSuchFieldException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(clazz, e);
         }
     }
 
     @Override
     public T read(final ConvertInputStream in)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
         final List<Object> components = new ArrayList<Object>();
@@ -82,18 +78,14 @@ public class SequenceConverter<T>
                     fields.put(clazz.getDeclaredField(beanName), components);
                     return DeserializingConstructor.make(clazz, fields);
                 } catch (final InstantiationException e) {
-                    throw new ConvertReflectionException(e);
+                    throw new ConvertReflectionException(clazz, e);
                 } catch (final IllegalAccessException e) {
-                    throw new ConvertReflectionException(e);
-                } catch (final SecurityException e) {
-                    throw new ConvertReflectionException(e);
-                } catch (final IllegalArgumentException e) {
-                    throw new ConvertReflectionException(e);
+                    throw new ConvertReflectionException(clazz, e);
                 } catch (final NoSuchFieldException e) {
-                    throw new ConvertReflectionException(e);
+                    throw new ConvertReflectionException(clazz, e);
                 }
             default:
-                throw new ParseException("Unexpected token in sequence");
+                throw new ConvertException("Unexpected token in sequence");
             }
         }
     }

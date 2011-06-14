@@ -6,7 +6,10 @@ public class SequenceConverterFactory
     implements ConverterFactory<Convert.SequenceConverted> {
 
     @Override
-    public <T> Converter<T> converter(final Class<T> clazz, final Convert.SequenceConverted a) {
+    public <T> Converter<T> converter(
+        final Class<T> clazz,
+        final Convert.SequenceConverted a) {
+        // FIXME: this is a rather ugly way to do it!
         List<FieldConvertInfo> m = NameBeanConverterFactory.getFieldMap(clazz);
         if (m.size() != 1) {
             throw new ConvertReflectionException(clazz,

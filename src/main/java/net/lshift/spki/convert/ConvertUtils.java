@@ -11,6 +11,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CharsetDecoder;
 
 import net.lshift.spki.Constants;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SpkiInputStream.TokenType;
@@ -51,7 +52,7 @@ public class ConvertUtils {
         try {
             Class.forName(clazz.getName(), true, clazz.getClassLoader());
         } catch (final ClassNotFoundException e) {
-            throw new AssertionError(e);  // Can't happen
+            throw new ConvertReflectionException(clazz, e);  // Can't happen
         }
     }
 
@@ -63,8 +64,7 @@ public class ConvertUtils {
     }
 
     public static <T> T read(final Class<T> clazz, final InputStream is)
-        throws ParseException,
-            IOException {
+        throws IOException, InvalidInputException {
         try {
             final ConvertInputStream in
                 = new ConvertInputStream(is);
@@ -82,17 +82,18 @@ public class ConvertUtils {
             write(clazz, o, os);
             return os.toByteArray();
         } catch (final IOException e) {
-            throw new RuntimeException(
+            throw new ConvertReflectionException(clazz,
                 "ByteArrayOutputStream cannot throw IOException", e);
         }
     }
 
     public static <T> T fromBytes(final Class<T> clazz, final byte[] bytes)
-        throws ParseException {
+        throws InvalidInputException {
         try {
             return read(clazz, new ByteArrayInputStream(bytes));
         } catch (final IOException e) {
-            throw new RuntimeException("CANTHAPPEN", e);
+            throw new ConvertReflectionException(clazz,
+                "ByteArrayInputStream cannot throw IOException", e);
         }
     }
 

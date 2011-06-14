@@ -8,9 +8,9 @@ public class ConvertClassFactory implements ConverterFactory<Convert.ConvertClas
         try {
             return (Converter<T>) t.newInstance();
         } catch (final InstantiationException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(c, e);
         } catch (final IllegalAccessException e) {
-            throw new ConvertReflectionException(e);
+            throw new ConvertReflectionException(c, e);
         }
     }
 }

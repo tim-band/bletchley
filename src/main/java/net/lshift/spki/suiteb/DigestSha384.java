@@ -3,7 +3,7 @@ package net.lshift.spki.suiteb;
 import java.io.IOException;
 import java.util.Arrays;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.StepConverter;
@@ -20,17 +20,12 @@ import org.bouncycastle.util.encoders.Hex;
  */
 @ConvertClass(DigestSha384.Step.class)
 public class DigestSha384 implements SequenceItem {
-    public static final Step STEP = new Step();
     private static final String DIGEST_NAME = "sha384";
-    private final int DIGEST_LENGTH = 48;
+    private static final int DIGEST_LENGTH = 48;
     private final byte[] bytes;
 
-    public DigestSha384(final byte[] bytes) {
+    protected DigestSha384(final byte[] bytes) {
         super();
-        if (bytes.length != DIGEST_LENGTH) {
-            throw new RuntimeException("Wrong number of bytes, expected"
-                + DIGEST_LENGTH + ", got " + bytes.length);
-        }
         this.bytes = bytes;
     }
 
@@ -77,13 +72,17 @@ public class DigestSha384 implements SequenceItem {
 
         @Override
         protected DigestSha384 stepOut(final Hash hash)
-            throws ParseException {
+            throws InvalidInputException {
             if (!DIGEST_NAME.equals(hash.hashType)) {
                 throw new ConvertException("Unexpected hash type: " + hash.hashType);
             }
-            return new DigestSha384(hash.value);
+            final byte[] bytes = hash.value;
+            if (bytes.length != DIGEST_LENGTH) {
+                throw new ConvertException("Wrong number of bytes, expected"
+                    + DIGEST_LENGTH + ", got " + bytes.length);
+            }
+            return new DigestSha384(bytes);
         }
-
     }
 
     @Override

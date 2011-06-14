@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -35,7 +35,7 @@ public class NameBeanConverter<T>
 
     @Override
     protected Map<Field, Object> readFields(final ConvertInputStream in)
-        throws ParseException,
+        throws InvalidInputException,
             IOException {
         final Map<Field, Object> res = new HashMap<Field, Object>();
         in.nextAssertType(TokenType.OPENPAREN);
@@ -45,7 +45,7 @@ public class NameBeanConverter<T>
             in.nextAssertType(TokenType.ATOM);
             final FieldConvertInfo field = getField(in.atomBytes());
             if (res.containsKey(field.field)) {
-                throw new ParseException("Repeated field");
+                throw new ConvertException("Repeated field");
             }
             res.put(field.field, in.read(field.field.getType()));
             in.nextAssertType(TokenType.CLOSEPAREN);
@@ -55,13 +55,13 @@ public class NameBeanConverter<T>
     }
 
     private FieldConvertInfo getField(final byte[] bytes)
-        throws ParseException {
+        throws ConvertException {
         final String string = ConvertUtils.stringOrNull(bytes);
         for (final FieldConvertInfo field: fields) {
             if (field.hyphenatedName.equals(string)) {
                 return field;
             }
         }
-        throw new ParseException("No field matching name found: " + string);
+        throw new ConvertException("No field matching name found: " + string);
     }
 }

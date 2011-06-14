@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import net.lshift.spki.Constants;
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -43,7 +43,9 @@ public class AesKey implements SequenceItem {
             gcm.doFinal(ciphertext, resp);
             return new AesKeyId(ciphertext);
         } catch (final InvalidCipherTextException e) {
-            throw new RuntimeException(e);
+            // Should be impossible when we're encrypting!
+            throw new RuntimeException(
+                "Unexpected behaviour in crypto libraries", e);
         }
     }
 
@@ -55,7 +57,6 @@ public class AesKey implements SequenceItem {
     }
 
     public AesPacket encrypt(final SequenceItem message) {
-        try {
             final byte[] nonce = Ec.randomBytes(12);
             final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
@@ -65,29 +66,31 @@ public class AesKey implements SequenceItem {
             final byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
             final int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);
-            gcm.doFinal(ciphertext, resp);
+            try {
+                gcm.doFinal(ciphertext, resp);
+            } catch (InvalidCipherTextException e) {
+                // Should be impossible when we're encrypting!
+                throw new RuntimeException(
+                    "Unexpected behaviour in crypto libraries", e);
+            }
             return new AesPacket(getKeyId(), nonce, ciphertext);
-        } catch (final InvalidCipherTextException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public SequenceItem decrypt(final AesPacket packet)
-        throws InvalidCipherTextException,
-            ParseException {
+        throws InvalidInputException {
+        final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+        gcm.init(false, new AEADParameters(
+            new KeyParameter(key), 128, packet.nonce, ZERO_BYTES));
+        final byte[] newtext = new byte[
+            gcm.getOutputSize(packet.ciphertext.length)];
+        final int pp = gcm.processBytes(packet.ciphertext, 0,
+            packet.ciphertext.length, newtext, 0);
         try {
-            final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
-            gcm.init(false, new AEADParameters(
-                new KeyParameter(key), 128, packet.nonce, ZERO_BYTES));
-            final byte[] newtext = new byte[
-                gcm.getOutputSize(packet.ciphertext.length)];
-            final int pp = gcm.processBytes(packet.ciphertext, 0,
-                packet.ciphertext.length, newtext, 0);
             gcm.doFinal(newtext, pp);
-            return ConvertUtils.fromBytes(SequenceItem.class, newtext);
-        } catch (final IllegalStateException e) {
-            throw new RuntimeException(e);
+        } catch (InvalidCipherTextException e) {
+            throw new InvalidInputException(e);
         }
+        return ConvertUtils.fromBytes(SequenceItem.class, newtext);
     }
 
     public static AesKey generateAESKey() {

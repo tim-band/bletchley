@@ -1,20 +1,16 @@
 package net.lshift.spki.convert;
 
+import net.lshift.spki.InvalidInputException;
+
 /**
  * Exception thrown if conversion goes wrong.
- *
- * FIXME: should this subclass Exception or RuntimeException?
  */
 public class ConvertException
-    extends RuntimeException {
+    extends InvalidInputException {
     private static final long serialVersionUID = 1L;
 
     public ConvertException(final String message) {
         super(message);
-    }
-
-    public ConvertException() {
-        super();
     }
 
     public ConvertException(final String message, final Throwable cause) {

@@ -2,8 +2,8 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import java.math.BigInteger;
 
-import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.StepConverter;
 import net.lshift.spki.suiteb.Ec;
@@ -46,14 +46,14 @@ public class Point {
         }
 
         @Override
-        public ECPoint stepOut(final Point point) throws ParseException {
+        public ECPoint stepOut(final Point point) throws ConvertException {
             final ECCurve curve = Ec.DOMAIN_PARAMETERS.getCurve();
             final ECPoint res = curve.createPoint(
                 point.x, point.y, false);
             final ECFieldElement x = res.getX();
             if (!res.getY().square().equals(
                 x.multiply(x.square().add(curve.getA())).add(curve.getB()))) {
-                throw new ParseException("Point is not on curve");
+                throw new ConvertException("Point is not on curve");
             }
             return res;
         }

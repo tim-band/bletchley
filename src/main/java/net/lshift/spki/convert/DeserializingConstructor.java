@@ -14,15 +14,9 @@ public class DeserializingConstructor {
             field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
             field.setAccessible(true);
             unsafe = (sun.misc.Unsafe) field.get(null);
-        } catch (final SecurityException e) {
-            throw new RuntimeException(e);
         } catch (final NoSuchFieldException e) {
             throw new RuntimeException(e);
-        } catch (final IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException(e);
         } catch (final IllegalAccessException e) {
-            // TODO Auto-generated catch block
             throw new RuntimeException(e);
         }
     }

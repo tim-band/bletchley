@@ -8,7 +8,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
@@ -23,8 +23,7 @@ public class DiscriminatingConverterTest
 
     @Test
     public void canConvertSexpToImplementingClass()
-        throws ParseException,
-            IOException
+        throws IOException, InvalidInputException
     {
         assertEquals(new ImplementingClass(),
             ConvertUtils.read(Interface.class,
@@ -34,8 +33,7 @@ public class DiscriminatingConverterTest
 
     @Test
     public void canConvertSexpToOtherImplementingClass()
-        throws ParseException,
-            IOException
+        throws IOException, InvalidInputException
     {
         assertEquals(new OtherImplementingClass(),
             ConvertUtils.read(Interface.class,
