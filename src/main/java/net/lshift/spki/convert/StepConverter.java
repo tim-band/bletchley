@@ -11,7 +11,7 @@ public abstract class StepConverter<TResult, TStep>
     implements Converter<TResult> {
     @Override
     public String getName() {
-        return Registry.REGISTRY.getConverter(getStepClass()).getName();
+        return Registry.getConverter(getStepClass()).getName();
     }
 
     @Override

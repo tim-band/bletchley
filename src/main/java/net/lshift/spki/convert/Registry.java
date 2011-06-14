@@ -12,7 +12,7 @@ import net.lshift.spki.convert.Convert.ConverterFactoryClass;
  * need to be registered in advance.
  */
 public class Registry {
-    public static final Registry REGISTRY = new Registry();
+    private static final Registry REGISTRY = new Registry();
 
     protected Registry() {
         // Do nothing; this is here only to prevent anyone else creating one.
@@ -44,8 +44,13 @@ public class Registry {
         register(new UUIDConverter());
     }
 
+    public static <T> Converter<T> getConverter(final Class<T> clazz) {
+        return REGISTRY.getConverterInternal(clazz);
+    }
+
     @SuppressWarnings("unchecked")
-    public synchronized <T> Converter<T> getConverter(final Class<T> clazz) {
+    private synchronized <T> Converter<T> getConverterInternal(
+        final Class<T> clazz) {
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
             res = generateConverter(clazz);

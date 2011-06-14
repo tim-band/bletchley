@@ -9,12 +9,10 @@ import net.lshift.spki.SpkiOutputStream;
 public class ConvertOutputStream
     extends SpkiOutputStream {
     private final SpkiOutputStream os;
-    private final Registry registry;
 
     public ConvertOutputStream(final SpkiOutputStream os) {
         super();
         this.os = os;
-        this.registry = Registry.REGISTRY;
     }
 
     public ConvertOutputStream(final OutputStream out)
@@ -53,14 +51,14 @@ public class ConvertOutputStream
     }
 
     public <T> void write(final Class<T> clazz, final T o) throws IOException {
-        registry.getConverter(clazz).write(this, o);
+        Registry.getConverter(clazz).write(this, o);
     }
 
     @SuppressWarnings("unchecked")
     public <T> void writeUnchecked(final Class<?> clazz, final Object o)
         throws IOException {
         //System.out.println("Converting " + clazz.getCanonicalName());
-        ((Converter<Object>) registry.getConverter(clazz)).write(this, o);
+        ((Converter<Object>) Registry.getConverter(clazz)).write(this, o);
         //System.out.println("Converted " + clazz.getCanonicalName());
     }
 }
