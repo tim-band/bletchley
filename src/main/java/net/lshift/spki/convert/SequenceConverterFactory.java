@@ -1,13 +1,17 @@
 package net.lshift.spki.convert;
 
-import net.lshift.spki.convert.Convert.SequenceConverted;
+import java.util.List;
 
 public class SequenceConverterFactory
     implements ConverterFactory<Convert.SequenceConverted> {
 
     @Override
-    public <T> Converter<T> converter(final Class<T> c, final Convert.SequenceConverted a) {
-        final SequenceConverted aa = a;
-        return new SequenceConverter<T>(c, aa.value());
+    public <T> Converter<T> converter(final Class<T> clazz, final Convert.SequenceConverted a) {
+        List<FieldConvertInfo> m = NameBeanConverterFactory.getFieldMap(clazz);
+        if (m.size() != 1) {
+            throw new ConvertReflectionException(clazz,
+                "Class must have one field");
+        }
+        return new SequenceConverter<T>(clazz, a.value(), m.get(0).field);
     }
 }
