@@ -19,6 +19,11 @@ public abstract class BeanFieldConverter<T>
     {
         super(clazz, name);
         this.fields = fields;
+//        System.out.println("Fields for: " +  clazz.getCanonicalName());
+//        for (FieldConvertInfo f: fields) {
+//            System.out.println(f.hyphenatedName + " " + f.field.getType().getCanonicalName());
+//        }
+//        System.out.println("----------- " +  clazz.getCanonicalName());
     }
 
     @Override

@@ -20,20 +20,15 @@ public class SequenceConverter<T>
     private final String beanName;
     private final Class<?> contentType;
 
-    public SequenceConverter(final Class<T> clazz, final String name) {
+    public SequenceConverter(final Class<T> clazz, final String name, final Field field) {
         super(clazz, name);
-        final Field[] fields = clazz.getDeclaredFields();
-        if (fields.length != 1) {
-            throw new ConvertReflectionException(clazz,
-                "Class must have one field");
-        }
-        beanName = fields[0].getName();
-        if (!(fields[0].getGenericType() instanceof ParameterizedType)) {
+        beanName = field.getName();
+        if (!(field.getGenericType() instanceof ParameterizedType)) {
             throw new ConvertException(
                 "Field must be parameterized List type:"
                 + clazz.getCanonicalName());
         }
-        final ParameterizedType pType = (ParameterizedType) fields[0].getGenericType();
+        final ParameterizedType pType = (ParameterizedType) field.getGenericType();
         if (!List.class.equals(pType.getRawType())) {
             throw new ConvertException(
                 "Constructor argument must be List type:"

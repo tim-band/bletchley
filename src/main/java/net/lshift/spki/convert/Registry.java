@@ -87,7 +87,10 @@ public class Registry {
         final ConverterFactory<A> factoryInstance
             = (ConverterFactory<A>) factoryClass.value().newInstance();
         final Converter<T> res = factoryInstance.converter(clazz, a);
-        assert res.getResultClass().equals(clazz);
+        if (!res.getResultClass().equals(clazz)) {
+            throw new ConvertReflectionException(clazz,
+                "Didn't get appropriate converter!");
+        }
         return res;
     }
 }

@@ -59,6 +59,8 @@ public class ConvertOutputStream
     @SuppressWarnings("unchecked")
     public <T> void writeUnchecked(final Class<?> clazz, final Object o)
         throws IOException {
+        //System.out.println("Converting " + clazz.getCanonicalName());
         ((Converter<Object>) registry.getConverter(clazz)).write(this, o);
+        //System.out.println("Converted " + clazz.getCanonicalName());
     }
 }
