@@ -45,9 +45,9 @@ public class DiscriminatingConverterTest
 
     @Test
     public void canConvertImplementingClassToSexp() {
-        byte[] expected = ConvertUtils.toBytes(Sexp.class,
+        final byte[] expected = ConvertUtils.toBytes(Sexp.class,
             list("implementing-class"));
-        byte[] actual = ConvertUtils.toBytes(Interface.class,
+        final byte[] actual = ConvertUtils.toBytes(Interface.class,
             new ImplementingClass());
         assertThat(actual, is(expected));
     }

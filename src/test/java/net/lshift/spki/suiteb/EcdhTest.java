@@ -20,21 +20,21 @@ import org.junit.Test;
 public class EcdhTest {
     @Test
     public void curveTest() {
-        X9ECParameters curve = NISTNamedCurves.getByName("P-384");
-        ECDomainParameters domainParameters = new ECDomainParameters(
+        final X9ECParameters curve = NISTNamedCurves.getByName("P-384");
+        final ECDomainParameters domainParameters = new ECDomainParameters(
                 curve.getCurve(), curve.getG(), curve.getN());
-        SecureRandom random = new SecureRandom();
-        ECKeyPairGenerator gen = new ECKeyPairGenerator();
+        final SecureRandom random = new SecureRandom();
+        final ECKeyPairGenerator gen = new ECKeyPairGenerator();
         gen.init(new ECKeyGenerationParameters(domainParameters, random));
-        AsymmetricCipherKeyPair senderPair = gen.generateKeyPair();
-        AsymmetricCipherKeyPair receiverPair = gen.generateKeyPair();
-        ECDHBasicAgreement senderAgreement = new ECDHBasicAgreement();
+        final AsymmetricCipherKeyPair senderPair = gen.generateKeyPair();
+        final AsymmetricCipherKeyPair receiverPair = gen.generateKeyPair();
+        final ECDHBasicAgreement senderAgreement = new ECDHBasicAgreement();
         senderAgreement.init(senderPair.getPrivate());
-        BigInteger senderResult = senderAgreement.calculateAgreement(
+        final BigInteger senderResult = senderAgreement.calculateAgreement(
                 receiverPair.getPublic());
-        ECDHBasicAgreement receiverAgreement = new ECDHBasicAgreement();
+        final ECDHBasicAgreement receiverAgreement = new ECDHBasicAgreement();
         receiverAgreement.init(receiverPair.getPrivate());
-        BigInteger receiverResult = receiverAgreement.calculateAgreement(
+        final BigInteger receiverResult = receiverAgreement.calculateAgreement(
                 senderPair.getPublic());
         assertEquals(senderResult, receiverResult);
         //System.out.println(receiverResult);

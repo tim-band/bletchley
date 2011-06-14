@@ -14,26 +14,26 @@ public class DeserializingConstructor {
             field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
             field.setAccessible(true);
             unsafe = (sun.misc.Unsafe) field.get(null);
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             throw new RuntimeException(e);
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             throw new RuntimeException(e);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             // TODO Auto-generated catch block
             throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             // TODO Auto-generated catch block
             throw new RuntimeException(e);
         }
     }
     @SuppressWarnings("unchecked")
-    public static <T> T make(Class<T> clazz, Map<Field, Object> fields)
+    public static <T> T make(final Class<T> clazz, final Map<Field, Object> fields)
         throws InstantiationException,
             SecurityException,
             IllegalArgumentException,
             IllegalAccessException {
-        T res = (T) unsafe.allocateInstance(clazz);
-        for (Entry<Field, Object> f: fields.entrySet()) {
+        final T res = (T) unsafe.allocateInstance(clazz);
+        for (final Entry<Field, Object> f: fields.entrySet()) {
             final Field field = f.getKey();
             field.setAccessible(true);
             field.set(res, f.getValue());

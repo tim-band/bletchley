@@ -11,8 +11,8 @@ public class Hash {
     public final byte[] value;
 
     public Hash(
-        String hashType,
-        byte[] value
+        final String hashType,
+        final byte[] value
     ) {
         super();
         this.hashType = hashType;

@@ -3,13 +3,13 @@ package net.lshift.spki.convert;
 public class ConvertClassFactory implements ConverterFactory<Convert.ConvertClass> {
     @SuppressWarnings("unchecked")
     @Override
-    public <T> Converter<T> converter(Class<T> c, Convert.ConvertClass a) {
-        Class<?> t = a.value();
+    public <T> Converter<T> converter(final Class<T> c, final Convert.ConvertClass a) {
+        final Class<?> t = a.value();
         try {
             return (Converter<T>) t.newInstance();
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             throw new ConvertReflectionException(e);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(e);
         }
     }

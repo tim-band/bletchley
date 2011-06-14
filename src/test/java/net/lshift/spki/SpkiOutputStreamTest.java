@@ -17,7 +17,7 @@ public class SpkiOutputStreamTest
         return output.toByteArray();
     }
 
-    public static byte[] s(String string) {
+    public static byte[] s(final String string) {
         return string.getBytes(Constants.ASCII);
     }
 

@@ -15,8 +15,8 @@ public class EcdhItem implements SequenceItem {
     public final ECPoint ephemeralKey;
 
     public EcdhItem(
-        DigestSha384 recipient,
-        ECPoint ephemeralKey
+        final DigestSha384 recipient,
+        final ECPoint ephemeralKey
     ) {
         super();
         this.recipient = recipient;

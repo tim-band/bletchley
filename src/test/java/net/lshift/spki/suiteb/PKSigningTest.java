@@ -15,9 +15,9 @@ public class PKSigningTest {
         privateKey = roundTrip(PrivateSigningKey.class, privateKey);
         PublicSigningKey publicKey = privateKey.getPublicKey();
         publicKey = roundTrip(PublicSigningKey.class, publicKey);
-        Sexp message = atom("The magic words are squeamish ossifrage");
-        DigestSha384 digest = DigestSha384.digest(Sexp.class, message);
-        EcdsaSignature sigVal = roundTrip(EcdsaSignature.class,
+        final Sexp message = atom("The magic words are squeamish ossifrage");
+        final DigestSha384 digest = DigestSha384.digest(Sexp.class, message);
+        final EcdsaSignature sigVal = roundTrip(EcdsaSignature.class,
             privateKey.rawSignature(digest));
         assertTrue(publicKey.validate(digest, sigVal));
     }

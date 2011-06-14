@@ -10,12 +10,12 @@ public class CanonicalSpkiOutputStream
     extends SpkiOutputStream {
     private final OutputStream os;
 
-    public CanonicalSpkiOutputStream(OutputStream os) {
+    public CanonicalSpkiOutputStream(final OutputStream os) {
         this.os = os;
     }
 
     @Override
-    public void atom(byte[] bytes, int off, int len)
+    public void atom(final byte[] bytes, final int off, final int len)
         throws IOException {
         os.write(Integer.toString(len).getBytes(Constants.ASCII));
         os.write(':');

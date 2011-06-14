@@ -20,13 +20,13 @@ public class ByteArrayConverter
     }
 
     @Override
-    public void write(ConvertOutputStream out, byte[] o)
+    public void write(final ConvertOutputStream out, final byte[] o)
         throws IOException {
         out.atom(o);
     }
 
     @Override
-    public byte[] read(ConvertInputStream in)
+    public byte[] read(final ConvertInputStream in)
         throws ParseException,
             IOException {
         in.nextAssertType(ATOM);

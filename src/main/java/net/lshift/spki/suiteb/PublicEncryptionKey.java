@@ -18,7 +18,7 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
  */
 @ConvertClass(PublicEncryptionKey.Step.class)
 public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
-    PublicEncryptionKey(CipherParameters publicKey) {
+    PublicEncryptionKey(final CipherParameters publicKey) {
         super(publicKey);
     }
 
@@ -38,8 +38,8 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
             key);
     }
 
-    public AesKey setupEncrypt(List<SequenceItem> toSend) {
-        EncryptionSetup setup = setupEncrypt();
+    public AesKey setupEncrypt(final List<SequenceItem> toSend) {
+        final EncryptionSetup setup = setupEncrypt();
         toSend.add(setup.encryptedKey);
         return setup.key;
     }
@@ -57,12 +57,12 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
         }
 
         @Override
-        protected EcdhPublicKey stepIn(PublicEncryptionKey o) {
+        protected EcdhPublicKey stepIn(final PublicEncryptionKey o) {
             return new EcdhPublicKey(o.publicKey);
         }
 
         @Override
-        protected PublicEncryptionKey stepOut(EcdhPublicKey s)
+        protected PublicEncryptionKey stepOut(final EcdhPublicKey s)
             throws ParseException {
             return new PublicEncryptionKey(s.getParameters());
         }

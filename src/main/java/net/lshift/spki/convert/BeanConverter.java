@@ -11,7 +11,7 @@ public abstract class BeanConverter<T>
     protected final Class<T> clazz;
     protected final String name;
 
-    public BeanConverter(Class<T> clazz, String name) {
+    public BeanConverter(final Class<T> clazz, final String name) {
         this.clazz = clazz;
         this.name = name;
         ConvertUtils.initialize(clazz);
@@ -27,7 +27,7 @@ public abstract class BeanConverter<T>
         return name;
     }
 
-    protected void writeName(ConvertOutputStream out)
+    protected void writeName(final ConvertOutputStream out)
         throws IOException {
         out.atom(name);
     }

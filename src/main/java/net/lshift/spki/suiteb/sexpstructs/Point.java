@@ -21,8 +21,8 @@ public class Point {
     public final BigInteger y;
 
     public Point(
-        BigInteger x,
-        BigInteger y
+        final BigInteger x,
+        final BigInteger y
     ) {
         super();
         this.x = x;
@@ -40,17 +40,17 @@ public class Point {
         public Class<ECPoint> getResultClass() { return ECPoint.class; }
 
         @Override
-        public Point stepIn(ECPoint q) {
+        public Point stepIn(final ECPoint q) {
             return new Point(
                 q.getX().toBigInteger(), q.getY().toBigInteger());
         }
 
         @Override
-        public ECPoint stepOut(Point point) throws ParseException {
+        public ECPoint stepOut(final Point point) throws ParseException {
             final ECCurve curve = Ec.DOMAIN_PARAMETERS.getCurve();
             final ECPoint res = curve.createPoint(
                 point.x, point.y, false);
-            ECFieldElement x = res.getX();
+            final ECFieldElement x = res.getX();
             if (!res.getY().square().equals(
                 x.multiply(x.square().add(curve.getA())).add(curve.getB()))) {
                 throw new ParseException("Point is not on curve");

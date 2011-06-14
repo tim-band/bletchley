@@ -14,13 +14,13 @@ public class EcdhPrivateKey
     extends EcPrivateKey {
 
     public EcdhPrivateKey(
-        EcdhPublicKey publicKey,
-        BigInteger d
+        final EcdhPublicKey publicKey,
+        final BigInteger d
     ) {
         super(publicKey, d);
     }
 
-    public EcdhPrivateKey(AsymmetricCipherKeyPair keyPair) {
+    public EcdhPrivateKey(final AsymmetricCipherKeyPair keyPair) {
         super(new EcdhPublicKey(keyPair), keyPair);
     }
 }

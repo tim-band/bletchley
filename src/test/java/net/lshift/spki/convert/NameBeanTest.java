@@ -14,7 +14,7 @@ import org.junit.Test;
 public class NameBeanTest {
     @Test(expected=ParseException.class)
     public void repeatedFieldsRejected() throws IOException, ParseException {
-        ByteOpenable example = new ByteOpenable();
+        final ByteOpenable example = new ByteOpenable();
         OpenableUtils.write(Sexp.class,
             list("point",
                 list("x", atom("foo")),

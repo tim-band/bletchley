@@ -21,13 +21,13 @@ public class BigIntegerConverter
     }
 
     @Override
-    public void write(ConvertOutputStream out, BigInteger o)
+    public void write(final ConvertOutputStream out, final BigInteger o)
         throws IOException {
         out.atom(o.toByteArray());
     }
 
     @Override
-    public BigInteger read(ConvertInputStream in)
+    public BigInteger read(final ConvertInputStream in)
         throws ParseException,
             IOException {
         in.nextAssertType(ATOM);

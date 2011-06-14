@@ -24,23 +24,23 @@ public class EcdsaTest
 {
     @Test
     public void curveTest() {
-        X9ECParameters curve = NISTNamedCurves.getByName("P-384");
-        ECDomainParameters domainParameters = new ECDomainParameters(
+        final X9ECParameters curve = NISTNamedCurves.getByName("P-384");
+        final ECDomainParameters domainParameters = new ECDomainParameters(
                 curve.getCurve(), curve.getG(), curve.getN());
-        SecureRandom random = new SecureRandom();
-        ECKeyPairGenerator gen = new ECKeyPairGenerator();
+        final SecureRandom random = new SecureRandom();
+        final ECKeyPairGenerator gen = new ECKeyPairGenerator();
         gen.init(new ECKeyGenerationParameters(domainParameters, random));
-        AsymmetricCipherKeyPair senderPair = gen.generateKeyPair();
-        ECDSASigner signer = new ECDSASigner();
+        final AsymmetricCipherKeyPair senderPair = gen.generateKeyPair();
+        final ECDSASigner signer = new ECDSASigner();
         signer.init(true, senderPair.getPrivate());
-        byte[] message = "The magic words are squeamish ossifrage".getBytes(
+        final byte[] message = "The magic words are squeamish ossifrage".getBytes(
             Constants.ASCII);
-        SHA384Digest digester = new SHA384Digest();
+        final SHA384Digest digester = new SHA384Digest();
         digester.update(message, 0, message.length);
-        byte[] digest = new byte[digester.getDigestSize()];
+        final byte[] digest = new byte[digester.getDigestSize()];
         digester.doFinal(digest, 0);
-        BigInteger[] signature = signer.generateSignature(digest);
-        ECDSASigner verifier = new ECDSASigner();
+        final BigInteger[] signature = signer.generateSignature(digest);
+        final ECDSASigner verifier = new ECDSASigner();
         verifier.init(false, senderPair.getPublic());
         assertTrue(verifier.verifySignature(digest, signature[0], signature[1]));
     }
