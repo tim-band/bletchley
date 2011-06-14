@@ -10,7 +10,7 @@ public class Convert
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.ANNOTATION_TYPE,ElementType.TYPE})
     public @interface ConverterFactoryClass {
-        Class<? extends ConverterFactory> value();
+        Class<? extends ConverterFactory<?>> value();
     }
 
     @Retention(RetentionPolicy.RUNTIME)

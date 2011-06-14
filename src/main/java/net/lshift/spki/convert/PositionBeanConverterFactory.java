@@ -1,19 +1,15 @@
 package net.lshift.spki.convert;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.convert.Convert.ByPosition;
-
 public class PositionBeanConverterFactory
-implements ConverterFactory
+implements ConverterFactory<Convert.ByPosition>
 {
-    public <T> Converter<T> converter(Class<T> clazz, Annotation a) {
-        ByPosition aa = (Convert.ByPosition) a;
+    public <T> Converter<T> converter(Class<T> clazz, Convert.ByPosition a) {
         List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
-        for (String fname: aa.fields()) {
+        for (String fname: a.fields()) {
             try {
                 fields.add(new FieldConvertInfo(
                     getField(clazz, fname)));
@@ -23,7 +19,7 @@ implements ConverterFactory
                 throw new ConvertReflectionException(e);
             }
         }
-        return new PositionBeanConverter<T>(clazz, aa.name(), fields);
+        return new PositionBeanConverter<T>(clazz, a.name(), fields);
     }
 
     private <T> Field getField(Class<T> clazz, String fname)

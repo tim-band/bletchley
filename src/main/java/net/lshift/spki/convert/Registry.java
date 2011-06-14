@@ -54,19 +54,14 @@ public class Registry {
         return res;
     }
 
-    private <T> Converter<T> generateConverter(Class<T> clazz) {
+    private <T, A extends Annotation> Converter<T> generateConverter(Class<T> clazz) {
         try {
             for (Annotation a : clazz.getAnnotations()) {
                 final ConverterFactoryClass factoryClass
                     = a.annotationType().getAnnotation(
                         Convert.ConverterFactoryClass.class);
                 if (factoryClass != null) {
-                    // FIXME: cache these?
-                    final ConverterFactory factoryInstance
-                        = factoryClass.value().newInstance();
-                    Converter<T> res = factoryInstance.converter(clazz, a);
-                    assert res.getResultClass().equals(clazz);
-                    return res;
+                    return getMethod(clazz, a, factoryClass);
                 }
             }
             throw new ConvertReflectionException(clazz,
@@ -80,5 +75,19 @@ public class Registry {
         } catch (InstantiationException e) {
             throw new ConvertReflectionException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T, A extends Annotation> Converter<T> getMethod(
+        Class<T> clazz,
+        A a,
+        ConverterFactoryClass factoryClass)
+        throws InstantiationException, IllegalAccessException {
+        // FIXME: cache these?
+        final ConverterFactory<A> factoryInstance
+            = (ConverterFactory<A>) factoryClass.value().newInstance();
+        Converter<T> res = factoryInstance.converter(clazz, a);
+        assert res.getResultClass().equals(clazz);
+        return res;
     }
 }

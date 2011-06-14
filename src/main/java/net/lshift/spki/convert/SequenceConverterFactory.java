@@ -1,16 +1,13 @@
 package net.lshift.spki.convert;
 
-import java.lang.annotation.Annotation;
-
 import net.lshift.spki.convert.Convert.SequenceConverted;
 
 public class SequenceConverterFactory
-    implements ConverterFactory {
+    implements ConverterFactory<Convert.SequenceConverted> {
 
     @Override
-    public <T> Converter<T> converter(Class<T> c, Annotation a) {
-        SequenceConverted aa = (Convert.SequenceConverted) a;
+    public <T> Converter<T> converter(Class<T> c, Convert.SequenceConverted a) {
+        SequenceConverted aa = a;
         return new SequenceConverter<T>(c, aa.value());
     }
-
 }

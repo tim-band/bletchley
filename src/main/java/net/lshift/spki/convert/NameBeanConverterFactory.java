@@ -1,19 +1,15 @@
 package net.lshift.spki.convert;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.convert.Convert.ByName;
-
 public class NameBeanConverterFactory
-implements ConverterFactory
+implements ConverterFactory<Convert.ByName>
 {
-    public <T> Converter<T> converter(Class<T> clazz, Annotation a) {
-        ByName aa = (Convert.ByName)a;
+    public <T> Converter<T> converter(Class<T> clazz, Convert.ByName a) {
         List<FieldConvertInfo> fields = getFieldMap(clazz);
-        return new NameBeanConverter<T>(clazz, aa.value(), fields);
+        return new NameBeanConverter<T>(clazz, a.value(), fields);
     }
 
     private <T> List<FieldConvertInfo> getFieldMap(Class<T> clazz) {
