@@ -11,7 +11,7 @@ public class CanonicalSpkiInputStream extends SpkiInputStream {
     private final InputStream is;
     private int atomBytes;
 
-    public CanonicalSpkiInputStream(InputStream is) {
+    public CanonicalSpkiInputStream(final InputStream is) {
         this.is = is;
     }
 
@@ -19,7 +19,7 @@ public class CanonicalSpkiInputStream extends SpkiInputStream {
     public TokenType doNext()
         throws IOException,
             ParseException {
-        int next = is.read();
+        final int next = is.read();
         switch (next) {
         case '(':
             return TokenType.OPENPAREN;
@@ -33,7 +33,7 @@ public class CanonicalSpkiInputStream extends SpkiInputStream {
         }
     }
 
-    private int readInteger(int next)
+    private int readInteger(final int next)
         throws ParseException,
             IOException {
         int c = next;
@@ -61,8 +61,8 @@ public class CanonicalSpkiInputStream extends SpkiInputStream {
     public byte[] doAtomBytes()
         throws IOException,
             ParseException {
-        byte[] res = new byte[atomBytes];
-        int c = is.read(res);
+        final byte[] res = new byte[atomBytes];
+        final int c = is.read(res);
         if (c != atomBytes) {
             invalidate();
             throw new ParseException("Failed to read enough bytes");

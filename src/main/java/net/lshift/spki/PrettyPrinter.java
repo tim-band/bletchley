@@ -18,13 +18,13 @@ public class PrettyPrinter extends SpkiOutputStream {
     private int indent = 0;
     private boolean firstAtom = false;
 
-    public PrettyPrinter(PrintStream ps) {
+    public PrettyPrinter(final PrintStream ps) {
         super();
         this.ps = ps;
     }
 
     @Override
-    public void atom(byte[] bytes, int off, int len)
+    public void atom(final byte[] bytes, final int off, final int len)
         throws IOException {
         if (firstAtom) {
             firstAtom = false;
@@ -88,7 +88,7 @@ public class PrettyPrinter extends SpkiOutputStream {
         }
     }
 
-    private static boolean isText(byte[] bytes, int off, int len)
+    private static boolean isText(final byte[] bytes, final int off, final int len)
     {
         if (len ==  0) {
             return false;
@@ -103,7 +103,7 @@ public class PrettyPrinter extends SpkiOutputStream {
         return true;
     }
 
-    public static void prettyPrint(PrintStream out, InputStream read)
+    public static void prettyPrint(final PrintStream out, final InputStream read)
         throws IOException,
             ParseException
     {
@@ -111,18 +111,18 @@ public class PrettyPrinter extends SpkiOutputStream {
     }
 
     private static void prettyPrint(
-        PrintStream out,
-        SpkiInputStream stream) throws IOException, ParseException {
+        final PrintStream out,
+        final SpkiInputStream stream) throws IOException, ParseException {
         copyStream(stream, new PrettyPrinter(out));
     }
 
-    public static String prettyPrint(InputStream read)
+    public static String prettyPrint(final InputStream read)
         throws ParseException
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             prettyPrint(new PrintStream(baos), read);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // should not be possible
             throw new RuntimeException(e);
         }
@@ -130,10 +130,10 @@ public class PrettyPrinter extends SpkiOutputStream {
     }
 
     public static void copyStream(
-        SpkiInputStream input,
-        SpkiOutputStream output) throws IOException, ParseException {
+        final SpkiInputStream input,
+        final SpkiOutputStream output) throws IOException, ParseException {
         for (;;) {
-            TokenType token = input.next();
+            final TokenType token = input.next();
             switch (token) {
             case ATOM:
                 output.atom(input.atomBytes());

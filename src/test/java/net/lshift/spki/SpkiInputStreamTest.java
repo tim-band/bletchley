@@ -13,16 +13,16 @@ public class SpkiInputStreamTest
 {
     public SpkiInputStream sis;
 
-    public void setInput(byte [] bytes) {
+    public void setInput(final byte [] bytes) {
         sis = new CanonicalSpkiInputStream(
             new ByteArrayInputStream(bytes));
     }
 
-    public static byte[] s(String string) {
+    public static byte[] s(final String string) {
         return string.getBytes(Constants.ASCII);
     }
 
-    public void setInput(String string) {
+    public void setInput(final String string) {
         setInput(s(string));
     }
 
@@ -84,7 +84,7 @@ public class SpkiInputStreamTest
         setInput("34a3:foo");
         try {
             sis.next();
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             // ignore it
         }
         sis.atomBytes();

@@ -15,8 +15,8 @@ public class UUIDConverter
     protected Class<String> getStepClass() { return String.class; }
 
     @Override
-    protected String stepIn(UUID o) { return o.toString(); }
+    protected String stepIn(final UUID o) { return o.toString(); }
 
     @Override
-    protected UUID stepOut(String s) { return UUID.fromString(s); }
+    protected UUID stepOut(final String s) { return UUID.fromString(s); }
 }

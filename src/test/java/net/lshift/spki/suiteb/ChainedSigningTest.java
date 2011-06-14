@@ -18,11 +18,11 @@ public class ChainedSigningTest
     public void testSequenceBasedSigningAndVerification() {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
         privateKey = roundTrip(PrivateSigningKey.class, privateKey);
-        PublicSigningKey publicKey = privateKey.getPublicKey();
-        SimpleMessage message = new SimpleMessage(
+        final PublicSigningKey publicKey = privateKey.getPublicKey();
+        final SimpleMessage message = new SimpleMessage(
             ChainedSigningTest.class.getCanonicalName(),
             "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
-        Sequence subsequence = SequenceUtils.sequence(
+        final Sequence subsequence = SequenceUtils.sequence(
             DigestSha384.digest(message),
             publicKey.keyId // Some rubbish
         );
@@ -33,9 +33,9 @@ public class ChainedSigningTest
             message);
         sequence = roundTrip(Sequence.class, sequence);
 
-        InferenceEngine inference = new InferenceEngine();
+        final InferenceEngine inference = new InferenceEngine();
         inference.process(sequence);
-        List<SequenceItem> signedBy = inference.getSignedBy(publicKey.getKeyId());
+        final List<SequenceItem> signedBy = inference.getSignedBy(publicKey.getKeyId());
         assertEquals(1, signedBy.size());
         assertEquals(message, signedBy.get(0));
     }

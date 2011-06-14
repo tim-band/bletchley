@@ -12,11 +12,11 @@ public final class Slist implements Sexp {
     private final Atom head;
     private final List<Sexp> sparts;
 
-    public Slist(Atom head, Sexp[] sparts) {
+    public Slist(final Atom head, final Sexp[] sparts) {
         super();
         assert head != null;
         assert sparts != null;
-        for (Sexp part: sparts) {
+        for (final Sexp part: sparts) {
             assert part != null;
         }
         this.head = head;
@@ -43,11 +43,11 @@ public final class Slist implements Sexp {
     }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        Slist other = (Slist) obj;
+        final Slist other = (Slist) obj;
         if (head == null) {
             if (other.head != null) return false;
         } else if (!head.equals(other.head)) return false;
@@ -60,10 +60,10 @@ public final class Slist implements Sexp {
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append('(');
         sb.append(head.toString());
-        for (Sexp s: sparts) {
+        for (final Sexp s: sparts) {
             sb.append(' ');
             sb.append(s.toString());
         }

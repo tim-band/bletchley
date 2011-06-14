@@ -12,7 +12,7 @@ public class FileOpenable
     implements Openable {
     private final File file;
 
-    public FileOpenable(File file) {
+    public FileOpenable(final File file) {
         super();
         this.file = file;
     }

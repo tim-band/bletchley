@@ -15,17 +15,17 @@ import net.lshift.spki.SpkiInputStream.TokenType;
 public class NameBeanConverter<T>
     extends BeanFieldConverter<T> {
     public NameBeanConverter(
-        Class<T> clazz,
-        String name,
-        List<FieldConvertInfo> fields) {
+        final Class<T> clazz,
+        final String name,
+        final List<FieldConvertInfo> fields) {
         super(clazz, name, fields);
     }
 
     @Override
     protected void writeField(
-        ConvertOutputStream out,
-        FieldConvertInfo field,
-        Object property)
+        final ConvertOutputStream out,
+        final FieldConvertInfo field,
+        final Object property)
         throws IOException {
         out.beginSexp();
         out.atom(field.hyphenatedName);
@@ -34,16 +34,16 @@ public class NameBeanConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(ConvertInputStream in)
+    protected Map<Field, Object> readFields(final ConvertInputStream in)
         throws ParseException,
             IOException {
-        Map<Field, Object> res = new HashMap<Field, Object>();
+        final Map<Field, Object> res = new HashMap<Field, Object>();
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
         for (int i = 0; i < fields.size(); i++) {
             in.nextAssertType(TokenType.OPENPAREN);
             in.nextAssertType(TokenType.ATOM);
-            FieldConvertInfo field = getField(in.atomBytes());
+            final FieldConvertInfo field = getField(in.atomBytes());
             if (res.containsKey(field.field)) {
                 throw new ParseException("Repeated field");
             }
@@ -54,10 +54,10 @@ public class NameBeanConverter<T>
         return res;
     }
 
-    private FieldConvertInfo getField(byte[] bytes)
+    private FieldConvertInfo getField(final byte[] bytes)
         throws ParseException {
-        String string = ConvertUtils.stringOrNull(bytes);
-        for (FieldConvertInfo field: fields) {
+        final String string = ConvertUtils.stringOrNull(bytes);
+        for (final FieldConvertInfo field: fields) {
             if (field.hyphenatedName.equals(string)) {
                 return field;
             }

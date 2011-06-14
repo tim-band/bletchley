@@ -15,13 +15,13 @@ public abstract class StepConverter<TResult, TStep>
     }
 
     @Override
-    public void write(ConvertOutputStream out, TResult o)
+    public void write(final ConvertOutputStream out, final TResult o)
         throws IOException {
         out.write(getStepClass(), stepIn(o));
     }
 
     @Override
-    public TResult read(ConvertInputStream in)
+    public TResult read(final ConvertInputStream in)
         throws ParseException,
             IOException {
         return stepOut(in.read(getStepClass()));

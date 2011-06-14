@@ -17,15 +17,15 @@ import org.bouncycastle.math.ec.ECPoint;
 public abstract class EcPublicKey {
     public final ECPoint point;
 
-    public EcPublicKey(ECPoint point) {
+    public EcPublicKey(final ECPoint point) {
         this.point = point;
     }
 
-    public EcPublicKey(ECPublicKeyParameters params) {
+    public EcPublicKey(final ECPublicKeyParameters params) {
         this(params.getQ());
     }
 
-    public EcPublicKey(AsymmetricCipherKeyPair keyPair) {
+    public EcPublicKey(final AsymmetricCipherKeyPair keyPair) {
         this((ECPublicKeyParameters) keyPair.getPublic());
     }
 

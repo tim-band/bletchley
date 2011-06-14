@@ -20,13 +20,13 @@ public class CliTest
     {
         final byte[] messageBytes
             = "the magic words are squeamish ossifrage".getBytes();
-        Openable sPrivate = new ByteOpenable();
-        Openable sPublic = new ByteOpenable();
-        Openable ePrivate = new ByteOpenable();
-        Openable ePublic = new ByteOpenable();
-        Openable message = new ByteOpenable();
-        Openable packet = new ByteOpenable();
-        Openable result = new ByteOpenable();
+        final Openable sPrivate = new ByteOpenable();
+        final Openable sPublic = new ByteOpenable();
+        final Openable ePrivate = new ByteOpenable();
+        final Openable ePublic = new ByteOpenable();
+        final Openable message = new ByteOpenable();
+        final Openable packet = new ByteOpenable();
+        final Openable result = new ByteOpenable();
 
         Cli.main("genSigningKey", sPrivate);
         Cli.main("getPublicSigningKey", sPrivate, sPublic);
@@ -38,7 +38,7 @@ public class CliTest
             sPrivate, message, ePublic, packet);
         Cli.main("decryptSignedMessage",
             ePrivate, sPublic, packet, result);
-        byte[] resultBytes = OpenableUtils.readBytes(result);
+        final byte[] resultBytes = OpenableUtils.readBytes(result);
         assertArrayEquals(messageBytes, resultBytes);
     }
 }

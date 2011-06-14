@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EncryptionCache {
-    private Map<DigestSha384, EncryptionSetup> cache = new HashMap<DigestSha384, EncryptionSetup>();
+    private final Map<DigestSha384, EncryptionSetup> cache = new HashMap<DigestSha384, EncryptionSetup>();
 
     public synchronized EncryptionSetup setupEncrypt(
-        PublicEncryptionKey publicKey) {
+        final PublicEncryptionKey publicKey) {
         EncryptionSetup res = cache.get(publicKey.getKeyId());
         if (res == null) {
             res = publicKey.setupEncrypt();

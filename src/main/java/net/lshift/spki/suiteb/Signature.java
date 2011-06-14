@@ -16,9 +16,9 @@ public class Signature implements SequenceItem {
     public final EcdsaSignature rawSignature;
 
     public Signature(
-        DigestSha384 digest,
-        DigestSha384 keyId,
-        EcdsaSignature rawSignature
+        final DigestSha384 digest,
+        final DigestSha384 keyId,
+        final EcdsaSignature rawSignature
     ) {
         this.digest = digest;
         this.keyId = keyId;

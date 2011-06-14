@@ -12,13 +12,13 @@ class FieldConvertInfo {
     public final String hyphenatedName;
     public final Field field;
 
-    public FieldConvertInfo(Field field)
+    public FieldConvertInfo(final Field field)
         throws SecurityException {
         super();
         this.field = field;
         this.field.setAccessible(true);
         this.name = field.getName();
-        String[] c = StringUtils.splitByCharacterTypeCamelCase(name);
+        final String[] c = StringUtils.splitByCharacterTypeCamelCase(name);
         for (int i = 0; i < c.length; i++) {
             c[i] = StringUtils.lowerCase(c[i]);
         }

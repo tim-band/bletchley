@@ -8,7 +8,7 @@ import java.util.Arrays;
 public final class Atom implements Sexp {
     private final byte[] bytes;
 
-    public Atom(byte[] bytes) {
+    public Atom(final byte[] bytes) {
         super();
         assert bytes != null;
         this.bytes = bytes;
@@ -27,14 +27,14 @@ public final class Atom implements Sexp {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Atom other = (Atom) obj;
+        final Atom other = (Atom) obj;
         if (!Arrays.equals(bytes, other.bytes))
             return false;
         return true;
@@ -42,9 +42,9 @@ public final class Atom implements Sexp {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append('"');
-        for (byte b: bytes) {
+        for (final byte b: bytes) {
             if (Character.isLetterOrDigit(b) || b == (byte) '-') {
                 sb.append((char) b);
             } else {

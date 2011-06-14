@@ -9,7 +9,7 @@ public class ConvertException
     extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public ConvertException(String message) {
+    public ConvertException(final String message) {
         super(message);
     }
 
@@ -17,11 +17,11 @@ public class ConvertException
         super();
     }
 
-    public ConvertException(String message, Throwable cause) {
+    public ConvertException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public ConvertException(Throwable cause) {
+    public ConvertException(final Throwable cause) {
         super(cause);
     }
 }

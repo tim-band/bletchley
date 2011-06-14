@@ -20,7 +20,7 @@ public class PrivateSigningKey {
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();
 
-    private PrivateSigningKey(AsymmetricCipherKeyPair keyPair) {
+    private PrivateSigningKey(final AsymmetricCipherKeyPair keyPair) {
         super();
         this.keyPair = keyPair;
         signer.init(true, keyPair.getPrivate());
@@ -34,17 +34,17 @@ public class PrivateSigningKey {
         return new PrivateSigningKey(Ec.generate());
     }
 
-    public EcdsaSignature rawSignature(DigestSha384 digest) {
-        BigInteger[] signature = signer.generateSignature(digest.getBytes());
+    public EcdsaSignature rawSignature(final DigestSha384 digest) {
+        final BigInteger[] signature = signer.generateSignature(digest.getBytes());
         return new EcdsaSignature(signature[0], signature[1]);
     }
 
-    public SequenceItem signDigest(DigestSha384 digest) {
+    public SequenceItem signDigest(final DigestSha384 digest) {
         return new Signature(digest, getPublicKey().getKeyId(),
             rawSignature(digest));
     }
 
-    public SequenceItem sign(SequenceItem item) {
+    public SequenceItem sign(final SequenceItem item) {
         return signDigest(DigestSha384.digest(item));
     }
 
@@ -62,13 +62,13 @@ public class PrivateSigningKey {
 
         @SuppressWarnings("synthetic-access")
         @Override
-        protected EcdsaPrivateKey stepIn(PrivateSigningKey o) {
+        protected EcdsaPrivateKey stepIn(final PrivateSigningKey o) {
             return new EcdsaPrivateKey(o.keyPair);
         }
 
         @SuppressWarnings("synthetic-access")
         @Override
-        protected PrivateSigningKey stepOut(EcdsaPrivateKey s)
+        protected PrivateSigningKey stepOut(final EcdsaPrivateKey s)
             throws ParseException {
             return new PrivateSigningKey(s.getKeypair());
         }

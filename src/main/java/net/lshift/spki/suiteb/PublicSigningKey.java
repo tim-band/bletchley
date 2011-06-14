@@ -19,12 +19,12 @@ public class PublicSigningKey
     implements SequenceItem {
     private final ECDSASigner signer = new ECDSASigner();
 
-    PublicSigningKey(CipherParameters publicKey) {
+    PublicSigningKey(final CipherParameters publicKey) {
         super(publicKey);
         signer.init(false, publicKey);
     }
 
-    public boolean validate(DigestSha384 digest, EcdsaSignature sigVal) {
+    public boolean validate(final DigestSha384 digest, final EcdsaSignature sigVal) {
         return signer.verifySignature(digest.getBytes(), sigVal.r, sigVal.s);
     }
 
@@ -42,12 +42,12 @@ public class PublicSigningKey
         }
 
         @Override
-        protected EcdsaPublicKey stepIn(PublicSigningKey o) {
+        protected EcdsaPublicKey stepIn(final PublicSigningKey o) {
             return new EcdsaPublicKey(o.publicKey);
         }
 
         @Override
-        protected PublicSigningKey stepOut(EcdsaPublicKey s)
+        protected PublicSigningKey stepOut(final EcdsaPublicKey s)
             throws ParseException {
             return new PublicSigningKey(s.getParameters());
         }

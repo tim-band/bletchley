@@ -18,9 +18,9 @@ public class EcdhSharedSecret {
     public final BigInteger sharedSecret;
 
     public EcdhSharedSecret(
-        ECPoint receiverKey,
-        ECPoint senderKey,
-        BigInteger sharedSecret
+        final ECPoint receiverKey,
+        final ECPoint senderKey,
+        final BigInteger sharedSecret
     ) {
         super();
         this.receiverKey = receiverKey;

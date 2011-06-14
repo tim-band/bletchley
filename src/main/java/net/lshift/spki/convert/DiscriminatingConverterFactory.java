@@ -6,7 +6,7 @@ public class DiscriminatingConverterFactory
     implements ConverterFactory<Discriminated>
 {
     @SuppressWarnings("unchecked")
-    public <T> Converter<T> converter(Class<T> c, Discriminated a) {
+    public <T> Converter<T> converter(final Class<T> c, final Discriminated a) {
         return new DiscriminatingConverter<T>(
             c, (Class<? extends T>[]) a.value());
     }

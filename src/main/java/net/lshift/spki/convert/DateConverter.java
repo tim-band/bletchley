@@ -16,15 +16,15 @@ public class DateConverter
     protected Class<String> getStepClass() { return String.class; }
 
     @Override
-    protected String stepIn(Date o) {
+    protected String stepIn(final Date o) {
         return Constants.DATE_FORMAT.format(o);
     }
 
     @Override
-    protected Date stepOut(String o) {
+    protected Date stepOut(final String o) {
         try {
             return Constants.DATE_FORMAT.parse(o);
-        } catch (java.text.ParseException e) {
+        } catch (final java.text.ParseException e) {
             throw new ConvertException(e);
         }
     }

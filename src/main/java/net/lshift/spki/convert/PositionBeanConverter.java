@@ -15,29 +15,29 @@ import net.lshift.spki.SpkiInputStream.TokenType;
 public class PositionBeanConverter<T>
     extends BeanFieldConverter<T> {
     public PositionBeanConverter(
-        Class<T> clazz,
-        String name,
-        List<FieldConvertInfo> fields) {
+        final Class<T> clazz,
+        final String name,
+        final List<FieldConvertInfo> fields) {
         super(clazz, name, fields);
     }
 
     @Override
     protected void writeField(
-        ConvertOutputStream out,
-        FieldConvertInfo field,
-        Object property)
+        final ConvertOutputStream out,
+        final FieldConvertInfo field,
+        final Object property)
         throws IOException {
         out.writeUnchecked(field.field.getType(), property);
     }
 
     @Override
-    protected Map<Field, Object> readFields(ConvertInputStream in)
+    protected Map<Field, Object> readFields(final ConvertInputStream in)
         throws ParseException,
             IOException {
-        Map<Field, Object> res = new HashMap<Field, Object>(fields.size());
+        final Map<Field, Object> res = new HashMap<Field, Object>(fields.size());
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);
-        for (FieldConvertInfo f: fields) {
+        for (final FieldConvertInfo f: fields) {
             res.put(f.field, in.read(f.field.getType()));
         }
         in.nextAssertType(TokenType.CLOSEPAREN);

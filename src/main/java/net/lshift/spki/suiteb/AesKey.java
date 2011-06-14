@@ -27,22 +27,22 @@ public class AesKey implements SequenceItem {
     private AesKeyId keyId;
 
     public AesKey(
-        byte[] key
+        final byte[] key
     ) {
         this.key = key;
     }
 
     private AesKeyId genKeyId() {
         try {
-            GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+            final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, KEYID_AD, KEYID_AD));
-            byte[] ciphertext = new byte[gcm.getOutputSize(ZERO_BYTES.length)];
-            int resp = gcm.processBytes(ZERO_BYTES, 0, ZERO_BYTES.length,
+            final byte[] ciphertext = new byte[gcm.getOutputSize(ZERO_BYTES.length)];
+            final int resp = gcm.processBytes(ZERO_BYTES, 0, ZERO_BYTES.length,
                 ciphertext, 0);
             gcm.doFinal(ciphertext, resp);
             return new AesKeyId(ciphertext);
-        } catch (InvalidCipherTextException e) {
+        } catch (final InvalidCipherTextException e) {
             throw new RuntimeException(e);
         }
     }
@@ -54,38 +54,38 @@ public class AesKey implements SequenceItem {
         return keyId;
     }
 
-    public AesPacket encrypt(SequenceItem message) {
+    public AesPacket encrypt(final SequenceItem message) {
         try {
-            byte[] nonce = Ec.randomBytes(12);
-            GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+            final byte[] nonce = Ec.randomBytes(12);
+            final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, nonce, ZERO_BYTES));
-            byte[] plaintext =
+            final byte[] plaintext =
                 ConvertUtils.toBytes(SequenceItem.class, message);
-            byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
-            int resp = gcm.processBytes(plaintext, 0, plaintext.length,
+            final byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
+            final int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);
             gcm.doFinal(ciphertext, resp);
             return new AesPacket(getKeyId(), nonce, ciphertext);
-        } catch (InvalidCipherTextException e) {
+        } catch (final InvalidCipherTextException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public SequenceItem decrypt(AesPacket packet)
+    public SequenceItem decrypt(final AesPacket packet)
         throws InvalidCipherTextException,
             ParseException {
         try {
-            GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+            final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
             gcm.init(false, new AEADParameters(
                 new KeyParameter(key), 128, packet.nonce, ZERO_BYTES));
-            byte[] newtext = new byte[
+            final byte[] newtext = new byte[
                 gcm.getOutputSize(packet.ciphertext.length)];
-            int pp = gcm.processBytes(packet.ciphertext, 0,
+            final int pp = gcm.processBytes(packet.ciphertext, 0,
                 packet.ciphertext.length, newtext, 0);
             gcm.doFinal(newtext, pp);
             return ConvertUtils.fromBytes(SequenceItem.class, newtext);
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             throw new RuntimeException(e);
         }
     }
