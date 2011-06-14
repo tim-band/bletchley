@@ -9,7 +9,7 @@ public class UUIDConverter
     extends StepConverter<UUID, String>
 {
     @Override
-    protected Class<UUID> getResultClass() { return UUID.class; }
+    public Class<UUID> getResultClass() { return UUID.class; }
 
     @Override
     protected Class<String> getStepClass() { return String.class; }

@@ -1,11 +1,10 @@
 package net.lshift.spki.convert;
 
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lshift.spki.sexpform.Sexp;
+import net.lshift.spki.convert.Convert.ConverterFactoryClass;
 
 /**
  * Registry of SExp converters.  If a class implements the Convertible
@@ -15,10 +14,15 @@ import net.lshift.spki.sexpform.Sexp;
 public class Registry {
     public static final Registry REGISTRY = new Registry();
 
+    protected Registry() {
+        // Do nothing; this is here only to prevent anyone else creating one.
+    }
+
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 
-    public synchronized <T> void register(Class<T> clazz, Converter<T> converter) {
+    private synchronized <T> void register(
+        Class<T> clazz, Converter<T> converter) {
         Converter<?> already = converterMap.get(clazz);
         if (already != null) {
             assert already.equals(converter);
@@ -27,40 +31,57 @@ public class Registry {
         }
     }
 
+    public static <T> void register(Converter<T> converter) {
+        REGISTRY.register(converter.getResultClass(), converter);
+    }
+
     static {
-        REGISTRY.register(Sexp.class, new SexpConverter());
-        REGISTRY.register(byte[].class, new ByteArrayConverter());
-        REGISTRY.register(String.class, new StringConverter());
-        REGISTRY.register(BigInteger.class, new BigIntegerConverter());
-        new DateConverter().registerSelf();
-        new UUIDConverter().registerSelf();
+        register(new SexpConverter());
+        register(new ByteArrayConverter());
+        register(new StringConverter());
+        register(new BigIntegerConverter());
+        register(new DateConverter());
+        register(new UUIDConverter());
     }
 
     @SuppressWarnings("unchecked")
     public synchronized <T> Converter<T> getConverter(Class<T> clazz) {
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
-            if (!Convertible.class.isAssignableFrom(clazz)) {
-                throw new ConvertException("Don't know how to serialize class:"
-                    + clazz.getCanonicalName());
-            }
             try {
-                // Should be a static method
-                res = (Converter<T>) clazz.getMethod(
-                    "getConverter", Class.class).invoke(null, clazz);
+                final ConverterFactory factoryInstance
+                    = getConverterFactory(clazz).value().newInstance();
+                res = factoryInstance.converter(clazz);
+                assert res.getResultClass().equals(clazz);
             } catch (SecurityException e) {
-                throw new ConvertReflectionException(e);
-            } catch (NoSuchMethodException e) {
                 throw new ConvertReflectionException(e);
             } catch (IllegalArgumentException e) {
                 throw new ConvertReflectionException(e);
             } catch (IllegalAccessException e) {
                 throw new ConvertReflectionException(e);
-            } catch (InvocationTargetException e) {
+            } catch (InstantiationException e) {
                 throw new ConvertReflectionException(e);
             }
             converterMap.put(clazz, res);
         }
         return res;
+    }
+
+    private <T> ConverterFactoryClass getConverterFactory(
+        Class<T> clazz) {
+        ConverterFactoryClass factoryClass
+            = clazz.getAnnotation(Convert.ConverterFactoryClass.class);
+        if (factoryClass != null) {
+            return factoryClass;
+        }
+        for (Annotation a: clazz.getAnnotations()) {
+            factoryClass = a.annotationType().getAnnotation(
+                Convert.ConverterFactoryClass.class);
+            if (factoryClass != null) {
+                return factoryClass;
+            }
+        }
+        throw new ConvertReflectionException(
+            "Could not resolve converter for " + clazz.getName());
     }
 }

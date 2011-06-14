@@ -12,6 +12,14 @@ import net.lshift.spki.ParseException;
  */
 public class BigIntegerConverter
     implements Converter<BigInteger> {
+    // Not a sexp converter, has no name
+    @Override public String getName() { return null; }
+
+    @Override
+    public Class<BigInteger> getResultClass() {
+        return BigInteger.class;
+    }
+
     @Override
     public void write(ConvertOutputStream out, BigInteger o)
         throws IOException {

@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SequenceConversion;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
@@ -24,7 +23,7 @@ public class SequenceSigningTest
             SequenceSigningTest.class.getCanonicalName(),
             "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
         Sequence sequence = SequenceUtils.sequence(
-            publicKey.pack(),
+            publicKey,
             privateKey.sign(message),
             message);
         sequence = roundTrip(Sequence.class, sequence);
@@ -36,7 +35,4 @@ public class SequenceSigningTest
         assertEquals(message, signedBy.get(0));
     }
 
-    static {
-        SequenceConversion.ensureInstalled();
-    }
 }

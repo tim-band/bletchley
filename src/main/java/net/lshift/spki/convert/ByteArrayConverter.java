@@ -11,6 +11,14 @@ import net.lshift.spki.ParseException;
  */
 public class ByteArrayConverter
     implements Converter<byte[]> {
+    // Not a sexp converter, has no name
+    @Override public String getName() { return null; }
+
+    @Override
+    public Class<byte[]> getResultClass() {
+        return byte[].class;
+    }
+
     @Override
     public void write(ConvertOutputStream out, byte[] o)
         throws IOException {

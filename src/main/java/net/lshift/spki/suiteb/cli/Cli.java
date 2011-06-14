@@ -21,7 +21,6 @@ import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SequenceConversion;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
@@ -227,9 +226,5 @@ public class Cli {
             ex.printStackTrace();
             System.exit(2);
         }
-    }
-
-    static {
-        SequenceConversion.ensureInstalled();
     }
 }
