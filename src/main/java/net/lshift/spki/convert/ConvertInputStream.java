@@ -45,6 +45,12 @@ public class ConvertInputStream
         }
     }
 
+    @Override
+    public void close()
+        throws IOException {
+        delegate.close();
+    }
+
     public <T> T read(final Class<T> clazz)
         throws ParseException,
             IOException {

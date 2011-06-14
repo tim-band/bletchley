@@ -69,4 +69,9 @@ public class CanonicalSpkiInputStream extends SpkiInputStream {
         }
         return res;
     }
+
+    @Override
+    public void close() throws IOException {
+        is.close();
+    }
 }

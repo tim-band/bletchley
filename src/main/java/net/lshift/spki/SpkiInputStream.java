@@ -1,12 +1,12 @@
 package net.lshift.spki;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
  * Interface representing a stream of SPKI tokens
  */
-public abstract class SpkiInputStream
-{
+public abstract class SpkiInputStream implements Closeable {
     public enum TokenType {
         ATOM,
         OPENPAREN,
