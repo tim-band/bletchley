@@ -35,6 +35,7 @@ public abstract class BeanConverter<T>
         return clazz;
     }
 
+    @Override
     public String getName() {
         return name;
     }
