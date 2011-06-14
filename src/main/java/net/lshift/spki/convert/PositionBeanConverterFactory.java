@@ -1,23 +1,19 @@
 package net.lshift.spki.convert;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.convert.Convert.ByPosition;
-
 public class PositionBeanConverterFactory
-implements ConverterFactory
+implements ConverterFactory<Convert.ByPosition>
 {
-    public <T> Converter<T> converter(final Class<T> clazz, final Annotation a) {
-        final ByPosition aa = (Convert.ByPosition) a;
+    public <T> Converter<T> converter(final Class<T> clazz, final Convert.ByPosition a) {
         final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
-        for (final String fname: aa.fields()) {
+        for (final String fname: a.fields()) {
             fields.add(new FieldConvertInfo(
                 getField(clazz, clazz, fname)));
-        }
-        return new PositionBeanConverter<T>(clazz, aa.name(), fields);
+            }
+        return new PositionBeanConverter<T>(clazz, a.name(), fields);
     }
 
     private <T> Field getField(

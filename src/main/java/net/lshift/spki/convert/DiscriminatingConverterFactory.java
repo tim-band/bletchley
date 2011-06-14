@@ -1,15 +1,13 @@
 package net.lshift.spki.convert;
 
-import java.lang.annotation.Annotation;
-
 import net.lshift.spki.convert.Convert.Discriminated;
 
 public class DiscriminatingConverterFactory
-    implements ConverterFactory
+    implements ConverterFactory<Discriminated>
 {
     @SuppressWarnings("unchecked")
-    public <T> Converter<T> converter(final Class<T> c, final Annotation a) {
+    public <T> Converter<T> converter(final Class<T> c, final Discriminated a) {
         return new DiscriminatingConverter<T>(
-            c, (Class<? extends T>[]) ((Discriminated)a).value());
+            c, (Class<? extends T>[]) a.value());
     }
 }

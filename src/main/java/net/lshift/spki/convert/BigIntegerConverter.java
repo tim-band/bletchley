@@ -33,5 +33,4 @@ public class BigIntegerConverter
         in.nextAssertType(ATOM);
         return new BigInteger(in.atomBytes());
     }
-
 }
