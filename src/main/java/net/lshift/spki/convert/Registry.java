@@ -59,22 +59,14 @@ public class Registry {
         return res;
     }
 
-    private <T> Converter<T> generateConverter(final Class<T> clazz) {
+    private <T, A extends Annotation> Converter<T> generateConverter(final Class<T> clazz) {
         try {
             for (final Annotation a : clazz.getAnnotations()) {
                 final ConverterFactoryClass factoryClass
                     = a.annotationType().getAnnotation(
                         Convert.ConverterFactoryClass.class);
                 if (factoryClass != null) {
-                    // FIXME: cache these?
-                    final ConverterFactory factoryInstance
-                        = factoryClass.value().newInstance();
-                    final Converter<T> res = factoryInstance.converter(clazz, a);
-                    if (!res.getResultClass().equals(clazz)) {
-                        throw new ConvertReflectionException(clazz,
-                            "Didn't get appropriate converter!");
-                    }
-                    return res;
+                    return getMethod(clazz, a, factoryClass);
                 }
             }
             throw new ConvertReflectionException(clazz,
@@ -84,5 +76,22 @@ public class Registry {
         } catch (final InstantiationException e) {
             throw new ConvertReflectionException(clazz, e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T, A extends Annotation> Converter<T> getMethod(
+        final Class<T> clazz,
+        final A a,
+        final ConverterFactoryClass factoryClass)
+        throws InstantiationException, IllegalAccessException {
+        // FIXME: cache these?
+        final ConverterFactory<A> factoryInstance
+            = (ConverterFactory<A>) factoryClass.value().newInstance();
+        final Converter<T> res = factoryInstance.converter(clazz, a);
+        if (!res.getResultClass().equals(clazz)) {
+            throw new ConvertReflectionException(clazz,
+                "Didn't get appropriate converter!");
+        }
+        return res;
     }
 }
