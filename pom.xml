@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.lshift</groupId>
   <artifactId>suiteb</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.2</version>
   <build>
       <plugins>
           <plugin>
@@ -80,7 +80,7 @@
     <snapshotRepository>
       <id>lshift-snapshot</id>
       <name>LShift Snapshot repository</name>
-      <url>http://mvn.lshift.net/snapshot</url>
+      <url>dav:http://mvn.lshift.net/snapshot</url>
     </snapshotRepository>
     <repository>
       <id>lshift</id>
