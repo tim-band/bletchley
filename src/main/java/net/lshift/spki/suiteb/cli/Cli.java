@@ -40,7 +40,7 @@ public class Cli {
     public static void prettyPrint(final Openable file)
         throws IOException,
             ParseException {
-        PrettyPrinter.prettyPrint(System.out, file.read());
+        PrettyPrinter.prettyPrint(new PrintWriter(System.out), file.read());
     }
 
     public static void genEncryptionKey(final Openable out)

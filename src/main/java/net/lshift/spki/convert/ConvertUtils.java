@@ -5,7 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 
@@ -99,11 +100,32 @@ public class ConvertUtils {
         }
     }
 
-    public static <T> void prettyPrint(final Class<T> clazz, final T o, final PrintStream ps)
+    public static <T> void prettyPrint(
+        final Class<T> clazz,
+        final T o,
+        final PrintWriter ps)
         throws IOException {
         final ConvertOutputStream out
             = new ConvertOutputStream(new PrettyPrinter(ps));
         out.write(clazz, o);
         out.close();
+    }
+
+    public static <T> String prettyPrint(final Class<T> clazz, final T o) {
+        StringWriter writer = new StringWriter();
+        try {
+            prettyPrint(clazz, o, new PrintWriter(writer));
+        } catch (final IOException e) {
+            // should not be possible
+            throw new RuntimeException(e);
+        }
+        return writer.toString();
+    }
+
+    public static <T> void prettyPrint(
+        Class<T> clazz,
+        T o,
+        OutputStream out) throws IOException {
+        prettyPrint(clazz, o, new PrintWriter(out));
     }
 }
