@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CharsetDecoder;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
@@ -20,16 +19,19 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  * Static utilities for conversion between SExps and objects.
  */
 public class ConvertUtils {
-    private static final CharsetDecoder UTF8_DECODER
-        = Constants.UTF8.newDecoder();
-
     public static byte[] bytes(final String s) {
         return s.getBytes(Constants.UTF8);
     }
 
+    private static final String decodeUtf8(final byte[] bytes)
+        throws CharacterCodingException {
+        return Constants.UTF8.newDecoder()
+            .decode(ByteBuffer.wrap(bytes)).toString();
+    }
+
     public static String string(final byte[] bytes) throws ParseException {
         try {
-            return UTF8_DECODER.decode(ByteBuffer.wrap(bytes)).toString();
+            return decodeUtf8(bytes);
         } catch (final CharacterCodingException e) {
             throw new ParseException("Cannot convert bytes to string", e);
         }
@@ -38,7 +40,7 @@ public class ConvertUtils {
     // Useful for comparison
     public static String stringOrNull(final byte[] bytes) {
         try {
-            return UTF8_DECODER.decode(ByteBuffer.wrap(bytes)).toString();
+            return decodeUtf8(bytes);
         } catch (final CharacterCodingException e) {
             return null;
         }
