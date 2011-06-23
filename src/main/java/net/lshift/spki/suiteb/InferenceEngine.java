@@ -1,9 +1,6 @@
 package net.lshift.spki.suiteb;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
@@ -151,7 +148,7 @@ public class InferenceEngine {
     }
 
     public List<SequenceItem> getSignedBy(final DigestSha384 keyId) {
-        return hasSigned.get(keyId);
+        return hasSigned.containsKey(keyId) ? hasSigned.get(keyId) : Collections.EMPTY_LIST;
     }
 
     private <K,V> void listPut(final Map<K,List<V>> map,
