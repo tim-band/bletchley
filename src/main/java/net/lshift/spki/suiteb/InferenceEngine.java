@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,7 +152,11 @@ public class InferenceEngine {
     }
 
     public List<SequenceItem> getSignedBy(final DigestSha384 keyId) {
-        return hasSigned.get(keyId);
+        final List<SequenceItem> res = hasSigned.get(keyId);
+        if (res != null) {
+            return res;
+        }
+        return Collections.emptyList();
     }
 
     private <K,V> void listPut(final Map<K,List<V>> map,

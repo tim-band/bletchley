@@ -1,26 +1,28 @@
 package net.lshift.spki;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import net.lshift.spki.SpkiInputStream.TokenType;
 
-import org.bouncycastle.util.encoders.Base64;
-import org.bouncycastle.util.encoders.Hex;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 
 /**
  * Pretty-print an SPKI S-expression.
  */
 public class PrettyPrinter extends SpkiOutputStream {
-    private final PrintStream ps;
+    private final PrintWriter pw;
     private int indent = 0;
     private boolean firstAtom = false;
 
-    public PrettyPrinter(final PrintStream ps) {
+    public PrettyPrinter(final PrintWriter pw) {
         super();
-        this.ps = ps;
+        this.pw = pw;
     }
 
     @Override
@@ -32,29 +34,31 @@ public class PrettyPrinter extends SpkiOutputStream {
             printPrefix();
         }
         if (isText(bytes, off, len)) {
-            ps.print("\"");
-            ps.write(bytes, off, len);
-            ps.println("\"");
+            pw.print("\"");
+            pw.print(Constants.ASCII.newDecoder()
+                .decode(ByteBuffer.wrap(bytes, off, len)).toString());
+            pw.println("\"");
         } else if (len < 10) {
-            ps.print("#");
-            Hex.encode(bytes, off, len, ps);
-            ps.println("#");
+            pw.print("#");
+            pw.print(Hex.encodeHexString(Arrays.copyOfRange(bytes, off, off + len)));
+            pw.println("#");
         } else {
-            ps.print("|");
-            Base64.encode(bytes, off, len, ps);
-            ps.println("|");
+            pw.print("|");
+            pw.print(Base64.encodeBase64String(Arrays.copyOfRange(bytes, off, off + len)));
+            pw.println("|");
         }
     }
+
 
     @Override
     public void beginSexp()
         throws IOException {
         if (firstAtom) {
-            ps.println();
+            pw.println();
             firstAtom = false;
         }
         printPrefix();
-        ps.print('(');
+        pw.print('(');
         indent += 1;
         firstAtom = true;
     }
@@ -63,7 +67,7 @@ public class PrettyPrinter extends SpkiOutputStream {
     public void endSexp()
         throws IOException {
         if (firstAtom) {
-            ps.println();
+            pw.println();
             firstAtom = false;
         }
         if (indent == 0) {
@@ -71,7 +75,7 @@ public class PrettyPrinter extends SpkiOutputStream {
         }
         indent -= 1;
         printPrefix();
-        ps.println(")");
+        pw.println(")");
     }
 
     @Override
@@ -84,7 +88,7 @@ public class PrettyPrinter extends SpkiOutputStream {
     private void printPrefix()
     {
         for (int i = 0; i < indent; i++) {
-            ps.print("    ");
+            pw.print("    ");
         }
     }
 
@@ -103,7 +107,7 @@ public class PrettyPrinter extends SpkiOutputStream {
         return true;
     }
 
-    public static void prettyPrint(final PrintStream out, final InputStream read)
+    public static void prettyPrint(final PrintWriter out, final InputStream read)
         throws IOException,
             ParseException
     {
@@ -111,7 +115,7 @@ public class PrettyPrinter extends SpkiOutputStream {
     }
 
     private static void prettyPrint(
-        final PrintStream out,
+        final PrintWriter out,
         final SpkiInputStream stream) throws IOException, ParseException {
         copyStream(stream, new PrettyPrinter(out));
     }
@@ -119,14 +123,14 @@ public class PrettyPrinter extends SpkiOutputStream {
     public static String prettyPrint(final InputStream read)
         throws ParseException
     {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        StringWriter writer = new StringWriter();
         try {
-            prettyPrint(new PrintStream(baos), read);
+            prettyPrint(new PrintWriter(writer), read);
         } catch (final IOException e) {
             // should not be possible
             throw new RuntimeException(e);
         }
-        return new String(baos.toByteArray(), Constants.ASCII);
+        return writer.toString();
     }
 
     public static void copyStream(
