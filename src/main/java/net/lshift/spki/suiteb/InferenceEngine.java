@@ -69,7 +69,7 @@ public class InferenceEngine {
         if (signer == null) {
             final DigestSha384 digest = DigestSha384.digest(item);
             signer = signedBy.get(digest);
-            if (signer != null) {
+            if (signer != null && LOG.isDebugEnabled()) {
                 LOG.debug("Signed object found, signer {} signed {}",
                     digestString(signer), digestString(digest));
                 LOG.debug(
@@ -157,13 +157,17 @@ public class InferenceEngine {
     public void process(final SimpleMessage message, final DigestSha384 signer) {
         messages.add(message);
         if (signer != null) {
-            LOG.debug("Found message signed by {}:\n{}",
-                digestString(signer),
-                ConvertUtils.prettyPrint(SimpleMessage.class, message));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Found message signed by {}:\n{}",
+                    digestString(signer),
+                    ConvertUtils.prettyPrint(SimpleMessage.class, message));
+            }
             listPut(hasSigned, signer, message);
         } else {
-            LOG.debug("Message has no known signer:\n{}",
-                ConvertUtils.prettyPrint(SimpleMessage.class, message));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Message has no known signer:\n{}",
+                    ConvertUtils.prettyPrint(SimpleMessage.class, message));
+            }
         }
     }
 
@@ -171,9 +175,11 @@ public class InferenceEngine {
         final AesKey key = aesKeys.get(packet.keyId);
         if (key != null) {
             final SequenceItem contents = key.decrypt(packet);
-            LOG.debug("Decrypted packet with key {}:\n{}",
-                bytesString(packet.keyId.keyId),
-                ConvertUtils.prettyPrint(SequenceItem.class, contents));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Decrypted packet with key {}:\n{}",
+                    bytesString(packet.keyId.keyId),
+                    ConvertUtils.prettyPrint(SequenceItem.class, contents));
+            }
             process(contents);
         } else {
             LOG.debug("Skipping packet encrypted with unknown key {}",
