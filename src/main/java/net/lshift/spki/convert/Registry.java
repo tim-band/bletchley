@@ -41,6 +41,8 @@ public class Registry {
         register(new StringConverter());
         register(new BigIntegerConverter());
         register(new DateConverter());
+        register(new URIConverter());
+        register(new URLConverter());
         register(new UUIDConverter());
     }
 
