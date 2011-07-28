@@ -31,8 +31,4 @@ public abstract class EcPrivateKey {
             d, Ec.DOMAIN_PARAMETERS);
         return new AsymmetricCipherKeyPair(pk, privk);
     }
-
-    static {
-        Point.ensureRegistered();
-    }
 }

@@ -9,11 +9,13 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ByteOpenable;
 import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.OpenableUtils;
+import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.suiteb.sexpstructs.Point;
 
 import org.bouncycastle.math.ec.ECPoint;
+import org.junit.Before;
 import org.junit.Test;
 
 public class PointTest extends ResetsRegistry {
@@ -27,12 +29,8 @@ public class PointTest extends ResetsRegistry {
         OpenableUtils.read(ECPoint.class, example);
     }
 
-//    @Before
-//    public void registerPoint() {
-//        Point.ensureRegistered();
-//    }
-
-    static {
-        Point.ensureRegistered();
+    @Before
+    public void registerPoint() {
+        Registry.getConverter(Point.class);
     }
 }

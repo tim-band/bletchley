@@ -62,4 +62,11 @@ public class Convert
     public @interface NeedsConverter {
         Class<? extends Converter<?>> value();
     }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE})
+    @HandlerClass(NeedsConvertHandler.class)
+    public @interface NeedsConvert {
+        Class<?> value();
+    }
 }

@@ -4,7 +4,6 @@ import java.math.BigInteger;
 
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertException;
-import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.StepConverter;
 import net.lshift.spki.suiteb.Ec;
 
@@ -15,7 +14,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for an ECPoint ie a point on an elliptic curve.
  */
-//@Convert.NeedsConverter(Point.ECPointConverter.class)
+@Convert.NeedsConverter(Point.ECPointConverter.class)
 @Convert.ByName("point")
 public class Point {
     public final BigInteger x;
@@ -58,13 +57,5 @@ public class Point {
             }
             return res;
         }
-    }
-
-    static {
-        Registry.register(new ECPointConverter());
-    }
-
-    public static void ensureRegistered() {
-        // Do nothing - just ensures the class is loaded and so registered
     }
 }

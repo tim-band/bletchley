@@ -9,6 +9,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for public sig verification keys
  */
+@Convert.NeedsConvert(Point.class)
 @Convert.ByPosition(name="suiteb-p384-ecdsa-public-key", fields={"point"})
 public class EcdsaPublicKey
     extends EcPublicKey {
