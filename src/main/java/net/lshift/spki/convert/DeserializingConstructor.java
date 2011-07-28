@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import sun.misc.Unsafe;
 
+@SuppressWarnings("restriction")
 public class DeserializingConstructor {
     private static final Unsafe unsafe;
     static {

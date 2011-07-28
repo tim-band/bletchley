@@ -26,6 +26,7 @@ public abstract class StepConverter<TResult, TStep>
         return stepOut(in.read(getStepClass()));
     }
 
+    @Override
     public abstract Class<TResult> getResultClass();
 
     protected abstract Class<TStep> getStepClass();

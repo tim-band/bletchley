@@ -7,6 +7,7 @@ import java.util.List;
 public class PositionBeanConverterFactory
 implements ConverterFactory<Convert.ByPosition>
 {
+    @Override
     public <T> Converter<T> converter(final Class<T> clazz, final Convert.ByPosition a) {
         final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
         for (final String fname: a.fields()) {

@@ -34,6 +34,7 @@ import com.sun.net.httpserver.HttpServer;
 /**
  * Command line interface to crypto functions
  */
+@SuppressWarnings("restriction")
 public class Cli {
     static final String CLI_MESSAGE = Cli.class.toString();
 

@@ -8,10 +8,10 @@ public class URIConverter
 {
 
     @Override
-    public Class<URI> getResultClass() { return URI.class; };
+    public Class<URI> getResultClass() { return URI.class; }
 
     @Override
-    protected Class<String> getStepClass() { return String.class; };
+    protected Class<String> getStepClass() { return String.class; }
 
     @Override
     protected URI stepOut(String s) throws ConvertException {

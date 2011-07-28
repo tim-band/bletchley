@@ -8,6 +8,7 @@ import java.util.List;
 public class NameBeanConverterFactory
 implements ConverterFactory<Convert.ByName>
 {
+    @Override
     public <T> Converter<T> converter(final Class<T> clazz, final Convert.ByName a) {
         final List<FieldConvertInfo> fields = getFieldMap(clazz);
         return new NameBeanConverter<T>(clazz, a.value(), fields);

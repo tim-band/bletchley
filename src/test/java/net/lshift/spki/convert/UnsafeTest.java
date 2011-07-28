@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import sun.misc.Unsafe;
 
-
+@SuppressWarnings("restriction")
 public class UnsafeTest {
     public static class TestClass {
         public final BigInteger foo;
@@ -53,9 +53,9 @@ public class UnsafeTest {
     public void canAccessUnsafe() throws Exception {
         final TestClass start = new TestClass(BigInteger.valueOf(3), 4);
         Unsafe unsafe = null;
-        final Field field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+        final Field field = Unsafe.class.getDeclaredField("theUnsafe");
         field.setAccessible(true);
-        unsafe = (sun.misc.Unsafe) field.get(null);
+        unsafe = (Unsafe) field.get(null);
         final Class<TestClass> clazz = TestClass.class;
         final Object p = unsafe.allocateInstance(clazz);
 
