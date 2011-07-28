@@ -3,15 +3,16 @@ package net.lshift.spki.suiteb.cli;
 import static net.lshift.spki.convert.OpenableUtils.read;
 import static net.lshift.spki.convert.OpenableUtils.write;
 
-import java.io.*;
-import java.net.InetSocketAddress;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.ByteOpenable;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
@@ -25,18 +26,11 @@ import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
-import org.apache.commons.io.IOUtils;
-
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-
 /**
  * Command line interface to crypto functions
  */
-@SuppressWarnings("restriction")
 public class Cli {
-    static final String CLI_MESSAGE = Cli.class.toString();
+    private static final String CLI_MESSAGE = Cli.class.toString();
 
     public static void prettyPrint(final Openable file)
         throws IOException,
@@ -160,65 +154,15 @@ public class Cli {
         }
     }
 
-    public static void serve(final int port, final String messageType, final PrivateEncryptionKey encryptionKey, final PublicSigningKey signingKey) throws Exception {
-        final HttpServer server = HttpServer.create(new InetSocketAddress(port), -1);
-        server.createContext("/decryptAndVerify", new HttpHandler() {
-            @Override
-            public void handle(final HttpExchange t) throws IOException {
-                final InputStream is = t.getRequestBody();
-                final ByteOpenable iso = new ByteOpenable();
-                iso.write().write(IOUtils.toByteArray(is));
-                final OutputStream os = t.getResponseBody();
-                if (!t.getRequestMethod().equals("POST")) {
-                    writeResponse(t, os, 400, "Expected POST request".getBytes("ASCII"));
-                    return;
-                }
-                final ByteOpenable oso = new ByteOpenable();
-                try {
-                    decryptSignedMessage(messageType, encryptionKey, signingKey, iso, oso);
-                    final byte[] ans = IOUtils.toByteArray(oso.read());
-                    writeResponse(t, os, 200, ans);
-                } catch (final Exception e) {
-                    final StringWriter sw = new StringWriter();
-                    e.printStackTrace(new PrintWriter(sw));
-                    writeResponse(t, os, 400,
-                            ("Could not decrypt and verify: " +
-                                    e.getClass().getName() + e.getMessage() + "\n" + sw.toString()).getBytes("ascii"));
-                }
-            }
-            void writeResponse(final HttpExchange t, final OutputStream os, final int responseCode, final byte[] ans) throws IOException {
-                t.sendResponseHeaders(responseCode, ans.length);
-                os.write(ans);
-                os.close();
-            }
-        });
-        server.setExecutor(null); // creates a default executor
-        server.start();
-        System.out.println("Running on port " + port);
-        System.out.flush();
-    }
-
     public static void main(final String[] args) {
-        String command = "<no valid command>";
+        Openable[] openables = new Openable[args.length-1];
+        for (int i = 0; i < args.length-1; i++) {
+            openables[i] = new FileOpenable(new File(args[i + 1]));
+        }
         try {
-            int i = 0;
-            command = args[i++];
-            if (command.equals("server")) {
-                final int port = Integer.parseInt(args[i++]);
-                final String messageType = args[i++];
-                final PrivateEncryptionKey encryptionKey = read(PrivateEncryptionKey.class, new FileOpenable(new File(args[i++])));
-                final PublicSigningKey signingKey = read(PublicSigningKey.class, new FileOpenable(new File(args[i++])));
-                serve(port, messageType, encryptionKey, signingKey);
-            } else {
-                final List<Openable> openables = new ArrayList<Openable>();
-                for (;i < args.length; i++) {
-                    openables.add(new FileOpenable(new File(args[i])));
-                }
-                main(command, openables.toArray(new Openable[0]));
-            }
-
+            main(args[0], openables);
         } catch (final Exception ex) {
-            System.err.println("Could not '" + command + "':");
+            System.err.println("Could not '" + args[0] + "':");
             ex.printStackTrace();
             System.exit(2);
         }
