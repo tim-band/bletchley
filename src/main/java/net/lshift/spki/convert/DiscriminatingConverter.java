@@ -1,7 +1,6 @@
 package net.lshift.spki.convert;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,22 +18,30 @@ public class DiscriminatingConverter<T>
     private final Class<T> superclass;
     private final Map<String, Class<? extends T>> nameMap
         = new HashMap<String, Class<? extends T>>();
-    private final Set<Class<? extends T>> classes;
+    private final Set<Class<? extends T>> classes
+        = new HashSet<Class<? extends T>>();
 
     public DiscriminatingConverter(
         final Class<T> superclass,
         final Class<? extends T>[] classes) {
         this.superclass = superclass;
-        this.classes  = new HashSet<Class<? extends T>>(
-                        Arrays.asList(classes));
         for (final Class<? extends T> clazz: classes) {
-            final String name = Registry.getConverter(clazz).getName();
-            if (name == null) {
-                throw new ConvertReflectionException(this, clazz,
-                    "Class has no sexp name");
-            }
-            nameMap.put(name, clazz);
+            addClass(clazz);
         }
+    }
+
+    public void addClass(final Class<? extends T> clazz) {
+        if (!superclass.isAssignableFrom(clazz)) {
+            throw new ConvertReflectionException(this, clazz,
+                "Class is not a subclass of " + superclass.getCanonicalName());
+        }
+        final String name = Registry.getConverter(clazz).getName();
+        if (name == null) {
+            throw new ConvertReflectionException(this, clazz,
+                "Class has no sexp name");
+        }
+        nameMap.put(name, clazz);
+        this.classes.add(clazz);
     }
 
     @Override

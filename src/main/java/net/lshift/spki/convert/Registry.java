@@ -65,9 +65,9 @@ public class Registry {
         final Class<T> clazz) {
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
-            handleAnnotations(clazz);
             res = generateConverter(clazz);
             converterMap.put(clazz, res);
+            handleAnnotations(clazz);
         }
         return res;
     }
