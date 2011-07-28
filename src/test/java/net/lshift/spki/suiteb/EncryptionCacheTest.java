@@ -8,12 +8,13 @@ import java.util.List;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
 import org.junit.Test;
 
-public class EncryptionCacheTest {
+public class EncryptionCacheTest extends ResetsRegistry {
     @Test
     public void test() throws InvalidInputException
     {
@@ -39,6 +40,4 @@ public class EncryptionCacheTest {
         assertEquals(1, messages.size());
         assertEquals(message, messages.get(0));
     }
-
-
 }

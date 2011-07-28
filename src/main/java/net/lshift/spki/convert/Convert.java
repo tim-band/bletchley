@@ -49,4 +49,17 @@ public class Convert
         // FIXME: why doesn't Class<StepConverter<?,?>> work?
         Class<?> value();
     }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.ANNOTATION_TYPE,ElementType.TYPE})
+    public @interface HandlerClass {
+        Class<? extends AnnotationHandler<?>> value();
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE})
+    @HandlerClass(NeedsConverterHandler.class)
+    public @interface NeedsConverter {
+        Class<? extends Converter<?>> value();
+    }
 }

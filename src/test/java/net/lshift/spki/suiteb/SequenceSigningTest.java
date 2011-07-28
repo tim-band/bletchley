@@ -7,13 +7,14 @@ import java.util.List;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
 import org.junit.Test;
 
-public class SequenceSigningTest
+public class SequenceSigningTest extends ResetsRegistry
 {
     @Test
     public void testSequenceBasedSigningAndVerification() throws InvalidInputException {
@@ -35,5 +36,4 @@ public class SequenceSigningTest
         assertEquals(1, signedBy.size());
         assertEquals(message, signedBy.get(0));
     }
-
 }

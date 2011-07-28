@@ -7,13 +7,14 @@ import java.util.List;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
 import org.junit.Test;
 
-public class ChainedSigningTest
+public class ChainedSigningTest extends ResetsRegistry
 {
     @Test
     public void testSequenceBasedSigningAndVerification() throws InvalidInputException {

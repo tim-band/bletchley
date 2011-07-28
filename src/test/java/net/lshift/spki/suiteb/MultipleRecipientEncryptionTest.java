@@ -9,13 +9,14 @@ import java.util.List;
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
 import org.junit.Test;
 
-public class MultipleRecipientEncryptionTest
+public class MultipleRecipientEncryptionTest extends ResetsRegistry
 {
     @Test
     public void test() throws IOException, InvalidInputException

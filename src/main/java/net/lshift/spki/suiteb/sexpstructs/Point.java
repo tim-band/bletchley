@@ -15,6 +15,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for an ECPoint ie a point on an elliptic curve.
  */
+//@Convert.NeedsConverter(Point.ECPointConverter.class)
 @Convert.ByName("point")
 public class Point {
     public final BigInteger x;

@@ -11,7 +11,7 @@ import net.lshift.spki.suiteb.sexpstructs.Point;
 
 import org.junit.Test;
 
-public class NameBeanTest {
+public class NameBeanTest extends ResetsRegistry {
     @Test(expected=ConvertException.class)
     public void repeatedFieldsRejected() throws IOException, InvalidInputException {
         final ByteOpenable example = new ByteOpenable();
@@ -21,5 +21,4 @@ public class NameBeanTest {
                 list("x", atom("bar"))), example);
         OpenableUtils.read(Point.class, example);
     }
-
 }

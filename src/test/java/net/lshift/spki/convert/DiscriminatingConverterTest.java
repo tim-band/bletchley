@@ -13,7 +13,7 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class DiscriminatingConverterTest
+public class DiscriminatingConverterTest extends ResetsRegistry
 {
     @Test
     public void testAssertDistinguishesExampleClasses() {
