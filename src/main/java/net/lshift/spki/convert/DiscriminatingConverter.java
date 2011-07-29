@@ -40,6 +40,10 @@ public class DiscriminatingConverter<T>
             throw new ConvertReflectionException(this, clazz,
                 "Class has no sexp name");
         }
+        if (nameMap.containsKey(name)) {
+            throw new ConvertReflectionException(this, clazz,
+                "Two subclasses share the sexp name " + name);
+        }
         nameMap.put(name, clazz);
         this.classes.add(clazz);
     }
