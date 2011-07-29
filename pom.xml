@@ -85,12 +85,12 @@
     <snapshotRepository>
       <id>lshift-snapshot</id>
       <name>LShift Snapshot repository</name>
-      <url>dav:http://mvn.lshift.net/snapshot</url>
+      <url>https://mvn.lshift.net/mvn-snapshot/</url>
     </snapshotRepository>
     <repository>
       <id>lshift</id>
       <name>LShift Internal Repository</name>
-      <url>dav:http://mvn.lshift.net/mvn</url>
+      <url>https://mvn.lshift.net/mvn/</url>
     </repository>
   </distributionManagement>
   <properties>
