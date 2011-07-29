@@ -1,16 +1,16 @@
 package net.lshift.spki.convert;
 
-import net.lshift.spki.convert.Convert.NeedsConverter;
+import net.lshift.spki.convert.Convert.RequiresConverter;
 
 /**
  * When you register a converter, go on to register another converter
  * named here.
  */
-public class NeedsConverterHandler
-    implements AnnotationHandler<Convert.NeedsConverter>
+public class RequiresConverterHandler
+    implements AnnotationHandler<Convert.RequiresConverter>
 {
     @Override
-    public void handle(Class<?> clazz, NeedsConverter annotation) {
+    public void handle(Class<?> clazz, RequiresConverter annotation) {
         try {
             Registry.register(annotation.value().newInstance());
         } catch (InstantiationException e) {

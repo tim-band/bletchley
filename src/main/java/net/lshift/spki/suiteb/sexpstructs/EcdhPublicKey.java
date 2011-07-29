@@ -9,7 +9,7 @@ import org.bouncycastle.math.ec.ECPoint;
 /**
  * Serialization format for public encryption keys
  */
-@Convert.NeedsConverter(ECPointConverter.class)
+@Convert.RequiresConverter(ECPointConverter.class)
 @Convert.ByPosition(name="suiteb-p384-ecdh-public-key", fields={"point"})
 public class EcdhPublicKey extends EcPublicKey {
 

@@ -91,8 +91,8 @@ public class Convert
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE})
-    @HandlerClass(NeedsConverterHandler.class)
-    public @interface NeedsConverter {
+    @HandlerClass(RequiresConverterHandler.class)
+    public @interface RequiresConverter {
         Class<? extends Converter<?>> value();
     }
 
