@@ -16,6 +16,7 @@ import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
+import net.lshift.spki.convert.Registry;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;
@@ -134,6 +135,7 @@ public class Cli {
     public static void main(final String command, final Openable... args)
         throws FileNotFoundException,
             IOException, InvalidInputException {
+        Registry.getConverter(SimpleMessage.class);
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
         } else if ("genSigningKey".equals(command)) {

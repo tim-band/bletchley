@@ -7,13 +7,13 @@ import static org.junit.Assert.assertSame;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ResetsRegistry;
+import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
 
-public class EncryptionCacheTest extends ResetsRegistry {
+public class EncryptionCacheTest extends UsesSimpleMessage {
     @Test
     public void test() throws InvalidInputException
     {

@@ -10,10 +10,11 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ByteOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
+import net.lshift.spki.convert.ResetsRegistry;
 
 import org.junit.Test;
 
-public class CliMultipleRecipientTest
+public class CliMultipleRecipientTest extends ResetsRegistry
 {
     @Test
     public void cliTest()
