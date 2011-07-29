@@ -16,6 +16,8 @@ import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
+import net.lshift.spki.suiteb.Action;
+import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
@@ -73,7 +75,7 @@ public class Cli {
         inference.process(signingKey);
         inference.process(encryptionKey);
         inference.process(read(SequenceItem.class, packet));
-        final List<SequenceItem> signedBy
+        final List<ActionType> signedBy
             = inference.getSignedBy(signingKey.getKeyId());
         if (signedBy.size() != 1) {
             throw new RuntimeException("Did not find exactly one signed message");
@@ -114,8 +116,8 @@ public class Cli {
 
         final List<SequenceItem> encryptedSequenceItems
             = new ArrayList<SequenceItem>();
-        final SimpleMessage message = new SimpleMessage(
-            messageType, OpenableUtils.readBytes(args[1]));
+        final Action message = new Action(new SimpleMessage(
+            messageType, OpenableUtils.readBytes(args[1])));
         final PrivateSigningKey privateKey = read(PrivateSigningKey.class, args[0]);
         encryptedSequenceItems.add(privateKey.sign(message));
         encryptedSequenceItems.add(message);

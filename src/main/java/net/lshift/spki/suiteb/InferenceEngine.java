@@ -11,7 +11,6 @@ import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
-import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -36,12 +35,12 @@ public class InferenceEngine {
     // FIXME this is pretty ugly!
     private final Map<DigestSha384, DigestSha384> signedBy
         = new HashMap<DigestSha384, DigestSha384>();
-    private final Map<DigestSha384, List<SequenceItem>> hasSigned
-        = new HashMap<DigestSha384, List<SequenceItem>>();
+    private final Map<DigestSha384, List<ActionType>> hasSigned
+        = new HashMap<DigestSha384, List<ActionType>>();
     // FIXME: this should go altogether - we should provide no way
     // of accessing unsigned content
-    private final List<SimpleMessage> messages
-        = new ArrayList<SimpleMessage>();
+    private final List<ActionType> actions
+        = new ArrayList<ActionType>();
 
     private final Map<String, String> byteNames = new HashMap<String,String>();
 
@@ -85,8 +84,8 @@ public class InferenceEngine {
         } else if (item instanceof AesPacket) {
             // Propagate signer?
             process((AesPacket) item);
-        } else if (item instanceof SimpleMessage) {
-            process((SimpleMessage) item, signer);
+        } else if (item instanceof Action) {
+            process((Action) item, signer);
         } else if (item instanceof PublicSigningKey) {
             process((PublicSigningKey) item);
         } else if (item instanceof Signature) {
@@ -154,19 +153,19 @@ public class InferenceEngine {
         signedBy.put(sig.digest, sig.keyId);
     }
 
-    public void process(final SimpleMessage message, final DigestSha384 signer) {
-        messages.add(message);
+    public void process(final Action message, final DigestSha384 signer) {
+        actions.add(message.getPayload());
         if (signer != null) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Found message signed by {}:\n{}",
                     digestString(signer),
-                    ConvertUtils.prettyPrint(SimpleMessage.class, message));
+                    ConvertUtils.prettyPrint(Action.class, message));
             }
-            listPut(hasSigned, signer, message);
+            listPut(hasSigned, signer, message.getPayload());
         } else {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Message has no known signer:\n{}",
-                    ConvertUtils.prettyPrint(SimpleMessage.class, message));
+                    ConvertUtils.prettyPrint(Action.class, message));
             }
         }
     }
@@ -195,12 +194,12 @@ public class InferenceEngine {
         }
     }
 
-    public List<SimpleMessage> getMessages() {
-        return messages;
+    public List<ActionType> getActions() {
+        return actions;
     }
 
-    public List<SequenceItem> getSignedBy(final DigestSha384 keyId) {
-        final List<SequenceItem> res = hasSigned.get(keyId);
+    public List<ActionType> getSignedBy(final DigestSha384 keyId) {
+        final List<ActionType> res = hasSigned.get(keyId);
         if (res != null) {
             return res;
         }

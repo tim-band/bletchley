@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
@@ -21,9 +20,7 @@ public class PKEncryptionTest extends ResetsRegistry {
         privateKey = roundTrip(PrivateEncryptionKey.class, privateKey);
         PublicEncryptionKey publicKey = privateKey.getPublicKey();
         publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
-        final SimpleMessage message = new SimpleMessage(
-            PKEncryptionTest.class.getCanonicalName(),
-            "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
+        final Action message = SimpleMessage.makeMessage(this.getClass());
         final EncryptionSetup aesKey = publicKey.setupEncrypt();
         Sequence sequence = SequenceUtils.sequence(
             aesKey.encryptedKey,
@@ -32,9 +29,8 @@ public class PKEncryptionTest extends ResetsRegistry {
         final InferenceEngine inferenceEngine = new InferenceEngine();
         inferenceEngine.process(privateKey);
         inferenceEngine.process(sequence);
-        final List<SimpleMessage> messages = inferenceEngine.getMessages();
+        final List<ActionType> messages = inferenceEngine.getActions();
         assertEquals(1, messages.size());
-        assertEquals(message, messages.get(0));
+        assertEquals(message.getPayload(), messages.get(0));
     }
-
 }

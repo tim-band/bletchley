@@ -6,7 +6,6 @@ import static org.junit.Assert.assertSame;
 
 import java.util.List;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
@@ -22,9 +21,7 @@ public class EncryptionCacheTest extends ResetsRegistry {
         privateKey = roundTrip(PrivateEncryptionKey.class, privateKey);
         PublicEncryptionKey publicKey = privateKey.getPublicKey();
         publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
-        final SimpleMessage message = new SimpleMessage(
-            EncryptionCacheTest.class.getCanonicalName(),
-            "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
+        final Action message = SimpleMessage.makeMessage(this.getClass());
         final EncryptionCache cache = new EncryptionCache();
         final EncryptionSetup aesKey = cache.setupEncrypt(publicKey);
         final EncryptionSetup aesKey2 = cache.setupEncrypt(publicKey);
@@ -36,8 +33,8 @@ public class EncryptionCacheTest extends ResetsRegistry {
         final InferenceEngine inferenceEngine = new InferenceEngine();
         inferenceEngine.process(privateKey);
         inferenceEngine.process(sequence);
-        final List<SimpleMessage> messages = inferenceEngine.getMessages();
+        final List<ActionType> messages = inferenceEngine.getActions();
         assertEquals(1, messages.size());
-        assertEquals(message, messages.get(0));
+        assertEquals(message.getPayload(), messages.get(0));
     }
 }
