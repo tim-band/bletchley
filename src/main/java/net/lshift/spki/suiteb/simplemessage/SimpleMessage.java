@@ -1,4 +1,4 @@
-package net.lshift.spki.suiteb.sexpstructs;
+package net.lshift.spki.suiteb.simplemessage;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.convert.Convert;
@@ -13,6 +13,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * can be encrypted and/or signed.
  */
 @Convert.ByPosition(name="simple-message", fields={"type", "content"})
+@Convert.InstanceOf(ActionType.class)
 public class SimpleMessage implements ActionType {
     public final String type;
     public final byte[] content;

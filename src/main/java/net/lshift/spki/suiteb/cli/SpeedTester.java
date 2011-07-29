@@ -10,7 +10,7 @@ import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.SequenceUtils;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
+import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 /**
  * Quick and dirty speed test visible from the CLI.

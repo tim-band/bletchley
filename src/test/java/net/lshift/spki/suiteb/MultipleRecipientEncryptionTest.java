@@ -11,7 +11,7 @@ import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
-import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
+import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
 
