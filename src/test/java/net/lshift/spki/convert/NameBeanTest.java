@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
-import net.lshift.spki.suiteb.sexpstructs.Point;
+import net.lshift.spki.suiteb.sexpstructs.ECPointConverter.Point;
 
 import org.junit.Test;
 

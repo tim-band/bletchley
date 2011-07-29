@@ -12,7 +12,7 @@ import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.sexpform.Sexp;
-import net.lshift.spki.suiteb.sexpstructs.Point;
+import net.lshift.spki.suiteb.sexpstructs.ECPointConverter;
 
 import org.bouncycastle.math.ec.ECPoint;
 import org.junit.Before;
@@ -31,6 +31,6 @@ public class PointTest extends ResetsRegistry {
 
     @Before
     public void registerPoint() {
-        Registry.getConverter(Point.class);
+        Registry.register(new ECPointConverter());
     }
 }

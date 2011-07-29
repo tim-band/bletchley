@@ -9,7 +9,7 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 /**
  * Serialization format for private encryption keys
  */
-@Convert.NeedsConvert(Point.class)
+@Convert.NeedsConverter(ECPointConverter.class)
 @Convert.ByName("suiteb-p384-ecdh-private-key")
 public class EcdhPrivateKey
     extends EcPrivateKey {
