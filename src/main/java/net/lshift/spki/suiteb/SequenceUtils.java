@@ -6,6 +6,9 @@ import java.util.List;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
+/**
+ * Utilities for working with sequences.
+ */
 public class SequenceUtils
 {
     public static Sequence sequence(

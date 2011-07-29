@@ -11,6 +11,10 @@ import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECFieldElement;
 import org.bouncycastle.math.ec.ECPoint;
 
+/**
+ * Foreign converter for the ECPoint class - converts to our
+ * Point representation.
+ */
 public class ECPointConverter
     extends StepConverter<ECPoint, ECPointConverter.Point> {
 

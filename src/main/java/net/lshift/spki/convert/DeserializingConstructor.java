@@ -6,6 +6,11 @@ import java.util.Map.Entry;
 
 import sun.misc.Unsafe;
 
+/**
+ * Build an object the way a desrializer would: use
+ * unsafe.allocateInstance to sidestep the constructor and force the
+ * fields to the values in the map.
+ */
 @SuppressWarnings("restriction")
 public class DeserializingConstructor {
     private static final Unsafe unsafe;

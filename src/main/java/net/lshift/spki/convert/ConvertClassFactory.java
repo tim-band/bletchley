@@ -1,5 +1,8 @@
 package net.lshift.spki.convert;
 
+/**
+ * Create a converter by instantiating the class in the annotation.
+ */
 public class ConvertClassFactory implements ConverterFactory<Convert.ConvertClass> {
     @SuppressWarnings("unchecked")
     @Override

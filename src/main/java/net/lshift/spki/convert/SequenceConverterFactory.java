@@ -2,6 +2,9 @@ package net.lshift.spki.convert;
 
 import java.util.List;
 
+/**
+ * Use a SequenceConverter for this class
+ */
 public class SequenceConverterFactory
     implements ConverterFactory<Convert.SequenceConverted> {
 

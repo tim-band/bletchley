@@ -5,6 +5,9 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Use a NameBeanConverter for this class
+ */
 public class NameBeanConverterFactory
 implements ConverterFactory<Convert.ByName>
 {

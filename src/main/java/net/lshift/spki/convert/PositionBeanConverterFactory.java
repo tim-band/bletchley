@@ -4,6 +4,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Use a PositionBeanConverter for this class.
+ */
 public class PositionBeanConverterFactory
 implements ConverterFactory<Convert.ByPosition>
 {

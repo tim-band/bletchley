@@ -3,6 +3,9 @@ package net.lshift.spki.convert;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Serialize URLs as strings
+ */
 public class URLConverter
     extends StepConverter<URL, String>
 {
@@ -16,7 +19,7 @@ public class URLConverter
     protected String stepIn(final URL o) { return o.toString(); }
 
     @Override
-    protected URL stepOut(final String s) throws ConvertException { 
+    protected URL stepOut(final String s) throws ConvertException {
         try {
             return new URL(s);
         } catch (MalformedURLException e) {

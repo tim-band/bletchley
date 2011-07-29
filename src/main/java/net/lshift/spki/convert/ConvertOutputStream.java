@@ -6,6 +6,10 @@ import java.io.OutputStream;
 import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.SpkiOutputStream;
 
+/**
+ * SpkiOutputStream that wraps another SpkiOutputStream to add facilities
+ * useful for conversion from classes.
+ */
 public class ConvertOutputStream
     extends SpkiOutputStream {
     private final SpkiOutputStream os;

@@ -9,6 +9,10 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream;
 
+/**
+ * Input stream that wraps an SpkiInputStream to add facilities
+ * useful for conversion to classes.
+ */
 public class ConvertInputStream
     extends SpkiInputStream {
     private final SpkiInputStream delegate;

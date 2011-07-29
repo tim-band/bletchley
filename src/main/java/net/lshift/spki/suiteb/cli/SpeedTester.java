@@ -11,6 +11,9 @@ import net.lshift.spki.suiteb.SequenceUtils;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
 
+/**
+ * Quick and dirty speed test visible from the CLI.
+ */
 public class SpeedTester {
     private static final String MESSAGE_TYPE = "speed-test-message";
     private final PrivateSigningKey privateKey;

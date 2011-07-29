@@ -2,6 +2,10 @@ package net.lshift.spki.convert;
 
 import net.lshift.spki.convert.Convert.NeedsConverter;
 
+/**
+ * When you register a converter, go on to register another converter
+ * named here.
+ */
 public class NeedsConverterHandler
     implements AnnotationHandler<Convert.NeedsConverter>
 {

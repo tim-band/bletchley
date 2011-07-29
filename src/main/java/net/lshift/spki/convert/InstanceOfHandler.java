@@ -2,6 +2,9 @@ package net.lshift.spki.convert;
 
 import net.lshift.spki.convert.Convert.InstanceOf;
 
+/**
+ * Add this class to the list of those handled by a DiscriminatingConverter.
+ */
 public class InstanceOfHandler implements AnnotationHandler<Convert.InstanceOf> {
     @SuppressWarnings("unchecked")
     @Override

@@ -2,6 +2,9 @@ package net.lshift.spki.convert;
 
 import net.lshift.spki.convert.Convert.Discriminated;
 
+/**
+ * Use a DiscriminatingConverter for this class.
+ */
 public class DiscriminatingConverterFactory
     implements ConverterFactory<Discriminated>
 {
