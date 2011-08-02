@@ -73,18 +73,18 @@ public class Cli {
         final Openable out)
         throws IOException, InvalidInputException {
         final InferenceEngine inference = new InferenceEngine();
+        inference.addTrustedKey(signingKey.getKeyId());
         inference.process(signingKey);
         inference.process(encryptionKey);
         inference.process(read(SequenceItem.class, packet));
-        final List<ActionType> signedBy
-            = inference.getSignedBy(signingKey.getKeyId());
-        if (signedBy.size() != 1) {
+        final List<ActionType> messages = inference.getActions();
+        if (messages.size() != 1) {
             throw new RuntimeException("Did not find exactly one signed message");
         }
-        if (!(signedBy.get(0) instanceof SimpleMessage)) {
+        if (!(messages.get(0) instanceof SimpleMessage)) {
             throw new RuntimeException("Signed object was not message");
         }
-        final SimpleMessage message = (SimpleMessage) signedBy.get(0);
+        final SimpleMessage message = (SimpleMessage) messages.get(0);
         if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message was not of expected type");
         }

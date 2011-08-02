@@ -1,10 +1,11 @@
 package net.lshift.spki.suiteb;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
@@ -31,14 +32,14 @@ public class InferenceEngine {
         = new HashMap<DigestSha384, PrivateEncryptionKey>();
     private final Map<DigestSha384, PublicSigningKey> dsaKeys
         = new HashMap<DigestSha384, PublicSigningKey>();
-    private final Map<AesKeyId, AesKey> aesKeys = new HashMap<AesKeyId, AesKey>();
-    // FIXME this is pretty ugly!
+    private final Map<AesKeyId, AesKey> aesKeys
+        = new HashMap<AesKeyId, AesKey>();
     private final Map<DigestSha384, DigestSha384> signedBy
         = new HashMap<DigestSha384, DigestSha384>();
-    private final Map<DigestSha384, List<ActionType>> hasSigned
-        = new HashMap<DigestSha384, List<ActionType>>();
-    // FIXME: this should go altogether - we should provide no way
-    // of accessing unsigned content
+
+    private boolean blindlyTrusting = false;
+    private final Set<DigestSha384> trustedKeys
+        = new HashSet<DigestSha384>();
     private final List<ActionType> actions
         = new ArrayList<ActionType>();
 
@@ -56,6 +57,22 @@ public class InferenceEngine {
 
     private String digestString(DigestSha384 digest) {
         return bytesString(digest.getBytes());
+    }
+
+    public boolean isBlindlyTrusting() {
+        return blindlyTrusting;
+    }
+
+    /**
+     * WARNING: When this is set, the engine will report on all actions it sees,
+     * signed or unsigned.
+     */
+    public void setBlindlyTrusting(boolean blindlyTrusting) {
+        this.blindlyTrusting = blindlyTrusting;
+    }
+
+    public void addTrustedKey(DigestSha384 key) {
+        trustedKeys.add(key);
     }
 
     public void process(final SequenceItem item) throws InvalidInputException {
@@ -154,19 +171,19 @@ public class InferenceEngine {
     }
 
     public void process(final Action message, final DigestSha384 signer) {
-        actions.add(message.getPayload());
-        if (signer != null) {
-            if (LOG.isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
+            if (signer != null) {
                 LOG.debug("Found message signed by {}:\n{}",
                     digestString(signer),
                     ConvertUtils.prettyPrint(Action.class, message));
-            }
-            listPut(hasSigned, signer, message.getPayload());
-        } else {
-            if (LOG.isDebugEnabled()) {
+            } else {
                 LOG.debug("Message has no known signer:\n{}",
                     ConvertUtils.prettyPrint(Action.class, message));
             }
+        }
+        if (blindlyTrusting || trustedKeys.contains(signer)) {
+            LOG.debug("Trusting message");
+            actions.add(message.getPayload());
         }
     }
 
@@ -196,24 +213,5 @@ public class InferenceEngine {
 
     public List<ActionType> getActions() {
         return actions;
-    }
-
-    public List<ActionType> getSignedBy(final DigestSha384 keyId) {
-        final List<ActionType> res = hasSigned.get(keyId);
-        if (res != null) {
-            return res;
-        }
-        return Collections.emptyList();
-    }
-
-    private <K,V> void listPut(final Map<K,List<V>> map,
-        final K key, final V value)
-    {
-        List<V> list = map.get(key);
-        if (list == null) {
-            list = new ArrayList<V>();
-            map.put(key, list);
-        }
-        list.add(value);
     }
 }

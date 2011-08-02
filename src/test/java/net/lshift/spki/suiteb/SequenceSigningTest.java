@@ -27,9 +27,10 @@ public class SequenceSigningTest extends UsesSimpleMessage
         sequence = roundTrip(Sequence.class, sequence);
 
         final InferenceEngine inference = new InferenceEngine();
+        inference.addTrustedKey(publicKey.getKeyId());
         inference.process(sequence);
-        final List<ActionType> signedBy = inference.getSignedBy(publicKey.getKeyId());
-        assertEquals(1, signedBy.size());
-        assertEquals(message.getPayload(), signedBy.get(0));
+        final List<ActionType> messages = inference.getActions();
+        assertEquals(1, messages.size());
+        assertEquals(message.getPayload(), messages.get(0));
     }
 }

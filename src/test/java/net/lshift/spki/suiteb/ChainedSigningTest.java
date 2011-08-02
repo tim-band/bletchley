@@ -32,9 +32,10 @@ public class ChainedSigningTest extends UsesSimpleMessage
         sequence = roundTrip(Sequence.class, sequence);
 
         final InferenceEngine inference = new InferenceEngine();
+        inference.addTrustedKey(publicKey.getKeyId());
         inference.process(sequence);
-        final List<ActionType> signedBy = inference.getSignedBy(publicKey.getKeyId());
-        assertEquals(1, signedBy.size());
-        assertEquals(message.getPayload(), signedBy.get(0));
+        final List<ActionType> actions = inference.getActions();
+        assertEquals(1, actions.size());
+        assertEquals(message.getPayload(), actions.get(0));
     }
 }
