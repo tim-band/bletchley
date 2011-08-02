@@ -25,13 +25,15 @@ public class Registry {
     private synchronized <T> void registerInternal(final Converter<T> converter) {
         Class<T> clazz = converter.getResultClass();
         final Converter<?> already = converterMap.get(clazz);
-        if (already != null) {
-            assert already.equals(converter);
-        } else {
+        if (already == null) {
             converterMap.put(clazz, converter);
         }
     }
 
+    /**
+     * Register this converter, unless we already have a converter for this
+     * result class.
+     */
     public static <T> void register(final Converter<T> converter) {
         REGISTRY.registerInternal(converter);
     }
