@@ -16,7 +16,7 @@ public class Convert
      * construct a converter for a class
      */
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.ANNOTATION_TYPE,ElementType.TYPE})
+    @Target({ElementType.ANNOTATION_TYPE})
     public @interface ConverterFactoryClass {
         Class<? extends ConverterFactory<?>> value();
     }
@@ -80,7 +80,7 @@ public class Convert
      * actions that should take place after the converter is registered.
      */
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.ANNOTATION_TYPE,ElementType.TYPE})
+    @Target({ElementType.ANNOTATION_TYPE})
     public @interface HandlerClass {
         Class<? extends AnnotationHandler<?>> value();
     }
