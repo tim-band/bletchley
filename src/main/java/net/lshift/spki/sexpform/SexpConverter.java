@@ -1,4 +1,4 @@
-package net.lshift.spki.convert;
+package net.lshift.spki.sexpform;
 
 import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
 
@@ -8,10 +8,10 @@ import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.SpkiInputStream.TokenType;
-import net.lshift.spki.sexpform.Atom;
-import net.lshift.spki.sexpform.Create;
-import net.lshift.spki.sexpform.Sexp;
-import net.lshift.spki.sexpform.Slist;
+import net.lshift.spki.convert.ConvertException;
+import net.lshift.spki.convert.ConvertInputStream;
+import net.lshift.spki.convert.ConvertOutputStream;
+import net.lshift.spki.convert.Converter;
 
 /**
  * Convert to/from Sexp representation
