@@ -1,6 +1,7 @@
 package net.lshift.spki.sexpform;
 
 import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
+import static net.lshift.spki.sexpform.Create.atom;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class SexpConverter
         final TokenType token = in.next();
         switch (token) {
         case ATOM:
-            return new Atom(in.atomBytes());
+            return atom(in.atomBytes());
         case OPENPAREN:
             in.nextAssertType(ATOM);
             final byte [] head = in.atomBytes();
@@ -57,9 +58,9 @@ public class SexpConverter
                 final TokenType stoken = in.next();
                 switch (stoken) {
                 case CLOSEPAREN:
-                    return Create.list(new Atom(head), tail);
+                    return new Slist(atom(head), tail.toArray(new Sexp[tail.size()]));
                 case ATOM:
-                    tail.add(new Atom(in.atomBytes()));
+                    tail.add(atom(in.atomBytes()));
                     break;
                 case OPENPAREN:
                     in.nextAssertType(ATOM);
