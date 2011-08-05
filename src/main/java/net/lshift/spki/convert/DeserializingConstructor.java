@@ -26,6 +26,7 @@ public class DeserializingConstructor {
             throw new RuntimeException(e);
         }
     }
+
     @SuppressWarnings("unchecked")
     public static <T> T make(final Class<T> clazz, final Map<Field, Object> fields)
         throws InstantiationException,
