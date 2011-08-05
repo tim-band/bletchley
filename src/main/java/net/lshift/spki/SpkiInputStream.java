@@ -57,17 +57,6 @@ public abstract class SpkiInputStream implements Closeable {
         return res;
     }
 
-
-    public void nextAssertType(final TokenType type)
-        throws ParseException,
-            IOException
-    {
-        if (next() != type) {
-            invalidate();
-            throw new ParseException("Token was of unexpected type");
-        }
-    }
-
     public byte[] atomBytes()
         throws IOException,
             ParseException {
