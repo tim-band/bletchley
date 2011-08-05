@@ -1,17 +1,14 @@
 package net.lshift.spki.convert;
 
-import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
-
-import java.io.IOException;
 import java.math.BigInteger;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 
 /**
  * Convert between a BigInteger and a SExp
  */
 public class BigIntegerConverter
-    implements Converter<BigInteger> {
+    extends StepConverter<BigInteger,byte[]> {
     // Not a sexp converter, has no name
     @Override public String getName() { return null; }
 
@@ -21,16 +18,19 @@ public class BigIntegerConverter
     }
 
     @Override
-    public void write(final ConvertOutputStream out, final BigInteger o)
-        throws IOException {
-        out.atom(o.toByteArray());
+    protected Class<byte[]> getStepClass() {
+        // TODO Auto-generated method stub
+        return byte[].class;
     }
 
     @Override
-    public BigInteger read(final ConvertInputStream in)
-        throws ParseException,
-            IOException {
-        in.nextAssertType(ATOM);
-        return new BigInteger(in.atomBytes());
+    protected BigInteger stepOut(byte[] s)
+        throws InvalidInputException {
+        return new BigInteger(s);
+    }
+
+    @Override
+    protected byte[] stepIn(BigInteger o) {
+        return o.toByteArray();
     }
 }
