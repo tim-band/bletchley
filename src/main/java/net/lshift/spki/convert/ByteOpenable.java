@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * In-memory Openable..
+ * In-memory Openable.
  */
 public class ByteOpenable
     implements Openable

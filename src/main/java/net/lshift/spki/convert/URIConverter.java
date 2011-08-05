@@ -7,13 +7,9 @@ import java.net.URISyntaxException;
  * Serialize URIs as strings.
  */
 public class URIConverter
-    extends StepConverter<URI, String>
+    extends StringStepConverter<URI>
 {
-    @Override
-    public Class<URI> getResultClass() { return URI.class; }
-
-    @Override
-    protected Class<String> getStepClass() { return String.class; }
+    @Override public Class<URI> getResultClass() { return URI.class; }
 
     @Override
     protected URI stepOut(String s) throws ConvertException {

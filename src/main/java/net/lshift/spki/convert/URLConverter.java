@@ -7,13 +7,9 @@ import java.net.URL;
  * Serialize URLs as strings
  */
 public class URLConverter
-    extends StepConverter<URL, String>
+    extends StringStepConverter<URL>
 {
-    @Override
-    public Class<URL> getResultClass() { return URL.class; }
-
-    @Override
-    protected Class<String> getStepClass() { return String.class; }
+    @Override public Class<URL> getResultClass() { return URL.class; }
 
     @Override
     protected String stepIn(final URL o) { return o.toString(); }

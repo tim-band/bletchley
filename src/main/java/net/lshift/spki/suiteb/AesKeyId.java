@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.convert.StepConverter;
+import net.lshift.spki.convert.ByteArrayStepConverter;
 import net.lshift.spki.convert.Convert.ConvertClass;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -32,16 +32,9 @@ public class AesKeyId {
     }
 
     public static class Step
-        extends StepConverter<AesKeyId, byte[]> {
+        extends ByteArrayStepConverter<AesKeyId> {
         @Override
-        public Class<AesKeyId> getResultClass() {
-            return AesKeyId.class;
-        }
-
-        @Override
-        protected Class<byte[]> getStepClass() {
-            return byte[].class;
-        }
+        public Class<AesKeyId> getResultClass() { return AesKeyId.class; }
 
         @Override
         protected byte[] stepIn(final AesKeyId o) {
