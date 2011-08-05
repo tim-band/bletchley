@@ -100,8 +100,8 @@ public class PrettyPrinter extends SpkiOutputStream {
         for (int i = 0; i < len; i++) {
             final byte b = bytes[off + i];
             if (b < 0x20 || b >= 0x7f
-                    || b == Constants.DOUBLEQUOTE
-                    || b == Constants.BACKSLASH)
+                    || b == '"'
+                    || b == '\\')
                 return false;
         }
         return true;

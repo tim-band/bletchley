@@ -39,13 +39,13 @@ public class CanonicalSpkiInputStream extends SpkiInputStream {
         int c = next;
         int r = 0;
         for (;;) {
-            if (c < Constants.DIGITBASE || c >= Constants.DIGITBASE + 10) {
+            if (c < '0' || c > '9') {
                 invalidate();
                 throw new ParseException("Bad s-expression format");
             }
-            r += c - Constants.DIGITBASE;
+            r += c - '0';
             c = is.read();
-            if (c == Constants.COLON)
+            if (c == ':')
                 return r;
             if (r > NO_MORE_DIGITS_BOUND) {
                 // Could strictly speaking handle it so long as
