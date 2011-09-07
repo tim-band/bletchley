@@ -2,8 +2,15 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.lshift</groupId>
   <artifactId>suiteb</artifactId>
-  <version>0.4</version>
+  <version>0.4.1</version>
   <build>
+      <extensions>
+         <extension>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-webdav-jackrabbit</artifactId>
+            <version>1.0-beta-7</version>
+         </extension>
+      </extensions>
       <plugins>
           <plugin>
               <artifactId>maven-compiler-plugin</artifactId>
@@ -85,12 +92,12 @@
     <snapshotRepository>
       <id>lshift-snapshot</id>
       <name>LShift Snapshot repository</name>
-      <url>dav:http://mvn.lshift.net/snapshot</url>
+      <url>dav:https://mvn.lshift.net/snapshot</url>
     </snapshotRepository>
     <repository>
       <id>lshift</id>
       <name>LShift Internal Repository</name>
-      <url>dav:http://mvn.lshift.net/mvn</url>
+      <url>dav:https://mvn.lshift.net/mvn</url>
     </repository>
   </distributionManagement>
   <properties>

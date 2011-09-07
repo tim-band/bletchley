@@ -62,10 +62,14 @@ public class CanonicalSpkiInputStream extends SpkiInputStream {
         throws IOException,
             ParseException {
         final byte[] res = new byte[atomBytes];
-        final int c = is.read(res);
-        if (c != atomBytes) {
-            invalidate();
-            throw new ParseException("Failed to read enough bytes");
+        int ix = 0;
+        while (ix < atomBytes) {
+            final int c = is.read(res, ix, atomBytes-ix);
+            if (c < 1) {
+                invalidate();
+                throw new ParseException("Failed to read enough bytes");
+            }
+            ix += c;
         }
         return res;
     }
