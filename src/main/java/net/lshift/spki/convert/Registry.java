@@ -103,6 +103,9 @@ public class Registry {
     }
 
     private <T> Converter<T> generateConverter(final Class<T> clazz) {
+        if (clazz.isEnum()) {
+            return generateEnumConverter(clazz);
+        }
         try {
             for (final Annotation a : clazz.getAnnotations()) {
                 final ConverterFactoryClass factoryClass
@@ -119,6 +122,13 @@ public class Registry {
         } catch (final InstantiationException e) {
             throw new ConvertReflectionException(clazz, e);
         }
+    }
+
+    // I happen to know that clazz is an enum here, but try telling the
+    // type system that...
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private <T> Converter<T> generateEnumConverter(final Class<T> clazz) {
+        return new EnumConverter(clazz);
     }
 
     private <T, A extends Annotation> Converter<T> getMethod(
