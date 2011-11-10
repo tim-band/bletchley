@@ -7,8 +7,6 @@ import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import net.lshift.spki.SpkiInputStream.TokenType;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
@@ -100,8 +98,8 @@ public class PrettyPrinter extends SpkiOutputStream {
         for (int i = 0; i < len; i++) {
             final byte b = bytes[off + i];
             if (b < 0x20 || b >= 0x7f
-                    || b == Constants.DOUBLEQUOTE
-                    || b == Constants.BACKSLASH)
+                    || b == '"'
+                    || b == '\\')
                 return false;
         }
         return true;
@@ -137,20 +135,11 @@ public class PrettyPrinter extends SpkiOutputStream {
         final SpkiInputStream input,
         final SpkiOutputStream output) throws IOException, ParseException {
         for (;;) {
-            final TokenType token = input.next();
-            switch (token) {
-            case ATOM:
-                output.atom(input.atomBytes());
-                break;
-            case OPENPAREN:
-                output.beginSexp();
-                break;
-            case CLOSEPAREN:
-                output.endSexp();
-                break;
-            case EOF:
-                output.close();
-                return;
+            switch (input.next()) {
+            case ATOM: output.atom(input.atomBytes()); break;
+            case OPENPAREN: output.beginSexp(); break;
+            case CLOSEPAREN: output.endSexp(); break;
+            case EOF: output.close(); return;
             }
         }
     }

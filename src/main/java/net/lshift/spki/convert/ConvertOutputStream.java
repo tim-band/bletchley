@@ -36,7 +36,6 @@ public class ConvertOutputStream
         os.beginSexp();
     }
 
-
     @Override
     public void close()
         throws IOException {

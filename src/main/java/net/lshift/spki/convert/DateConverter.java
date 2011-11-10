@@ -8,12 +8,8 @@ import net.lshift.spki.Constants;
  * Convert between a Date and a SExp
  */
 public class DateConverter
-    extends StepConverter<Date, String> {
-    @Override
-    public Class<Date> getResultClass() { return Date.class; }
-
-    @Override
-    protected Class<String> getStepClass() { return String.class; }
+    extends StringStepConverter<Date> {
+    @Override public Class<Date> getResultClass() { return Date.class; }
 
     @Override
     protected String stepIn(final Date o) {

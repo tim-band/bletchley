@@ -48,7 +48,6 @@ public class Registry {
 
     private synchronized void resetRegistryInternal() {
         converterMap.clear();
-        registerInternal(new SexpConverter());
         registerInternal(new ByteArrayConverter());
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());

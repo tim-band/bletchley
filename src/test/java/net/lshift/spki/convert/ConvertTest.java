@@ -31,7 +31,7 @@ public class ConvertTest extends ResetsRegistry
     @Test
     public void sexpTest() throws InvalidInputException {
         final byte[] bytes = ConvertUtils.bytes("(3:foo)");
-        assertEquals(list(atom("foo")),
+        assertEquals(list("foo"),
             ConvertUtils.fromBytes(Sexp.class, bytes));
     }
 

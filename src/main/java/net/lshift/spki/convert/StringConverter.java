@@ -1,35 +1,25 @@
 package net.lshift.spki.convert;
 
-import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
-
-import java.io.IOException;
-
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 
 /**
  * Convert between a String and a SExp
  */
 public class StringConverter
-    implements Converter<String> {
-    // Not a sexp converter, has no name
-    @Override public String getName() { return null; }
-
+    extends ByteArrayStepConverter<String> {
     @Override
     public Class<String> getResultClass() {
         return String.class;
     }
 
     @Override
-    public void write(final ConvertOutputStream out, final String o)
-        throws IOException {
-        out.atom(o);
+    protected String stepOut(byte[] s)
+        throws InvalidInputException {
+        return ConvertUtils.string(s);
     }
 
     @Override
-    public String read(final ConvertInputStream in)
-        throws ParseException,
-            IOException {
-        in.nextAssertType(ATOM);
-        return ConvertUtils.string(in.atomBytes());
+    protected byte[] stepIn(String o) {
+        return ConvertUtils.bytes(o);
     }
 }

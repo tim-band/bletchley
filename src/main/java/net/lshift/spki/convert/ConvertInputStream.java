@@ -83,6 +83,14 @@ public class ConvertInputStream
         state = State.ATOM;
     }
 
+    public void nextAssertType(final TokenType type)
+        throws ParseException,IOException {
+        if (next() != type) {
+            invalidate();
+            throw new ParseException("Token was of unexpected type");
+        }
+    }
+
     public void assertAtom(final String name)
         throws ParseException,
             IOException {

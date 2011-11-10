@@ -1,6 +1,9 @@
 package net.lshift.spki;
 
 import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
+import static net.lshift.spki.SpkiInputStream.TokenType.CLOSEPAREN;
+import static net.lshift.spki.SpkiInputStream.TokenType.EOF;
+import static net.lshift.spki.SpkiInputStream.TokenType.OPENPAREN;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -31,6 +34,7 @@ public class SpkiInputStreamTest
         setInput("3:foo");
         assertThat(sis.next(), is(ATOM));
         assertThat(sis.atomBytes(), is(s("foo")));
+        assertThat(sis.next(), is(EOF));
     }
 
     @Test
@@ -38,6 +42,7 @@ public class SpkiInputStreamTest
         setInput("12:foodfoodfood");
         assertThat(sis.next(), is(ATOM));
         assertThat(sis.atomBytes(), is(s("foodfoodfood")));
+        assertThat(sis.next(), is(EOF));
     }
 
     @Test(expected=ParseException.class)
@@ -62,15 +67,13 @@ public class SpkiInputStreamTest
     }
 
     @Test
-    public void assertAtomIsOKWhenNextIsAtom() throws ParseException, IOException {
-        setInput("3:foo");
-        sis.nextAssertType(ATOM);
-    }
-
-    @Test(expected=ParseException.class)
-    public void assertAtomFailsWhenNextIsNotAtom() throws ParseException, IOException {
+    public void canReadOpenCloseParen() throws ParseException, IOException {
         setInput("(3:foo)");
-        sis.nextAssertType(ATOM);
+        assertThat(sis.next(), is(OPENPAREN));
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("foo")));
+        assertThat(sis.next(), is(CLOSEPAREN));
+        assertThat(sis.next(), is(EOF));
     }
 
     @Test(expected=ParseException.class)
