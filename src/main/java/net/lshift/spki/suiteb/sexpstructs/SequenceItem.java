@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesPacket;
 import net.lshift.spki.suiteb.DigestSha384;
@@ -16,10 +17,10 @@ import net.lshift.spki.suiteb.Signature;
     AesPacket.class,
     AesKey.class,
     EcdhItem.class,
-    SimpleMessage.class,
     PublicSigningKey.class,
     Signature.class,
     DigestSha384.class,
+    Action.class,
     Sequence.class})
 public interface SequenceItem {
     // Marker interface, no body

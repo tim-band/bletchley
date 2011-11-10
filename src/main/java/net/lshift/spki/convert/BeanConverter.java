@@ -14,7 +14,6 @@ public abstract class BeanConverter<T>
     public BeanConverter(final Class<T> clazz, final String name) {
         this.clazz = clazz;
         this.name = name;
-        ConvertUtils.initialize(clazz);
     }
 
     @Override

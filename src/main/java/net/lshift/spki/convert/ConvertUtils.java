@@ -47,18 +47,6 @@ public class ConvertUtils {
         }
     }
 
-    public static <T> void initialize(final Class<T> clazz)
-        throws AssertionError {
-        // Ensure the class is initialized
-        // in case it statically registers converters
-        // http://java.sun.com/j2se/1.5.0/compatibility.html
-        try {
-            Class.forName(clazz.getName(), true, clazz.getClassLoader());
-        } catch (final ClassNotFoundException e) {
-            throw new ConvertReflectionException(clazz, e);  // Can't happen
-        }
-    }
-
     public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
         throws IOException {
         final ConvertOutputStream out = new ConvertOutputStream(os);

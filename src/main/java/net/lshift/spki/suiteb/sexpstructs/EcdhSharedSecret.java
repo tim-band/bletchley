@@ -10,6 +10,7 @@ import org.bouncycastle.math.ec.ECPoint;
  * Serialization format for ECDH shared secret before it's hashed into
  * a GCM key.
  */
+@Convert.RequiresConverter(ECPointConverter.class)
 @Convert.ByPosition(name="suiteb-p384-ecdh-shared-secret",
     fields={"receiverKey", "senderKey", "sharedSecret"})
 public class EcdhSharedSecret {
@@ -26,9 +27,5 @@ public class EcdhSharedSecret {
         this.receiverKey = receiverKey;
         this.senderKey = senderKey;
         this.sharedSecret = sharedSecret;
-    }
-
-    static {
-        Point.ensureRegistered();
     }
 }

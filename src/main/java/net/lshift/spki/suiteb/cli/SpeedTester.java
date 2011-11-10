@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb.cli;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.EncryptionSetup;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
@@ -9,8 +10,11 @@ import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.SequenceUtils;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
+import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
+/**
+ * Quick and dirty speed test visible from the CLI.
+ */
 public class SpeedTester {
     private static final String MESSAGE_TYPE = "speed-test-message";
     private final PrivateSigningKey privateKey;
@@ -45,8 +49,8 @@ public class SpeedTester {
             = ConvertUtils.fromBytes(PublicEncryptionKey.class, publicKeyBytes);
         final EncryptionSetup rKey = pKey.setupEncrypt();
 
-        final SimpleMessage message = new SimpleMessage(
-            MESSAGE_TYPE, messageBytes);
+        final Action message = new Action(new SimpleMessage(
+            MESSAGE_TYPE, messageBytes));
 
         final Sequence sequence = SequenceUtils.sequence(
             rKey.encryptedKey,

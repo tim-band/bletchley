@@ -13,7 +13,7 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class DiscriminatingConverterTest
+public class DiscriminatingConverterTest extends ResetsRegistry
 {
     @Test
     public void testAssertDistinguishesExampleClasses() {
@@ -48,5 +48,14 @@ public class DiscriminatingConverterTest
         final byte[] actual = ConvertUtils.toBytes(Interface.class,
             new ImplementingClass());
         assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void canHandleLateClass() throws InvalidInputException {
+        Registry.getConverter(LateImplementingClass.class);
+        final LateImplementingClass obj = new LateImplementingClass();
+        byte[] bytes = ConvertUtils.toBytes(Interface.class, obj);
+        Interface res = ConvertUtils.fromBytes(Interface.class, bytes);
+        assertEquals(obj, res);
     }
 }

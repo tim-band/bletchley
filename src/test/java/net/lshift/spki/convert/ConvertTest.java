@@ -15,7 +15,7 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class ConvertTest
+public class ConvertTest extends ResetsRegistry
 {
     @Test
     public void convertTest() throws InvalidInputException {

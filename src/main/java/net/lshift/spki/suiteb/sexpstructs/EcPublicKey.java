@@ -32,8 +32,4 @@ public abstract class EcPublicKey {
     public ECPublicKeyParameters getParameters() {
         return Ec.toECPublicKeyParameters(point);
     }
-
-    static {
-        Point.ensureRegistered();
-    }
 }

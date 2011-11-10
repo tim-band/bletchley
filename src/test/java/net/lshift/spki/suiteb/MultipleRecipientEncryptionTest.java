@@ -6,16 +6,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
-import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
+import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
 
-public class MultipleRecipientEncryptionTest
+public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
 {
     @Test
     public void test() throws IOException, InvalidInputException
@@ -27,9 +27,7 @@ public class MultipleRecipientEncryptionTest
             keys.add(k);
             publicKeys.add(k.getPublicKey());
         }
-        final SimpleMessage message = new SimpleMessage(
-            MultipleRecipientEncryptionTest.class.getCanonicalName(),
-            "The magic words are squeamish ossifrage".getBytes(Constants.ASCII));
+        final Action message = SimpleMessage.makeMessage(this.getClass());
         final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         final AesKey aesKey = AesKey.generateAESKey();
         System.out.println("Master key:");
@@ -49,14 +47,13 @@ public class MultipleRecipientEncryptionTest
             SequenceItem.class, packet);
         for (final PrivateEncryptionKey k: keys) {
             final InferenceEngine inferenceEngine = new InferenceEngine();
+            inferenceEngine.setBlindlyTrusting(true);
             inferenceEngine.process(k);
             inferenceEngine.process(packet);
-            final List<SimpleMessage> messages = inferenceEngine.getMessages();
+            final List<ActionType> messages = inferenceEngine.getActions();
             assertEquals(1, messages.size());
-            final SimpleMessage result = messages.get(0);
-            assertEquals(message, result);
+            final ActionType result = messages.get(0);
+            assertEquals(message.getPayload(), result);
         }
     }
-
-
 }

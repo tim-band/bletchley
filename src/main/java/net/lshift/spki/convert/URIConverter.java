@@ -3,10 +3,12 @@ package net.lshift.spki.convert;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * Serialize URIs as strings.
+ */
 public class URIConverter
     extends StepConverter<URI, String>
 {
-
     @Override
     public Class<URI> getResultClass() { return URI.class; }
 
@@ -26,5 +28,4 @@ public class URIConverter
     protected String stepIn(URI o) {
         return o.toString();
     }
-
 }

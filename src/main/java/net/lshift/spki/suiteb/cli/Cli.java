@@ -16,6 +16,9 @@ import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.FileOpenable;
 import net.lshift.spki.convert.Openable;
 import net.lshift.spki.convert.OpenableUtils;
+import net.lshift.spki.convert.Registry;
+import net.lshift.spki.suiteb.Action;
+import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
@@ -24,7 +27,7 @@ import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
-import net.lshift.spki.suiteb.sexpstructs.SimpleMessage;
+import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 /**
  * Command line interface to crypto functions
@@ -70,18 +73,18 @@ public class Cli {
         final Openable out)
         throws IOException, InvalidInputException {
         final InferenceEngine inference = new InferenceEngine();
+        inference.addTrustedKey(signingKey.getKeyId());
         inference.process(signingKey);
         inference.process(encryptionKey);
         inference.process(read(SequenceItem.class, packet));
-        final List<SequenceItem> signedBy
-            = inference.getSignedBy(signingKey.getKeyId());
-        if (signedBy.size() != 1) {
+        final List<ActionType> messages = inference.getActions();
+        if (messages.size() != 1) {
             throw new RuntimeException("Did not find exactly one signed message");
         }
-        if (!(signedBy.get(0) instanceof SimpleMessage)) {
+        if (!(messages.get(0) instanceof SimpleMessage)) {
             throw new RuntimeException("Signed object was not message");
         }
-        final SimpleMessage message = (SimpleMessage) signedBy.get(0);
+        final SimpleMessage message = (SimpleMessage) messages.get(0);
         if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message was not of expected type");
         }
@@ -114,8 +117,8 @@ public class Cli {
 
         final List<SequenceItem> encryptedSequenceItems
             = new ArrayList<SequenceItem>();
-        final SimpleMessage message = new SimpleMessage(
-            messageType, OpenableUtils.readBytes(args[1]));
+        final Action message = new Action(new SimpleMessage(
+            messageType, OpenableUtils.readBytes(args[1])));
         final PrivateSigningKey privateKey = read(PrivateSigningKey.class, args[0]);
         encryptedSequenceItems.add(privateKey.sign(message));
         encryptedSequenceItems.add(message);
@@ -132,6 +135,7 @@ public class Cli {
     public static void main(final String command, final Openable... args)
         throws FileNotFoundException,
             IOException, InvalidInputException {
+        Registry.getConverter(SimpleMessage.class);
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
         } else if ("genSigningKey".equals(command)) {

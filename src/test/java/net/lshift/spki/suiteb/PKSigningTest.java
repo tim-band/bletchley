@@ -3,12 +3,13 @@ package net.lshift.spki.suiteb;
 import static net.lshift.spki.sexpform.Create.atom;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static org.junit.Assert.assertTrue;
+import net.lshift.spki.convert.ResetsRegistry;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
 import org.junit.Test;
 
-public class PKSigningTest {
+public class PKSigningTest extends ResetsRegistry {
     @Test
     public void test() {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
