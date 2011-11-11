@@ -74,11 +74,13 @@ public class DigestSha384 implements SequenceItem {
         protected DigestSha384 stepOut(final Hash hash)
             throws InvalidInputException {
             if (!DIGEST_NAME.equals(hash.hashType)) {
-                throw new ConvertException("Unexpected hash type: " + hash.hashType);
+                throw new CryptographyException(
+                    "Unexpected hash type: " + hash.hashType);
             }
             final byte[] bytes = hash.value;
             if (bytes.length != DIGEST_LENGTH) {
-                throw new ConvertException("Wrong number of bytes, expected"
+                throw new CryptographyException(
+                    "Wrong number of bytes, expected"
                     + DIGEST_LENGTH + ", got " + bytes.length);
             }
             return new DigestSha384(bytes);

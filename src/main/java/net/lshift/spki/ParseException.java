@@ -9,9 +9,4 @@ public class ParseException extends InvalidInputException {
     public ParseException(final String message) {
         super(message);
     }
-
-    public ParseException(final String message, final Throwable t)
-    {
-        super(message, t);
-    }
 }

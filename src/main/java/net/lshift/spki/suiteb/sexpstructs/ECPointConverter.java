@@ -3,8 +3,8 @@ package net.lshift.spki.suiteb.sexpstructs;
 import java.math.BigInteger;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.StepConverter;
+import net.lshift.spki.suiteb.CryptographyException;
 import net.lshift.spki.suiteb.Ec;
 
 import org.bouncycastle.math.ec.ECCurve;
@@ -51,14 +51,14 @@ public class ECPointConverter
     }
 
     @Override
-    public ECPoint stepOut(final Point point) throws ConvertException {
+    public ECPoint stepOut(final Point point) throws CryptographyException {
         final ECCurve curve = Ec.DOMAIN_PARAMETERS.getCurve();
         final ECPoint res = curve.createPoint(
             point.x, point.y, false);
         final ECFieldElement x = res.getX();
         if (!res.getY().square().equals(
             x.multiply(x.square().add(curve.getA())).add(curve.getB()))) {
-            throw new ConvertException("Point is not on curve");
+            throw new CryptographyException("Point is not on curve");
         }
         return res;
     }

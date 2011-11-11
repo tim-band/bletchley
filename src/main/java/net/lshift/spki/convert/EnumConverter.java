@@ -43,7 +43,7 @@ extends StepConverter<T, String> {
         throws InvalidInputException {
         T res = backMap.get(s);
         if (res == null) {
-            throw new InvalidInputException("not present in enum: " +s);
+            throw new ConvertException("not present in enum: " +s);
         }
         return res;
     }

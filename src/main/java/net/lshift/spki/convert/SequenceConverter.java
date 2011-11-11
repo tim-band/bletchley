@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
@@ -84,8 +85,8 @@ public class SequenceConverter<T>
                 } catch (final NoSuchFieldException e) {
                     throw new ConvertReflectionException(clazz, e);
                 }
-            default:
-                throw new ConvertException("Unexpected token in sequence");
+            case EOF:
+                throw new ParseException("Unexpected EOF");
             }
         }
     }
