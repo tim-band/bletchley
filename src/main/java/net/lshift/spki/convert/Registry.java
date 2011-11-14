@@ -51,6 +51,7 @@ public class Registry {
         registerInternal(new ByteArrayConverter());
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());
+        registerInternal(new IntegerConverter());
         registerInternal(new DateConverter());
         registerInternal(new URIConverter());
         registerInternal(new URLConverter());
