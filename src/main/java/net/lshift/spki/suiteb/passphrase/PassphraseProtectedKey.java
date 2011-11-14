@@ -4,10 +4,11 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesKeyId;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 @Convert.ByPosition(name="passphrase-protected-key",
     fields={"passphraseId", "salt", "iterations", "keyId"})
-public class PassphraseProtectedKey {
+public class PassphraseProtectedKey implements SequenceItem {
     private final String passphraseId;
     private final byte [] salt;
     private final Integer iterations;

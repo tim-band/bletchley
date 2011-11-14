@@ -8,6 +8,7 @@ import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
 import net.lshift.spki.suiteb.Signature;
+import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
 
 /**
  * Item that can go in a sequence and so be interpreted by the InferenceEngine.
@@ -21,6 +22,7 @@ import net.lshift.spki.suiteb.Signature;
     Signature.class,
     DigestSha384.class,
     Action.class,
+    PassphraseProtectedKey.class,
     Sequence.class})
 public interface SequenceItem {
     // Marker interface, no body
