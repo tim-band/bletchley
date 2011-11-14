@@ -1,9 +1,11 @@
 package net.lshift.spki.suiteb.passphrase;
 
+import java.io.Console;
 import java.util.Arrays;
 
 import org.bouncycastle.crypto.digests.SHA384Digest;
 
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.Ec;
@@ -43,5 +45,44 @@ public class PassphraseUtils {
             sha.doFinal(digest, 0);
         }
         return new AesKey(Arrays.copyOf(digest, AesKey.AES_KEY_BYTES));
+    }
+
+    public static KeyFromPassphrase promptForNewPassphrase(String passphraseId) {
+        Console console = System.console();
+        if (console == null) {
+            throw new RuntimeException("No console from which to read passphrase");
+        }
+        while (true) {
+            final String passphrase = new String(console.readPassword(
+                "New passphrase for \"%s\": ", passphraseId));
+            if (passphrase.isEmpty()) {
+                System.out.println("Passphrase is empty, trying again");
+                continue;
+            }
+            final String confirm = new String(console.readPassword(
+                    "Confirm new passphrase for \"%s\": ", passphraseId));
+            if (!confirm.equals(passphrase)) {
+                System.out.println("Passphrases do not match, trying again");
+                continue;
+            }
+            return PassphraseUtils.generate(passphraseId, passphrase);
+        }
+    }
+
+    public static AesKey promptForPassphrase(
+        PassphraseProtectedKey ppk) {
+        Console console = System.console();
+        if (console == null) {
+            throw new RuntimeException("No console from which to read passphrase");
+        }
+        while (true) {
+            final String passphrase = new String(console.readPassword(
+                "Passphrase for \"%s\": ", ppk.getPassphraseId()));
+            try {
+                return ppk.getKey(passphrase);
+            } catch (InvalidInputException e) {
+                System.out.println("Wrong passphrase, trying again");
+            }
+        }
     }
 }
