@@ -3,16 +3,16 @@ package net.lshift.spki.suiteb.fingerprint;
 import static net.lshift.spki.sexpform.Create.atom;
 import static net.lshift.spki.sexpform.Create.list;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import net.lshift.spki.sexpform.Sexp;
 
-import org.junit.Assert;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
 @RunWith(Theories.class)
-public class FingerprintTest {
+public class FingerprintStabilityTest {
     private static class TestPair {
         private final Sexp test;
         private final String fingerprint;
@@ -48,7 +48,7 @@ public class FingerprintTest {
 
     @Theory
     public void theoryFingerprintsAreStable(TestPair pair) {
-        Assert.assertThat(
+        assertThat(
             FingerprintUtils.getFingerprint(Sexp.class, pair.getTest()),
             is(pair.getFingerprint()));
     }
