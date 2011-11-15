@@ -2,6 +2,9 @@ package net.lshift.spki.convert;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,24 +50,43 @@ public class ConvertUtils {
         }
     }
 
+    /**
+     * WARNING: this closes the stream passed in!
+     */
     public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
         throws IOException {
         final ConvertOutputStream out = new ConvertOutputStream(os);
-        out.write(clazz, o);
-        out.close();
+        try {
+            out.write(clazz, o);
+        } finally {
+            out.close();
+        }
     }
 
+    public static <T> void write(final Class<T> clazz, final T o, final File f)
+        throws IOException {
+        write(clazz, o, new FileOutputStream(f));
+    }
+
+    /**
+     * WARNING: this closes the stream passed in!
+     */
     public static <T> T read(final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
         try {
-            final ConvertInputStream in
-                = new ConvertInputStream(is);
+            final ConvertInputStream in = new ConvertInputStream(is);
             final T res = in.read(clazz);
             in.nextAssertType(TokenType.EOF);
             return res;
         } finally {
             is.close();
         }
+    }
+
+    public static <T> T read(final Class<T> clazz, final File f)
+        throws IOException,
+            InvalidInputException {
+        return read(clazz, new FileInputStream(f));
     }
 
     public static <T> byte[] toBytes(final Class<T> clazz, final T o) {
