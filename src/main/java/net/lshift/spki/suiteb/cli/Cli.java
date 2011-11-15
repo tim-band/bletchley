@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb.cli;
 
-import static net.lshift.spki.convert.OpenableUtils.read;
-import static net.lshift.spki.convert.OpenableUtils.write;
+import static net.lshift.spki.convert.openable.OpenableUtils.read;
+import static net.lshift.spki.convert.openable.OpenableUtils.write;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,10 +12,10 @@ import java.util.List;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.FileOpenable;
-import net.lshift.spki.convert.Openable;
-import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.convert.Registry;
+import net.lshift.spki.convert.openable.FileOpenable;
+import net.lshift.spki.convert.openable.Openable;
+import net.lshift.spki.convert.openable.OpenableUtils;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;

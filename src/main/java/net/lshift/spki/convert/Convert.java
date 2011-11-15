@@ -72,7 +72,7 @@ public class Convert
     @ConverterFactoryClass(ConvertClassFactory.class)
     public @interface ConvertClass {
         // FIXME: why doesn't Class<StepConverter<?,?>> work?
-        Class<?> value();
+        Class<? extends Converter<?>> value();
     }
 
     /**

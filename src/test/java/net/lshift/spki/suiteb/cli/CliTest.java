@@ -5,10 +5,10 @@ import static org.junit.Assert.assertArrayEquals;
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ByteOpenable;
-import net.lshift.spki.convert.Openable;
-import net.lshift.spki.convert.OpenableUtils;
 import net.lshift.spki.convert.ResetsRegistry;
+import net.lshift.spki.convert.openable.ByteOpenable;
+import net.lshift.spki.convert.openable.Openable;
+import net.lshift.spki.convert.openable.OpenableUtils;
 
 import org.junit.Test;
 

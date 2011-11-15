@@ -1,10 +1,11 @@
-package net.lshift.spki.convert;
+package net.lshift.spki.convert.openable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.ConvertUtils;
 
 import org.apache.commons.io.IOUtils;
 

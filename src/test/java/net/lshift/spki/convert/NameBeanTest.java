@@ -6,6 +6,8 @@ import static net.lshift.spki.sexpform.Create.list;
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.openable.ByteOpenable;
+import net.lshift.spki.convert.openable.OpenableUtils;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.suiteb.sexpstructs.ECPointConverter.Point;
 

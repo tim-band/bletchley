@@ -1,13 +1,13 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.convert.OpenableUtils.read;
-import static net.lshift.spki.convert.OpenableUtils.write;
+import static net.lshift.spki.convert.openable.OpenableUtils.read;
+import static net.lshift.spki.convert.openable.OpenableUtils.write;
 
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.ByteOpenable;
+import net.lshift.spki.convert.openable.ByteOpenable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

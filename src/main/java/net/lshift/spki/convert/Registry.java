@@ -69,7 +69,15 @@ public class Registry {
         if (res == null) {
             res = generateConverter(clazz);
             converterMap.put(clazz, res);
-            handleAnnotations(clazz);
+            boolean success = false;
+            try {
+                handleAnnotations(clazz);
+                success = true;
+            } finally {
+                if (!success) {
+                    converterMap.remove(clazz);
+                }
+            }
         }
         return res;
     }
