@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Pretty-print an SPKI S-expression.
@@ -26,16 +27,23 @@ public class PrettyPrinter extends SpkiOutputStream {
     @Override
     public void atom(final byte[] bytes, final int off, final int len)
         throws IOException {
+        printPrefix();
         if (firstAtom) {
+            pw.print('(');
+            indent += 1;
             firstAtom = false;
-        } else {
-            printPrefix();
         }
         if (isText(bytes, off, len)) {
-            pw.print("\"");
-            pw.print(Constants.ASCII.newDecoder()
-                .decode(ByteBuffer.wrap(bytes, off, len)).toString());
-            pw.println("\"");
+            final String string = Constants.ASCII.newDecoder()
+                .decode(ByteBuffer.wrap(bytes, off, len)).toString();
+            if (StringUtils.containsOnly(string,
+                "abcdefghijklmnopqrstuvwxyz0123456789-")) {
+                pw.println(string);
+            } else {
+                pw.print("\"");
+                pw.print(string);
+                pw.println("\"");
+            }
         } else if (len < 10) {
             pw.print("#");
             pw.print(Hex.encodeHexString(Arrays.copyOfRange(bytes, off, off + len)));
@@ -52,12 +60,10 @@ public class PrettyPrinter extends SpkiOutputStream {
     public void beginSexp()
         throws IOException {
         if (firstAtom) {
-            pw.println();
-            firstAtom = false;
+            printPrefix();
+            pw.println('(');
+            indent += 1;
         }
-        printPrefix();
-        pw.print('(');
-        indent += 1;
         firstAtom = true;
     }
 
@@ -65,20 +71,28 @@ public class PrettyPrinter extends SpkiOutputStream {
     public void endSexp()
         throws IOException {
         if (firstAtom) {
-            pw.println();
+            printPrefix();
+            pw.println("()");
             firstAtom = false;
+        } else {
+            if (indent == 0) {
+                throw new RuntimeException("Too many closeparens");
+            }
+            indent -= 1;
+            printPrefix();
+            pw.println(")");
         }
-        if (indent == 0) {
-            throw new RuntimeException("Too many closeparens");
-        }
-        indent -= 1;
-        printPrefix();
-        pw.println(")");
     }
 
     @Override
     public void close()
         throws IOException {
+        if (firstAtom) {
+            // This always means the stream ended early, but handle anyway
+            printPrefix();
+            pw.println('(');
+            indent += 1;
+        }
         // Do nothing - don't close underlying PrintStream!
         // Should we assert indent == 0 here?
     }
@@ -123,7 +137,9 @@ public class PrettyPrinter extends SpkiOutputStream {
     {
         StringWriter writer = new StringWriter();
         try {
-            prettyPrint(new PrintWriter(writer), read);
+            final PrintWriter pw = new PrintWriter(writer);
+            prettyPrint(pw, read);
+            pw.close();
         } catch (final IOException e) {
             // should not be possible
             throw new RuntimeException(e);

@@ -24,7 +24,7 @@ public class RoundTrip
         try {
             final ByteOpenable buf = new ByteOpenable();
             write(clazz, o, buf);
-            LOG.info(PrettyPrinter.prettyPrint(buf.read()));
+            LOG.info("\n{}", PrettyPrinter.prettyPrint(buf.read()));
             return read(clazz, buf);
         } catch (final IOException e) {
             throw new RuntimeException(e);

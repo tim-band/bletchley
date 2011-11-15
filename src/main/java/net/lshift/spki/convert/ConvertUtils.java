@@ -123,7 +123,9 @@ public class ConvertUtils {
     public static <T> String prettyPrint(final Class<T> clazz, final T o) {
         StringWriter writer = new StringWriter();
         try {
-            prettyPrint(clazz, o, new PrintWriter(writer));
+            final PrintWriter pw = new PrintWriter(writer);
+            prettyPrint(clazz, o, pw);
+            pw.close();
         } catch (final IOException e) {
             // should not be possible
             throw new RuntimeException(e);
@@ -135,6 +137,8 @@ public class ConvertUtils {
         Class<T> clazz,
         T o,
         OutputStream out) throws IOException {
-        prettyPrint(clazz, o, new PrintWriter(out));
+        final PrintWriter ps = new PrintWriter(out);
+        prettyPrint(clazz, o, ps);
+        ps.flush();
     }
 }

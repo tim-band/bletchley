@@ -91,7 +91,7 @@ public class InferenceEngine {
             if (signer != null && LOG.isDebugEnabled()) {
                 LOG.debug("Signed object found, signer {} signed {}",
                     digestString(signer), digestString(digest));
-                LOG.debug(
+                LOG.debug("\n{}",
                     ConvertUtils.prettyPrint(SequenceItem.class, item));
             }
         }
