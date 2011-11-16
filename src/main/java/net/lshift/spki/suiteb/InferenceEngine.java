@@ -9,6 +9,8 @@ import java.util.Set;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
+import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -44,6 +46,8 @@ public class InferenceEngine {
         = new ArrayList<ActionType>();
 
     private final Map<String, String> byteNames = new HashMap<String,String>();
+
+    private PassphraseDelegate passphraseDelegate;
 
     private String bytesString(final byte[] bytes) {
         final String string = "|" + Base64.encodeBase64String(bytes) + "|";
@@ -114,6 +118,8 @@ public class InferenceEngine {
             doProcess((DigestSha384) item, signer);
         } else if (item instanceof PublicEncryptionKey) {
             // Do nothing - we don't currently use these
+        } else if (item instanceof PassphraseProtectedKey) {
+            doProcess((PassphraseProtectedKey)item);
         } else {
             // Shouldn't happen - there should be a clause here
             // for every kind of SequenceItem
@@ -218,7 +224,20 @@ public class InferenceEngine {
         }
     }
 
+    private void doProcess(PassphraseProtectedKey item) {
+        if (passphraseDelegate != null) {
+            AesKey key = passphraseDelegate.getPassphrase(item);
+            if (key != null) {
+                doProcess(key);
+            }
+        }
+    }
+
     public List<ActionType> getActions() {
         return actions;
+    }
+
+    public void setPassphraseDelegate(PassphraseDelegate passphraseDelegate) {
+        this.passphraseDelegate = passphraseDelegate;
     }
 }
