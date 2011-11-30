@@ -1,5 +1,7 @@
 package net.lshift.spki.suiteb.fingerprint;
 
+import java.util.List;
+
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.DigestSha384;
 
@@ -62,5 +64,9 @@ public class DigestRng {
                 x -= k * size; xlim -= k * size;
             }
         }
+    }
+
+    public <T> T randomPick(List<T> list) {
+        return list.get(random(list.size()));
     }
 }
