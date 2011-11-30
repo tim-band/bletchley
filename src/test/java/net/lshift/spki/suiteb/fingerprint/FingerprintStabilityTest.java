@@ -36,13 +36,13 @@ public class FingerprintStabilityTest {
     public static TestPair[] data() {
         return new TestPair[] {
             new TestPair(atom(""),
-                "yet-heaps-geo/owner-jp-siege/serve-jesus-gordon/emma-maybe-havoc/oaf-glory-orbs"),
+                "word-shots-term/boils-hyde-dish/cajun-vs-zw/doubt-them-cry/torn-accuse-facile"),
             new TestPair(atom("hello"),
-                "sutton-awful-sperm/welch-reek-tyke/hhhh-nag-brady/dn-fatal-mn/jive-text-jp"),
+                "ire-bh-marks/sol-carat-norway/hhhh-bushy-rufus/sara-grout-ouija/pencil-leda-yyyy"),
             new TestPair(list("hello"),
-                "says-habit-morsel/lice-mouth-take/vomit-waste-sleds/fled-skunk-wino/gu-twin-cock"),
+                "bk-crank-award/moore-buyer-gil/vie-gauge-byline/e-gl-tut/irvin-lcd-bowed"),
             new TestPair(list("hello", atom("there")),
-                "bow-owl-dues/peak-check-eli/bang-posse-fogy/jewel-ages-sum/clumsy-flirt-like"),
+                "nails-whine-led/ah-levis-endow/xr-porn-carpet/posse-node-wear/waxy-locks-root"),
         };
     }
 

@@ -6,8 +6,6 @@ import java.util.List;
 import net.lshift.spki.suiteb.DigestSha384;
 
 import org.apache.commons.io.IOUtils;
-import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.digests.SHA384Digest;
 
 /**
  * Generate a fingerprint from a digest using a word list.
@@ -34,39 +32,13 @@ public class FingerprintUtils {
     }
 
     public static String getFingerprint(DigestSha384 digest) {
-        return getFingerprint(digest.getBytes());
-    }
-
-    private static String getFingerprint(byte[] bs) {
-        byte[] bytes = bs;
+        DigestRng rng = new DigestRng(digest);
         StringBuffer res = new StringBuffer();
-        int i = 0;
-        int x = 0;
-        int xlim = 1;
-        // Invariant: x is a random number 0 <= x < xlim
-        while (true) {
-            for (byte b: bytes) {
-                x *= 256; x += (b & 0xff); xlim *= 256;
-                if (xlim >= NUM_WORDS) {
-                    int k = xlim / NUM_WORDS;
-                    if (x < k * NUM_WORDS) {
-                        res.append(WORDLIST.get(x % NUM_WORDS));
-                        if (i == SEPARATORS.length()) {
-                            return res.toString();
-                        }
-                        res.append(SEPARATORS.charAt(i));
-                        i ++;
-                        x /= NUM_WORDS; xlim = k;
-                    } else {
-                        x -= k * NUM_WORDS; xlim -= k * NUM_WORDS;
-                    }
-                }
-            }
-            Digest digest = new SHA384Digest();
-            digest.update(bytes, 0, bytes.length);
-            if (bytes == bs)
-                bytes = new byte[bs.length];
-            digest.doFinal(bytes, 0);
+        res.append(WORDLIST.get(rng.random(WORDLIST.size())));
+        for (char s: SEPARATORS.toCharArray()) {
+            res.append(s);
+            res.append(WORDLIST.get(rng.random(WORDLIST.size())));
         }
+        return res.toString();
     }
 }
