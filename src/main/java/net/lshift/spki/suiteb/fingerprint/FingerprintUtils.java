@@ -40,10 +40,10 @@ public class FingerprintUtils {
     public static String getFingerprint(DigestSha384 digest) {
         DigestRng rng = new DigestRng(digest);
         StringBuffer res = new StringBuffer();
-        res.append(rng.randomPick(WORDLIST));
+        res.append(rng.nextChoice(WORDLIST));
         for (char s: SEPARATORS.toCharArray()) {
             res.append(s);
-            res.append(rng.randomPick(WORDLIST));
+            res.append(rng.nextChoice(WORDLIST));
         }
         return res.toString();
     }
