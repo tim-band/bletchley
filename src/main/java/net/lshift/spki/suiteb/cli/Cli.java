@@ -6,7 +6,6 @@ import static net.lshift.spki.convert.OpenableUtils.write;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class Cli {
     public static void prettyPrint(final Openable file)
         throws IOException,
             ParseException {
-        PrettyPrinter.prettyPrint(new PrintWriter(System.out), file.read());
+        PrettyPrinter.prettyPrint(System.out, file.read());
     }
 
     public static void genEncryptionKey(final Openable out)

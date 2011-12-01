@@ -2,6 +2,7 @@ package net.lshift.spki;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
@@ -37,7 +38,8 @@ public class PrettyPrinter extends SpkiOutputStream {
             final String string = Constants.ASCII.newDecoder()
                 .decode(ByteBuffer.wrap(bytes, off, len)).toString();
             if (StringUtils.containsOnly(string,
-                "abcdefghijklmnopqrstuvwxyz0123456789-")) {
+                "abcdefghijklmnopqrstuvwxyz0123456789-") &&
+                !Character.isDigit(string.charAt(0))) {
                 pw.println(string);
             } else {
                 pw.print("\"");
@@ -158,5 +160,12 @@ public class PrettyPrinter extends SpkiOutputStream {
             case EOF: output.close(); return;
             }
         }
+    }
+
+    public static void prettyPrint(OutputStream out, InputStream read)
+                    throws ParseException, IOException {
+        final PrintWriter pw = new PrintWriter(out);
+        prettyPrint(pw, read);
+        pw.close();
     }
 }
