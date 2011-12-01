@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb.fingerprint;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import net.lshift.spki.suiteb.DigestSha384;
@@ -19,8 +20,13 @@ public class FingerprintUtils {
     public static final List<String> WORDLIST;
     static {
         try {
-            WORDLIST = IOUtils.readLines(
-                FingerprintUtils.class.getResourceAsStream("wordlist"));
+            final InputStream resourceStream
+                = FingerprintUtils.class.getResourceAsStream("wordlist");
+            try {
+                WORDLIST = IOUtils.readLines(resourceStream);
+            } finally {
+                resourceStream.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
