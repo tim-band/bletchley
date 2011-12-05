@@ -80,7 +80,10 @@ public class InferenceEngine {
     }
 
     // FIXME: use dynamic dispatch here
-    public void process(final SequenceItem item, final DigestSha384 contextSigner) throws InvalidInputException {
+    public void process(
+        final SequenceItem item,
+        final DigestSha384 contextSigner)
+        throws InvalidInputException {
         DigestSha384 signer = contextSigner;
         if (signer == null) {
             final DigestSha384 digest = DigestSha384.digest(item);
@@ -109,8 +112,11 @@ public class InferenceEngine {
             process((Signature) item);
         } else if (item instanceof DigestSha384) {
             process((DigestSha384) item, signer);
+        } else if (item instanceof PublicEncryptionKey) {
+            // We don't process these, ignore it
         } else {
-            throw new InvalidInputException(
+            // Shouldn't happen - SequenceItem is a closed class.
+            throw new RuntimeException(
                 "Don't know how to process sequence item: "
                 + item.getClass().getCanonicalName());
         }
@@ -163,7 +169,7 @@ public class InferenceEngine {
             return;
         }
         if (!pKey.validate(sig.digest, sig.rawSignature))
-            throw new InvalidInputException("Sig validation failure");
+            throw new CryptographyException("Sig validation failure");
         LOG.debug("Signer {} attests to {}",
             digestString(sig.keyId), digestString(sig.digest));
         // FIXME: assert that it's not already signed?

@@ -15,7 +15,6 @@ import java.nio.charset.CharacterCodingException;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SpkiInputStream.TokenType;
 
@@ -33,11 +32,11 @@ public class ConvertUtils {
             .decode(ByteBuffer.wrap(bytes)).toString();
     }
 
-    public static String string(final byte[] bytes) throws ParseException {
+    public static String string(final byte[] bytes) throws ConvertException {
         try {
             return decodeUtf8(bytes);
         } catch (final CharacterCodingException e) {
-            throw new ParseException("Cannot convert bytes to string", e);
+            throw new ConvertException("Cannot convert bytes to string", e);
         }
     }
 

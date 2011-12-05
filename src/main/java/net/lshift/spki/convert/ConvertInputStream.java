@@ -84,19 +84,18 @@ public class ConvertInputStream
     }
 
     public void nextAssertType(final TokenType type)
-        throws ParseException,IOException {
+        throws IOException, InvalidInputException {
         if (next() != type) {
             invalidate();
-            throw new ParseException("Token was of unexpected type");
+            throw new ConvertException("Token was of unexpected type");
         }
     }
 
     public void assertAtom(final String name)
-        throws ParseException,
-            IOException {
+        throws InvalidInputException, IOException {
         nextAssertType(TokenType.ATOM);
         if (!name.equals(ConvertUtils.stringOrNull(atomBytes()))) {
-            throw new ParseException("Did not see expected atom: " + name);
+            throw new ConvertException("Did not see expected atom: " + name);
         }
     }
 }

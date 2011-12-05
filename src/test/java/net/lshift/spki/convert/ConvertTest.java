@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.ParseException;
 import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
@@ -35,7 +34,7 @@ public class ConvertTest extends ResetsRegistry
             ConvertUtils.fromBytes(Sexp.class, bytes));
     }
 
-    @Test(expected=ParseException.class)
+    @Test(expected=ConvertException.class)
     public void extraBytesMeansParseException() throws InvalidInputException {
         final byte[] bytes = ConvertUtils.bytes("(3:foo)1:o");
         ConvertUtils.fromBytes(Sexp.class, bytes);

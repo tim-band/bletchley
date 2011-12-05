@@ -4,7 +4,7 @@ import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
 
 import java.io.IOException;
 
-import net.lshift.spki.ParseException;
+import net.lshift.spki.InvalidInputException;
 
 /**
  * Convert between a byte[] and a SExp
@@ -27,7 +27,7 @@ public class ByteArrayConverter
 
     @Override
     public byte[] read(final ConvertInputStream in)
-        throws ParseException,
+        throws InvalidInputException,
             IOException {
         in.nextAssertType(ATOM);
         return in.atomBytes();

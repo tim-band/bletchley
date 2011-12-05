@@ -88,7 +88,7 @@ public class AesKey implements SequenceItem {
         try {
             gcm.doFinal(newtext, pp);
         } catch (InvalidCipherTextException e) {
-            throw new InvalidInputException(e);
+            throw new CryptographyException(e);
         }
         return ConvertUtils.fromBytes(SequenceItem.class, newtext);
     }
