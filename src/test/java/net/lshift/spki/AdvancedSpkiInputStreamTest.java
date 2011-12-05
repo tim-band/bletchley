@@ -5,20 +5,19 @@ import static net.lshift.spki.SpkiInputStream.TokenType.CLOSEPAREN;
 import static net.lshift.spki.SpkiInputStream.TokenType.EOF;
 import static net.lshift.spki.SpkiInputStream.TokenType.OPENPAREN;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
-public class GeneralSpkiInputStreamTest extends SpkiInputStreamTest
+public class AdvancedSpkiInputStreamTest extends SpkiInputStreamTest
 {
     @Override
     protected void setInput(InputStream inputStream) {
-        sis = new GeneralSpkiInputStream(inputStream);
+        sis = new AdvancedSpkiInputStream(inputStream);
     }
 
     @Test

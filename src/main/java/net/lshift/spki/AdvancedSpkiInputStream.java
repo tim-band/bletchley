@@ -7,12 +7,12 @@ import java.io.InputStream;
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.encoders.Hex;
 
-public class GeneralSpkiInputStream extends FileSpkiInputStream {
+public class AdvancedSpkiInputStream extends FileSpkiInputStream {
     private static final int NO_PUSHBACK = -2;
     private byte[] atomBytes = null;
     private int pushback = NO_PUSHBACK;
 
-    public GeneralSpkiInputStream(InputStream is) {
+    public AdvancedSpkiInputStream(InputStream is) {
         super(is);
     }
 

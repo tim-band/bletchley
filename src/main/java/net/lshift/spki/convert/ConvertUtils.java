@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 
 import net.lshift.spki.Constants;
+import net.lshift.spki.AdvancedSpkiInputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SpkiInputStream.TokenType;
@@ -74,6 +75,22 @@ public class ConvertUtils {
         throws IOException, InvalidInputException {
         try {
             final ConvertInputStream in = new ConvertInputStream(is);
+            final T res = in.read(clazz);
+            in.nextAssertType(TokenType.EOF);
+            return res;
+        } finally {
+            is.close();
+        }
+    }
+
+    /**
+     * WARNING: this closes the stream passed in!
+     */
+    public static <T> T readAdvanced(final Class<T> clazz, final InputStream is)
+        throws IOException, InvalidInputException {
+        try {
+            final ConvertInputStream in = new ConvertInputStream(
+                new AdvancedSpkiInputStream(is));
             final T res = in.read(clazz);
             in.nextAssertType(TokenType.EOF);
             return res;
