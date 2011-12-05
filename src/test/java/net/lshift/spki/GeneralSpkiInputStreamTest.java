@@ -1,0 +1,65 @@
+package net.lshift.spki;
+
+import static net.lshift.spki.SpkiInputStream.TokenType.ATOM;
+import static net.lshift.spki.SpkiInputStream.TokenType.CLOSEPAREN;
+import static net.lshift.spki.SpkiInputStream.TokenType.EOF;
+import static net.lshift.spki.SpkiInputStream.TokenType.OPENPAREN;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.junit.Test;
+
+public class GeneralSpkiInputStreamTest extends SpkiInputStreamTest
+{
+    @Override
+    protected void setInput(InputStream inputStream) {
+        sis = new GeneralSpkiInputStream(inputStream);
+    }
+
+    @Test
+    public void getBareAtom()
+        throws IOException, ParseException {
+        setInput("foo");
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("foo")));
+        assertThat(sis.next(), is(EOF));
+    }
+
+    @Test
+    public void getQuotedString()
+        throws IOException, ParseException {
+        setInput("\"foo\"");
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("foo")));
+        assertThat(sis.next(), is(EOF));
+    }
+
+    @Test
+    public void canStillReadOpenCloseParen()
+        throws ParseException, IOException {
+        setInput(" ( foo ) ");
+        assertThat(sis.next(), is(OPENPAREN));
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("foo")));
+        assertThat(sis.next(), is(CLOSEPAREN));
+        assertThat(sis.next(), is(EOF));
+    }
+
+    @Test
+    public void handlePushbackProperly()
+        throws ParseException, IOException {
+        setInput(" ( foo(bar) ) ");
+        assertThat(sis.next(), is(OPENPAREN));
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("foo")));
+        assertThat(sis.next(), is(OPENPAREN));
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("bar")));
+        assertThat(sis.next(), is(CLOSEPAREN));
+        assertThat(sis.next(), is(CLOSEPAREN));
+        assertThat(sis.next(), is(EOF));
+    }
+}

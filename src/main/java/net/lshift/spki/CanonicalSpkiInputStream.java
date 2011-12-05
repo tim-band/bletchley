@@ -6,13 +6,11 @@ import java.io.InputStream;
 /**
  * Tokenize an InputStream into SPKI tokens
  */
-public class CanonicalSpkiInputStream extends SpkiInputStream {
-    private static final int NO_MORE_DIGITS_BOUND = (Integer.MAX_VALUE - 9)/10;
-    private final InputStream is;
-    private int atomBytes;
+public class CanonicalSpkiInputStream extends FileSpkiInputStream {
+    int atomBytes;
 
-    public CanonicalSpkiInputStream(final InputStream is) {
-        this.is = is;
+    public CanonicalSpkiInputStream(InputStream is) {
+        super(is);
     }
 
     @Override
@@ -27,33 +25,13 @@ public class CanonicalSpkiInputStream extends SpkiInputStream {
             return TokenType.CLOSEPAREN;
         case -1:
             return TokenType.EOF;
-        default:
+        case '1': case '2': case '3': case '4': case '5':
+        case '6': case '7': case '8': case '9':
             atomBytes = readInteger(next);
             return TokenType.ATOM;
-        }
-    }
-
-    private int readInteger(final int next)
-        throws ParseException,
-            IOException {
-        int c = next;
-        int r = 0;
-        for (;;) {
-            if (c < '0' || c > '9') {
-                invalidate();
-                throw new ParseException("Bad s-expression format");
-            }
-            r += c - '0';
-            c = is.read();
-            if (c == ':')
-                return r;
-            if (r > NO_MORE_DIGITS_BOUND) {
-                // Could strictly speaking handle it so long as
-                // next digit is 0..7 and is last, but let's not go mad.
-                invalidate();
-                throw new ParseException("Integer too large");
-            }
-            r *= 10;
+        default:
+            invalidate();
+            throw new ParseException("Bad s-expression format");
         }
     }
 
@@ -61,21 +39,6 @@ public class CanonicalSpkiInputStream extends SpkiInputStream {
     public byte[] doAtomBytes()
         throws IOException,
             ParseException {
-        final byte[] res = new byte[atomBytes];
-        int ix = 0;
-        while (ix < atomBytes) {
-            final int c = is.read(res, ix, atomBytes-ix);
-            if (c < 1) {
-                invalidate();
-                throw new ParseException("Failed to read enough bytes");
-            }
-            ix += c;
-        }
-        return res;
-    }
-
-    @Override
-    public void close() throws IOException {
-        is.close();
+        return readBytes(atomBytes);
     }
 }
