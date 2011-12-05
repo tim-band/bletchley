@@ -96,26 +96,27 @@ public class InferenceEngine {
             }
         }
         if (item instanceof Sequence) {
-            process((Sequence) item, signer);
+            doProcess((Sequence) item, signer);
         } else if (item instanceof EcdhItem) {
-            process((EcdhItem) item);
+            doProcess((EcdhItem) item);
         } else if (item instanceof AesKey) {
-            process((AesKey) item);
+            doProcess((AesKey) item);
         } else if (item instanceof AesPacket) {
             // Propagate signer?
-            process((AesPacket) item);
+            doProcess((AesPacket) item);
         } else if (item instanceof Action) {
-            process((Action) item, signer);
+            doProcess((Action) item, signer);
         } else if (item instanceof PublicSigningKey) {
-            process((PublicSigningKey) item);
+            doProcess((PublicSigningKey) item);
         } else if (item instanceof Signature) {
-            process((Signature) item);
+            doProcess((Signature) item);
         } else if (item instanceof DigestSha384) {
-            process((DigestSha384) item, signer);
+            doProcess((DigestSha384) item, signer);
         } else if (item instanceof PublicEncryptionKey) {
-            // We don't process these, ignore it
+            // Do nothing - we don't currently use these
         } else {
-            // Shouldn't happen - SequenceItem is a closed class.
+            // Shouldn't happen - there should be a clause here
+            // for every kind of SequenceItem
             throw new RuntimeException(
                 "Don't know how to process sequence item: "
                 + item.getClass().getCanonicalName());
@@ -128,7 +129,7 @@ public class InferenceEngine {
         dhKeys.put(keyId, privateKey);
     }
 
-    public void process(final Sequence items, final DigestSha384 signer)
+    private void doProcess(final Sequence items, final DigestSha384 signer)
         throws InvalidInputException {
         LOG.debug("Processing sequence...");
         for (final SequenceItem item: items.sequence) {
@@ -137,7 +138,7 @@ public class InferenceEngine {
         LOG.debug("...sequence processed.");
     }
 
-    public void process(final EcdhItem item) {
+    private void doProcess(final EcdhItem item) {
         final PrivateEncryptionKey key = dhKeys.get(item.recipient);
         if (key == null) {
             LOG.debug("Skipping encrypted packet for recipient {}",
@@ -145,23 +146,23 @@ public class InferenceEngine {
         } else {
             LOG.debug("Processing encrypted packet for recipient {}",
                 digestString(item.recipient));
-            process(new AesKey(key.getKey(item.ephemeralKey)));
+            doProcess(new AesKey(key.getKey(item.ephemeralKey)));
         }
     }
 
-    public void process(final AesKey key) {
+    private void doProcess(final AesKey key) {
         LOG.debug("Adding AES key id {}",
             bytesString(key.getKeyId().keyId));
         aesKeys.put(key.getKeyId(), key);
     }
 
-    public void process(final PublicSigningKey pKey) {
+    private void doProcess(final PublicSigningKey pKey) {
         final DigestSha384 keyId = pKey.getKeyId();
         LOG.debug("Adding public signing key: {}", digestString(keyId));
         dsaKeys.put(keyId, pKey);
     }
 
-    public void process(final Signature sig) throws InvalidInputException {
+    private void doProcess(final Signature sig) throws InvalidInputException {
         final PublicSigningKey pKey = dsaKeys.get(sig.keyId);
         if (pKey == null) {
             LOG.debug("Skipping signature from unknown signer {} for {}",
@@ -176,7 +177,7 @@ public class InferenceEngine {
         signedBy.put(sig.digest, sig.keyId);
     }
 
-    public void process(final Action message, final DigestSha384 signer) {
+    private void doProcess(final Action message, final DigestSha384 signer) {
         if (LOG.isDebugEnabled()) {
             if (signer != null) {
                 LOG.debug("Found message signed by {}:\n{}",
@@ -193,7 +194,7 @@ public class InferenceEngine {
         }
     }
 
-    public void process(final AesPacket packet) throws InvalidInputException {
+    private void doProcess(final AesPacket packet) throws InvalidInputException {
         final AesKey key = aesKeys.get(packet.keyId);
         if (key != null) {
             final SequenceItem contents = key.decrypt(packet);
@@ -209,7 +210,7 @@ public class InferenceEngine {
         }
     }
 
-    public void process(final DigestSha384 digest, final DigestSha384 signer) {
+    private void doProcess(final DigestSha384 digest, final DigestSha384 signer) {
         if (signer != null) {
             LOG.debug("Chained signature from {} for {}",
                 digestString(signer), digestString(digest));
