@@ -1,8 +1,8 @@
 package net.lshift.spki.suiteb.simplemessage;
 
 import net.lshift.spki.Constants;
-import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
@@ -51,7 +51,7 @@ public class SimpleMessage implements ActionType {
             "The magic words are squeamish ossifrage");
     }
 
-    public static String getContent(SequenceItem action) throws ParseException {
+    public static String getContent(SequenceItem action) throws ConvertException {
         return ConvertUtils.string(
             ((SimpleMessage)((Action)action).getPayload()).content);
     }

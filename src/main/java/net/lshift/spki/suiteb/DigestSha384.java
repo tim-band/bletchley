@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ConvertException;
+import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.StepConverter;
-import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
