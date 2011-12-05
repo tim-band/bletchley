@@ -10,6 +10,8 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.bouncycastle.util.encoders.Base64;
+import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
 public class GeneralSpkiInputStreamTest extends SpkiInputStreamTest
@@ -80,4 +82,20 @@ public class GeneralSpkiInputStreamTest extends SpkiInputStreamTest
         assertThat(sis.atomBytes(), is(s("Man")));
         assertThat(sis.next(), is(EOF));
     }
+
+    @Test
+    public void HexIgnoresSpaces() {
+        assertThat(Hex.decode("  4 d 6 1 6 E "),
+            is(s("Man")));
+    }
+
+//    @Test
+//    public void Base64IgnoresSpaces() {
+//        assertThat(Base64.decode("TWFu"),
+//            is(s("Man")));
+//        assertThat(Base64.decode(" T W F u TWFu"),
+//            is(s("ManMan")));
+//        assertThat(Base64.decode(" T W F u "), // fails
+//            is(s("Man")));
+//    }
 }

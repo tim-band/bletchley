@@ -23,11 +23,7 @@ public class GeneralSpkiInputStream extends FileSpkiInputStream {
         while (true) {
             final int next = read();
             switch (next) {
-            case ' ':
-            case '\n':
-            case '\r':
-            case '\t':
-            case '\f':
+            case ' ': case '\n': case '\r': case '\t': case '\f':
                 break;
             case '(':
                 return TokenType.OPENPAREN;

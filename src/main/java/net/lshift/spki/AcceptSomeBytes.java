@@ -45,7 +45,7 @@ public class AcceptSomeBytes {
 
     private static AcceptSomeBytes getHex() {
         AcceptSomeBytes res = new AcceptSomeBytes();
-        for (int c: "0123456789abcdefABCDEF".toCharArray()) {
+        for (int c: "0123456789abcdefABCDEF\n\r\t ".toCharArray()) {
             res.accept[c] = 1;
         }
         return res;
@@ -59,6 +59,8 @@ public class AcceptSomeBytes {
         return res;
     }
 
+    // I would like to add white space characters here,
+    // but BouncyCastle's white space skipping is broken
     private static AcceptSomeBytes getBase64() {
         AcceptSomeBytes res = getAlnum();
         res.accept['+'] = 1;
@@ -72,5 +74,4 @@ public class AcceptSomeBytes {
         res.accept['-'] = 1;
         return res;
     }
-
 }
