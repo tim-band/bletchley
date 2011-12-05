@@ -62,4 +62,22 @@ public class GeneralSpkiInputStreamTest extends SpkiInputStreamTest
         assertThat(sis.next(), is(CLOSEPAREN));
         assertThat(sis.next(), is(EOF));
     }
+
+    @Test
+    public void readHexExpression()
+        throws IOException, ParseException {
+        setInput("#21#");
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("!")));
+        assertThat(sis.next(), is(EOF));
+    }
+
+    @Test
+    public void readBase64Expression()
+        throws IOException, ParseException {
+        setInput("|TWFu|");
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("Man")));
+        assertThat(sis.next(), is(EOF));
+    }
 }

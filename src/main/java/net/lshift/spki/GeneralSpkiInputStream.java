@@ -4,6 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.bouncycastle.util.encoders.Base64;
+import org.bouncycastle.util.encoders.Hex;
+
 public class GeneralSpkiInputStream extends FileSpkiInputStream {
     private static final int NO_PUSHBACK = -2;
     private byte[] atomBytes = null;
@@ -38,18 +41,14 @@ public class GeneralSpkiInputStream extends FileSpkiInputStream {
                 atomBytes = readBytes(byteCount);
                 return TokenType.ATOM;
             case '\"':
-                ByteArrayOutputStream q = new ByteArrayOutputStream();
-                while (true) {
-                    final int b = is.read();
-                    if (b == '\"') {
-                        atomBytes = q.toByteArray();
-                        return TokenType.ATOM;
-                    }
-                    if (b < 0x20 || b >= 0x7f || b == '\\') {
-                        throw new ParseException("Can't handle token: " + next);
-                    }
-                    q.write(b);
-                }
+                atomBytes = getStream(AcceptSomeBytes.STRING, next);
+                return TokenType.ATOM;
+            case '#':
+                atomBytes = Hex.decode(getStream(AcceptSomeBytes.HEX, next));
+                return TokenType.ATOM;
+            case '|':
+                atomBytes = Base64.decode(getStream(AcceptSomeBytes.BASE64, next));
+                return TokenType.ATOM;
             default:
                 if (next < 'a' || next > 'z') {
                     invalidate();
@@ -57,17 +56,21 @@ public class GeneralSpkiInputStream extends FileSpkiInputStream {
                 }
                 ByteArrayOutputStream r = new ByteArrayOutputStream();
                 r.write(next);
-                while (true) {
-                    final int b = is.read();
-                    if ((b < 'a' || b > 'z') && (b < '0' || b > '9') && b != '-') {
-                        atomBytes = r.toByteArray();
-                        pushback = b;
-                        return TokenType.ATOM;
-                    }
-                    r.write(b);
-                }
+                pushback = AcceptSomeBytes.TOKEN.accept(r, is);
+                atomBytes = r.toByteArray();
+                return TokenType.ATOM;
             }
         }
+    }
+
+    private byte[] getStream(AcceptSomeBytes accept, int terminator)
+                    throws ParseException, IOException {
+        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        final int last = accept.accept(s, is);
+        if (last != terminator) {
+            throw new ParseException("Can't handle token: " + last);
+        }
+        return s.toByteArray();
     }
 
     private int read() throws IOException {
