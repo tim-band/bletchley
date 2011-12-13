@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.lshift</groupId>
   <artifactId>suiteb</artifactId>
-  <version>0.6</version>
+  <version>0.7</version>
   <build>
       <extensions>
          <extension>
