@@ -49,6 +49,23 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     }
 
     @Test
+    public void foundEvenInsideEncryptedBit() throws InvalidInputException {
+        Action message = SimpleMessage.makeMessage(this.getClass());
+        PrivateSigningKey key = PrivateSigningKey.generate();
+        AesKey aeskey = AesKey.generateAESKey();
+        InferenceEngine engine = new InferenceEngine();
+        engine.addTrustedKey(key.getPublicKey().getKeyId());
+        engine.process(key.getPublicKey());
+        engine.process(aeskey);
+        AesPacket encrypted = aeskey.encrypt(message);
+        engine.process(key.sign(encrypted));
+        engine.process(encrypted);
+        List<ActionType> res = engine.getActions();
+        assertThat(res.size(), is(equalTo(1)));
+        assertThat(res.get(0), is(equalTo(message.getPayload())));
+    }
+
+    @Test
     public void foundIfBlindlyTrusting() throws InvalidInputException {
         Action message = SimpleMessage.makeMessage(this.getClass());
         InferenceEngine engine = new InferenceEngine();
