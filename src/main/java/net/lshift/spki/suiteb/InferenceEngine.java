@@ -106,8 +106,7 @@ public class InferenceEngine {
         } else if (item instanceof AesKey) {
             doProcess((AesKey) item);
         } else if (item instanceof AesPacket) {
-            // Propagate signer?
-            doProcess((AesPacket) item);
+            doProcess((AesPacket) item, signer);
         } else if (item instanceof Action) {
             doProcess((Action) item, signer);
         } else if (item instanceof PublicSigningKey) {
@@ -200,7 +199,7 @@ public class InferenceEngine {
         }
     }
 
-    private void doProcess(final AesPacket packet) throws InvalidInputException {
+    private void doProcess(final AesPacket packet, final DigestSha384 signer) throws InvalidInputException {
         final AesKey key = aesKeys.get(packet.keyId);
         if (key != null) {
             final SequenceItem contents = key.decrypt(packet);
@@ -209,7 +208,7 @@ public class InferenceEngine {
                     bytesString(packet.keyId.keyId),
                     ConvertUtils.prettyPrint(SequenceItem.class, contents));
             }
-            process(contents);
+            process(contents, signer);
         } else {
             LOG.debug("Skipping packet encrypted with unknown key {}",
                 bytesString(packet.keyId.keyId));
