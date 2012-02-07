@@ -7,6 +7,11 @@ import java.io.InputStream;
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.encoders.Hex;
 
+/**
+ * SPKI input stream accepting a subset of the "advanced" form of SPKI.
+ * There are lots of advanced streams it can't currently parse, but
+ * it can parse our current prettyPrinted output.
+ */
 public class AdvancedSpkiInputStream extends FileSpkiInputStream {
     private static final int NO_PUSHBACK = -2;
     private byte[] atomBytes = null;
@@ -14,6 +19,16 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
 
     public AdvancedSpkiInputStream(InputStream is) {
         super(is);
+    }
+
+    private int read() throws IOException {
+        if (pushback == NO_PUSHBACK) {
+            return is.read();
+        } else {
+            final int res = pushback;
+            pushback = NO_PUSHBACK;
+            return res;
+        }
     }
 
     @Override
@@ -67,16 +82,6 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
             throw new ParseException("Can't handle token: " + last);
         }
         return s.toByteArray();
-    }
-
-    private int read() throws IOException {
-        if (pushback == NO_PUSHBACK) {
-            return is.read();
-        } else {
-            final int res = pushback;
-            pushback = NO_PUSHBACK;
-            return res;
-        }
     }
 
     @Override

@@ -3,6 +3,9 @@ package net.lshift.spki;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Superclass for SPKIInputStreams based on reading an InputStream.
+ */
 public abstract class FileSpkiInputStream extends SpkiInputStream {
     private static final int NO_MORE_DIGITS_BOUND = (Integer.MAX_VALUE - 9)/10;
 
@@ -10,6 +13,12 @@ public abstract class FileSpkiInputStream extends SpkiInputStream {
 
     public FileSpkiInputStream(final InputStream is) {
         this.is = is;
+    }
+
+    @Override
+    public void close()
+        throws IOException {
+        is.close();
     }
 
     protected int readInteger(final int next)
@@ -35,25 +44,18 @@ public abstract class FileSpkiInputStream extends SpkiInputStream {
         }
     }
 
-    @Override
-    public void close()
-        throws IOException {
-        is.close();
-    }
-
     protected byte[] readBytes(int count)
-        throws IOException,
-            ParseException {
-                final byte[] res = new byte[count];
-                int ix = 0;
-                while (ix < count) {
-                    final int c = is.read(res, ix, count-ix);
-                    if (c < 1) {
-                        invalidate();
-                        throw new ParseException("Failed to read enough bytes");
-                    }
-                    ix += c;
-                }
-                return res;
+        throws IOException, ParseException {
+        final byte[] res = new byte[count];
+        int ix = 0;
+        while (ix < count) {
+            final int c = is.read(res, ix, count-ix);
+            if (c < 1) {
+                invalidate();
+                throw new ParseException("Failed to read enough bytes");
             }
+            ix += c;
+        }
+        return res;
+    }
 }

@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Simple class to pull only bytes matching some criteria from an InputStream
+ * and push them to the OutputStream.
+ */
 public class AcceptSomeBytes {
     public static final AcceptSomeBytes PRINTABLES = getPrintables();
     public static final AcceptSomeBytes STRING = getString();

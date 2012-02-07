@@ -9,7 +9,7 @@ import java.io.InputStream;
 public class CanonicalSpkiInputStream extends FileSpkiInputStream {
     int atomBytes;
 
-    public CanonicalSpkiInputStream(InputStream is) {
+    public CanonicalSpkiInputStream(final InputStream is) {
         super(is);
     }
 
