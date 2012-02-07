@@ -7,6 +7,7 @@ import static net.lshift.spki.SpkiInputStream.TokenType.OPENPAREN;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -97,6 +98,20 @@ public class AdvancedSpkiInputStreamTest extends SpkiInputStreamTest
         assertThat(sis.next(), is(ATOM));
         assertThat(sis.atomBytes(), is(s("Man")));
         assertThat(sis.next(), is(EOF));
+    }
+
+    @Test
+    public void readTransportEncoding() throws ParseException, IOException {
+        assertThat(canonread("base64.spki"), is(canonread("advanced.spki")));
+    }
+
+    private byte[] canonread(String name) throws ParseException, IOException {
+        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        PrettyPrinter.copyStream(
+            new AdvancedSpkiInputStream(
+                AdvancedSpkiInputStreamTest.class.getResourceAsStream(name)),
+            new CanonicalSpkiOutputStream(s));
+        return s.toByteArray();
     }
 
     @Test

@@ -63,6 +63,9 @@ public abstract class SpkiInputStream implements Closeable {
         boolean success = false;
         try {
             final byte[] res = doAtomBytes();
+            if (res == null) {
+                throw new RuntimeException("doAtomBytes returned null");
+            }
             state = State.TOKEN;
             success = true;
             return res;
