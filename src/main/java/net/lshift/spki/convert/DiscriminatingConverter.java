@@ -72,11 +72,12 @@ public class DiscriminatingConverter<T>
         in.nextAssertType(TokenType.OPENPAREN);
         in.nextAssertType(TokenType.ATOM);
         final byte[] discrim = in.atomBytes();
+        String stringDiscrim = ConvertUtils.stringOrNull(discrim);
         final Class<? extends T> clazz
-            = nameMap.get(ConvertUtils.stringOrNull(discrim));
+            = nameMap.get(stringDiscrim);
         if (clazz == null) {
             throw new ConvertException(
-                "Unable to find converter: " + discrim);
+                "Unable to find converter: " + stringDiscrim);
         }
         in.pushback(discrim);
         in.pushback(TokenType.ATOM);

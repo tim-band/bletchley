@@ -66,7 +66,7 @@ public class SexpConverter
                     in.nextAssertType(ATOM);
                     in.pushback(ATOM);
                     in.pushback(TokenType.OPENPAREN);
-                   tail.add(in.read(Sexp.class));
+                    tail.add(in.read(Sexp.class));
                     break;
                 case EOF:
                     throw new ConvertException("Unexpected EOF");

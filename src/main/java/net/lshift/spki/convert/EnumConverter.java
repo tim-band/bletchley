@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import net.lshift.spki.InvalidInputException;
 
 public class EnumConverter<T extends Enum<T>>
-extends StepConverter<T, String> {
+extends StringStepConverter<T> {
     private static final String VALID_ENUM =
                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
     private final Class<T> resultClass;
@@ -35,8 +35,6 @@ extends StepConverter<T, String> {
     }
 
     @Override public Class<T> getResultClass() { return resultClass; }
-
-    @Override protected Class<String> getStepClass() { return String.class; }
 
     @Override
     protected T stepOut(String s)
