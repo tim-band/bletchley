@@ -52,13 +52,13 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
                 atomBytes = readBytes(byteCount);
                 return TokenType.ATOM;
             case '\"':
-                atomBytes = getStream(AcceptSomeBytes.STRING, next);
+                atomBytes = readString();
                 return TokenType.ATOM;
             case '#':
-                atomBytes = Hex.decode(getStream(AcceptSomeBytes.HEX, next));
+                atomBytes = readHex();
                 return TokenType.ATOM;
             case '|':
-                atomBytes = Base64.decode(getStream(AcceptSomeBytes.BASE64, next));
+                atomBytes = readBase64();
                 return TokenType.ATOM;
             default:
                 if (next < 'a' || next > 'z') {
@@ -73,14 +73,59 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
         }
     }
 
-    private byte[] getStream(AcceptSomeBytes accept, int terminator)
-                    throws ParseException, IOException {
+    private byte[] readBase64()
+        throws ParseException,
+            IOException {
         ByteArrayOutputStream s = new ByteArrayOutputStream();
-        final int last = accept.accept(s, is);
-        if (last != terminator) {
+        while (true) {
+            final int last = AcceptSomeBytes.BASE64.accept(s, is);
+            switch (last) {
+            case '|':
+                return Base64.decode(s.toByteArray());
+            case ' ': case '\n': case '\r': case '\t': case '\f':
+                break;
+            default:
+                throw new ParseException("Can't handle token: " + last);
+            }
+        }
+    }
+
+    private byte[] readHex()
+        throws ParseException,
+            IOException {
+        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        final int last = AcceptSomeBytes.HEX.accept(s, is);
+        if (last != '#') {
             throw new ParseException("Can't handle token: " + last);
         }
-        return s.toByteArray();
+        return Hex.decode(s.toByteArray());
+    }
+
+    private byte[] readString()
+        throws ParseException,
+            IOException {
+        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        while (true) {
+            final int last = AcceptSomeBytes.STRING.accept(s, is);
+            switch (last) {
+            case '\"':
+                return s.toByteArray();
+            case '\\':
+                final int c = is.read();
+                // FIXME: handle other backslash escapes
+                switch (c) {
+                case '\"':
+                case '\\':
+                    s.write(c);
+                    break;
+                default:
+                    throw new ParseException("Unknown backslash escape: " + c);
+                }
+                break;
+            default:
+                throw new ParseException("Can't handle token: " + last);
+            }
+        }
     }
 
     @Override

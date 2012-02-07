@@ -39,6 +39,14 @@ public class AdvancedSpkiInputStreamTest extends SpkiInputStreamTest
     }
 
     @Test
+    public void getQuotedStringWithBackslashes() throws ParseException, IOException {
+        setInput("\"this\\\"and\\\\that\"");
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("this\"and\\that")));
+        assertThat(sis.next(), is(EOF));
+    }
+
+    @Test
     public void canStillReadOpenCloseParen()
         throws ParseException, IOException {
         setInput(" ( foo ) ");
@@ -77,6 +85,15 @@ public class AdvancedSpkiInputStreamTest extends SpkiInputStreamTest
     public void readBase64Expression()
         throws IOException, ParseException {
         setInput("|TWFu|");
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("Man")));
+        assertThat(sis.next(), is(EOF));
+    }
+
+    @Test
+    public void readBase64ExpressionWithSpaces()
+        throws IOException, ParseException {
+        setInput("| T W F u |");
         assertThat(sis.next(), is(ATOM));
         assertThat(sis.atomBytes(), is(s("Man")));
         assertThat(sis.next(), is(EOF));
