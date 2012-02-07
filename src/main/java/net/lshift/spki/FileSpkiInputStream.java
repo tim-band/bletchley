@@ -27,7 +27,6 @@ public abstract class FileSpkiInputStream extends SpkiInputStream {
         int r = 0;
         for (;;) {
             if (c < '0' || c > '9') {
-                invalidate();
                 throw new ParseException("Bad s-expression format");
             }
             r += c - '0';
@@ -37,7 +36,6 @@ public abstract class FileSpkiInputStream extends SpkiInputStream {
             if (r > NO_MORE_DIGITS_BOUND) {
                 // Could strictly speaking handle it so long as
                 // next digit is 0..7 and is last, but let's not go mad.
-                invalidate();
                 throw new ParseException("Integer too large");
             }
             r *= 10;
@@ -51,7 +49,6 @@ public abstract class FileSpkiInputStream extends SpkiInputStream {
         while (ix < count) {
             final int c = is.read(res, ix, count-ix);
             if (c < 1) {
-                invalidate();
                 throw new ParseException("Failed to read enough bytes");
             }
             ix += c;

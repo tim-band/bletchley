@@ -23,18 +23,11 @@ public abstract class SpkiInputStream implements Closeable {
 
     protected State state = State.TOKEN;
 
-    protected void invalidate()
-    {
-        state = State.INVALID;
-    }
-
     protected void assertState(final State asserted)
     {
         if (this.state != asserted) {
-            final State current = this.state;
-            invalidate();
             throw new IllegalStateException("State should be "
-                + asserted + " but is " + current);
+                + asserted + " but is " + this.state);
         }
     }
 
@@ -43,34 +36,44 @@ public abstract class SpkiInputStream implements Closeable {
             ParseException
     {
         assertState(State.TOKEN);
-        final TokenType res = doNext();
-        switch (res) {
-        case ATOM:
-            state = State.ATOM;
-            break;
-        case EOF:
-            state = State.FINISHED;
-            break;
-        default:
-            break;
+        boolean success = false;
+        try {
+            final TokenType res = doNext();
+            switch (res) {
+            case ATOM:
+                state = State.ATOM;
+                break;
+            case EOF:
+                state = State.FINISHED;
+                break;
+            default:
+                break;
+            }
+            success = true;
+            return res;
+        } finally {
+            if (!success) state = State.INVALID;
         }
-        return res;
     }
 
     public byte[] atomBytes()
         throws IOException,
             ParseException {
         assertState(State.ATOM);
-        final byte[] res = doAtomBytes();
-        state = State.TOKEN;
-        return res;
+        boolean success = false;
+        try {
+            final byte[] res = doAtomBytes();
+            state = State.TOKEN;
+            success = true;
+            return res;
+        } finally {
+            if (!success) state = State.INVALID;
+        }
     }
 
     protected abstract TokenType doNext()
-        throws IOException,
-            ParseException;
+        throws IOException, ParseException;
 
     protected abstract byte[] doAtomBytes()
-        throws IOException,
-            ParseException;
+        throws IOException, ParseException;
 }

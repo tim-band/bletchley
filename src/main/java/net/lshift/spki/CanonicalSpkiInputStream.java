@@ -30,7 +30,6 @@ public class CanonicalSpkiInputStream extends FileSpkiInputStream {
             atomBytes = readInteger(next);
             return TokenType.ATOM;
         default:
-            invalidate();
             throw new ParseException("Bad s-expression format");
         }
     }

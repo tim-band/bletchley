@@ -62,7 +62,6 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
                 return TokenType.ATOM;
             default:
                 if (next < 'a' || next > 'z') {
-                    invalidate();
                     throw new ParseException("Can't handle token: " + next);
                 }
                 ByteArrayOutputStream r = new ByteArrayOutputStream();
