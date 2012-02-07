@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.lshift.spki.AdvancedSpkiInputStream;
+import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
@@ -38,6 +40,18 @@ public class Cli {
         throws IOException,
             ParseException {
         PrettyPrinter.prettyPrint(System.out, file.read());
+    }
+
+    public static void prettyPrintToFile(Openable in, Openable out)
+                    throws ParseException, IOException {
+        PrettyPrinter.prettyPrint(out.write(), in.read());
+    }
+
+    public static void canonical(Openable in, Openable out) throws IOException, ParseException {
+        // FIXME: this doesn't live here
+        PrettyPrinter.copyStream(
+            new AdvancedSpkiInputStream(in.read()),
+            new CanonicalSpkiOutputStream(out.write()));
     }
 
     public static void genEncryptionKey(final Openable out)
@@ -137,6 +151,10 @@ public class Cli {
         Registry.getConverter(SimpleMessage.class);
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
+        } else if ("prettyPrintToFile".equals(command)) {
+            prettyPrintToFile(args[0], args[1]);
+        } else if ("canonical".equals(command)) {
+            canonical(args[0], args[1]);
         } else if ("genSigningKey".equals(command)) {
             genSigningKey(args[0]);
         } else if ("genEncryptionKey".equals(command)) {
