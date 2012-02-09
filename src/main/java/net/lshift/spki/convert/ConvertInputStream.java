@@ -86,7 +86,6 @@ public class ConvertInputStream
     public void nextAssertType(final TokenType type)
         throws IOException, InvalidInputException {
         if (next() != type) {
-            invalidate();
             throw new ConvertException("Token was of unexpected type");
         }
     }

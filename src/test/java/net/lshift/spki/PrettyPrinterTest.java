@@ -41,13 +41,9 @@ public class PrettyPrinterTest {
 
         public String getResourceName() { return resourceName; }
 
-        public String getPrettyPrinted()
-            throws IOException {
-            final InputStream resourceAsStream
-                = PrettyPrinterTest.class.getResourceAsStream(
-                    "_PrettyPrinterTest/" + getResourceName());
-            return resourceAsStream == null ? null : IOUtils
-                            .toString(resourceAsStream);
+        public InputStream getResourceAsStream() {
+            return PrettyPrinterTest.class.getResourceAsStream(
+                "_PrettyPrinterTest/" + getResourceName());
         }
     }
 
@@ -68,8 +64,17 @@ public class PrettyPrinterTest {
 
     @Theory
     public void theoryPrettyPrintingIsStable(TestPair pair) throws IOException {
-        final String prettyPrinted = ConvertUtils.prettyPrint(Sexp.class, pair.getSexp());
-        assertThat(prettyPrinted, is(pair.getPrettyPrinted()));
+        final String prettyPrinted
+            = ConvertUtils.prettyPrint(Sexp.class, pair.getSexp());
+        assertThat(prettyPrinted,
+            is(IOUtils.toString(pair.getResourceAsStream())));
+    }
+
+    @Theory
+    public void theoryCanParsePrettyPrintedData(TestPair pair)
+                    throws IOException, InvalidInputException {
+        Sexp parsed = ConvertUtils.readAdvanced(Sexp.class, pair.getResourceAsStream());
+        assertThat(parsed, is(pair.getSexp()));
     }
 
     @Test
