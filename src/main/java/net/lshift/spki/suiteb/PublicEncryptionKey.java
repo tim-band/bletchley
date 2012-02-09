@@ -24,12 +24,11 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
 
     public EncryptionSetup setupEncrypt() {
         final AsymmetricCipherKeyPair ephemeralKey = Ec.generate();
-        final AesKey key = new AesKey(
-            Ec.sessionKey(
+        final AesKey key = Ec.sessionKey(
                 publicKey,
                 ephemeralKey.getPublic(),
                 ephemeralKey.getPrivate(),
-                publicKey));
+                publicKey);
         final EcdhItem encryptedKey = new EcdhItem(
             keyId,
             ((ECPublicKeyParameters) ephemeralKey.getPublic()).getQ());

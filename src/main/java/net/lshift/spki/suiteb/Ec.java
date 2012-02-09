@@ -42,7 +42,7 @@ public class Ec {
         return new ECPublicKeyParameters(point, Ec.DOMAIN_PARAMETERS);
     }
 
-    public static byte[] sessionKey(
+    public static AesKey sessionKey(
             final CipherParameters receiverKey,
             final CipherParameters senderKey,
             final CipherParameters privateKey,
@@ -56,7 +56,7 @@ public class Ec {
             senderAgreement.calculateAgreement(publicKey));
         final DigestSha384 hash = DigestSha384.digest(
             EcdhSharedSecret.class, sharedSecret);
-        return Arrays.copyOf(hash.getBytes(), AesKey.AES_KEY_BYTES);
+        return new AesKey(Arrays.copyOf(hash.getBytes(), AesKey.AES_KEY_BYTES));
     }
 
     public static byte[] randomBytes(final int len) {

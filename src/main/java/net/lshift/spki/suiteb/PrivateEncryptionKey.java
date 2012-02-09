@@ -30,7 +30,7 @@ public class PrivateEncryptionKey {
         return new PrivateEncryptionKey(Ec.generate());
     }
 
-    public byte[] getKey(final ECPoint ephemeralKey) {
+    public AesKey getKey(final ECPoint ephemeralKey) {
         final ECPublicKeyParameters pk =
             Ec.toECPublicKeyParameters(ephemeralKey);
         return Ec.sessionKey(

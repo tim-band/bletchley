@@ -151,7 +151,7 @@ public class InferenceEngine {
         } else {
             LOG.debug("Processing encrypted packet for recipient {}",
                 digestString(item.recipient));
-            doProcess(new AesKey(key.getKey(item.ephemeralKey)));
+            doProcess(key.getKey(item.ephemeralKey));
         }
     }
 
