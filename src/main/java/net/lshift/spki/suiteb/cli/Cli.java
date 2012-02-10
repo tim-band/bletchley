@@ -2,10 +2,11 @@ package net.lshift.spki.suiteb.cli;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
+import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +79,34 @@ public class Cli {
         write(PublicSigningKey.class, privatek.getPublicKey(), pubk);
     }
 
+    public static void fingerprintPrivateSigningKey(
+        PrintStream stdout,
+        Openable privk) throws IOException, InvalidInputException {
+        stdout.println(getFingerprint(
+            read(PrivateSigningKey.class, privk).getPublicKey().getKeyId()));
+    }
+
+    public static void fingerprintPublicSigningKey(
+        PrintStream stdout,
+        Openable pubk) throws IOException, InvalidInputException {
+        stdout.println(getFingerprint(
+            read(PublicSigningKey.class, pubk).getKeyId()));
+    }
+
+    public static void fingerprintPrivateEncryptionKey(
+        PrintStream stdout,
+        Openable privk) throws IOException, InvalidInputException {
+        stdout.println(getFingerprint(
+            read(PrivateEncryptionKey.class, privk).getPublicKey().getKeyId()));
+    }
+
+    public static void fingerprintPublicEncryptionKey(
+        PrintStream stdout,
+        Openable pubk) throws IOException, InvalidInputException {
+        stdout.println(getFingerprint(
+            read(PublicEncryptionKey.class, pubk).getKeyId()));
+    }
+
     public static void decryptSignedMessage(
         final String messageType,
         final PrivateEncryptionKey encryptionKey,
@@ -145,9 +174,8 @@ public class Cli {
         new SpeedTester().speedTest();
     }
 
-    public static void main(final String command, final Openable... args)
-        throws FileNotFoundException,
-            IOException, InvalidInputException {
+    public static void main(PrintStream stdout, final String command, final Openable... args)
+        throws IOException, InvalidInputException {
         Registry.getConverter(SimpleMessage.class);
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
@@ -163,6 +191,14 @@ public class Cli {
             getPublicSigningKey(args[0], args[1]);
         } else if ("getPublicEncryptionKey".equals(command)) {
             getPublicEncryptionKey(args[0], args[1]);
+        } else if ("fingerprintPrivateSigningKey".equals(command)) {
+            fingerprintPrivateSigningKey(stdout, args[0]);
+        } else if ("fingerprintPublicSigningKey".equals(command)) {
+            fingerprintPublicSigningKey(stdout, args[0]);
+        } else if ("fingerprintPrivateEncryptionKey".equals(command)) {
+            fingerprintPrivateEncryptionKey(stdout, args[0]);
+        } else if ("fingerprintPublicEncryptionKey".equals(command)) {
+            fingerprintPublicEncryptionKey(stdout, args[0]);
         } else if ("decryptSignedMessage".equals(command)) {
             decryptSignedMessage(CLI_MESSAGE,
                 args[0], args[1], args[2], args[3]);
@@ -181,7 +217,7 @@ public class Cli {
             openables[i] = new FileOpenable(new File(args[i + 1]));
         }
         try {
-            main(args[0], openables);
+            main(System.out, args[0], openables);
         } catch (final Exception ex) {
             System.err.println("Could not '" + args[0] + "':");
             ex.printStackTrace();

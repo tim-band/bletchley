@@ -1,8 +1,11 @@
 package net.lshift.spki.suiteb.fingerprint;
 
+import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.WORDLIST;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
@@ -14,7 +17,7 @@ import org.junit.runner.RunWith;
 @RunWith(Theories.class)
 public class FingerprintWordsTest {
     private static final Pattern WORDREX
-        = Pattern.compile("[a-z]+");
+        = Pattern.compile("[a-z]{1,6}");
 
     private boolean isValidWord(String word) {
         return WORDREX.matcher(word).matches();
@@ -30,7 +33,7 @@ public class FingerprintWordsTest {
 
     @DataPoints
     public static String[] words() {
-        return FingerprintUtils.WORDLIST.toArray(new String[0]);
+        return WORDLIST.toArray(new String[WORDLIST.size()]);
     }
 
     @Theory
@@ -39,8 +42,14 @@ public class FingerprintWordsTest {
     }
 
     @Test
+    public void testWordsAreUnique() {
+        HashSet<String> wordSet = new HashSet<String>(WORDLIST);
+        assertEquals(WORDLIST.size(), wordSet.size());
+    }
+
+    @Test
     public void testEntropyIsHighEnough() {
-        assertTrue((Math.log(FingerprintUtils.WORDLIST.size())/Math.log(2)
+        assertTrue((Math.log(WORDLIST.size())/Math.log(2)
             * FingerprintUtils.NUM_GROUPS) > 192);
     }
 }

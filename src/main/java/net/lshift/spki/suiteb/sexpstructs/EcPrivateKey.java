@@ -17,6 +17,7 @@ public abstract class EcPrivateKey {
 
     public EcPrivateKey(final EcPublicKey publicKey, final BigInteger d) {
         super();
+        // FIXME: check that public and private key match
         this.publicKey = publicKey;
         this.d = d;
     }

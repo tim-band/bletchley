@@ -26,8 +26,8 @@ public class CliMultipleRecipientTest extends ResetsRegistry
         final Openable sPrivate = new ByteOpenable();
         final Openable sPublic = new ByteOpenable();
 
-        Cli.main("genSigningKey", sPrivate);
-        Cli.main("getPublicSigningKey", sPrivate, sPublic);
+        Cli.main(null, "genSigningKey", sPrivate);
+        Cli.main(null, "getPublicSigningKey", sPrivate, sPublic);
 
         final List<Openable> ePrivates = new ArrayList<Openable>();
         final List<Openable> ePublics = new ArrayList<Openable>();
@@ -35,8 +35,8 @@ public class CliMultipleRecipientTest extends ResetsRegistry
             final Openable ePrivate = new ByteOpenable();
             final Openable ePublic = new ByteOpenable();
 
-            Cli.main("genEncryptionKey", ePrivate);
-            Cli.main("getPublicEncryptionKey", ePrivate, ePublic);
+            Cli.main(null, "genEncryptionKey", ePrivate);
+            Cli.main(null, "getPublicEncryptionKey", ePrivate, ePublic);
             ePrivates.add(ePrivate);
             ePublics.add(ePublic);
         }
@@ -52,12 +52,12 @@ public class CliMultipleRecipientTest extends ResetsRegistry
         final Openable packet = new ByteOpenable();
         encryptArgs[i++] = packet;
         assert i == encryptArgs.length;
-        Cli.main("genEncryptedSignedMessage", encryptArgs);
+        Cli.main(null, "genEncryptedSignedMessage", encryptArgs);
 
         final Openable result = new ByteOpenable();
         for (final Openable ePrivate: ePrivates) {
-            Cli.main("decryptSignedMessage",
-                ePrivate, sPublic, packet, result);
+            Cli.main(null,
+                "decryptSignedMessage", ePrivate, sPublic, packet, result);
             final byte[] resultBytes = OpenableUtils.readBytes(result);
             assertArrayEquals(messageBytes, resultBytes);
         }

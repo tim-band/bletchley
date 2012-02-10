@@ -1,10 +1,14 @@
 package net.lshift.spki.suiteb.cli;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.regex.Pattern;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ResetsRegistry;
@@ -17,6 +21,9 @@ import org.junit.Test;
 
 public class CliTest extends ResetsRegistry
 {
+    private static final Pattern FINGERPRINT_OUTPUT
+        = Pattern.compile("[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}\n");
+
     @Test
     public void cliTest()
         throws IOException, InvalidInputException
@@ -31,16 +38,16 @@ public class CliTest extends ResetsRegistry
         final Openable packet = new ByteOpenable();
         final Openable result = new ByteOpenable();
 
-        Cli.main("genSigningKey", sPrivate);
-        Cli.main("getPublicSigningKey", sPrivate, sPublic);
-        Cli.main("genEncryptionKey", ePrivate);
-        Cli.main("getPublicEncryptionKey", ePrivate, ePublic);
+        Cli.main(null, "genSigningKey", sPrivate);
+        Cli.main(null, "getPublicSigningKey", sPrivate, sPublic);
+        Cli.main(null, "genEncryptionKey", ePrivate);
+        Cli.main(null, "getPublicEncryptionKey", ePrivate, ePublic);
 
         OpenableUtils.writeBytes(messageBytes, message);
-        Cli.main("genEncryptedSignedMessage",
-            sPrivate, message, ePublic, packet);
-        Cli.main("decryptSignedMessage",
-            ePrivate, sPublic, packet, result);
+        Cli.main(null,
+            "genEncryptedSignedMessage", sPrivate, message, ePublic, packet);
+        Cli.main(null,
+            "decryptSignedMessage", ePrivate, sPublic, packet, result);
         final byte[] resultBytes = OpenableUtils.readBytes(result);
         assertArrayEquals(messageBytes, resultBytes);
     }
@@ -51,9 +58,48 @@ public class CliTest extends ResetsRegistry
         final Openable pp = new ByteOpenable();
         final Openable canonical = new ByteOpenable();
 
-        Cli.main("genSigningKey", sPrivate);
-        Cli.main("prettyPrintToFile", sPrivate, pp);
-        Cli.main("canonical", pp, canonical);
+        Cli.main(null, "genSigningKey", sPrivate);
+        Cli.main(null, "prettyPrintToFile", sPrivate, pp);
+        Cli.main(null, "canonical", pp, canonical);
         assertTrue(IOUtils.contentEquals(sPrivate.read(), canonical.read()));
+    }
+
+    @Test
+    public void signingFingerprintTest()
+        throws IOException, InvalidInputException
+    {
+        final Openable sPrivate = new ByteOpenable();
+        Cli.main(null, "genSigningKey", sPrivate);
+        String privFingerprint = getTextOut("fingerprintPrivateSigningKey", sPrivate);
+        assertTrue(isFingerprint(privFingerprint));
+        final Openable sPublic = new ByteOpenable();
+        Cli.main(null, "getPublicSigningKey", sPrivate, sPublic);
+        String pubFingerprint = getTextOut("fingerprintPublicSigningKey", sPublic);
+        assertEquals(privFingerprint, pubFingerprint);
+    }
+
+    @Test
+    public void encryptionFingerprintTest()
+        throws IOException, InvalidInputException
+    {
+        final Openable sPrivate = new ByteOpenable();
+        Cli.main(null, "genEncryptionKey", sPrivate);
+        String privFingerprint = getTextOut("fingerprintPrivateEncryptionKey", sPrivate);
+        assertTrue(isFingerprint(privFingerprint));
+        final Openable sPublic = new ByteOpenable();
+        Cli.main(null, "getPublicEncryptionKey", sPrivate, sPublic);
+        String pubFingerprint = getTextOut("fingerprintPublicEncryptionKey", sPublic);
+        assertEquals(privFingerprint, pubFingerprint);
+    }
+
+    private String getTextOut(String command, Openable... args)
+                    throws IOException, InvalidInputException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Cli.main(new PrintStream(out), command, args);
+        return out.toString("UTF-8");
+    }
+
+    private boolean isFingerprint(String pubFingerprint) {
+        return FINGERPRINT_OUTPUT.matcher(pubFingerprint).matches();
     }
 }

@@ -17,13 +17,15 @@ public class FingerprintUtils {
     public static final String SEPARATORS = "--/--/--/--/--";
     public static final int NUM_GROUPS = SEPARATORS.length()+1;
 
-    public static final List<String> WORDLIST;
-    static {
+    public static final List<String> WORDLIST = getWordlist();
+    public static final int NUM_WORDS = WORDLIST.size();
+
+    private static List<String> getWordlist() {
         try {
             final InputStream resourceStream
                 = FingerprintUtils.class.getResourceAsStream("wordlist");
             try {
-                WORDLIST = IOUtils.readLines(resourceStream);
+                return IOUtils.readLines(resourceStream);
             } finally {
                 resourceStream.close();
             }
@@ -31,7 +33,6 @@ public class FingerprintUtils {
             throw new RuntimeException(e);
         }
     }
-    public static final int NUM_WORDS = WORDLIST.size();
 
     public static <T> String getFingerprint(Class<T> clazz, T o) {
         return getFingerprint(DigestSha384.digest(clazz, o));
