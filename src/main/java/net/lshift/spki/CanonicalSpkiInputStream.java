@@ -29,6 +29,11 @@ public class CanonicalSpkiInputStream extends FileSpkiInputStream {
         case '6': case '7': case '8': case '9':
             atomBytes = readInteger(next);
             return TokenType.ATOM;
+        case '0':
+            if (is.read() != ':')
+                throw new ParseException("Bad s-expression format");
+            atomBytes = 0;
+            return TokenType.ATOM;
         default:
             throw new ParseException("Bad s-expression format");
         }

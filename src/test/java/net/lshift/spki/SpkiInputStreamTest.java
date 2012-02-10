@@ -44,6 +44,15 @@ public abstract class SpkiInputStreamTest {
     }
 
     @Test
+    public void getEmptyAtom()
+        throws IOException, ParseException {
+        setInput("0:");
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("")));
+        assertThat(sis.next(), is(EOF));
+    }
+
+    @Test
     public void getLongerAtom()
         throws IOException, ParseException {
         setInput("12:foodfoodfood");
