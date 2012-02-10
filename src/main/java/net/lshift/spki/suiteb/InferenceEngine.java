@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.suiteb.fingerprint.FingerprintUtils;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
 import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
@@ -49,18 +50,22 @@ public class InferenceEngine {
 
     private PassphraseDelegate passphraseDelegate;
 
-    private String bytesString(final byte[] bytes) {
-        final String string = "|" + Base64.encodeBase64String(bytes) + "|";
+    private String namedString(final String string) {
         String name = byteNames.get(string);
         if (name == null) {
             name = Integer.toString(byteNames.size(), 36);
             byteNames.put(string, name);
         }
-        return "\"" + name + "\"-" + string;
+        return "" + name + ":" + string;
+    }
+
+    private String bytesString(final byte[] bytes) {
+        final String string = "|" + Base64.encodeBase64String(bytes) + "|";
+        return namedString(string);
     }
 
     private String digestString(DigestSha384 digest) {
-        return bytesString(digest.getBytes());
+        return namedString(FingerprintUtils.getFingerprint(digest));
     }
 
     public boolean isBlindlyTrusting() {
@@ -130,7 +135,9 @@ public class InferenceEngine {
 
     public void process(final PrivateEncryptionKey privateKey) {
         final DigestSha384 keyId = privateKey.getPublicKey().getKeyId();
-        LOG.debug("Adding private encryption key: {}", digestString(keyId));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Adding private encryption key: {}", digestString(keyId));
+        }
         dhKeys.put(keyId, privateKey);
     }
 
@@ -146,24 +153,32 @@ public class InferenceEngine {
     private void doProcess(final EcdhItem item) {
         final PrivateEncryptionKey key = dhKeys.get(item.recipient);
         if (key == null) {
-            LOG.debug("Skipping encrypted packet for recipient {}",
-                digestString(item.recipient));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Skipping encrypted packet for recipient {}",
+                    digestString(item.recipient));
+            }
         } else {
-            LOG.debug("Processing encrypted packet for recipient {}",
-                digestString(item.recipient));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Processing encrypted packet for recipient {}",
+                    digestString(item.recipient));
+            }
             doProcess(key.getKey(item.ephemeralKey));
         }
     }
 
     private void doProcess(final AesKey key) {
-        LOG.debug("Adding AES key id {}",
-            bytesString(key.getKeyId().keyId));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Adding AES key id {}",
+                bytesString(key.getKeyId().keyId));
+        }
         aesKeys.put(key.getKeyId(), key);
     }
 
     private void doProcess(final PublicSigningKey pKey) {
         final DigestSha384 keyId = pKey.getKeyId();
-        LOG.debug("Adding public signing key: {}", digestString(keyId));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Adding public signing key: {}", digestString(keyId));
+        }
         dsaKeys.put(keyId, pKey);
     }
 
@@ -217,8 +232,10 @@ public class InferenceEngine {
 
     private void doProcess(final DigestSha384 digest, final DigestSha384 signer) {
         if (signer != null) {
-            LOG.debug("Chained signature from {} for {}",
-                digestString(signer), digestString(digest));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Chained signature from {} for {}",
+                    digestString(signer), digestString(digest));
+            }
             signedBy.put(digest, signer);
         }
     }
