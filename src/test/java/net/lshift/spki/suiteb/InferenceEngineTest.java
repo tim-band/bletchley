@@ -4,10 +4,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
+import net.lshift.spki.suiteb.sexpstructs.Sequence;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
@@ -71,6 +74,22 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         InferenceEngine engine = new InferenceEngine();
         engine.setBlindlyTrusting(true);
         engine.process(message);
+        List<ActionType> res = engine.getActions();
+        assertThat(res.size(), is(equalTo(1)));
+        assertThat(res.get(0), is(equalTo(message.getPayload())));
+    }
+
+    @Test
+    public void foundIfEncryptionKeyProvided() throws InvalidInputException {
+        List<SequenceItem> sequence = new ArrayList<SequenceItem>();
+        PrivateEncryptionKey key = PrivateEncryptionKey.generate();
+        sequence.add(key);
+        AesKey aeskey = key.getPublicKey().setupEncrypt(sequence);
+        Action message = SimpleMessage.makeMessage(this.getClass());
+        sequence.add(aeskey.encrypt(message));
+        InferenceEngine engine = new InferenceEngine();
+        engine.setBlindlyTrusting(true);
+        engine.process(new Sequence(sequence));
         List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(1)));
         assertThat(res.get(0), is(equalTo(message.getPayload())));

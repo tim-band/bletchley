@@ -17,7 +17,7 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
  * A public key for encrypting data.
  */
 @ConvertClass(PublicEncryptionKey.Step.class)
-public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
+public class PublicEncryptionKey extends PublicKey {
     PublicEncryptionKey(final CipherParameters publicKey) {
         super(publicKey);
     }

@@ -120,8 +120,8 @@ public class InferenceEngine {
             doProcess((Signature) item);
         } else if (item instanceof DigestSha384) {
             doProcess((DigestSha384) item, signer);
-        } else if (item instanceof PublicEncryptionKey) {
-            // Do nothing - we don't currently use these
+        } else if (item instanceof PrivateEncryptionKey) {
+            doProcess((PrivateEncryptionKey)item);
         } else if (item instanceof PassphraseProtectedKey) {
             doProcess((PassphraseProtectedKey)item);
         } else {
@@ -133,7 +133,7 @@ public class InferenceEngine {
         }
     }
 
-    public void process(final PrivateEncryptionKey privateKey) {
+    private void doProcess(final PrivateEncryptionKey privateKey) {
         final DigestSha384 keyId = privateKey.getPublicKey().getKeyId();
         if (LOG.isDebugEnabled()) {
             LOG.debug("Adding private encryption key: {}", digestString(keyId));
