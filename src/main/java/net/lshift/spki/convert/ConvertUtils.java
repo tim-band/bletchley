@@ -13,6 +13,8 @@ import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 
+import net.lshift.spki.CanonicalSpkiInputStream;
+import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.Constants;
 import net.lshift.spki.AdvancedSpkiInputStream;
 import net.lshift.spki.InvalidInputException;
@@ -55,7 +57,8 @@ public class ConvertUtils {
      */
     public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
         throws IOException {
-        final ConvertOutputStream out = new ConvertOutputStream(os);
+        final ConvertOutputStream out = new ConvertOutputStream(
+                new CanonicalSpkiOutputStream(os));
         try {
             out.write(clazz, o);
         } finally {
@@ -74,7 +77,8 @@ public class ConvertUtils {
     public static <T> T read(final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
         try {
-            final ConvertInputStream in = new ConvertInputStream(is);
+            final ConvertInputStream in = new ConvertInputStream(
+                    new CanonicalSpkiInputStream(is));
             final T res = in.read(clazz);
             in.nextAssertType(TokenType.EOF);
             return res;

@@ -2,9 +2,7 @@ package net.lshift.spki.convert;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 
-import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream;
@@ -20,10 +18,6 @@ public class ConvertInputStream implements Closeable {
     public ConvertInputStream(final SpkiInputStream delegate) {
         super();
         this.delegate = delegate;
-    }
-
-    public ConvertInputStream(final InputStream is) {
-        this(new CanonicalSpkiInputStream(is));
     }
 
     public TokenType next()

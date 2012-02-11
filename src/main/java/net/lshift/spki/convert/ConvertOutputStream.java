@@ -1,9 +1,7 @@
 package net.lshift.spki.convert;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
-import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.SpkiOutputStream;
 
 /**
@@ -17,11 +15,6 @@ public class ConvertOutputStream
     public ConvertOutputStream(final SpkiOutputStream os) {
         super();
         this.os = os;
-    }
-
-    public ConvertOutputStream(final OutputStream out)
-    {
-        this(new CanonicalSpkiOutputStream(out));
     }
 
     @Override
