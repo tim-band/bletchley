@@ -13,7 +13,6 @@ import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.ConvertInputStream;
 import net.lshift.spki.convert.ConvertOutputStream;
 import net.lshift.spki.convert.Converter;
-import net.lshift.spki.convert.PushedbackStream;
 
 /**
  * Convert to/from Sexp representation
@@ -61,8 +60,7 @@ public class SexpConverter
                     tail.add(atom(in.atomBytes()));
                     break;
                 case OPENPAREN:
-                    tail.add(read(new ConvertInputStream(
-                                        new PushedbackStream(in, TokenType.OPENPAREN))));
+                    tail.add(in.getPushedbackStream(stoken).read(Sexp.class));
                     break;
                 case EOF:
                     throw new ConvertException("Unexpected EOF");

@@ -14,25 +14,8 @@ public class PushedbackStream extends SpkiInputStream {
 
     public PushedbackStream(SpkiInputStream delegate, TokenType pushedBack) {
         super();
-        this.delegate = getUnderlying(delegate);
+        this.delegate = delegate;
         this.pushedBack = pushedBack;
-    }
-
-    private static SpkiInputStream getUnderlying(SpkiInputStream delegate) {
-        if (delegate instanceof PushedbackStream) {
-            return ((PushedbackStream)delegate).getUnderlying();
-        }
-        return delegate;
-    }
-
-    private SpkiInputStream getUnderlying() {
-        if (pushedBack == null) {
-            // If you're going to read from the delegate,
-            // you can never read from us again
-            invalidate();
-            return getUnderlying(delegate);
-        }
-        return this;
     }
 
     public TokenType doNext() throws IOException, ParseException {
