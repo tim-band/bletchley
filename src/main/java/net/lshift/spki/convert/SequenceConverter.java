@@ -68,8 +68,10 @@ public class SequenceConverter<T>
             switch (token) {
             case ATOM:
             case OPENPAREN:
-                in.pushback(token);
-                components.add(in.read(contentType));
+                components.add(
+                        Registry.getConverter(contentType)
+                            .read(new ConvertInputStream(
+                                    new PushedbackStream(in, token))));
                 break;
             case CLOSEPAREN:
                 try {

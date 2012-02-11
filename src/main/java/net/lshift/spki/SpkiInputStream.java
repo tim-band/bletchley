@@ -31,6 +31,10 @@ public abstract class SpkiInputStream implements Closeable {
         }
     }
 
+    public void invalidate() {
+        state = State.INVALID;
+    }
+
     public TokenType next()
         throws IOException,
             ParseException
@@ -52,7 +56,7 @@ public abstract class SpkiInputStream implements Closeable {
             success = true;
             return res;
         } finally {
-            if (!success) state = State.INVALID;
+            if (!success) invalidate();
         }
     }
 
@@ -70,7 +74,7 @@ public abstract class SpkiInputStream implements Closeable {
             success = true;
             return res;
         } finally {
-            if (!success) state = State.INVALID;
+            if (!success) invalidate();
         }
     }
 
