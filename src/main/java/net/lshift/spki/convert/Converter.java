@@ -11,8 +11,6 @@ import net.lshift.spki.InvalidInputException;
 public interface Converter<T> {
     public Class<T> getResultClass();
 
-    public String getName();
-
     public void write(ConvertOutputStream out, T o) throws IOException;
 
     public T read(ConvertInputStream in)

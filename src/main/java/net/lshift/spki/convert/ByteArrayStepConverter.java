@@ -8,7 +8,5 @@ public abstract class ByteArrayStepConverter<T>
 
     public ByteArrayStepConverter() { super(); }
 
-    @Override public String getName() { return null; }
-
     @Override protected Class<byte[]> getStepClass() { return byte[].class; }
 }

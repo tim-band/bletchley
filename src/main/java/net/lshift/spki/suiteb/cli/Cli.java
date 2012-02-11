@@ -55,10 +55,21 @@ public class Cli {
             new CanonicalSpkiOutputStream(out.write()));
     }
 
+    public static void genSigningKey(final Openable out)
+        throws IOException {
+        write(PrivateSigningKey.class, PrivateSigningKey.generate(), out);
+    }
+
     public static void genEncryptionKey(final Openable out)
         throws IOException {
         write(PrivateEncryptionKey.class, PrivateEncryptionKey.generate(),
             out);
+    }
+
+    public static void getPublicSigningKey(final Openable privk, final Openable pubk)
+        throws IOException, InvalidInputException {
+        final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
+        write(PublicSigningKey.class, privatek.getPublicKey(), pubk);
     }
 
     public static void getPublicEncryptionKey(final Openable privk, final Openable pubk)
@@ -66,17 +77,6 @@ public class Cli {
         final PrivateEncryptionKey privatek
             = read(PrivateEncryptionKey.class, privk);
         write(PublicEncryptionKey.class, privatek.getPublicKey(), pubk);
-    }
-
-    public static void genSigningKey(final Openable out)
-        throws IOException {
-        write(PrivateSigningKey.class, PrivateSigningKey.generate(), out);
-    }
-
-    public static void getPublicSigningKey(final Openable privk, final Openable pubk)
-        throws IOException, InvalidInputException {
-        final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
-        write(PublicSigningKey.class, privatek.getPublicKey(), pubk);
     }
 
     public static void fingerprintPrivateSigningKey(

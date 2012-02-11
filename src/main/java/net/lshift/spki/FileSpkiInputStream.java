@@ -21,24 +21,23 @@ public abstract class FileSpkiInputStream extends SpkiInputStream {
         is.close();
     }
 
-    protected int readInteger(final int next)
+    protected int readInteger(final int first)
         throws ParseException, IOException {
-        int c = next;
-        int r = 0;
+        int r = first - '0';
         for (;;) {
+            int c = is.read();
+            if (c == ':')
+                return r;
             if (c < '0' || c > '9') {
                 throw new ParseException("Bad s-expression format");
             }
-            r += c - '0';
-            c = is.read();
-            if (c == ':')
-                return r;
             if (r > NO_MORE_DIGITS_BOUND) {
-                // Could strictly speaking handle it so long as
-                // next digit is 0..7 and is last, but let's not go mad.
+                // Not a precise test - there are 8 integers
+                // at or below MAX_VALUE that this rejects
                 throw new ParseException("Integer too large");
             }
             r *= 10;
+            r += c - '0';
         }
     }
 

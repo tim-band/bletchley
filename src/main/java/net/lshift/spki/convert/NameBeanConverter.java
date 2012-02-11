@@ -38,8 +38,6 @@ public class NameBeanConverter<T>
         throws InvalidInputException,
             IOException {
         final Map<Field, Object> res = new HashMap<Field, Object>();
-        in.nextAssertType(TokenType.OPENPAREN);
-        in.assertAtom(name);
         for (int i = 0; i < fields.size(); i++) {
             in.nextAssertType(TokenType.OPENPAREN);
             in.nextAssertType(TokenType.ATOM);

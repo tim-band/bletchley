@@ -61,6 +61,11 @@ public class ConvertInputStream
         return Registry.getConverter(clazz).read(this);
     }
 
+    public <T> T readRest(final Class<T> clazz)
+            throws IOException, InvalidInputException {
+        return ((ListConverter<T>)Registry.getConverter(clazz)).readRest(this);
+    }
+
     public void pushback(final TokenType token) {
         switch (token) {
         case EOF:

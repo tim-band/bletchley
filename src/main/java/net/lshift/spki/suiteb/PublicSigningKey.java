@@ -1,8 +1,8 @@
 package net.lshift.spki.suiteb;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.convert.StepConverter;
 import net.lshift.spki.convert.Convert.ConvertClass;
+import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -29,7 +29,7 @@ public class PublicSigningKey
     }
 
     public static class Step
-        extends StepConverter<PublicSigningKey, EcdsaPublicKey> {
+        extends ListStepConverter<PublicSigningKey, EcdsaPublicKey> {
 
         @Override
         public Class<PublicSigningKey> getResultClass() {

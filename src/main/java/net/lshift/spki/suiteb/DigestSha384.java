@@ -6,7 +6,7 @@ import java.util.Arrays;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.StepConverter;
+import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
@@ -51,7 +51,7 @@ public class DigestSha384 implements SequenceItem {
     }
 
     public static class Step
-        extends StepConverter<DigestSha384, Hash> {
+        extends ListStepConverter<DigestSha384, Hash> {
 
         @Override
         public Class<DigestSha384> getResultClass() {

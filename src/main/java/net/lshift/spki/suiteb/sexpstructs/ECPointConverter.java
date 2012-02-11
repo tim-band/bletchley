@@ -3,7 +3,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 import java.math.BigInteger;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.StepConverter;
+import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.CryptographyException;
 import net.lshift.spki.suiteb.Ec;
 
@@ -16,7 +16,7 @@ import org.bouncycastle.math.ec.ECPoint;
  * Point representation.
  */
 public class ECPointConverter
-    extends StepConverter<ECPoint, ECPointConverter.Point> {
+    extends ListStepConverter<ECPoint, ECPointConverter.Point> {
 
     /**
      * Serialization format for an ECPoint ie a point on an elliptic curve.

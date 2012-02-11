@@ -10,11 +10,6 @@ import net.lshift.spki.InvalidInputException;
 public abstract class StepConverter<TResult, TStep>
     implements Converter<TResult> {
     @Override
-    public String getName() {
-        return Registry.getConverter(getStepClass()).getName();
-    }
-
-    @Override
     public void write(final ConvertOutputStream out, final TResult o)
         throws IOException {
         out.write(getStepClass(), stepIn(o));

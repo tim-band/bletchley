@@ -3,8 +3,8 @@ package net.lshift.spki.suiteb;
 import java.util.List;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.convert.StepConverter;
 import net.lshift.spki.convert.Convert.ConvertClass;
+import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -44,7 +44,7 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem  {
     }
 
     public static class Step
-        extends StepConverter<PublicEncryptionKey, EcdhPublicKey> {
+        extends ListStepConverter<PublicEncryptionKey, EcdhPublicKey> {
         @Override
         public Class<PublicEncryptionKey> getResultClass() {
             return PublicEncryptionKey.class;

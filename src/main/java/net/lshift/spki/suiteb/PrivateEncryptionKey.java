@@ -1,8 +1,8 @@
 package net.lshift.spki.suiteb;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.convert.StepConverter;
 import net.lshift.spki.convert.Convert.ConvertClass;
+import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -41,7 +41,7 @@ public class PrivateEncryptionKey {
     }
 
     public static class Step
-        extends StepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
+        extends ListStepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
 
         @Override
         public Class<PrivateEncryptionKey> getResultClass() {

@@ -35,11 +35,12 @@ public class DiscriminatingConverter<T>
             throw new ConvertReflectionException(this, clazz,
                 "Class is not a subclass of " + superclass.getCanonicalName());
         }
-        final String name = Registry.getConverter(clazz).getName();
-        if (name == null) {
+        final Converter<? extends T> converter = Registry.getConverter(clazz);
+        if (!(converter instanceof ListConverter<?>)) {
             throw new ConvertReflectionException(this, clazz,
-                "Class has no sexp name");
+                    "Converter isn't a list converter");
         }
+        final String name = ((ListConverter<? extends T>)converter).getName();
         if (nameMap.containsKey(name)) {
             throw new ConvertReflectionException(this, clazz,
                 "Two subclasses share the sexp name " + name);
@@ -79,15 +80,6 @@ public class DiscriminatingConverter<T>
             throw new ConvertException(
                 "Unable to find converter: " + stringDiscrim);
         }
-        in.pushback(discrim);
-        in.pushback(TokenType.ATOM);
-        in.pushback(TokenType.OPENPAREN);
-        return in.read(clazz);
-    }
-
-    @Override
-    public String getName() {
-        // Cannot generate a name for this converter, can be several
-        return null;
+        return in.readRest(clazz);
     }
 }

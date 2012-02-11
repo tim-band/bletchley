@@ -49,7 +49,7 @@ public abstract class BeanFieldConverter<T>
         Object property) throws IOException;
 
     @Override
-    public T read(final ConvertInputStream in)
+    public T readRest(final ConvertInputStream in)
         throws IOException, InvalidInputException {
         try {
             return DeserializingConstructor.make(clazz, readFields(in));

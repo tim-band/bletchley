@@ -34,8 +34,6 @@ public class PositionBeanConverter<T>
     protected Map<Field, Object> readFields(final ConvertInputStream in)
         throws IOException, InvalidInputException {
         final Map<Field, Object> res = new HashMap<Field, Object>(fields.size());
-        in.nextAssertType(TokenType.OPENPAREN);
-        in.assertAtom(name);
         for (final FieldConvertInfo f: fields) {
             res.put(f.field, in.read(f.field.getType()));
         }

@@ -3,8 +3,8 @@ package net.lshift.spki.suiteb;
 import java.math.BigInteger;
 
 import net.lshift.spki.ParseException;
-import net.lshift.spki.convert.StepConverter;
 import net.lshift.spki.convert.Convert.ConvertClass;
+import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -49,7 +49,7 @@ public class PrivateSigningKey {
     }
 
     public static class Step
-        extends StepConverter<PrivateSigningKey, EcdsaPrivateKey> {
+        extends ListStepConverter<PrivateSigningKey, EcdsaPrivateKey> {
         @Override
         public Class<PrivateSigningKey> getResultClass() {
             return PrivateSigningKey.class;

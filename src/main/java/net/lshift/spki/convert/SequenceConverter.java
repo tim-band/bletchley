@@ -60,10 +60,8 @@ public class SequenceConverter<T>
     }
 
     @Override
-    public T read(final ConvertInputStream in)
+    public T readRest(final ConvertInputStream in)
         throws IOException, InvalidInputException {
-        in.nextAssertType(TokenType.OPENPAREN);
-        in.assertAtom(name);
         final List<Object> components = new ArrayList<Object>();
         for (;;) {
             final TokenType token = in.next();
