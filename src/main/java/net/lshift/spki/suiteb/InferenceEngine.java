@@ -12,6 +12,7 @@ import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.fingerprint.FingerprintUtils;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
 import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
+import net.lshift.spki.suiteb.sexpstructs.Cert;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
@@ -91,6 +92,8 @@ public class InferenceEngine {
             doProcess((AesKey) item);
         } else if (item instanceof AesPacket) {
             doProcess((AesPacket) item, trusted);
+        } else if (item instanceof Cert) {
+            doProcess((Cert) item, trusted);
         } else if (item instanceof DigestSha384) {
             doProcess((DigestSha384) item, trusted);
         } else if (item instanceof EcdhItem) {
@@ -153,6 +156,16 @@ public class InferenceEngine {
         } else {
             LOG.debug("Skipping packet encrypted with unknown key {}",
                 bytesString(packet.keyId.keyId));
+        }
+    }
+
+    private void doProcess(Cert cert, boolean trusted) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Found cert, trusted {} {}",
+                trusted, digestString(cert.subject));
+        }
+        if (trusted) {
+            trustedKeys.add(cert.subject);
         }
     }
 

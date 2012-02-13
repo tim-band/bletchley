@@ -17,6 +17,7 @@ import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
     Action.class,
     AesKey.class,
     AesPacket.class,
+    Cert.class,
     DigestSha384.class,
     EcdhItem.class,
     PassphraseProtectedKey.class,
