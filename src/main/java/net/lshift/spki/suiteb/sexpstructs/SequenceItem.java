@@ -5,7 +5,7 @@ import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesPacket;
 import net.lshift.spki.suiteb.DigestSha384;
-import net.lshift.spki.suiteb.PublicEncryptionKey;
+import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
 import net.lshift.spki.suiteb.Signature;
 import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
@@ -14,16 +14,17 @@ import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
  * Item that can go in a sequence and so be interpreted by the InferenceEngine.
  */
 @Convert.Discriminated({
-    PublicEncryptionKey.class,
-    AesPacket.class,
-    AesKey.class,
-    EcdhItem.class,
-    PublicSigningKey.class,
-    Signature.class,
-    DigestSha384.class,
     Action.class,
+    AesKey.class,
+    AesPacket.class,
+    DigestSha384.class,
+    EcdhItem.class,
     PassphraseProtectedKey.class,
-    Sequence.class})
+    PrivateEncryptionKey.class,
+    PublicSigningKey.class,
+    Sequence.class,
+    Signature.class
+})
 public interface SequenceItem {
     // Marker interface, no body
 }
