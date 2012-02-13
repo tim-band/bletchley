@@ -19,7 +19,9 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.AdvancedSpkiInputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
+import net.lshift.spki.SpkiInputStream;
 import net.lshift.spki.SpkiInputStream.TokenType;
+import net.lshift.spki.SpkiOutputStream;
 
 /**
  * Static utilities for conversion between SExps and objects.
@@ -52,13 +54,11 @@ public class ConvertUtils {
         }
     }
 
-    /**
-     * WARNING: this closes the stream passed in!
-     */
-    public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
-        throws IOException {
-        final ConvertOutputStream out = new ConvertOutputStream(
-                new CanonicalSpkiOutputStream(os));
+    public static <T> void write(
+        Class<T> clazz,
+        T o,
+        SpkiOutputStream os) throws IOException {
+        final ConvertOutputStream out = new ConvertOutputStream(os);
         try {
             out.write(clazz, o);
         } finally {
@@ -66,9 +66,29 @@ public class ConvertUtils {
         }
     }
 
+    /**
+     * WARNING: this closes the stream passed in!
+     */
+    public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
+        throws IOException {
+        write(clazz, o, new CanonicalSpkiOutputStream(os));
+    }
+
     public static <T> void write(final Class<T> clazz, final T o, final File f)
         throws IOException {
         write(clazz, o, new FileOutputStream(f));
+    }
+
+    public static <T> T read(final Class<T> clazz, final SpkiInputStream is)
+        throws IOException, InvalidInputException {
+        ConvertInputStream in = new ConvertInputStream(is);
+        try {
+            final T res = in.read(clazz);
+            in.nextAssertType(TokenType.EOF);
+            return res;
+        } finally {
+            in.close();
+        }
     }
 
     /**
@@ -76,15 +96,13 @@ public class ConvertUtils {
      */
     public static <T> T read(final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
-        try {
-            final ConvertInputStream in = new ConvertInputStream(
-                    new CanonicalSpkiInputStream(is));
-            final T res = in.read(clazz);
-            in.nextAssertType(TokenType.EOF);
-            return res;
-        } finally {
-            is.close();
-        }
+        return read(clazz, new CanonicalSpkiInputStream(is));
+    }
+
+    public static <T> T read(final Class<T> clazz, final File f)
+        throws IOException,
+            InvalidInputException {
+        return read(clazz, new FileInputStream(f));
     }
 
     /**
@@ -92,21 +110,7 @@ public class ConvertUtils {
      */
     public static <T> T readAdvanced(final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
-        try {
-            final ConvertInputStream in = new ConvertInputStream(
-                new AdvancedSpkiInputStream(is));
-            final T res = in.read(clazz);
-            in.nextAssertType(TokenType.EOF);
-            return res;
-        } finally {
-            is.close();
-        }
-    }
-
-    public static <T> T read(final Class<T> clazz, final File f)
-        throws IOException,
-            InvalidInputException {
-        return read(clazz, new FileInputStream(f));
+        return read(clazz, new AdvancedSpkiInputStream(is));
     }
 
     public static <T> byte[] toBytes(final Class<T> clazz, final T o) {
@@ -135,10 +139,7 @@ public class ConvertUtils {
         final T o,
         final PrintWriter ps)
         throws IOException {
-        final ConvertOutputStream out
-            = new ConvertOutputStream(new PrettyPrinter(ps));
-        out.write(clazz, o);
-        out.close();
+        write(clazz, o, new PrettyPrinter(ps));
     }
 
     public static <T> String prettyPrint(final Class<T> clazz, final T o) {
