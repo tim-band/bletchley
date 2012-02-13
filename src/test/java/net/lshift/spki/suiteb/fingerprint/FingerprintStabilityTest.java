@@ -17,7 +17,7 @@ public class FingerprintStabilityTest {
         private final Sexp test;
         private final String fingerprint;
 
-        public TestPair(Sexp test, String fingerprint) {
+        public TestPair(final Sexp test, final String fingerprint) {
             super();
             this.test = test;
             this.fingerprint = fingerprint;
@@ -47,7 +47,7 @@ public class FingerprintStabilityTest {
     }
 
     @Theory
-    public void theoryFingerprintsAreStable(TestPair pair) {
+    public void theoryFingerprintsAreStable(final TestPair pair) {
         assertThat(
             FingerprintUtils.getFingerprint(Sexp.class, pair.getTest()),
             is(pair.getFingerprint()));

@@ -10,7 +10,7 @@ import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 public class Action implements SequenceItem {
     private final ActionType payload;
 
-    public Action(ActionType payload) {
+    public Action(final ActionType payload) {
         super();
         this.payload = payload;
     }

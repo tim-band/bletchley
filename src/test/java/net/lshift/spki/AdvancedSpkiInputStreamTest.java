@@ -17,7 +17,7 @@ import org.junit.Test;
 public class AdvancedSpkiInputStreamTest extends SpkiInputStreamTest
 {
     @Override
-    protected void setInput(InputStream inputStream) {
+    protected void setInput(final InputStream inputStream) {
         sis = new AdvancedSpkiInputStream(inputStream);
     }
 
@@ -105,8 +105,8 @@ public class AdvancedSpkiInputStreamTest extends SpkiInputStreamTest
         assertThat(canonread("base64.spki"), is(canonread("advanced.spki")));
     }
 
-    private byte[] canonread(String name) throws ParseException, IOException {
-        ByteArrayOutputStream s = new ByteArrayOutputStream();
+    private byte[] canonread(final String name) throws ParseException, IOException {
+        final ByteArrayOutputStream s = new ByteArrayOutputStream();
         PrettyPrinter.copyStream(
             new AdvancedSpkiInputStream(
                 AdvancedSpkiInputStreamTest.class.getResourceAsStream(name)),

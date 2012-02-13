@@ -3,42 +3,42 @@ package net.lshift.spki.suiteb.passphrase;
 import java.io.Console;
 import java.util.Arrays;
 
-import org.bouncycastle.crypto.digests.SHA384Digest;
-
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.Ec;
+
+import org.bouncycastle.crypto.digests.SHA384Digest;
 
 public class PassphraseUtils {
     private static final int SALT_LENGTH = 8;
     private static final int DEFAULT_ITERATIONS = 16;
 
     public static KeyFromPassphrase generate(
-        String passphraseId,
-        String passphrase) {
+        final String passphraseId,
+        final String passphrase) {
         return generate(DEFAULT_ITERATIONS, passphraseId, passphrase);
     }
 
     public static KeyFromPassphrase generate(
-        int iterations,
-        String passphraseId,
-        String passphrase) {
-        byte [] salt = Ec.randomBytes(SALT_LENGTH);
-        AesKey key = getKey(passphraseId, salt, iterations, passphrase);
+        final int iterations,
+        final String passphraseId,
+        final String passphrase) {
+        final byte [] salt = Ec.randomBytes(SALT_LENGTH);
+        final AesKey key = getKey(passphraseId, salt, iterations, passphrase);
         return new KeyFromPassphrase(
             new PassphraseProtectedKey(passphraseId, salt, iterations, key.getKeyId()),
             key);
     }
 
     public static AesKey getKey(
-        String passphraseId,
-        byte[] salt,
-        int iterations,
-        String passphrase) {
-        KeyStart keyStart = new KeyStart(passphraseId, salt, iterations, passphrase);
-        DigestSha384 initialDigest = DigestSha384.digest(KeyStart.class, keyStart);
-        byte[] digest = initialDigest.getBytes().clone();
+        final String passphraseId,
+        final byte[] salt,
+        final int iterations,
+        final String passphrase) {
+        final KeyStart keyStart = new KeyStart(passphraseId, salt, iterations, passphrase);
+        final DigestSha384 initialDigest = DigestSha384.digest(KeyStart.class, keyStart);
+        final byte[] digest = initialDigest.getBytes().clone();
         for (int i = 0; i < 1<<iterations; i++) {
             final SHA384Digest sha = new SHA384Digest();
             sha.update(digest, 0, digest.length);
@@ -47,8 +47,8 @@ public class PassphraseUtils {
         return new AesKey(Arrays.copyOf(digest, AesKey.AES_KEY_BYTES));
     }
 
-    public static KeyFromPassphrase promptForNewPassphrase(String passphraseId) {
-        Console console = System.console();
+    public static KeyFromPassphrase promptForNewPassphrase(final String passphraseId) {
+        final Console console = System.console();
         if (console == null) {
             throw new RuntimeException("No console from which to read passphrase");
         }
@@ -70,8 +70,8 @@ public class PassphraseUtils {
     }
 
     public static AesKey promptForPassphrase(
-        PassphraseProtectedKey ppk) {
-        Console console = System.console();
+        final PassphraseProtectedKey ppk) {
+        final Console console = System.console();
         if (console == null) {
             throw new RuntimeException("No console from which to read passphrase");
         }
@@ -80,7 +80,7 @@ public class PassphraseUtils {
                 "Passphrase for \"%s\": ", ppk.getPassphraseId()));
             try {
                 return ppk.getKey(passphrase);
-            } catch (InvalidInputException e) {
+            } catch (final InvalidInputException e) {
                 System.out.println("Wrong passphrase, trying again");
             }
         }

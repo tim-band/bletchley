@@ -16,7 +16,7 @@ public class DigestRng {
     private int x = 0;
     private int xlim = 1;
 
-    public DigestRng(DigestSha384 digest) {
+    public DigestRng(final DigestSha384 digest) {
         initialBytes = digest.getBytes();
     }
 
@@ -27,7 +27,7 @@ public class DigestRng {
         @SuppressWarnings("unused")
         private final byte[] digest;
 
-        public NextBytes(Integer counter, byte[] digest) {
+        public NextBytes(final Integer counter, final byte[] digest) {
             super();
             this.counter = counter;
             this.digest = digest;
@@ -36,7 +36,7 @@ public class DigestRng {
 
     private int nextByte() {
         if (randomBytes == null || byteOff >= randomBytes.length) {
-            DigestSha384 digest = DigestSha384.digest(NextBytes.class,
+            final DigestSha384 digest = DigestSha384.digest(NextBytes.class,
                 new NextBytes(useCounter++, initialBytes));
             randomBytes = digest.getBytes();
             byteOff = 0;
@@ -44,13 +44,13 @@ public class DigestRng {
         return 0xff & randomBytes[byteOff++];
     }
 
-    public int nextInt(int size) {
+    public int nextInt(final int size) {
         while (true) {
-            int k = xlim / size;
+            final int k = xlim / size;
             if (k == 0) {
                 x *= 256; x += nextByte(); xlim *= 256;
             } else if (x < k * size) {
-                int res = x % size;
+                final int res = x % size;
                 x /= size; xlim = k;
                 return res;
             } else {
@@ -59,7 +59,7 @@ public class DigestRng {
         }
     }
 
-    public <T> T nextChoice(List<T> list) {
+    public <T> T nextChoice(final List<T> list) {
         return list.get(nextInt(list.size()));
     }
 }

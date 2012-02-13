@@ -23,9 +23,9 @@ public class AcceptSomeBytes {
             accept[i] = 0;
     }
 
-    public int accept(OutputStream out, InputStream is) throws IOException {
+    public int accept(final OutputStream out, final InputStream is) throws IOException {
         while (true) {
-            int b = is.read();
+            final int b = is.read();
             if (b == -1 || accept[b] == 0) {
                 return b;
             }
@@ -34,29 +34,29 @@ public class AcceptSomeBytes {
     }
 
     private static AcceptSomeBytes getPrintables() {
-        AcceptSomeBytes res = new AcceptSomeBytes();
+        final AcceptSomeBytes res = new AcceptSomeBytes();
         for (int i = 0x20; i < 0x7E; i++)
             res.accept[i] = 1;
         return res;
     }
 
     private static AcceptSomeBytes getString() {
-        AcceptSomeBytes res = getPrintables();
+        final AcceptSomeBytes res = getPrintables();
         res.accept['"'] = 0;
         res.accept['\\'] = 0;
         return res;
     }
 
     private static AcceptSomeBytes getHex() {
-        AcceptSomeBytes res = new AcceptSomeBytes();
-        for (int c: "0123456789abcdefABCDEF\n\r\t ".toCharArray()) {
+        final AcceptSomeBytes res = new AcceptSomeBytes();
+        for (final int c: "0123456789abcdefABCDEF\n\r\t ".toCharArray()) {
             res.accept[c] = 1;
         }
         return res;
     }
 
     private static AcceptSomeBytes getAlnum() {
-        AcceptSomeBytes res = new AcceptSomeBytes();
+        final AcceptSomeBytes res = new AcceptSomeBytes();
         for (int c = 'A'; c <= 'Z'; c++) res.accept[c] = 1;
         for (int c = 'a'; c <= 'z'; c++) res.accept[c] = 1;
         for (int c = '0'; c <= '9'; c++) res.accept[c] = 1;
@@ -66,7 +66,7 @@ public class AcceptSomeBytes {
     // I would like to add white space characters here,
     // but BouncyCastle's white space skipping is broken
     private static AcceptSomeBytes getBase64() {
-        AcceptSomeBytes res = getAlnum();
+        final AcceptSomeBytes res = getAlnum();
         res.accept['+'] = 1;
         res.accept['/'] = 1;
         res.accept['='] = 1;
@@ -74,7 +74,7 @@ public class AcceptSomeBytes {
     }
 
     private static AcceptSomeBytes getToken() {
-        AcceptSomeBytes res = getAlnum();
+        final AcceptSomeBytes res = getAlnum();
         res.accept['-'] = 1;
         return res;
     }

@@ -40,7 +40,7 @@ public abstract class BeanConverter<T>
             throws IOException, InvalidInputException;
 
     @Override
-    public T read(ConvertInputStream in) throws IOException,
+    public T read(final ConvertInputStream in) throws IOException,
             InvalidInputException {
         in.nextAssertType(TokenType.OPENPAREN);
         in.assertAtom(name);

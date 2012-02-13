@@ -13,10 +13,10 @@ import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 
+import net.lshift.spki.AdvancedSpkiInputStream;
 import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.Constants;
-import net.lshift.spki.AdvancedSpkiInputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SpkiInputStream;
@@ -55,9 +55,9 @@ public class ConvertUtils {
     }
 
     public static <T> void write(
-        Class<T> clazz,
-        T o,
-        SpkiOutputStream os) throws IOException {
+        final Class<T> clazz,
+        final T o,
+        final SpkiOutputStream os) throws IOException {
         final ConvertOutputStream out = new ConvertOutputStream(os);
         try {
             out.write(clazz, o);
@@ -81,7 +81,7 @@ public class ConvertUtils {
 
     public static <T> T read(final Class<T> clazz, final SpkiInputStream is)
         throws IOException, InvalidInputException {
-        ConvertInputStream in = new ConvertInputStream(is);
+        final ConvertInputStream in = new ConvertInputStream(is);
         try {
             final T res = in.read(clazz);
             in.nextAssertType(TokenType.EOF);
@@ -143,7 +143,7 @@ public class ConvertUtils {
     }
 
     public static <T> String prettyPrint(final Class<T> clazz, final T o) {
-        StringWriter writer = new StringWriter();
+        final StringWriter writer = new StringWriter();
         try {
             final PrintWriter pw = new PrintWriter(writer);
             prettyPrint(clazz, o, pw);
@@ -156,9 +156,9 @@ public class ConvertUtils {
     }
 
     public static <T> void prettyPrint(
-        Class<T> clazz,
-        T o,
-        OutputStream out) throws IOException {
+        final Class<T> clazz,
+        final T o,
+        final OutputStream out) throws IOException {
         final PrintWriter ps = new PrintWriter(out);
         prettyPrint(clazz, o, ps);
         ps.flush();

@@ -25,7 +25,7 @@ public abstract class FileSpkiInputStream extends SpkiInputStream {
         throws ParseException, IOException {
         int r = first - '0';
         for (;;) {
-            int c = is.read();
+            final int c = is.read();
             if (c == ':')
                 return r;
             if (c < '0' || c > '9') {
@@ -41,7 +41,7 @@ public abstract class FileSpkiInputStream extends SpkiInputStream {
         }
     }
 
-    protected byte[] readBytes(int count)
+    protected byte[] readBytes(final int count)
         throws IOException, ParseException {
         final byte[] res = new byte[count];
         int ix = 0;

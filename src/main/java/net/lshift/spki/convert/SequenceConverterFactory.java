@@ -13,7 +13,7 @@ public class SequenceConverterFactory
         final Class<T> clazz,
         final Convert.SequenceConverted a) {
         // FIXME: this is a rather ugly way to do it!
-        List<FieldConvertInfo> m = NameBeanConverterFactory.getFieldMap(clazz);
+        final List<FieldConvertInfo> m = NameBeanConverterFactory.getFieldMap(clazz);
         if (m.size() != 1) {
             throw new ConvertReflectionException(clazz,
                 "Class must have one field");

@@ -137,7 +137,7 @@ public class PrettyPrinter extends SpkiOutputStream {
     public static String prettyPrint(final InputStream read)
         throws ParseException
     {
-        StringWriter writer = new StringWriter();
+        final StringWriter writer = new StringWriter();
         try {
             final PrintWriter pw = new PrintWriter(writer);
             prettyPrint(pw, read);
@@ -166,7 +166,7 @@ public class PrettyPrinter extends SpkiOutputStream {
         }
     }
 
-    public static void prettyPrint(OutputStream out, InputStream read)
+    public static void prettyPrint(final OutputStream out, final InputStream read)
                     throws ParseException, IOException {
         final PrintWriter pw = new PrintWriter(out);
         prettyPrint(pw, read);

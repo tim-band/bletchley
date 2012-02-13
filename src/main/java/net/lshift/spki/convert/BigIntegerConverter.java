@@ -15,13 +15,13 @@ public class BigIntegerConverter
     }
 
     @Override
-    protected BigInteger stepOut(byte[] s)
+    protected BigInteger stepOut(final byte[] s)
         throws InvalidInputException {
         return new BigInteger(s);
     }
 
     @Override
-    protected byte[] stepIn(BigInteger o) {
+    protected byte[] stepIn(final BigInteger o) {
         return o.toByteArray();
     }
 }

@@ -43,12 +43,12 @@ public class Cli {
         PrettyPrinter.prettyPrint(System.out, file.read());
     }
 
-    public static void prettyPrintToFile(Openable in, Openable out)
+    public static void prettyPrintToFile(final Openable in, final Openable out)
                     throws ParseException, IOException {
         PrettyPrinter.prettyPrint(out.write(), in.read());
     }
 
-    public static void canonical(Openable in, Openable out) throws IOException, ParseException {
+    public static void canonical(final Openable in, final Openable out) throws IOException, ParseException {
         // FIXME: this doesn't live here
         PrettyPrinter.copyStream(
             new AdvancedSpkiInputStream(in.read()),
@@ -80,29 +80,29 @@ public class Cli {
     }
 
     public static void fingerprintPrivateSigningKey(
-        PrintStream stdout,
-        Openable privk) throws IOException, InvalidInputException {
+        final PrintStream stdout,
+        final Openable privk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
             read(PrivateSigningKey.class, privk).getPublicKey().getKeyId()));
     }
 
     public static void fingerprintPublicSigningKey(
-        PrintStream stdout,
-        Openable pubk) throws IOException, InvalidInputException {
+        final PrintStream stdout,
+        final Openable pubk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
             read(PublicSigningKey.class, pubk).getKeyId()));
     }
 
     public static void fingerprintPrivateEncryptionKey(
-        PrintStream stdout,
-        Openable privk) throws IOException, InvalidInputException {
+        final PrintStream stdout,
+        final Openable privk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
             read(PrivateEncryptionKey.class, privk).getPublicKey().getKeyId()));
     }
 
     public static void fingerprintPublicEncryptionKey(
-        PrintStream stdout,
-        Openable pubk) throws IOException, InvalidInputException {
+        final PrintStream stdout,
+        final Openable pubk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
             read(PublicEncryptionKey.class, pubk).getKeyId()));
     }
@@ -174,7 +174,7 @@ public class Cli {
         new SpeedTester().speedTest();
     }
 
-    public static void main(PrintStream stdout, final String command, final Openable... args)
+    public static void main(final PrintStream stdout, final String command, final Openable... args)
         throws IOException, InvalidInputException {
         Registry.getConverter(SimpleMessage.class);
         if ("prettyPrint".equals(command)) {
@@ -212,7 +212,7 @@ public class Cli {
     }
 
     public static void main(final String[] args) {
-        Openable[] openables = new Openable[args.length-1];
+        final Openable[] openables = new Openable[args.length-1];
         for (int i = 0; i < args.length-1; i++) {
             openables[i] = new FileOpenable(new File(args[i + 1]));
         }

@@ -16,16 +16,16 @@ public class ConvertReflectionException
         this.type = clazz;
     }
 
-    public ConvertReflectionException(final Class<?> clazz, Throwable t) {
+    public ConvertReflectionException(final Class<?> clazz, final Throwable t) {
         super("error converting " + clazz.getCanonicalName(), t);
         this.converter = null;
         this.type = clazz;
     }
 
     public ConvertReflectionException(
-        Class<?> clazz,
-        String message,
-        Throwable t) {
+        final Class<?> clazz,
+        final String message,
+        final Throwable t) {
         super("error converting " + clazz.getCanonicalName() + ": " + message, t);
         this.converter = null;
         this.type = clazz;

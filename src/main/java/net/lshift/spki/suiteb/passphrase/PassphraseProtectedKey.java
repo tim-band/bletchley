@@ -14,8 +14,8 @@ public class PassphraseProtectedKey implements SequenceItem {
     private final Integer iterations;
     private final AesKeyId keyId;
 
-    public PassphraseProtectedKey(String passphraseId, byte[] salt,
-                                  int iterations, AesKeyId keyId) {
+    public PassphraseProtectedKey(final String passphraseId, final byte[] salt,
+                                  final int iterations, final AesKeyId keyId) {
         super();
         this.passphraseId = passphraseId;
         this.salt = salt;
@@ -39,8 +39,8 @@ public class PassphraseProtectedKey implements SequenceItem {
         return keyId;
     }
 
-    public AesKey getKey(String passphrase) throws InvalidInputException {
-        AesKey res = PassphraseUtils.getKey(
+    public AesKey getKey(final String passphrase) throws InvalidInputException {
+        final AesKey res = PassphraseUtils.getKey(
             passphraseId, salt, iterations, passphrase);
         if (!keyId.equals(res.getKeyId())) {
             // FIXME use CryptographyException

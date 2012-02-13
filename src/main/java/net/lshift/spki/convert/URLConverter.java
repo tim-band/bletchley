@@ -18,7 +18,7 @@ public class URLConverter
     protected URL stepOut(final String s) throws ConvertException {
         try {
             return new URL(s);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             throw new ConvertException(e);
         }
     }

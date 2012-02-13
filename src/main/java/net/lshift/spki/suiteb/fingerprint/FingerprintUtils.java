@@ -29,20 +29,20 @@ public class FingerprintUtils {
             } finally {
                 resourceStream.close();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static <T> String getFingerprint(Class<T> clazz, T o) {
+    public static <T> String getFingerprint(final Class<T> clazz, final T o) {
         return getFingerprint(DigestSha384.digest(clazz, o));
     }
 
-    public static String getFingerprint(DigestSha384 digest) {
-        DigestRng rng = new DigestRng(digest);
-        StringBuffer res = new StringBuffer();
+    public static String getFingerprint(final DigestSha384 digest) {
+        final DigestRng rng = new DigestRng(digest);
+        final StringBuffer res = new StringBuffer();
         res.append(rng.nextChoice(WORDLIST));
-        for (char s: SEPARATORS.toCharArray()) {
+        for (final char s: SEPARATORS.toCharArray()) {
             res.append(s);
             res.append(rng.nextChoice(WORDLIST));
         }

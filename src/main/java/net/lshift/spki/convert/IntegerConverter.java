@@ -12,13 +12,13 @@ public class IntegerConverter
     @Override protected Class<BigInteger> getStepClass() { return BigInteger.class; }
 
     @Override
-    protected Integer stepOut(BigInteger s)
+    protected Integer stepOut(final BigInteger s)
         throws InvalidInputException {
         return s.intValue();
     }
 
     @Override
-    protected BigInteger stepIn(Integer o) {
+    protected BigInteger stepIn(final Integer o) {
         return BigInteger.valueOf(o);
     }
 }

@@ -21,7 +21,7 @@ implements ListConverter<TResult> {
     }
 
     @Override
-    public TResult readRest(ConvertInputStream in) throws IOException,
+    public TResult readRest(final ConvertInputStream in) throws IOException,
             InvalidInputException {
         return stepOut(in.readRest(getStepClass()));
     }

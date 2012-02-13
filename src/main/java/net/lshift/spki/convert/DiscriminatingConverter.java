@@ -73,7 +73,7 @@ public class DiscriminatingConverter<T>
         in.nextAssertType(TokenType.OPENPAREN);
         in.nextAssertType(TokenType.ATOM);
         final byte[] discrim = in.atomBytes();
-        String stringDiscrim = ConvertUtils.stringOrNull(discrim);
+        final String stringDiscrim = ConvertUtils.stringOrNull(discrim);
         final Class<? extends T> clazz
             = nameMap.get(stringDiscrim);
         if (clazz == null) {

@@ -68,7 +68,7 @@ public class AesKey implements SequenceItem {
                 ciphertext, 0);
             try {
                 gcm.doFinal(ciphertext, resp);
-            } catch (InvalidCipherTextException e) {
+            } catch (final InvalidCipherTextException e) {
                 // Should be impossible when we're encrypting!
                 throw new RuntimeException(
                     "Unexpected behaviour in crypto libraries", e);
@@ -87,7 +87,7 @@ public class AesKey implements SequenceItem {
             packet.ciphertext.length, newtext, 0);
         try {
             gcm.doFinal(newtext, pp);
-        } catch (InvalidCipherTextException e) {
+        } catch (final InvalidCipherTextException e) {
             throw new CryptographyException(e);
         }
         return ConvertUtils.fromBytes(SequenceItem.class, newtext);

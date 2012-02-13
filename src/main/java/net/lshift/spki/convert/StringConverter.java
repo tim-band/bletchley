@@ -13,13 +13,13 @@ public class StringConverter
     }
 
     @Override
-    protected String stepOut(byte[] s)
+    protected String stepOut(final byte[] s)
         throws InvalidInputException {
         return ConvertUtils.string(s);
     }
 
     @Override
-    protected byte[] stepIn(String o) {
+    protected byte[] stepIn(final String o) {
         return ConvertUtils.bytes(o);
     }
 }

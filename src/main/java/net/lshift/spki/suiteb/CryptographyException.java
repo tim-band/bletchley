@@ -11,15 +11,15 @@ public class CryptographyException
     extends InvalidInputException {
     private static final long serialVersionUID = 1L;
 
-    public CryptographyException(String message, Throwable cause) {
+    public CryptographyException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public CryptographyException(String message) {
+    public CryptographyException(final String message) {
         super(message);
     }
 
-    public CryptographyException(Throwable cause) {
+    public CryptographyException(final Throwable cause) {
         super(cause);
     }
 }

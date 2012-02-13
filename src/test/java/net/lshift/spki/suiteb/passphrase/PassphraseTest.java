@@ -32,11 +32,11 @@ public class PassphraseTest extends UsesSimpleMessage {
 
     @Test
     public void testRoundtrip() throws InvalidInputException {
-        KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
-        AesKey key = kfp.getAesKey();
-        AesPacket encrypted = key.encrypt(MESSAGE);
+        final KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
+        final AesKey key = kfp.getAesKey();
+        final AesPacket encrypted = key.encrypt(MESSAGE);
 
-        PassphraseProtectedKey ppk = RoundTrip.roundTrip(PassphraseProtectedKey.class,
+        final PassphraseProtectedKey ppk = RoundTrip.roundTrip(PassphraseProtectedKey.class,
             kfp.getPassphraseProtectedKey());
         assertEquals(PASSPHRASE_ID, ppk.getPassphraseId());
 //        try {
@@ -52,20 +52,20 @@ public class PassphraseTest extends UsesSimpleMessage {
         assertDecryptsToMessage(ppk.getKey(PASSPHRASE), encrypted);
     }
 
-    private void assertDecryptsToMessage(AesKey trueKey, AesPacket encrypted)
+    private void assertDecryptsToMessage(final AesKey trueKey, final AesPacket encrypted)
         throws InvalidInputException,
             ParseException {
-        SequenceItem decrypted = trueKey.decrypt(encrypted);
+        final SequenceItem decrypted = trueKey.decrypt(encrypted);
         assertEquals(SimpleMessage.getContent(MESSAGE),
             SimpleMessage.getContent(decrypted));
     }
 
     @Test
     public void testStability() throws IOException, InvalidInputException {
-        Sequence sequence = ConvertUtils.read(Sequence.class,
+        final Sequence sequence = ConvertUtils.read(Sequence.class,
             getClass().getResourceAsStream("encrypted.spki"));
-        PassphraseProtectedKey ppk = (PassphraseProtectedKey) sequence.sequence.get(0);
-        AesPacket encrypted = (AesPacket) sequence.sequence.get(1);
+        final PassphraseProtectedKey ppk = (PassphraseProtectedKey) sequence.sequence.get(0);
+        final AesPacket encrypted = (AesPacket) sequence.sequence.get(1);
         assertDecryptsToMessage(ppk.getKey(PASSPHRASE), encrypted);
     }
 
@@ -78,18 +78,18 @@ public class PassphraseTest extends UsesSimpleMessage {
 
     @Test
     public void testInferenceEngineCanRead() throws InvalidInputException {
-        KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
-        Sequence sequence = new Sequence(Arrays.asList(
+        final KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
+        final Sequence sequence = new Sequence(Arrays.asList(
             kfp.getPassphraseProtectedKey(),
             kfp.getAesKey().encrypt(MESSAGE)));
-        InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = new InferenceEngine();
         engine.setPassphraseDelegate(new PassphraseDelegate() {
             @Override
-            public AesKey getPassphrase(PassphraseProtectedKey ppk) {
+            public AesKey getPassphrase(final PassphraseProtectedKey ppk) {
                 if (PASSPHRASE_ID.equals(ppk.getPassphraseId())) {
                     try {
                         return ppk.getKey(PASSPHRASE);
-                    } catch (InvalidInputException e) {
+                    } catch (final InvalidInputException e) {
                         return null;
                     }
                 }
@@ -98,38 +98,38 @@ public class PassphraseTest extends UsesSimpleMessage {
         });
         engine.setBlindlyTrusting(true);
         engine.process(sequence);
-        List<ActionType> actions = engine.getActions();
+        final List<ActionType> actions = engine.getActions();
         assertEquals(1, actions.size());
         assertEquals(MESSAGE.getPayload(), actions.get(0));
     }
 
     @Test
     public void testInferenceEngineHandlesNoDelegate() throws InvalidInputException {
-        KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
-        Sequence sequence = new Sequence(Arrays.asList(
+        final KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
+        final Sequence sequence = new Sequence(Arrays.asList(
             kfp.getPassphraseProtectedKey(),
             kfp.getAesKey().encrypt(MESSAGE)));
-        InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = new InferenceEngine();
         engine.process(sequence);
-        List<ActionType> actions = engine.getActions();
+        final List<ActionType> actions = engine.getActions();
         assertEquals(0, actions.size());
     }
 
     @Test
     public void testInferenceEngineHandlesNoPassphrase() throws InvalidInputException {
-        KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
-        Sequence sequence = new Sequence(Arrays.asList(
+        final KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
+        final Sequence sequence = new Sequence(Arrays.asList(
             kfp.getPassphraseProtectedKey(),
             kfp.getAesKey().encrypt(MESSAGE)));
-        InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = new InferenceEngine();
         engine.setPassphraseDelegate(new PassphraseDelegate() {
             @Override
-            public AesKey getPassphrase(PassphraseProtectedKey ppk) {
+            public AesKey getPassphrase(final PassphraseProtectedKey ppk) {
                 return null;
             }
         });
         engine.process(sequence);
-        List<ActionType> actions = engine.getActions();
+        final List<ActionType> actions = engine.getActions();
         assertEquals(0, actions.size());
     }
 }

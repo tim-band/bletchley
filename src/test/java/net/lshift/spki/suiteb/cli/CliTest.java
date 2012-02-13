@@ -70,11 +70,11 @@ public class CliTest extends ResetsRegistry
     {
         final Openable sPrivate = new ByteOpenable();
         Cli.main(null, "genSigningKey", sPrivate);
-        String privFingerprint = getTextOut("fingerprintPrivateSigningKey", sPrivate);
+        final String privFingerprint = getTextOut("fingerprintPrivateSigningKey", sPrivate);
         assertTrue(isFingerprint(privFingerprint));
         final Openable sPublic = new ByteOpenable();
         Cli.main(null, "getPublicSigningKey", sPrivate, sPublic);
-        String pubFingerprint = getTextOut("fingerprintPublicSigningKey", sPublic);
+        final String pubFingerprint = getTextOut("fingerprintPublicSigningKey", sPublic);
         assertEquals(privFingerprint, pubFingerprint);
     }
 
@@ -84,22 +84,22 @@ public class CliTest extends ResetsRegistry
     {
         final Openable sPrivate = new ByteOpenable();
         Cli.main(null, "genEncryptionKey", sPrivate);
-        String privFingerprint = getTextOut("fingerprintPrivateEncryptionKey", sPrivate);
+        final String privFingerprint = getTextOut("fingerprintPrivateEncryptionKey", sPrivate);
         assertTrue(isFingerprint(privFingerprint));
         final Openable sPublic = new ByteOpenable();
         Cli.main(null, "getPublicEncryptionKey", sPrivate, sPublic);
-        String pubFingerprint = getTextOut("fingerprintPublicEncryptionKey", sPublic);
+        final String pubFingerprint = getTextOut("fingerprintPublicEncryptionKey", sPublic);
         assertEquals(privFingerprint, pubFingerprint);
     }
 
-    private String getTextOut(String command, Openable... args)
+    private String getTextOut(final String command, final Openable... args)
                     throws IOException, InvalidInputException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
         Cli.main(new PrintStream(out), command, args);
         return out.toString("UTF-8");
     }
 
-    private boolean isFingerprint(String pubFingerprint) {
+    private boolean isFingerprint(final String pubFingerprint) {
         return FINGERPRINT_OUTPUT.matcher(pubFingerprint).matches();
     }
 }

@@ -19,7 +19,7 @@ public class FingerprintWordsTest {
     private static final Pattern WORDREX
         = Pattern.compile("[a-z]{1,6}");
 
-    private boolean isValidWord(String word) {
+    private boolean isValidWord(final String word) {
         return WORDREX.matcher(word).matches();
     }
 
@@ -27,7 +27,7 @@ public class FingerprintWordsTest {
     public void testBadWordsAreRejected() {
         final String[] badwords = new String [] {
                         "", " ", " x", "x ", "X", "\u00e9", "it's"};
-        for (String word: badwords)
+        for (final String word: badwords)
             assertFalse(isValidWord(word));
     }
 
@@ -37,13 +37,13 @@ public class FingerprintWordsTest {
     }
 
     @Theory
-    public void theoryWordsAreValid(String word) {
+    public void theoryWordsAreValid(final String word) {
         assertTrue(isValidWord(word));
     }
 
     @Test
     public void testWordsAreUnique() {
-        HashSet<String> wordSet = new HashSet<String>(WORDLIST);
+        final HashSet<String> wordSet = new HashSet<String>(WORDLIST);
         assertEquals(WORDLIST.size(), wordSet.size());
     }
 

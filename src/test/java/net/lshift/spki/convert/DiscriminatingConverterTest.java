@@ -54,8 +54,8 @@ public class DiscriminatingConverterTest extends ResetsRegistry
     public void canHandleLateClass() throws InvalidInputException {
         Registry.getConverter(LateImplementingClass.class);
         final LateImplementingClass obj = new LateImplementingClass();
-        byte[] bytes = ConvertUtils.toBytes(Interface.class, obj);
-        Interface res = ConvertUtils.fromBytes(Interface.class, bytes);
+        final byte[] bytes = ConvertUtils.toBytes(Interface.class, obj);
+        final Interface res = ConvertUtils.fromBytes(Interface.class, bytes);
         assertEquals(obj, res);
     }
 }

@@ -64,7 +64,7 @@ public class InferenceEngine {
         return namedString(string);
     }
 
-    private String digestString(DigestSha384 digest) {
+    private String digestString(final DigestSha384 digest) {
         return namedString(FingerprintUtils.getFingerprint(digest));
     }
 
@@ -76,11 +76,11 @@ public class InferenceEngine {
      * WARNING: When this is set, the engine will report on all actions it sees,
      * signed or unsigned.
      */
-    public void setBlindlyTrusting(boolean blindlyTrusting) {
+    public void setBlindlyTrusting(final boolean blindlyTrusting) {
         this.blindlyTrusting = blindlyTrusting;
     }
 
-    public void addTrustedKey(DigestSha384 key) {
+    public void addTrustedKey(final DigestSha384 key) {
         trustedKeys.add(key);
     }
 
@@ -200,9 +200,9 @@ public class InferenceEngine {
         }
     }
 
-    private void doProcess(PassphraseProtectedKey item) {
+    private void doProcess(final PassphraseProtectedKey item) {
         if (passphraseDelegate != null) {
-            AesKey key = passphraseDelegate.getPassphrase(item);
+            final AesKey key = passphraseDelegate.getPassphrase(item);
             if (key != null) {
                 doProcess(key);
             }
@@ -253,7 +253,7 @@ public class InferenceEngine {
         return actions;
     }
 
-    public void setPassphraseDelegate(PassphraseDelegate passphraseDelegate) {
+    public void setPassphraseDelegate(final PassphraseDelegate passphraseDelegate) {
         this.passphraseDelegate = passphraseDelegate;
     }
 }

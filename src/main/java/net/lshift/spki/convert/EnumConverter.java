@@ -3,9 +3,9 @@ package net.lshift.spki.convert;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.lshift.spki.InvalidInputException;
+
+import org.apache.commons.lang.StringUtils;
 
 public class EnumConverter<T extends Enum<T>>
 extends StringStepConverter<T> {
@@ -17,12 +17,12 @@ extends StringStepConverter<T> {
     private final Map<String, T> backMap
         = new HashMap<String, T>();
 
-    public EnumConverter(Class<T> resultClass) {
+    public EnumConverter(final Class<T> resultClass) {
         if (!resultClass.isEnum()) {
             throw new IllegalArgumentException();
         }
         this.resultClass = resultClass;
-        for (T t: resultClass.getEnumConstants()) {
+        for (final T t: resultClass.getEnumConstants()) {
             final String name = t.name();
             if (!StringUtils.containsOnly(name, VALID_ENUM)) {
                 throw new IllegalArgumentException(
@@ -37,9 +37,9 @@ extends StringStepConverter<T> {
     @Override public Class<T> getResultClass() { return resultClass; }
 
     @Override
-    protected T stepOut(String s)
+    protected T stepOut(final String s)
         throws InvalidInputException {
-        T res = backMap.get(s);
+        final T res = backMap.get(s);
         if (res == null) {
             throw new ConvertException("not present in enum: " +s);
         }
@@ -47,7 +47,7 @@ extends StringStepConverter<T> {
     }
 
     @Override
-    protected String stepIn(T o) {
+    protected String stepIn(final T o) {
         return forwardMap.get(o);
     }
 }

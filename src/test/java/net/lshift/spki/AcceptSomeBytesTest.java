@@ -12,14 +12,14 @@ import org.junit.Test;
 public class AcceptSomeBytesTest {
 
     private void testAccepter(
-        AcceptSomeBytes accepter,
-        String input,
-        String accepted,
-        int left) throws IOException {
-        ByteArrayInputStream is = new ByteArrayInputStream(
+        final AcceptSomeBytes accepter,
+        final String input,
+        final String accepted,
+        final int left) throws IOException {
+        final ByteArrayInputStream is = new ByteArrayInputStream(
             input.getBytes(Constants.ASCII));
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int dropped = accepter.accept(out, is);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final int dropped = accepter.accept(out, is);
         assertArrayEquals(accepted.getBytes(Constants.ASCII),
             out.toByteArray());
         assertEquals(left, dropped);

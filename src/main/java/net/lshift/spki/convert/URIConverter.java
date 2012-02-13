@@ -12,16 +12,16 @@ public class URIConverter
     @Override public Class<URI> getResultClass() { return URI.class; }
 
     @Override
-    protected URI stepOut(String s) throws ConvertException {
+    protected URI stepOut(final String s) throws ConvertException {
         try {
             return new URI(s);
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             throw new ConvertException(e);
         }
     }
 
     @Override
-    protected String stepIn(URI o) {
+    protected String stepIn(final URI o) {
         return o.toString();
     }
 }

@@ -1,13 +1,13 @@
 package net.lshift.spki.suiteb;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESFastEngine;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.junit.Test;
-
-import static org.junit.Assert.assertArrayEquals;
 
 /**
  * Exercise GCM using the bouncycastle API.

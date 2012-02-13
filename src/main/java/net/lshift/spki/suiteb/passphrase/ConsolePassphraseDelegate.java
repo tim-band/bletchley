@@ -12,8 +12,8 @@ import net.lshift.spki.suiteb.AesKey;
 public class ConsolePassphraseDelegate
     implements PassphraseDelegate {
     @Override
-    public AesKey getPassphrase(PassphraseProtectedKey ppk) {
-        Console console = System.console();
+    public AesKey getPassphrase(final PassphraseProtectedKey ppk) {
+        final Console console = System.console();
         if (console == null) {
             return null;
         }
@@ -22,7 +22,7 @@ public class ConsolePassphraseDelegate
                 "Passphrase for \"%s\": ", ppk.getPassphraseId()));
             try {
                 return ppk.getKey(passphrase);
-            } catch (InvalidInputException e) {
+            } catch (final InvalidInputException e) {
                 if (passphrase.isEmpty()) {
                     return null;
                 }

@@ -27,13 +27,13 @@ public class PrettyPrinterTest {
         private final String resourceName;
         private final Sexp sexp;
 
-        public TestPair(String resourceName, Sexp sexp) {
+        public TestPair(final String resourceName, final Sexp sexp) {
             super();
             this.resourceName = resourceName;
             this.sexp = sexp;
         }
 
-        public TestPair(int i, Sexp sexp) {
+        public TestPair(final int i, final Sexp sexp) {
             this(Integer.toString(i) + ".spki", sexp);
         }
 
@@ -63,7 +63,7 @@ public class PrettyPrinterTest {
     }
 
     @Theory
-    public void theoryPrettyPrintingIsStable(TestPair pair) throws IOException {
+    public void theoryPrettyPrintingIsStable(final TestPair pair) throws IOException {
         final String prettyPrinted
             = ConvertUtils.prettyPrint(Sexp.class, pair.getSexp());
         assertThat(prettyPrinted,
@@ -71,19 +71,19 @@ public class PrettyPrinterTest {
     }
 
     @Theory
-    public void theoryCanParsePrettyPrintedData(TestPair pair)
+    public void theoryCanParsePrettyPrintedData(final TestPair pair)
                     throws IOException, InvalidInputException {
-        Sexp parsed = ConvertUtils.readAdvanced(Sexp.class, pair.getResourceAsStream());
+        final Sexp parsed = ConvertUtils.readAdvanced(Sexp.class, pair.getResourceAsStream());
         assertThat(parsed, is(pair.getSexp()));
     }
 
     @Test
     public void handleWriteTestOutput() throws IOException {
         if (WRITE_TEST_OUTPUT) {
-            for (TestPair pair : data()) {
+            for (final TestPair pair : data()) {
                 final String prettyPrinted = ConvertUtils.prettyPrint(
                     Sexp.class, pair.getSexp());
-                FileOutputStream out
+                final FileOutputStream out
                     = new FileOutputStream("/tmp/out/" + pair.getResourceName());
                 IOUtils.write(prettyPrinted, out);
                 out.close();

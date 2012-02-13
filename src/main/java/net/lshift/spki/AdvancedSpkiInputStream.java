@@ -19,7 +19,7 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
     private byte[] atomBytes = null;
     private int pushback = NO_PUSHBACK;
 
-    public AdvancedSpkiInputStream(InputStream is) {
+    public AdvancedSpkiInputStream(final InputStream is) {
         super(is);
     }
 
@@ -39,7 +39,7 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
             ParseException {
         while (true) {
             if (delegate != null) {
-                TokenType res = delegate.next();
+                final TokenType res = delegate.next();
                 if (res == TokenType.EOF) {
                     delegate = null;
                 } else {
@@ -58,7 +58,7 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
                 return TokenType.EOF;
             case '1': case '2': case '3': case '4': case '5':
             case '6': case '7': case '8': case '9': case '0':
-                int byteCount = readInteger(next);
+                final int byteCount = readInteger(next);
                 atomBytes = readBytes(byteCount);
                 return TokenType.ATOM;
             case '\"':
@@ -77,7 +77,7 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
                 if (next < 'a' || next > 'z') {
                     throw new ParseException("Can't handle token: " + next);
                 }
-                ByteArrayOutputStream r = new ByteArrayOutputStream();
+                final ByteArrayOutputStream r = new ByteArrayOutputStream();
                 r.write(next);
                 pushback = AcceptSomeBytes.TOKEN.accept(r, is);
                 atomBytes = r.toByteArray();
@@ -92,10 +92,10 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
                 readBase64('}')));
     }
 
-    private byte[] readBase64(int terminator)
+    private byte[] readBase64(final int terminator)
         throws ParseException,
             IOException {
-        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        final ByteArrayOutputStream s = new ByteArrayOutputStream();
         while (true) {
             final int last = AcceptSomeBytes.BASE64.accept(s, is);
             switch (last) {
@@ -113,7 +113,7 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
     private byte[] readHex()
         throws ParseException,
             IOException {
-        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        final ByteArrayOutputStream s = new ByteArrayOutputStream();
         final int last = AcceptSomeBytes.HEX.accept(s, is);
         if (last != '#') {
             throw new ParseException("Can't handle token: " + last);
@@ -124,7 +124,7 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
     private byte[] readString()
         throws ParseException,
             IOException {
-        ByteArrayOutputStream s = new ByteArrayOutputStream();
+        final ByteArrayOutputStream s = new ByteArrayOutputStream();
         while (true) {
             final int last = AcceptSomeBytes.STRING.accept(s, is);
             switch (last) {
@@ -155,7 +155,7 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
         if (delegate != null) {
             return delegate.atomBytes();
         }
-        byte[] res = atomBytes;
+        final byte[] res = atomBytes;
         atomBytes = null;
         return res;
     }

@@ -40,18 +40,18 @@ public class SimpleMessage implements ActionType {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
-    public static Action makeMessage(String type, String content) {
+    public static Action makeMessage(final String type, final String content) {
         return new Action(new SimpleMessage(type,
             content.getBytes(Constants.ASCII)));
     }
 
     // Testing convenience
-    public static Action makeMessage(Class<?> clazz) {
+    public static Action makeMessage(final Class<?> clazz) {
         return makeMessage(clazz.getCanonicalName(),
             "The magic words are squeamish ossifrage");
     }
 
-    public static String getContent(SequenceItem action) throws ConvertException {
+    public static String getContent(final SequenceItem action) throws ConvertException {
         return ConvertUtils.string(
             ((SimpleMessage)((Action)action).getPayload()).content);
     }

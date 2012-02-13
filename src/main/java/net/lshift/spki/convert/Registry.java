@@ -23,7 +23,7 @@ public class Registry {
         = new HashMap<Class<?>, Converter<?>>();
 
     private synchronized <T> void registerInternal(final Converter<T> converter) {
-        Class<T> clazz = converter.getResultClass();
+        final Class<T> clazz = converter.getResultClass();
         final Converter<?> already = converterMap.get(clazz);
         if (already == null) {
             converterMap.put(clazz, converter);
@@ -92,9 +92,9 @@ public class Registry {
                     handleAnnotation(clazz, a, handlerClass);
                 }
             }
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             throw new ConvertReflectionException(clazz, e);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(clazz, e);
         }
     }
@@ -105,6 +105,7 @@ public class Registry {
         final HandlerClass handlerClass)
         throws InstantiationException, IllegalAccessException {
         @SuppressWarnings("unchecked")
+        final
         AnnotationHandler<A> handler =
             (AnnotationHandler<A>) handlerClass.value().newInstance();
         handler.handle(clazz, a);

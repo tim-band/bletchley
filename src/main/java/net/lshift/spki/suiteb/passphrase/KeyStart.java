@@ -16,8 +16,8 @@ public class KeyStart {
     @SuppressWarnings("unused")
     private final String passphrase;
 
-    public KeyStart(String passphraseId, byte[] salt, int iterations,
-                    String passphrase) {
+    public KeyStart(final String passphraseId, final byte[] salt, final int iterations,
+                    final String passphrase) {
         super();
         this.passphraseId = passphraseId;
         this.salt = salt;
