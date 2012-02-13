@@ -52,15 +52,17 @@ public class SexpConverter
             final byte [] head = in.atomBytes();
             final List<Sexp> tail = new ArrayList<Sexp>();
             for (;;) {
-                final TokenType stoken = in.next();
+                final TokenType stoken = in.peek();
                 switch (stoken) {
                 case CLOSEPAREN:
+                    in.next(); // consume peeked token
                     return new Slist(atom(head), tail.toArray(new Sexp[tail.size()]));
                 case ATOM:
+                    in.next(); // consume peeked token
                     tail.add(atom(in.atomBytes()));
                     break;
                 case OPENPAREN:
-                    tail.add(in.getPushedbackStream(stoken).read(Sexp.class));
+                    tail.add(in.read(Sexp.class));
                     break;
                 case EOF:
                     throw new ConvertException("Unexpected EOF");

@@ -14,6 +14,7 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  */
 public class ConvertInputStream implements Closeable {
     private final SpkiInputStream delegate;
+    private TokenType peek = null;
 
     public ConvertInputStream(final SpkiInputStream delegate) {
         super();
@@ -23,12 +24,23 @@ public class ConvertInputStream implements Closeable {
     public TokenType next()
         throws IOException,
             ParseException {
-        return delegate.next();
+        if (peek != null) {
+            try {
+                return peek;
+            } finally {
+                peek = null;
+            }
+        } else {
+            return delegate.next();
+        }
     }
 
     public byte[] atomBytes()
         throws IOException,
             ParseException {
+        if (peek != null) {
+            throw new IllegalStateException("peek must be followed by next");
+        }
         return delegate.atomBytes();
     }
 
@@ -36,6 +48,13 @@ public class ConvertInputStream implements Closeable {
     public void close()
         throws IOException {
         delegate.close();
+    }
+
+    public TokenType peek() throws ParseException, IOException {
+        if (peek == null) {
+            peek = delegate.next();
+        }
+        return peek;
     }
 
     public <T> T read(final Class<T> clazz)
@@ -61,10 +80,5 @@ public class ConvertInputStream implements Closeable {
         if (!name.equals(ConvertUtils.stringOrNull(atomBytes()))) {
             throw new ConvertException("Did not see expected atom: " + name);
         }
-    }
-
-    public ConvertInputStream getPushedbackStream(TokenType token) {
-        return new ConvertInputStream(
-                new PushedbackStream(delegate, token));
     }
 }

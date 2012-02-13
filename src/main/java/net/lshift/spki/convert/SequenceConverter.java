@@ -64,13 +64,14 @@ public class SequenceConverter<T>
         throws IOException, InvalidInputException {
         final List<Object> components = new ArrayList<Object>();
         for (;;) {
-            final TokenType token = in.next();
+            final TokenType token = in.peek();
             switch (token) {
             case ATOM:
             case OPENPAREN:
-                components.add(in.getPushedbackStream(token).read(contentType));
+                components.add(in.read(contentType));
                 break;
             case CLOSEPAREN:
+                in.next(); // actually consume peeked token
                 try {
                     final Map<Field, Object> fields = new HashMap<Field, Object>();
                     fields.put(clazz.getDeclaredField(beanName), components);
