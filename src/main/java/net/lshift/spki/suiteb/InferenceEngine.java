@@ -104,26 +104,26 @@ public class InferenceEngine {
                     ConvertUtils.prettyPrint(SequenceItem.class, item));
             }
         }
-        if (item instanceof Sequence) {
-            doProcess((Sequence) item, signer);
-        } else if (item instanceof EcdhItem) {
-            doProcess((EcdhItem) item);
+        if (item instanceof Action) {
+            doProcess((Action) item, signer);
         } else if (item instanceof AesKey) {
             doProcess((AesKey) item);
         } else if (item instanceof AesPacket) {
             doProcess((AesPacket) item, signer);
-        } else if (item instanceof Action) {
-            doProcess((Action) item, signer);
-        } else if (item instanceof PublicSigningKey) {
-            doProcess((PublicSigningKey) item);
-        } else if (item instanceof Signature) {
-            doProcess((Signature) item);
         } else if (item instanceof DigestSha384) {
             doProcess((DigestSha384) item, signer);
-        } else if (item instanceof PrivateEncryptionKey) {
-            doProcess((PrivateEncryptionKey)item);
+        } else if (item instanceof EcdhItem) {
+            doProcess((EcdhItem) item);
         } else if (item instanceof PassphraseProtectedKey) {
             doProcess((PassphraseProtectedKey)item);
+        } else if (item instanceof PrivateEncryptionKey) {
+            doProcess((PrivateEncryptionKey)item);
+        } else if (item instanceof PublicSigningKey) {
+            doProcess((PublicSigningKey) item);
+        } else if (item instanceof Sequence) {
+            doProcess((Sequence) item, signer);
+        } else if (item instanceof Signature) {
+            doProcess((Signature) item);
         } else {
             // Shouldn't happen - there should be a clause here
             // for every kind of SequenceItem
@@ -131,70 +131,6 @@ public class InferenceEngine {
                 "Don't know how to process sequence item: "
                 + item.getClass().getCanonicalName());
         }
-    }
-
-    private void doProcess(final PrivateEncryptionKey privateKey) {
-        final DigestSha384 keyId = privateKey.getPublicKey().getKeyId();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Adding private encryption key: {}", digestString(keyId));
-        }
-        dhKeys.put(keyId, privateKey);
-    }
-
-    private void doProcess(final Sequence items, final DigestSha384 signer)
-        throws InvalidInputException {
-        LOG.debug("Processing sequence...");
-        for (final SequenceItem item: items.sequence) {
-            process(item, signer);
-        }
-        LOG.debug("...sequence processed.");
-    }
-
-    private void doProcess(final EcdhItem item) {
-        final PrivateEncryptionKey key = dhKeys.get(item.recipient);
-        if (key == null) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Skipping encrypted packet for recipient {}",
-                    digestString(item.recipient));
-            }
-        } else {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Processing encrypted packet for recipient {}",
-                    digestString(item.recipient));
-            }
-            doProcess(key.getKey(item.ephemeralKey));
-        }
-    }
-
-    private void doProcess(final AesKey key) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Adding AES key id {}",
-                bytesString(key.getKeyId().keyId));
-        }
-        aesKeys.put(key.getKeyId(), key);
-    }
-
-    private void doProcess(final PublicSigningKey pKey) {
-        final DigestSha384 keyId = pKey.getKeyId();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Adding public signing key: {}", digestString(keyId));
-        }
-        dsaKeys.put(keyId, pKey);
-    }
-
-    private void doProcess(final Signature sig) throws InvalidInputException {
-        final PublicSigningKey pKey = dsaKeys.get(sig.keyId);
-        if (pKey == null) {
-            LOG.debug("Skipping signature from unknown signer {} for {}",
-                digestString(sig.keyId), digestString(sig.digest));
-            return;
-        }
-        if (!pKey.validate(sig.digest, sig.rawSignature))
-            throw new CryptographyException("Sig validation failure");
-        LOG.debug("Signer {} attests to {}",
-            digestString(sig.keyId), digestString(sig.digest));
-        // FIXME: assert that it's not already signed?
-        signedBy.put(sig.digest, sig.keyId);
     }
 
     private void doProcess(final Action message, final DigestSha384 signer) {
@@ -212,6 +148,14 @@ public class InferenceEngine {
             LOG.debug("Trusting message");
             actions.add(message.getPayload());
         }
+    }
+
+    private void doProcess(final AesKey key) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Adding AES key id {}",
+                bytesString(key.getKeyId().keyId));
+        }
+        aesKeys.put(key.getKeyId(), key);
     }
 
     private void doProcess(final AesPacket packet, final DigestSha384 signer) throws InvalidInputException {
@@ -240,6 +184,22 @@ public class InferenceEngine {
         }
     }
 
+    private void doProcess(final EcdhItem item) {
+        final PrivateEncryptionKey key = dhKeys.get(item.recipient);
+        if (key == null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Skipping encrypted packet for recipient {}",
+                    digestString(item.recipient));
+            }
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Processing encrypted packet for recipient {}",
+                    digestString(item.recipient));
+            }
+            doProcess(key.getKey(item.ephemeralKey));
+        }
+    }
+
     private void doProcess(PassphraseProtectedKey item) {
         if (passphraseDelegate != null) {
             AesKey key = passphraseDelegate.getPassphrase(item);
@@ -247,6 +207,46 @@ public class InferenceEngine {
                 doProcess(key);
             }
         }
+    }
+
+    private void doProcess(final PrivateEncryptionKey privateKey) {
+        final DigestSha384 keyId = privateKey.getPublicKey().getKeyId();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Adding private encryption key: {}", digestString(keyId));
+        }
+        dhKeys.put(keyId, privateKey);
+    }
+
+    private void doProcess(final PublicSigningKey pKey) {
+        final DigestSha384 keyId = pKey.getKeyId();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Adding public signing key: {}", digestString(keyId));
+        }
+        dsaKeys.put(keyId, pKey);
+    }
+
+    private void doProcess(final Sequence items, final DigestSha384 signer)
+        throws InvalidInputException {
+        LOG.debug("Processing sequence...");
+        for (final SequenceItem item: items.sequence) {
+            process(item, signer);
+        }
+        LOG.debug("...sequence processed.");
+    }
+
+    private void doProcess(final Signature sig) throws InvalidInputException {
+        final PublicSigningKey pKey = dsaKeys.get(sig.keyId);
+        if (pKey == null) {
+            LOG.debug("Skipping signature from unknown signer {} for {}",
+                digestString(sig.keyId), digestString(sig.digest));
+            return;
+        }
+        if (!pKey.validate(sig.digest, sig.rawSignature))
+            throw new CryptographyException("Sig validation failure");
+        LOG.debug("Signer {} attests to {}",
+            digestString(sig.keyId), digestString(sig.digest));
+        // FIXME: assert that it's not already signed?
+        signedBy.put(sig.digest, sig.keyId);
     }
 
     public List<ActionType> getActions() {
