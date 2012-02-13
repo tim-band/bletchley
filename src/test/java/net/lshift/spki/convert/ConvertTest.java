@@ -5,15 +5,11 @@ import static net.lshift.spki.sexpform.Create.list;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.UUID;
 
-import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.ParseException;
 import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
@@ -73,15 +69,5 @@ public class ConvertTest extends ResetsRegistry
         final byte[] uBytes = ConvertUtils.toBytes(Sexp.class, atom(uidstring));
         assertEquals(UUID.fromString(uidstring),
             ConvertUtils.fromBytes(UUID.class, uBytes));
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void peekMustBeFollowedByNext() throws ParseException, IOException {
-        ConvertInputStream testStream = new ConvertInputStream(
-            new CanonicalSpkiInputStream(
-                new ByteArrayInputStream(
-                    ConvertUtils.bytes("3:foo"))));
-        testStream.peek();
-        testStream.atomBytes();
     }
 }

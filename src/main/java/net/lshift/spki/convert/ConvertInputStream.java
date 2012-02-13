@@ -1,18 +1,16 @@
 package net.lshift.spki.convert;
 
-import java.io.Closeable;
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.SpkiInputStream;
-import net.lshift.spki.SpkiInputStream.TokenType;
 
 /**
  * Input stream that wraps an SpkiInputStream to add facilities
  * useful for conversion to classes.
  */
-public class ConvertInputStream implements Closeable {
+public class ConvertInputStream extends SpkiInputStream {
     private final SpkiInputStream delegate;
     private TokenType peek = null;
 
@@ -21,7 +19,8 @@ public class ConvertInputStream implements Closeable {
         this.delegate = delegate;
     }
 
-    public TokenType next()
+    @Override
+    public TokenType doNext()
         throws IOException,
             ParseException {
         if (peek != null) {
@@ -35,7 +34,8 @@ public class ConvertInputStream implements Closeable {
         }
     }
 
-    public byte[] atomBytes()
+    @Override
+    public byte[] doAtomBytes()
         throws IOException,
             ParseException {
         if (peek != null) {
