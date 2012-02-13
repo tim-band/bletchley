@@ -4,6 +4,10 @@ import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
 
+/**
+ * Extend the idea of the StepConverter to ListConverter in the
+ * obvious way.
+ */
 public abstract class ListStepConverter<TResult, TStep>
 extends StepConverter<TResult, TStep>
 implements ListConverter<TResult> {
