@@ -96,8 +96,7 @@ public class PassphraseTest extends UsesSimpleMessage {
                 return null;
             }
         });
-        engine.setBlindlyTrusting(true);
-        engine.process(sequence);
+        engine.processTrusted(sequence);
         final List<ActionType> actions = engine.getActions();
         assertEquals(1, actions.size());
         assertEquals(MESSAGE.getPayload(), actions.get(0));

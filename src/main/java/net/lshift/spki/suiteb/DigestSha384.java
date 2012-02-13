@@ -19,7 +19,7 @@ import org.bouncycastle.util.encoders.Hex;
  */
 @ConvertClass(DigestSha384.Step.class)
 public class DigestSha384 implements SequenceItem {
-    private static final String DIGEST_NAME = "sha384";
+    public static final String DIGEST_NAME = "sha384";
     private static final int DIGEST_LENGTH = 48;
     private final byte[] bytes;
 

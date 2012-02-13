@@ -31,9 +31,8 @@ public class EncryptionCacheTest extends UsesSimpleMessage {
             aesKey.key.encrypt(message));
         sequence = roundTrip(Sequence.class, sequence);
         final InferenceEngine inferenceEngine = new InferenceEngine();
-        inferenceEngine.setBlindlyTrusting(true);
         inferenceEngine.process(privateKey);
-        inferenceEngine.process(sequence);
+        inferenceEngine.processTrusted(sequence);
         final List<ActionType> messages = inferenceEngine.getActions();
         assertEquals(1, messages.size());
         assertEquals(message.getPayload(), messages.get(0));

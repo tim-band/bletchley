@@ -47,9 +47,8 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
             SequenceItem.class, packet);
         for (final PrivateEncryptionKey k: keys) {
             final InferenceEngine inferenceEngine = new InferenceEngine();
-            inferenceEngine.setBlindlyTrusting(true);
             inferenceEngine.process(k);
-            inferenceEngine.process(packet);
+            inferenceEngine.processTrusted(packet);
             final List<ActionType> messages = inferenceEngine.getActions();
             assertEquals(1, messages.size());
             final ActionType result = messages.get(0);

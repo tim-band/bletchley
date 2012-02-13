@@ -3,6 +3,7 @@ package net.lshift.spki.suiteb.cli;
 import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
 import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint;
+import static net.lshift.spki.suiteb.sexpstructs.Signed.signed;
 
 import java.io.File;
 import java.io.IOException;
@@ -163,7 +164,7 @@ public class Cli {
             messageType, OpenableUtils.readBytes(args[1])));
         final PrivateSigningKey privateKey = read(PrivateSigningKey.class, args[0]);
         encryptedSequenceItems.add(privateKey.sign(message));
-        encryptedSequenceItems.add(message);
+        encryptedSequenceItems.add(signed(message));
 
         sequenceItems.add(aesKey.encrypt(new Sequence(encryptedSequenceItems)));
 

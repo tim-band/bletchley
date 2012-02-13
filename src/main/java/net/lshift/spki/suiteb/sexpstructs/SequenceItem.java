@@ -23,7 +23,8 @@ import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
     PrivateEncryptionKey.class,
     PublicSigningKey.class,
     Sequence.class,
-    Signature.class
+    Signature.class,
+    Signed.class
 })
 public interface SequenceItem {
     // Marker interface, no body

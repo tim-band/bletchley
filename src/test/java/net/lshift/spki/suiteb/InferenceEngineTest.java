@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.sexpstructs.Signed.signed;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -32,7 +33,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         engine.process(key.getPublicKey());
         final Action message = SimpleMessage.makeMessage(this.getClass());
         engine.process(key.sign(message));
-        engine.process(message);
+        engine.process(signed(message));
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(0)));
     }
@@ -45,7 +46,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         engine.addTrustedKey(key.getPublicKey().getKeyId());
         engine.process(key.getPublicKey());
         engine.process(key.sign(message));
-        engine.process(message);
+        engine.process(signed(message));
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(1)));
         assertThat(res.get(0), is(equalTo(message.getPayload())));
@@ -62,7 +63,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         engine.process(aeskey);
         final AesPacket encrypted = aeskey.encrypt(message);
         engine.process(key.sign(encrypted));
-        engine.process(encrypted);
+        engine.process(signed(encrypted));
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(1)));
         assertThat(res.get(0), is(equalTo(message.getPayload())));
@@ -72,8 +73,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     public void foundIfBlindlyTrusting() throws InvalidInputException {
         final Action message = SimpleMessage.makeMessage(this.getClass());
         final InferenceEngine engine = new InferenceEngine();
-        engine.setBlindlyTrusting(true);
-        engine.process(message);
+        engine.processTrusted(message);
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(1)));
         assertThat(res.get(0), is(equalTo(message.getPayload())));
@@ -88,8 +88,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Action message = SimpleMessage.makeMessage(this.getClass());
         sequence.add(aeskey.encrypt(message));
         final InferenceEngine engine = new InferenceEngine();
-        engine.setBlindlyTrusting(true);
-        engine.process(new Sequence(sequence));
+        engine.processTrusted(new Sequence(sequence));
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(1)));
         assertThat(res.get(0), is(equalTo(message.getPayload())));

@@ -15,6 +15,7 @@ import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+import net.lshift.spki.suiteb.sexpstructs.Signed;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -37,10 +38,9 @@ public class InferenceEngine {
         = new HashMap<DigestSha384, PublicSigningKey>();
     private final Map<AesKeyId, AesKey> aesKeys
         = new HashMap<AesKeyId, AesKey>();
-    private final Map<DigestSha384, DigestSha384> signedBy
-        = new HashMap<DigestSha384, DigestSha384>();
+    private final Set<DigestSha384> trustedItems
+        = new HashSet<DigestSha384>();
 
-    private boolean blindlyTrusting = false;
     private final Set<DigestSha384> trustedKeys
         = new HashSet<DigestSha384>();
     private final List<ActionType> actions
@@ -68,50 +68,31 @@ public class InferenceEngine {
         return namedString(FingerprintUtils.getFingerprint(digest));
     }
 
-    public boolean isBlindlyTrusting() {
-        return blindlyTrusting;
-    }
-
-    /**
-     * WARNING: When this is set, the engine will report on all actions it sees,
-     * signed or unsigned.
-     */
-    public void setBlindlyTrusting(final boolean blindlyTrusting) {
-        this.blindlyTrusting = blindlyTrusting;
-    }
-
     public void addTrustedKey(final DigestSha384 key) {
         trustedKeys.add(key);
     }
 
     public void process(final SequenceItem item) throws InvalidInputException {
-        process(item, null);
+        process(item, false);
+    }
+
+    public void processTrusted(final SequenceItem item) throws InvalidInputException {
+        process(item, true);
     }
 
     // FIXME: use dynamic dispatch here
-    public void process(
+    protected void process(
         final SequenceItem item,
-        final DigestSha384 contextSigner)
+        final boolean trusted)
         throws InvalidInputException {
-        DigestSha384 signer = contextSigner;
-        if (signer == null) {
-            final DigestSha384 digest = DigestSha384.digest(item);
-            signer = signedBy.get(digest);
-            if (signer != null && LOG.isDebugEnabled()) {
-                LOG.debug("Signed object found, signer {} signed {}",
-                    digestString(signer), digestString(digest));
-                LOG.debug("\n{}",
-                    ConvertUtils.prettyPrint(SequenceItem.class, item));
-            }
-        }
         if (item instanceof Action) {
-            doProcess((Action) item, signer);
+            doProcess((Action) item, trusted);
         } else if (item instanceof AesKey) {
             doProcess((AesKey) item);
         } else if (item instanceof AesPacket) {
-            doProcess((AesPacket) item, signer);
+            doProcess((AesPacket) item, trusted);
         } else if (item instanceof DigestSha384) {
-            doProcess((DigestSha384) item, signer);
+            doProcess((DigestSha384) item, trusted);
         } else if (item instanceof EcdhItem) {
             doProcess((EcdhItem) item);
         } else if (item instanceof PassphraseProtectedKey) {
@@ -121,9 +102,11 @@ public class InferenceEngine {
         } else if (item instanceof PublicSigningKey) {
             doProcess((PublicSigningKey) item);
         } else if (item instanceof Sequence) {
-            doProcess((Sequence) item, signer);
+            doProcess((Sequence) item, trusted);
         } else if (item instanceof Signature) {
             doProcess((Signature) item);
+        } else if (item instanceof Signed) {
+            doProcess((Signed) item);
         } else {
             // Shouldn't happen - there should be a clause here
             // for every kind of SequenceItem
@@ -133,18 +116,17 @@ public class InferenceEngine {
         }
     }
 
-    private void doProcess(final Action message, final DigestSha384 signer) {
+    private void doProcess(final Action message, final boolean trusted) {
         if (LOG.isDebugEnabled()) {
-            if (signer != null) {
-                LOG.debug("Found message signed by {}:\n{}",
-                    digestString(signer),
+            if (trusted) {
+                LOG.debug("Trusting action:\n{}",
                     ConvertUtils.prettyPrint(Action.class, message));
             } else {
-                LOG.debug("Message has no known signer:\n{}",
+                LOG.debug("Discarding untrusted action:\n{}",
                     ConvertUtils.prettyPrint(Action.class, message));
             }
         }
-        if (blindlyTrusting || trustedKeys.contains(signer)) {
+        if (trusted) {
             LOG.debug("Trusting message");
             actions.add(message.getPayload());
         }
@@ -158,7 +140,7 @@ public class InferenceEngine {
         aesKeys.put(key.getKeyId(), key);
     }
 
-    private void doProcess(final AesPacket packet, final DigestSha384 signer) throws InvalidInputException {
+    private void doProcess(final AesPacket packet, final boolean trusted) throws InvalidInputException {
         final AesKey key = aesKeys.get(packet.keyId);
         if (key != null) {
             final SequenceItem contents = key.decrypt(packet);
@@ -167,20 +149,20 @@ public class InferenceEngine {
                     bytesString(packet.keyId.keyId),
                     ConvertUtils.prettyPrint(SequenceItem.class, contents));
             }
-            process(contents, signer);
+            process(contents, trusted);
         } else {
             LOG.debug("Skipping packet encrypted with unknown key {}",
                 bytesString(packet.keyId.keyId));
         }
     }
 
-    private void doProcess(final DigestSha384 digest, final DigestSha384 signer) {
-        if (signer != null) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Chained signature from {} for {}",
-                    digestString(signer), digestString(digest));
-            }
-            signedBy.put(digest, signer);
+    private void doProcess(final DigestSha384 digest, final boolean trusted) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Chaining trust {} for {}",
+                trusted, digestString(digest));
+        }
+        if (trusted) {
+            trustedItems.add(digest);
         }
     }
 
@@ -225,11 +207,11 @@ public class InferenceEngine {
         dsaKeys.put(keyId, pKey);
     }
 
-    private void doProcess(final Sequence items, final DigestSha384 signer)
+    private void doProcess(final Sequence items, final boolean trusted)
         throws InvalidInputException {
         LOG.debug("Processing sequence...");
         for (final SequenceItem item: items.sequence) {
-            process(item, signer);
+            process(item, trusted);
         }
         LOG.debug("...sequence processed.");
     }
@@ -243,10 +225,38 @@ public class InferenceEngine {
         }
         if (!pKey.validate(sig.digest, sig.rawSignature))
             throw new CryptographyException("Sig validation failure");
-        LOG.debug("Signer {} attests to {}",
-            digestString(sig.keyId), digestString(sig.digest));
-        // FIXME: assert that it's not already signed?
-        signedBy.put(sig.digest, sig.keyId);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Signer {} attests to {}",
+                digestString(sig.keyId), digestString(sig.digest));
+        }
+        if (trustedKeys.contains(sig.keyId)) {
+            LOG.debug("Key is trusted");
+            trustedItems.add(sig.digest);
+        } else {
+            LOG.debug("Key is not trusted");
+        }
+    }
+
+    private void doProcess(Signed signed) throws InvalidInputException {
+        if (!DigestSha384.DIGEST_NAME.equals(signed.hashType)) {
+            throw new CryptographyException(
+                "Unknown hash type: " + signed.hashType);
+        }
+        final DigestSha384 digest = DigestSha384.digest(signed.payload);
+        boolean trusted = trustedItems.contains(digest);
+        if (LOG.isDebugEnabled()) {
+            if (trusted) {
+                LOG.debug("Trusted object {}", digestString(digest));
+            } else {
+                LOG.debug("Signed object with no signer, ignoring {}",
+                    digestString(digest));
+            }
+            LOG.debug("\n{}",
+                ConvertUtils.prettyPrint(SequenceItem.class, signed.payload));
+        }
+        if (trusted) {
+            process(signed.payload, true);
+        }
     }
 
     public List<ActionType> getActions() {

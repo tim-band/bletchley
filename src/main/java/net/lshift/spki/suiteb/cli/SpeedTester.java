@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb.cli;
 
+import static net.lshift.spki.suiteb.sexpstructs.Signed.signed;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.Action;
@@ -57,7 +58,7 @@ public class SpeedTester {
             rKey.key.encrypt(aesKey),
             aesKey.encrypt(SequenceUtils.sequence(
                 privateKey.sign(message),
-                message
+                signed(message)
         )));
         ConvertUtils.toBytes(Sequence.class, sequence);
     }

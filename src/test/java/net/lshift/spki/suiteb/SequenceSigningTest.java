@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
+import static net.lshift.spki.suiteb.sexpstructs.Signed.signed;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class SequenceSigningTest extends UsesSimpleMessage
         Sequence sequence = SequenceUtils.sequence(
             publicKey,
             privateKey.sign(message),
-            message);
+            signed(message));
         sequence = roundTrip(Sequence.class, sequence);
 
         final InferenceEngine inference = new InferenceEngine();
