@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
@@ -51,5 +52,11 @@ public class PublicSigningKey
             return new PublicSigningKey(s.getParameters());
         }
 
+    }
+
+    @Override
+    public void process(InferenceEngine engine, Condition trust)
+        throws InvalidInputException {
+        engine.addPublicSigningKey(this);
     }
 }

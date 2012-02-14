@@ -4,6 +4,8 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesKeyId;
+import net.lshift.spki.suiteb.Condition;
+import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.SequenceItem;
 
 @Convert.ByPosition(name="passphrase-protected-key",
@@ -47,5 +49,17 @@ public class PassphraseProtectedKey implements SequenceItem {
             throw new InvalidInputException("Wrong passphrase");
         }
         return res;
+    }
+
+    @Override
+    public void process(InferenceEngine engine, Condition trust)
+        throws InvalidInputException {
+        PassphraseDelegate passphraseDelegate = engine.getPassphraseDelegate();
+        if (passphraseDelegate != null) {
+            final AesKey key = passphraseDelegate.getPassphrase(this);
+            if (key != null) {
+                engine.process(key, trust);
+            }
+        }
     }
 }

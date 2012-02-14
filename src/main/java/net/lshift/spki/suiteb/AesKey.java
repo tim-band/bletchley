@@ -16,7 +16,6 @@ import org.bouncycastle.crypto.params.KeyParameter;
  */
 @Convert.ByPosition(name="aes-gcm-key", fields={"key"})
 public class AesKey implements SequenceItem {
-
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
         = "8:keyid-ad".getBytes(Constants.ASCII);
@@ -94,5 +93,11 @@ public class AesKey implements SequenceItem {
 
     public static AesKey generateAESKey() {
         return new AesKey(Ec.randomBytes(AES_KEY_BYTES));
+    }
+
+    @Override
+    public void process(InferenceEngine engine, Condition trust)
+        throws InvalidInputException {
+        engine.addAesKey(this);
     }
 }

@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
@@ -22,5 +23,6 @@ import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
     Signed.class
 })
 public interface SequenceItem {
-    // Marker interface, no body
+    void process(InferenceEngine engine, Condition trust)
+        throws InvalidInputException;
 }

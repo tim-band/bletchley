@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
@@ -22,5 +23,20 @@ public class Signature implements SequenceItem {
         this.digest = digest;
         this.keyId = keyId;
         this.rawSignature = rawSignature;
+    }
+
+    @Override
+    public void process(InferenceEngine engine, Condition trust)
+        throws InvalidInputException {
+        final PublicSigningKey pKey = engine.getPublicSigningKey(keyId);
+        if (pKey == null) {
+            return;
+        }
+        if (!pKey.validate(digest, rawSignature))
+            throw new CryptographyException("Sig validation failure");
+        Condition keyTrust = engine.getKeyTrust(keyId);
+        if (keyTrust != null) {
+            engine.addItemTrust(digest, keyTrust);
+        }
     }
 }

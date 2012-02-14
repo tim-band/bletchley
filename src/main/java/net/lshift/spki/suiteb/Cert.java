@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb;
 
 import java.util.List;
 
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 
 @Convert.PositionSequence(name="cert", fields={"subject"}, seq="conditions")
@@ -16,8 +17,11 @@ public class Cert
         this.conditions = conditions;
     }
 
-    public Condition getCondition() {
-        return new AndCondition(
-            conditions.toArray(new Condition[conditions.size()]));
+    @Override
+    public void process(InferenceEngine engine, Condition trust)
+        throws InvalidInputException {
+            engine.addKeyTrust(subject,
+                new AndCondition(trust, new AndCondition(
+                    conditions.toArray(new Condition[conditions.size()]))));
     }
 }

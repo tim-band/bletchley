@@ -104,4 +104,10 @@ public class DigestSha384 implements SequenceItem {
         if (!Arrays.equals(bytes, other.bytes)) return false;
         return true;
     }
+
+    @Override
+    public void process(InferenceEngine engine, Condition trust)
+        throws InvalidInputException {
+        engine.addItemTrust(this, trust);
+    }
 }

@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb;
 
 import java.util.List;
 
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert.SequenceConverted;
 
 /**
@@ -15,5 +16,13 @@ public class Sequence
     public Sequence(final List<SequenceItem> sequence) {
         super();
         this.sequence = sequence;
+    }
+
+    @Override
+    public void process(InferenceEngine engine, Condition trust)
+        throws InvalidInputException {
+        for (SequenceItem i: sequence) {
+            engine.process(i, trust);
+        }
     }
 }
