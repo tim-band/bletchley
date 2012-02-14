@@ -1,7 +1,7 @@
-package net.lshift.spki.suiteb.sexpstructs;
+package net.lshift.spki.suiteb;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.suiteb.DigestSha384;
+import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 @Convert.ByPosition(name="signed", fields={"hashType", "payload"})
 public class Signed implements SequenceItem {

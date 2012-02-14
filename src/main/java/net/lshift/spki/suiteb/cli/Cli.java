@@ -2,8 +2,8 @@ package net.lshift.spki.suiteb.cli;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
+import static net.lshift.spki.suiteb.Signed.signed;
 import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint;
-import static net.lshift.spki.suiteb.sexpstructs.Signed.signed;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,13 +24,13 @@ import net.lshift.spki.convert.openable.OpenableUtils;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;
+import net.lshift.spki.suiteb.Cert;
+import net.lshift.spki.suiteb.Condition;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
-import net.lshift.spki.suiteb.sexpstructs.Cert;
-import net.lshift.spki.suiteb.sexpstructs.Condition;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;

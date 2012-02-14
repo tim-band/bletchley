@@ -1,18 +1,18 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.suiteb.sexpstructs.Signed.signed;
+import static net.lshift.spki.suiteb.Signed.signed;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
-import net.lshift.spki.suiteb.sexpstructs.Cert;
-import net.lshift.spki.suiteb.sexpstructs.Condition;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
@@ -133,5 +133,56 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final InferenceEngine engine = new InferenceEngine();
         engine.processTrusted(new Sequence(sequence));
         checkMessage(engine, message);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void timeCanOnlyBeSetOnce() {
+        final InferenceEngine engine = new InferenceEngine();
+        engine.setTime();
+        engine.setTime();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void failsIfNoDateSet() throws InvalidInputException {
+        final Action message = SimpleMessage.makeMessage(this.getClass());
+        final PrivateSigningKey key = PrivateSigningKey.generate();
+        final InferenceEngine engine = new InferenceEngine();
+        engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
+                Arrays.<Condition>asList(new NotAfter(new Date()))));
+        engine.process(key.getPublicKey());
+        engine.process(key.sign(message));
+        engine.process(signed(message));
+    }
+
+    @Test
+    public void succeedsIfEarly() throws InvalidInputException {
+        final Action message = SimpleMessage.makeMessage(this.getClass());
+        Date now = new Date();
+        Date later = new Date(now.getTime() + 1000000);
+        final PrivateSigningKey key = PrivateSigningKey.generate();
+        final InferenceEngine engine = new InferenceEngine();
+        engine.setTime(now);
+        engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
+                Arrays.<Condition>asList(new NotAfter(later))));
+        engine.process(key.getPublicKey());
+        engine.process(key.sign(message));
+        engine.process(signed(message));
+        checkMessage(engine, message);
+    }
+
+    @Test
+    public void failsIfLate() throws InvalidInputException {
+        final Action message = SimpleMessage.makeMessage(this.getClass());
+        Date now = new Date();
+        Date later = new Date(now.getTime() + 1000000);
+        final PrivateSigningKey key = PrivateSigningKey.generate();
+        final InferenceEngine engine = new InferenceEngine();
+        engine.setTime(later);
+        engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
+                Arrays.<Condition>asList(new NotAfter(now))));
+        engine.process(key.getPublicKey());
+        engine.process(key.sign(message));
+        engine.process(signed(message));
+        checkNoMessages(engine);
     }
 }

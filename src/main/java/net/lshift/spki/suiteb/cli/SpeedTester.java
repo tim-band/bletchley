@@ -1,6 +1,6 @@
 package net.lshift.spki.suiteb.cli;
 
-import static net.lshift.spki.suiteb.sexpstructs.Signed.signed;
+import static net.lshift.spki.suiteb.Signed.signed;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.Action;

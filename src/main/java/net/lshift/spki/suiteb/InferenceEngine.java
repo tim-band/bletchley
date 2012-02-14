@@ -1,22 +1,19 @@
 package net.lshift.spki.suiteb;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.fingerprint.FingerprintUtils;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
 import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
-import net.lshift.spki.suiteb.sexpstructs.Cert;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
-import net.lshift.spki.suiteb.sexpstructs.Signed;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -39,17 +36,18 @@ public class InferenceEngine {
         = new HashMap<DigestSha384, PublicSigningKey>();
     private final Map<AesKeyId, AesKey> aesKeys
         = new HashMap<AesKeyId, AesKey>();
-    private final Set<DigestSha384> trustedItems
-        = new HashSet<DigestSha384>();
-
-    private final Set<DigestSha384> trustedKeys
-        = new HashSet<DigestSha384>();
+    private final Map<DigestSha384, Condition> trustedItems
+        = new HashMap<DigestSha384, Condition>();
+    private final Map<DigestSha384, Condition> trustedKeys
+        = new HashMap<DigestSha384, Condition>();
     private final List<ActionType> actions
         = new ArrayList<ActionType>();
 
     private final Map<String, String> byteNames = new HashMap<String,String>();
 
     private PassphraseDelegate passphraseDelegate;
+
+    private Date time;
 
     private String namedString(final String string) {
         String name = byteNames.get(string);
@@ -70,17 +68,17 @@ public class InferenceEngine {
     }
 
     public void process(final SequenceItem item) throws InvalidInputException {
-        process(item, false);
+        process(item, new OrCondition());
     }
 
     public void processTrusted(final SequenceItem item) throws InvalidInputException {
-        process(item, true);
+        process(item, new AndCondition());
     }
 
     // FIXME: use dynamic dispatch here
     protected void process(
         final SequenceItem item,
-        final boolean trusted)
+        final Condition trusted)
         throws InvalidInputException {
         if (item instanceof Action) {
             doProcess((Action) item, trusted);
@@ -115,9 +113,10 @@ public class InferenceEngine {
         }
     }
 
-    private void doProcess(final Action message, final boolean trusted) {
+    private void doProcess(final Action message, final Condition trusted) {
+        boolean allow = trusted.allows(this, message.getPayload());
         if (LOG.isDebugEnabled()) {
-            if (trusted) {
+            if (allow) {
                 LOG.debug("Trusting action:\n{}",
                     ConvertUtils.prettyPrint(Action.class, message));
             } else {
@@ -125,7 +124,7 @@ public class InferenceEngine {
                     ConvertUtils.prettyPrint(Action.class, message));
             }
         }
-        if (trusted) {
+        if (allow) {
             LOG.debug("Trusting message");
             actions.add(message.getPayload());
         }
@@ -139,7 +138,7 @@ public class InferenceEngine {
         aesKeys.put(key.getKeyId(), key);
     }
 
-    private void doProcess(final AesPacket packet, final boolean trusted) throws InvalidInputException {
+    private void doProcess(final AesPacket packet, final Condition trusted) throws InvalidInputException {
         final AesKey key = aesKeys.get(packet.keyId);
         if (key != null) {
             final SequenceItem contents = key.decrypt(packet);
@@ -155,24 +154,21 @@ public class InferenceEngine {
         }
     }
 
-    private void doProcess(Cert cert, boolean trusted) {
+    private void doProcess(Cert cert, Condition trusted) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Found cert, trusted {} {}",
                 trusted, digestString(cert.subject));
         }
-        if (trusted) {
-            trustedKeys.add(cert.subject);
-        }
+        orPut(trustedKeys, cert.subject,
+            new AndCondition(trusted, cert.getCondition()));
     }
 
-    private void doProcess(final DigestSha384 digest, final boolean trusted) {
+    private void doProcess(final DigestSha384 digest, final Condition trusted) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Chaining trust {} for {}",
                 trusted, digestString(digest));
         }
-        if (trusted) {
-            trustedItems.add(digest);
-        }
+        orPut(trustedItems, digest, trusted);
     }
 
     private void doProcess(final EcdhItem item) {
@@ -216,7 +212,7 @@ public class InferenceEngine {
         dsaKeys.put(keyId, pKey);
     }
 
-    private void doProcess(final Sequence items, final boolean trusted)
+    private void doProcess(final Sequence items, final Condition trusted)
         throws InvalidInputException {
         LOG.debug("Processing sequence...");
         for (final SequenceItem item: items.sequence) {
@@ -238,11 +234,10 @@ public class InferenceEngine {
             LOG.debug("Signer {} attests to {}",
                 digestString(sig.keyId), digestString(sig.digest));
         }
-        if (trustedKeys.contains(sig.keyId)) {
-            LOG.debug("Key is trusted");
-            trustedItems.add(sig.digest);
+        if (!trustedKeys.containsKey(sig.keyId)) {
+            LOG.debug("Key is unknown");
         } else {
-            LOG.debug("Key is not trusted");
+            orPut(trustedItems, sig.digest, trustedKeys.get(sig.keyId));
         }
     }
 
@@ -252,10 +247,10 @@ public class InferenceEngine {
                 "Unknown hash type: " + signed.hashType);
         }
         final DigestSha384 digest = DigestSha384.digest(signed.payload);
-        boolean trusted = trustedItems.contains(digest);
+        Condition trusted = trustedItems.get(digest);
         if (LOG.isDebugEnabled()) {
-            if (trusted) {
-                LOG.debug("Trusted object {}", digestString(digest));
+            if (trusted != null) {
+                LOG.debug("Trusted object {} {}", trusted, digestString(digest));
             } else {
                 LOG.debug("Signed object with no signer, ignoring {}",
                     digestString(digest));
@@ -263,9 +258,16 @@ public class InferenceEngine {
             LOG.debug("\n{}",
                 ConvertUtils.prettyPrint(SequenceItem.class, signed.payload));
         }
-        if (trusted) {
-            process(signed.payload, true);
+        if (trusted != null) {
+            process(signed.payload, trusted);
         }
+    }
+
+    private void orPut(
+        Map<DigestSha384, Condition> map,
+        DigestSha384 subject,
+        Condition condition) {
+        map.put(subject, new OrCondition(condition, map.get(subject)));
     }
 
     public List<ActionType> getActions() {
@@ -274,5 +276,21 @@ public class InferenceEngine {
 
     public void setPassphraseDelegate(final PassphraseDelegate passphraseDelegate) {
         this.passphraseDelegate = passphraseDelegate;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        if (this.time != null)
+            throw new IllegalStateException("Time can only be set once");
+        this.time = time;
+    }
+
+    public void setTime() {
+        if (this.time != null)
+            throw new IllegalStateException("Time can only be set once");
+        this.time = new Date();
     }
 }
