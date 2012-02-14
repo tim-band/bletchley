@@ -54,6 +54,18 @@ public class Convert
     }
 
     /**
+     * Fields are list types, then they're followed by a sequence.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE})
+    @ConverterFactoryClass(PositionSequenceConverterFactory.class)
+    public @interface PositionSequence {
+        String name();
+        String[] fields();
+        String seq();
+    }
+
+    /**
      * This is one of several sub-classes, discriminated by the name of the sexp.
      *
      */

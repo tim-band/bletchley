@@ -51,13 +51,7 @@ public abstract class BeanFieldConverter<T>
     @Override
     public T readRest(final ConvertInputStream in)
         throws IOException, InvalidInputException {
-        try {
-            return DeserializingConstructor.make(clazz, readFields(in));
-        } catch (final InstantiationException e) {
-            throw new ConvertReflectionException(clazz, e);
-        } catch (final IllegalAccessException e) {
-            throw new ConvertReflectionException(clazz, e);
-        }
+        return DeserializingConstructor.convertMake(clazz, readFields(in));
     }
 
     protected abstract Map<Field, Object> readFields(ConvertInputStream in)

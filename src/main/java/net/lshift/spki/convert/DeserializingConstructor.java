@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import sun.misc.Unsafe;
 
 /**
- * Build an object the way a desrializer would: use
+ * Build an object the way a deserializer would: use
  * unsafe.allocateInstance to sidestep the constructor and force the
  * fields to the values in the map.
  */
@@ -42,4 +42,13 @@ public class DeserializingConstructor {
         return res;
     }
 
+    public static <T> T convertMake(final Class<T> clazz, final Map<Field, Object> fields) {
+        try {
+            return DeserializingConstructor.make(clazz, fields);
+        } catch (final InstantiationException e) {
+            throw new ConvertReflectionException(clazz, e);
+        } catch (final IllegalAccessException e) {
+            throw new ConvertReflectionException(clazz, e);
+        }
+    }
 }

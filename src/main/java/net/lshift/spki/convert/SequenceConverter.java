@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +19,16 @@ import net.lshift.spki.SpkiInputStream.TokenType;
  */
 public class SequenceConverter<T>
     extends BeanConverter<T> {
-    private final String beanName;
+    private final Field beanField;
     private final Class<?> contentType;
 
     public SequenceConverter(final Class<T> clazz, final String name, final Field field) {
         super(clazz, name);
-        beanName = field.getName();
+        beanField = field;
+        contentType = getTypeInList(clazz, field);
+    }
+
+    public static <T> Class<?> getTypeInList(final Class<T> clazz, final Field field) {
         if (!(field.getGenericType() instanceof ParameterizedType)) {
             throw new ConvertReflectionException(clazz,
                 "Field must be parameterized List type");
@@ -38,7 +43,7 @@ public class SequenceConverter<T>
             throw new ConvertReflectionException(clazz,
                 "Constructor type must have one parameter");
         }
-        contentType = (Class<?>) typeArgs[0];
+        return (Class<?>) typeArgs[0];
     }
 
     @Override
@@ -47,14 +52,12 @@ public class SequenceConverter<T>
         try {
             out.beginSexp();
             writeName(out);
-            final List<?> property = (List<?>) clazz.getField(beanName).get(o);
+            final List<?> property = (List<?>) beanField.get(o);
             for (final Object v: property) {
                 out.writeUnchecked(contentType, v);
             }
             out.endSexp();
         } catch (final IllegalAccessException e) {
-            throw new ConvertReflectionException(clazz, e);
-        } catch (final NoSuchFieldException e) {
             throw new ConvertReflectionException(clazz, e);
         }
     }
@@ -62,6 +65,16 @@ public class SequenceConverter<T>
     @Override
     public T readRest(final ConvertInputStream in)
         throws IOException, InvalidInputException {
+            final Map<Field, Object> fields = new HashMap<Field, Object>();
+            fields.put(beanField, readSequence(contentType, in));
+            return DeserializingConstructor.convertMake(clazz, fields);
+    }
+
+    public static List<Object> readSequence(
+        Class<?> contentType, final ConvertInputStream in)
+        throws ParseException,
+            IOException,
+            InvalidInputException {
         final List<Object> components = new ArrayList<Object>();
         for (;;) {
             final TokenType token = in.peek();
@@ -72,17 +85,7 @@ public class SequenceConverter<T>
                 break;
             case CLOSEPAREN:
                 in.next(); // actually consume peeked token
-                try {
-                    final Map<Field, Object> fields = new HashMap<Field, Object>();
-                    fields.put(clazz.getDeclaredField(beanName), components);
-                    return DeserializingConstructor.make(clazz, fields);
-                } catch (final InstantiationException e) {
-                    throw new ConvertReflectionException(clazz, e);
-                } catch (final IllegalAccessException e) {
-                    throw new ConvertReflectionException(clazz, e);
-                } catch (final NoSuchFieldException e) {
-                    throw new ConvertReflectionException(clazz, e);
-                }
+                return Collections.unmodifiableList(components);
             case EOF:
                 throw new ParseException("Unexpected EOF");
             }
