@@ -69,10 +69,6 @@ public class InferenceEngine {
         return namedString(FingerprintUtils.getFingerprint(digest));
     }
 
-    public void addTrustedKey(final DigestSha384 key) {
-        trustedKeys.add(key);
-    }
-
     public void process(final SequenceItem item) throws InvalidInputException {
         process(item, false);
     }

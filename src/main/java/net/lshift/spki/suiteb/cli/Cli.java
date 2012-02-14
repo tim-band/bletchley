@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.lshift.spki.AdvancedSpkiInputStream;
@@ -28,6 +29,8 @@ import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
+import net.lshift.spki.suiteb.sexpstructs.Cert;
+import net.lshift.spki.suiteb.sexpstructs.Condition;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
@@ -116,7 +119,8 @@ public class Cli {
         final Openable out)
         throws IOException, InvalidInputException {
         final InferenceEngine inference = new InferenceEngine();
-        inference.addTrustedKey(signingKey.getKeyId());
+        inference.processTrusted(new Cert(signingKey.getKeyId(),
+                Collections.<Condition>emptyList()));
         inference.process(signingKey);
         inference.process(encryptionKey);
         inference.process(read(SequenceItem.class, packet));

@@ -4,10 +4,13 @@ import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static net.lshift.spki.suiteb.sexpstructs.Signed.signed;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
+import net.lshift.spki.suiteb.sexpstructs.Cert;
+import net.lshift.spki.suiteb.sexpstructs.Condition;
 import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
@@ -28,7 +31,8 @@ public class SequenceSigningTest extends UsesSimpleMessage
         sequence = roundTrip(Sequence.class, sequence);
 
         final InferenceEngine inference = new InferenceEngine();
-        inference.addTrustedKey(publicKey.getKeyId());
+        inference.processTrusted(new Cert(publicKey.getKeyId(),
+                Collections.<Condition>emptyList()));
         inference.process(sequence);
         final List<ActionType> messages = inference.getActions();
         assertEquals(1, messages.size());
