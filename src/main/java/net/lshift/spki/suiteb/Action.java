@@ -1,7 +1,6 @@
 package net.lshift.spki.suiteb;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 /**
  * SequenceItem container for something the application might act on.

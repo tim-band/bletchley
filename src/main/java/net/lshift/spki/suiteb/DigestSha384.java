@@ -8,7 +8,6 @@ import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.io.DigestOutputStream;

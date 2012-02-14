@@ -4,7 +4,6 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESFastEngine;

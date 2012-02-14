@@ -5,7 +5,6 @@ import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;

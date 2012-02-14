@@ -16,8 +16,8 @@ import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesPacket;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.RoundTrip;
-import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+import net.lshift.spki.suiteb.Sequence;
+import net.lshift.spki.suiteb.SequenceItem;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;

@@ -2,7 +2,6 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 /**
  * An SPKI signature, including the digest of the target object and

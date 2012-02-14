@@ -1,4 +1,4 @@
-package net.lshift.spki.suiteb.sexpstructs;
+package net.lshift.spki.suiteb;
 
 import java.util.List;
 

@@ -6,7 +6,7 @@ import net.lshift.spki.convert.ConvertException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+import net.lshift.spki.suiteb.SequenceItem;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;

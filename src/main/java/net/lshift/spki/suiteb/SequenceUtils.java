@@ -3,8 +3,6 @@ package net.lshift.spki.suiteb;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 /**
  * Utilities for working with sequences.

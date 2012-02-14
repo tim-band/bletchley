@@ -12,8 +12,6 @@ import net.lshift.spki.suiteb.fingerprint.FingerprintUtils;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
 import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
-import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;

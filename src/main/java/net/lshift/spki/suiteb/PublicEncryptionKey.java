@@ -7,7 +7,6 @@ import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPublicKey;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.CipherParameters;

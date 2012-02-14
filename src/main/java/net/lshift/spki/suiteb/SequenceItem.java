@@ -1,16 +1,8 @@
-package net.lshift.spki.suiteb.sexpstructs;
+package net.lshift.spki.suiteb;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.suiteb.Action;
-import net.lshift.spki.suiteb.AesKey;
-import net.lshift.spki.suiteb.AesPacket;
-import net.lshift.spki.suiteb.Cert;
-import net.lshift.spki.suiteb.DigestSha384;
-import net.lshift.spki.suiteb.PrivateEncryptionKey;
-import net.lshift.spki.suiteb.PublicSigningKey;
-import net.lshift.spki.suiteb.Signature;
-import net.lshift.spki.suiteb.Signed;
 import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
+import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 
 /**
  * Item that can go in a sequence and so be interpreted by the InferenceEngine.

@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
-import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;

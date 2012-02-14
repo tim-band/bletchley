@@ -4,7 +4,7 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesKeyId;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+import net.lshift.spki.suiteb.SequenceItem;
 
 @Convert.ByPosition(name="passphrase-protected-key",
     fields={"passphraseId", "salt", "iterations", "keyId"})

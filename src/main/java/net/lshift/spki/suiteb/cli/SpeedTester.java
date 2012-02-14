@@ -9,8 +9,8 @@ import net.lshift.spki.suiteb.EncryptionSetup;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
+import net.lshift.spki.suiteb.Sequence;
 import net.lshift.spki.suiteb.SequenceUtils;
-import net.lshift.spki.suiteb.sexpstructs.Sequence;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 /**
