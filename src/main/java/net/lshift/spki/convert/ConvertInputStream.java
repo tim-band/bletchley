@@ -21,8 +21,7 @@ public class ConvertInputStream extends SpkiInputStream {
 
     @Override
     public TokenType doNext()
-        throws IOException,
-            ParseException {
+        throws IOException, ParseException {
         if (peek != null) {
             try {
                 return peek;
@@ -36,11 +35,7 @@ public class ConvertInputStream extends SpkiInputStream {
 
     @Override
     public byte[] doAtomBytes()
-        throws IOException,
-            ParseException {
-        if (peek != null) {
-            throw new IllegalStateException("peek must be followed by next");
-        }
+        throws IOException, ParseException {
         return delegate.atomBytes();
     }
 
