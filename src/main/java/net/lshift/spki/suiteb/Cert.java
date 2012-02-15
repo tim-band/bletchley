@@ -1,5 +1,7 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.AndCondition.and;
+
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
@@ -20,8 +22,6 @@ public class Cert
     @Override
     public void process(InferenceEngine engine, Condition trust)
         throws InvalidInputException {
-            engine.addKeyTrust(subject,
-                new AndCondition(trust, new AndCondition(
-                    conditions.toArray(new Condition[conditions.size()]))));
+        engine.addKeyTrust(subject, and(trust, and(conditions)));
     }
 }

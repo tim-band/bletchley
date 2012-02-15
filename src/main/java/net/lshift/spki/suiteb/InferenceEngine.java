@@ -1,5 +1,7 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.OrCondition.or;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,11 +67,11 @@ public class InferenceEngine {
 //    }
 
     public void process(final SequenceItem item) throws InvalidInputException {
-        process(item, new OrCondition());
+        process(item, NeverCondition.NEVER);
     }
 
     public void processTrusted(final SequenceItem item) throws InvalidInputException {
-        process(item, new AndCondition());
+        process(item, AlwaysCondition.ALWAYS);
     }
 
     public void process(SequenceItem item, Condition trust) throws InvalidInputException {
@@ -106,7 +108,7 @@ public class InferenceEngine {
         Map<DigestSha384, Condition> map,
         DigestSha384 subject,
         Condition condition) {
-        map.put(subject, new OrCondition(condition, map.get(subject)));
+        map.put(subject, or(condition, map.get(subject)));
     }
 
     public PrivateEncryptionKey getPrivateEncryptionKey(DigestSha384 recipient) {
