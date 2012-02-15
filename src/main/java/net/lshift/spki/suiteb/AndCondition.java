@@ -15,24 +15,24 @@ public class AndCondition
     @Override
     public boolean allows(InferenceEngine inferenceEngine, ActionType action) {
         for (Condition c: conditions) {
-            if (c != null && !c.allows(inferenceEngine, action))
+            if (!c.allows(inferenceEngine, action))
                 return false;
         }
         return true;
     }
 
     private static boolean flattenCondition(
-        List<Condition> target,
-        Condition condition) {
-        if (condition instanceof NeverCondition) {
+            List<Condition> target,
+            Condition condition) {
+        if (condition == null || condition instanceof AlwaysCondition) {
+            return false;
+        } else if (condition instanceof NeverCondition) {
             return true;
         } else if (condition instanceof AndCondition) {
             for (Condition c: ((AndCondition)condition).conditions) {
                 if (flattenCondition(target, c))
                     return true;
             }
-            return false;
-        } else if (condition instanceof AlwaysCondition) {
             return false;
         } else {
             target.add(condition);
@@ -46,7 +46,13 @@ public class AndCondition
             if (flattenCondition(target, c))
                 return NeverCondition.NEVER;
         }
-        return new AndCondition(target.toArray(new Condition[target.size()]));
+        if (target.isEmpty()) {
+            return AlwaysCondition.ALWAYS;
+        } else if (target.size() == 1) {
+            return target.get(0);
+        } else {
+            return new AndCondition(target.toArray(new Condition[target.size()]));
+        }
     }
 
     public static Condition and(Condition... conditions) {

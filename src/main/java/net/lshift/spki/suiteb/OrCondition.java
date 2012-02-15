@@ -22,17 +22,17 @@ public class OrCondition
     }
 
     private static boolean flattenCondition(
-        List<Condition> target,
-        Condition condition) {
-        if (condition instanceof AlwaysCondition) {
+            List<Condition> target,
+            Condition condition) {
+        if (condition == null || condition instanceof NeverCondition) {
+            return false;
+        } else if (condition instanceof AlwaysCondition) {
             return true;
         } else if (condition instanceof OrCondition) {
             for (Condition c: ((OrCondition)condition).conditions) {
                 if (flattenCondition(target, c))
                     return true;
             }
-            return false;
-        } else if (condition instanceof NeverCondition) {
             return false;
         } else {
             target.add(condition);
@@ -46,7 +46,13 @@ public class OrCondition
             if (flattenCondition(target, c))
                 return AlwaysCondition.ALWAYS;
         }
-        return new OrCondition(target.toArray(new Condition[target.size()]));
+        if (target.isEmpty()) {
+            return NeverCondition.NEVER;
+        } else if (target.size() == 1) {
+            return target.get(0);
+        } else {
+            return new OrCondition(target.toArray(new Condition[target.size()]));
+        }
     }
 
     public static Condition or(Condition... conditions) {
