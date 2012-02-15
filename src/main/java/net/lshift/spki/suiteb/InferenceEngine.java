@@ -1,6 +1,6 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.suiteb.OrCondition.or;
+import static net.lshift.spki.suiteb.ConditionJoiner.or;
 
 import java.util.ArrayList;
 import java.util.Date;

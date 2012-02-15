@@ -1,6 +1,6 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.suiteb.AndCondition.and;
+import static net.lshift.spki.suiteb.ConditionJoiner.and;
 
 import java.util.List;
 
