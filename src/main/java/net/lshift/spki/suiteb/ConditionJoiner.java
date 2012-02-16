@@ -63,7 +63,7 @@ public class ConditionJoiner {
 
     public  static ConditionJoiner disjunction() {
         return new ConditionJoiner(
-            false, AlwaysCondition.ALWAYS, NeverCondition.NEVER);
+            true, NeverCondition.NEVER, AlwaysCondition.ALWAYS);
     }
 
     public void addTerm(Condition term) {
