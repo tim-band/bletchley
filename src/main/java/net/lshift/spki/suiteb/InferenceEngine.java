@@ -145,6 +145,9 @@ public class InferenceEngine {
     }
 
     public Date getTime() {
+        if (time == null) {
+            throw new IllegalStateException("No time set on InferenceEngine");
+        }
         return time;
     }
 

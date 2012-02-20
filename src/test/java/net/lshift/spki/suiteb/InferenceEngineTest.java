@@ -146,7 +146,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
         engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
-                Arrays.<Condition>asList(new NotAfter(new Date()))));
+                Arrays.<Condition>asList(new InvalidOnOrAfter(new Date()))));
         engine.process(key.getPublicKey());
         engine.process(key.sign(message));
         engine.process(signed(message));
@@ -161,7 +161,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final InferenceEngine engine = new InferenceEngine();
         engine.setTime(now);
         engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
-                Arrays.<Condition>asList(new NotAfter(later))));
+                Arrays.<Condition>asList(new InvalidOnOrAfter(later))));
         engine.process(key.getPublicKey());
         engine.process(key.sign(message));
         engine.process(signed(message));
@@ -177,7 +177,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final InferenceEngine engine = new InferenceEngine();
         engine.setTime(later);
         engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
-                Arrays.<Condition>asList(new NotAfter(now))));
+                Arrays.<Condition>asList(new InvalidOnOrAfter(now))));
         engine.process(key.getPublicKey());
         engine.process(key.sign(message));
         engine.process(signed(message));
