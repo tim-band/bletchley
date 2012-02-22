@@ -18,12 +18,12 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 import org.junit.Test;
 
 public class InferenceEngineTest extends UsesSimpleMessage {
-    private void checkNoMessages(final InferenceEngine engine) {
+    static void checkNoMessages(final InferenceEngine engine) {
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(0)));
     }
 
-    private void checkMessage(final InferenceEngine engine, final Action message) {
+    static void checkMessage(final InferenceEngine engine, final Action message) {
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(1)));
         assertThat(res.get(0), is(equalTo(message.getPayload())));
