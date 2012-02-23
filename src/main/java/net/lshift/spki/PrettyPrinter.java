@@ -147,17 +147,13 @@ public class PrettyPrinter extends SpkiOutputStream {
     public static void copyStream(
         final SpkiInputStream input,
         final SpkiOutputStream output) throws IOException, ParseException {
-        try {
-            for (;;) {
-                switch (input.next()) {
-                case ATOM: output.atom(input.atomBytes()); break;
-                case OPENPAREN: output.beginSexp(); break;
-                case CLOSEPAREN: output.endSexp(); break;
-                case EOF: output.flush(); return;
-                }
+        for (;;) {
+            switch (input.next()) {
+            case ATOM: output.atom(input.atomBytes()); break;
+            case OPENPAREN: output.beginSexp(); break;
+            case CLOSEPAREN: output.endSexp(); break;
+            case EOF: output.flush(); return;
             }
-        } finally {
-            input.close();
         }
     }
 }
