@@ -30,15 +30,21 @@ public class ConvertOutputStream
     }
 
     @Override
-    public void close()
-        throws IOException {
-        os.close();
-    }
-
-    @Override
     public void endSexp()
         throws IOException {
         os.endSexp();
+    }
+
+    @Override
+    public void flush()
+        throws IOException {
+        os.flush();
+    }
+
+    @Override
+    public void close()
+        throws IOException {
+        os.close();
     }
 
     public void atom(final String string)

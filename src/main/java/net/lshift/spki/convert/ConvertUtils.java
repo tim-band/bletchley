@@ -58,17 +58,9 @@ public class ConvertUtils {
         final Class<T> clazz,
         final T o,
         final SpkiOutputStream os) throws IOException {
-        final ConvertOutputStream out = new ConvertOutputStream(os);
-        try {
-            out.write(clazz, o);
-        } finally {
-            out.close();
-        }
+        new ConvertOutputStream(os).write(clazz, o);
     }
 
-    /**
-     * WARNING: this closes the stream passed in!
-     */
     public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
         throws IOException {
         write(clazz, o, new CanonicalSpkiOutputStream(os));
@@ -76,24 +68,22 @@ public class ConvertUtils {
 
     public static <T> void write(final Class<T> clazz, final T o, final File f)
         throws IOException {
-        write(clazz, o, new FileOutputStream(f));
+        final FileOutputStream os = new FileOutputStream(f);
+        try {
+            write(clazz, o, os);
+        } finally {
+            os.close();
+        }
     }
 
     public static <T> T read(final Class<T> clazz, final SpkiInputStream is)
         throws IOException, InvalidInputException {
         final ConvertInputStream in = new ConvertInputStream(is);
-        try {
-            final T res = in.read(clazz);
-            in.nextAssertType(TokenType.EOF);
-            return res;
-        } finally {
-            in.close();
-        }
+        final T res = in.read(clazz);
+        in.nextAssertType(TokenType.EOF);
+        return res;
     }
 
-    /**
-     * WARNING: this closes the stream passed in!
-     */
     public static <T> T read(final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
         return read(clazz, new CanonicalSpkiInputStream(is));
@@ -102,7 +92,12 @@ public class ConvertUtils {
     public static <T> T read(final Class<T> clazz, final File f)
         throws IOException,
             InvalidInputException {
-        return read(clazz, new FileInputStream(f));
+        final FileInputStream is = new FileInputStream(f);
+        try {
+            return read(clazz, is);
+        } finally {
+            is.close();
+        }
     }
 
     /**
@@ -117,6 +112,7 @@ public class ConvertUtils {
         try {
             final ByteArrayOutputStream os = new ByteArrayOutputStream();
             write(clazz, o, os);
+            os.close();
             return os.toByteArray();
         } catch (final IOException e) {
             throw new ConvertReflectionException(clazz,

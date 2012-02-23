@@ -37,6 +37,7 @@ public class DigestSha384 implements SequenceItem {
             new DevnullOutputStream(), sha);
         try {
             ConvertUtils.write(clazz, o, digester);
+            digester.close();
         } catch (final IOException e) {
             throw new AssertionError("CANTHAPPEN:" + e);
         }
