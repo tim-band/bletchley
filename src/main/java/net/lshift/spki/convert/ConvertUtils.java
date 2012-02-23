@@ -79,18 +79,11 @@ public class ConvertUtils {
     public static <T> T read(final Class<T> clazz, final SpkiInputStream is)
         throws IOException, InvalidInputException {
         final ConvertInputStream in = new ConvertInputStream(is);
-        try {
-            final T res = in.read(clazz);
-            in.nextAssertType(TokenType.EOF);
-            return res;
-        } finally {
-            in.close();
-        }
+        final T res = in.read(clazz);
+        in.nextAssertType(TokenType.EOF);
+        return res;
     }
 
-    /**
-     * WARNING: this closes the stream passed in!
-     */
     public static <T> T read(final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
         return read(clazz, new CanonicalSpkiInputStream(is));
@@ -99,7 +92,12 @@ public class ConvertUtils {
     public static <T> T read(final Class<T> clazz, final File f)
         throws IOException,
             InvalidInputException {
-        return read(clazz, new FileInputStream(f));
+        final FileInputStream is = new FileInputStream(f);
+        try {
+            return read(clazz, is);
+        } finally {
+            is.close();
+        }
     }
 
     /**
