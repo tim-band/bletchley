@@ -40,6 +40,11 @@ public class OpenableUtils {
 
     public static <T> void write(final Class<T> clazz, final T o, final Openable open)
         throws IOException {
-        ConvertUtils.write(clazz, o, open.write());
+        final OutputStream os = open.write();
+        try {
+            ConvertUtils.write(clazz, o, os);
+        } finally {
+            os.close();
+        }
     }
 }

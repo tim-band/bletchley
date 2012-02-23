@@ -1,12 +1,13 @@
 package net.lshift.spki;
 
 import java.io.Closeable;
+import java.io.Flushable;
 import java.io.IOException;
 
 /**
  * Interface representing a stream to which SPKI tokens can be written
  */
-public abstract class SpkiOutputStream implements Closeable
+public abstract class SpkiOutputStream implements Closeable, Flushable
 {
     @Override
     public abstract void close()

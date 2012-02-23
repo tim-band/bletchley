@@ -58,17 +58,9 @@ public class ConvertUtils {
         final Class<T> clazz,
         final T o,
         final SpkiOutputStream os) throws IOException {
-        final ConvertOutputStream out = new ConvertOutputStream(os);
-        try {
-            out.write(clazz, o);
-        } finally {
-            out.close();
-        }
+        new ConvertOutputStream(os).write(clazz, o);
     }
 
-    /**
-     * WARNING: this closes the stream passed in!
-     */
     public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
         throws IOException {
         write(clazz, o, new CanonicalSpkiOutputStream(os));
@@ -76,7 +68,12 @@ public class ConvertUtils {
 
     public static <T> void write(final Class<T> clazz, final T o, final File f)
         throws IOException {
-        write(clazz, o, new FileOutputStream(f));
+        final FileOutputStream os = new FileOutputStream(f);
+        try {
+            write(clazz, o, os);
+        } finally {
+            os.close();
+        }
     }
 
     public static <T> T read(final Class<T> clazz, final SpkiInputStream is)
@@ -117,6 +114,7 @@ public class ConvertUtils {
         try {
             final ByteArrayOutputStream os = new ByteArrayOutputStream();
             write(clazz, o, os);
+            os.close();
             return os.toByteArray();
         } catch (final IOException e) {
             throw new ConvertReflectionException(clazz,

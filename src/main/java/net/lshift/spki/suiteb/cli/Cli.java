@@ -7,6 +7,7 @@ import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +41,14 @@ public class Cli {
     public static void prettyPrint(final Openable file)
         throws IOException,
             ParseException {
-        PrettyPrinter.prettyPrint(System.out, file.read());
+        PrettyPrinter.prettyPrint(new PrintWriter(System.out), file.read());
     }
 
     public static void prettyPrintToFile(final Openable in, final Openable out)
                     throws ParseException, IOException {
-        PrettyPrinter.prettyPrint(out.write(), in.read());
+        final PrintWriter pw = new PrintWriter(out.write());
+        PrettyPrinter.prettyPrint(pw, in.read());
+        pw.close();
     }
 
     public static void canonical(final Openable in, final Openable out) throws IOException, ParseException {

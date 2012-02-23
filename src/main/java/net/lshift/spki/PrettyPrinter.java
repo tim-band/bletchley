@@ -2,7 +2,6 @@ package net.lshift.spki;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
@@ -61,42 +60,38 @@ public class PrettyPrinter extends SpkiOutputStream {
     @Override
     public void beginSexp()
         throws IOException {
-        if (firstAtom) {
-            printPrefix();
-            pw.println('(');
-            indent += 1;
-        }
+        flush();
         firstAtom = true;
     }
 
     @Override
     public void endSexp()
         throws IOException {
+        flush();
+        if (indent == 0) {
+            throw new RuntimeException("Too many closeparens");
+        }
+        indent -= 1;
+        printPrefix();
+        pw.println(")");
+    }
+
+    @Override
+    public void flush() {
         if (firstAtom) {
             printPrefix();
-            pw.println("()");
+            pw.println('(');
+            indent += 1;
             firstAtom = false;
-        } else {
-            if (indent == 0) {
-                throw new RuntimeException("Too many closeparens");
-            }
-            indent -= 1;
-            printPrefix();
-            pw.println(")");
         }
     }
 
     @Override
     public void close()
         throws IOException {
-        if (firstAtom) {
-            // This always means the stream ended early, but handle anyway
-            printPrefix();
-            pw.println('(');
-            indent += 1;
-        }
-        // Do nothing - don't close underlying PrintStream!
+        flush();
         // Should we assert indent == 0 here?
+        pw.close();
     }
 
     private void printPrefix()
@@ -158,18 +153,11 @@ public class PrettyPrinter extends SpkiOutputStream {
                 case ATOM: output.atom(input.atomBytes()); break;
                 case OPENPAREN: output.beginSexp(); break;
                 case CLOSEPAREN: output.endSexp(); break;
-                case EOF: output.close(); return;
+                case EOF: output.flush(); return;
                 }
             }
         } finally {
             input.close();
         }
-    }
-
-    public static void prettyPrint(final OutputStream out, final InputStream read)
-                    throws ParseException, IOException {
-        final PrintWriter pw = new PrintWriter(out);
-        prettyPrint(pw, read);
-        pw.close();
     }
 }

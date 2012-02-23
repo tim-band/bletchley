@@ -23,12 +23,6 @@ public class CanonicalSpkiOutputStream
     }
 
     @Override
-    public void close()
-        throws IOException {
-        os.close();
-    }
-
-    @Override
     public void beginSexp()
         throws IOException {
         os.write('(');
@@ -38,5 +32,17 @@ public class CanonicalSpkiOutputStream
     public void endSexp()
         throws IOException {
         os.write(')');
+    }
+
+    @Override
+    public void flush()
+        throws IOException {
+        os.flush();
+    }
+
+    @Override
+    public void close()
+        throws IOException {
+        os.close();
     }
 }
