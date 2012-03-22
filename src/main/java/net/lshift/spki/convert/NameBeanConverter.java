@@ -27,10 +27,15 @@ public class NameBeanConverter<T>
         final FieldConvertInfo field,
         final Object property)
         throws IOException {
-        out.beginSexp();
-        out.atom(field.hyphenatedName);
-        out.writeUnchecked(field.field.getType(), property);
-        out.endSexp();
+        if (property != null) {
+            out.beginSexp();
+            out.atom(field.hyphenatedName);
+            out.writeUnchecked(field.field.getType(), property);
+            out.endSexp();
+        } else if (!field.nullable) {
+            throw new DeconvertException("Field not marked as nullable is null");
+        }
+        // else do nothing
     }
 
     @Override
@@ -50,7 +55,7 @@ public class NameBeanConverter<T>
         }
         in.nextAssertType(TokenType.CLOSEPAREN);
         for (final FieldConvertInfo field: fields) {
-            if (!field.optional && !res.containsKey(field.field)) {
+            if (!field.nullable && !res.containsKey(field.field)) {
                 throw new ConvertException("Missing field: " + field.hyphenatedName);
             }
         }

@@ -112,7 +112,7 @@ public class Convert
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.FIELD})
-    public @interface Optional {
+    public @interface Nullable {
         // no fields
     }
 }
