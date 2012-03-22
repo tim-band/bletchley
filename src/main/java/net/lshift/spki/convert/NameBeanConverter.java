@@ -38,8 +38,8 @@ public class NameBeanConverter<T>
         throws InvalidInputException,
             IOException {
         final Map<Field, Object> res = new HashMap<Field, Object>();
-        for (int i = 0; i < fields.size(); i++) {
-            in.nextAssertType(TokenType.OPENPAREN);
+        while (in.peek() == TokenType.OPENPAREN) {
+            in.next();
             in.nextAssertType(TokenType.ATOM);
             final FieldConvertInfo field = getField(in.atomBytes());
             if (res.containsKey(field.field)) {
@@ -49,6 +49,11 @@ public class NameBeanConverter<T>
             in.nextAssertType(TokenType.CLOSEPAREN);
         }
         in.nextAssertType(TokenType.CLOSEPAREN);
+        for (final FieldConvertInfo field: fields) {
+            if (!field.optional && !res.containsKey(field.field)) {
+                throw new ConvertException("Missing field: " + field.hyphenatedName);
+            }
+        }
         return res;
     }
 
