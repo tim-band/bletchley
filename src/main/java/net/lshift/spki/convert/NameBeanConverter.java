@@ -33,9 +33,11 @@ public class NameBeanConverter<T>
             out.writeUnchecked(field.field.getType(), property);
             out.endSexp();
         } else if (!field.nullable) {
-            throw new DeconvertException("Field not marked as nullable is null");
+            throw new NullPointerException(
+                "Field not marked as nullable is null: " +
+                clazz.getCanonicalName() + "." + field.name);
         }
-        // else do nothing
+        // else ignore it - write nothing, report nothing
     }
 
     @Override
