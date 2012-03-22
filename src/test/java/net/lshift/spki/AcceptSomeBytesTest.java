@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class AcceptSomeBytesTest {
 
-    private void testAccepter(
+    private static void testAccepter(
         final AcceptSomeBytes accepter,
         final String input,
         final String accepted,

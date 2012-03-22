@@ -19,7 +19,7 @@ public class FingerprintWordsTest {
     private static final Pattern WORDREX
         = Pattern.compile("[a-z]{1,6}");
 
-    private boolean isValidWord(final String word) {
+    private static boolean isValidWord(final String word) {
         return WORDREX.matcher(word).matches();
     }
 

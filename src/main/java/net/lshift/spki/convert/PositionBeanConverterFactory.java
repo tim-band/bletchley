@@ -16,11 +16,11 @@ implements ConverterFactory<Convert.ByPosition>
         for (final String fname: a.fields()) {
             fields.add(new FieldConvertInfo(
                 getField(clazz, clazz, fname)));
-            }
+        }
         return new PositionBeanConverter<T>(clazz, a.name(), fields);
     }
 
-    private <T> Field getField(
+    private static <T> Field getField(
         final Class<T> clazz,
         final Class<? super T> c,
         final String fname) {

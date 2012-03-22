@@ -92,14 +92,14 @@ public class CliTest extends ResetsRegistry
         assertEquals(privFingerprint, pubFingerprint);
     }
 
-    private String getTextOut(final String command, final Openable... args)
+    private static String getTextOut(final String command, final Openable... args)
                     throws IOException, InvalidInputException {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         Cli.main(new PrintStream(out), command, args);
         return out.toString("UTF-8");
     }
 
-    private boolean isFingerprint(final String pubFingerprint) {
+    private static boolean isFingerprint(final String pubFingerprint) {
         return FINGERPRINT_OUTPUT.matcher(pubFingerprint).matches();
     }
 }
