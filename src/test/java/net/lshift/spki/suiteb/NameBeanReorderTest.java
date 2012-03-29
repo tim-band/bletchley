@@ -27,11 +27,11 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
         final PrivateSigningKey key = PrivateSigningKey.generate();
         // Reorder the public key
         final PublicSigningKey publicKey = key.getPublicKey();
-        Sexp pkSexp = ConvertUtils.fromBytes(Sexp.class,
+        final Sexp pkSexp = ConvertUtils.fromBytes(Sexp.class,
             ConvertUtils.toBytes(PublicSigningKey.class, publicKey));
         ConvertUtils.prettyPrint(Sexp.class, pkSexp, System.out);
-        List<Sexp> coords = ((Slist)((Slist)pkSexp).getSparts().get(0)).getSparts();
-        Slist reversed = list("suiteb-p384-ecdsa-public-key",
+        final List<Sexp> coords = ((Slist)((Slist)pkSexp).getSparts().get(0)).getSparts();
+        final Slist reversed = list("suiteb-p384-ecdsa-public-key",
             list("point", coords.get(1), coords.get(0)));
 
         ConvertUtils.prettyPrint(Sexp.class, reversed, System.out);

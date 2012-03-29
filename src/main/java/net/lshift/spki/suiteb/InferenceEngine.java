@@ -68,7 +68,7 @@ public class InferenceEngine {
 //        return namedString(FingerprintUtils.getFingerprint(digest));
 //    }
 
-    public void process(SpkiInputStream is) throws InvalidInputException, IOException {
+    public void process(final SpkiInputStream is) throws InvalidInputException, IOException {
         process(ConvertUtils.read(SequenceItem.class, is));
     }
 
@@ -80,7 +80,7 @@ public class InferenceEngine {
         process(item, AlwaysCondition.ALWAYS);
     }
 
-    public void process(SequenceItem item, Condition trust) throws InvalidInputException {
+    public void process(final SequenceItem item, final Condition trust) throws InvalidInputException {
         LOG.debug("Processing item:\n{}",
             ConvertUtils.prettyPrint(SequenceItem.class, item));
         item.process(this, trust);
@@ -90,55 +90,55 @@ public class InferenceEngine {
         return actions;
     }
 
-    public void addAction(ActionType payload) {
+    public void addAction(final ActionType payload) {
         actions.add(payload);
     }
 
-    public Condition getItemTrust(DigestSha384 digest) {
+    public Condition getItemTrust(final DigestSha384 digest) {
         return itemTrust.get(digest);
     }
 
-    public void addItemTrust(DigestSha384 digest, Condition condition) {
+    public void addItemTrust(final DigestSha384 digest, final Condition condition) {
         orPut(itemTrust, digest, condition);
     }
 
-    public Condition getKeyTrust(DigestSha384 keyId) {
+    public Condition getKeyTrust(final DigestSha384 keyId) {
         return keyTrust.get(keyId);
     }
 
-    public void addKeyTrust(DigestSha384 keyId, Condition condition) {
+    public void addKeyTrust(final DigestSha384 keyId, final Condition condition) {
         orPut(keyTrust, keyId, condition);
     }
 
     private void orPut(
-        Map<DigestSha384, Condition> map,
-        DigestSha384 subject,
-        Condition condition) {
+        final Map<DigestSha384, Condition> map,
+        final DigestSha384 subject,
+        final Condition condition) {
         map.put(subject, or(condition, map.get(subject)));
     }
 
-    public PrivateEncryptionKey getPrivateEncryptionKey(DigestSha384 recipient) {
+    public PrivateEncryptionKey getPrivateEncryptionKey(final DigestSha384 recipient) {
         return privateEncryptionKeys.get(recipient);
     }
 
     public void addPrivateEncryptionKey(
-        PrivateEncryptionKey key) {
+        final PrivateEncryptionKey key) {
         privateEncryptionKeys.put(key.getPublicKey().getKeyId(), key);
     }
 
-    public PublicSigningKey getPublicSigningKey(DigestSha384 keyId) {
+    public PublicSigningKey getPublicSigningKey(final DigestSha384 keyId) {
         return publicSigningKeys.get(keyId);
     }
 
-    public void addPublicSigningKey(PublicSigningKey key) {
+    public void addPublicSigningKey(final PublicSigningKey key) {
         publicSigningKeys.put(key.getKeyId(), key);
     }
 
-    public AesKey getAesKey(AesKeyId keyId) {
+    public AesKey getAesKey(final AesKeyId keyId) {
         return aesKeys.get(keyId);
     }
 
-    public void addAesKey(AesKey key) {
+    public void addAesKey(final AesKey key) {
         aesKeys.put(key.getKeyId(), key);
     }
 
@@ -157,7 +157,7 @@ public class InferenceEngine {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(final Date time) {
         if (this.time != null)
             throw new IllegalStateException("Time can only be set once");
         this.time = time;

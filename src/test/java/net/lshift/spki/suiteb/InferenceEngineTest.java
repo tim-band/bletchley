@@ -70,7 +70,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final InferenceEngine engine = new InferenceEngine();
         engine.processTrusted(new Cert(masterKey.getPublicKey().getKeyId(), Collections.<Condition>emptyList()));
         engine.process(masterKey.getPublicKey());
-        Cert cert = new Cert(subKey.getPublicKey().getKeyId(),
+        final Cert cert = new Cert(subKey.getPublicKey().getKeyId(),
                 Collections.<Condition>emptyList());
         engine.process(masterKey.sign(cert));
         engine.process(signed(cert));
@@ -88,7 +88,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final InferenceEngine engine = new InferenceEngine();
         engine.processTrusted(new Cert(masterKey.getPublicKey().getKeyId(), Collections.<Condition>emptyList()));
         engine.process(masterKey.getPublicKey());
-        Cert cert = new Cert(subKey.getPublicKey().getKeyId(),
+        final Cert cert = new Cert(subKey.getPublicKey().getKeyId(),
                 Collections.<Condition>emptyList());
         engine.process(signed(cert));
         engine.process(subKey.getPublicKey());
@@ -155,8 +155,8 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     @Test
     public void succeedsIfEarly() throws InvalidInputException {
         final Action message = SimpleMessage.makeMessage(this.getClass());
-        Date now = new Date();
-        Date later = new Date(now.getTime() + 1000000);
+        final Date now = new Date();
+        final Date later = new Date(now.getTime() + 1000000);
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
         engine.setTime(now);
@@ -171,8 +171,8 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     @Test
     public void failsIfLate() throws InvalidInputException {
         final Action message = SimpleMessage.makeMessage(this.getClass());
-        Date now = new Date();
-        Date later = new Date(now.getTime() + 1000000);
+        final Date now = new Date();
+        final Date later = new Date(now.getTime() + 1000000);
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
         engine.setTime(later);

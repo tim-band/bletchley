@@ -20,7 +20,7 @@ public class PositionSequenceConverterTest extends ResetsRegistry {
         public final String first;
         public final List<String> rest;
 
-        public PositionSequenceExample(String first, List<String> rest) {
+        public PositionSequenceExample(final String first, final List<String> rest) {
             super();
             this.first = first;
             this.rest = rest;
@@ -36,11 +36,11 @@ public class PositionSequenceConverterTest extends ResetsRegistry {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj) return true;
             if (obj == null) return false;
             if (getClass() != obj.getClass()) return false;
-            PositionSequenceExample other = (PositionSequenceExample) obj;
+            final PositionSequenceExample other = (PositionSequenceExample) obj;
             if (first == null) {
                 if (other.first != null) return false;
             } else if (!first.equals(other.first)) return false;
@@ -53,9 +53,9 @@ public class PositionSequenceConverterTest extends ResetsRegistry {
 
     @Test
     public void canParse() throws IOException, InvalidInputException {
-        PositionSequenceExample example = new PositionSequenceExample("this",
+        final PositionSequenceExample example = new PositionSequenceExample("this",
             Arrays.asList("that", "theother"));
-        byte[] exampleBytes = s("(position-convert this that theother)");
+        final byte[] exampleBytes = s("(position-convert this that theother)");
         assertThat(
             ConvertUtils.toBytes(PositionSequenceExample.class, example),
             is(exampleBytes));
@@ -64,8 +64,8 @@ public class PositionSequenceConverterTest extends ResetsRegistry {
             is(example));
     }
 
-    private byte[] s(String string) throws IOException, InvalidInputException {
-        Sexp s = ConvertUtils.readAdvanced(Sexp.class,
+    private byte[] s(final String string) throws IOException, InvalidInputException {
+        final Sexp s = ConvertUtils.readAdvanced(Sexp.class,
             new ByteArrayInputStream(ConvertUtils.bytes(string)));
         return ConvertUtils.toBytes(Sexp.class, s);
     }

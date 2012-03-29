@@ -26,7 +26,7 @@ public class Signature implements SequenceItem {
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         final PublicSigningKey pKey = engine.getPublicSigningKey(keyId);
         if (pKey == null) {
@@ -34,7 +34,7 @@ public class Signature implements SequenceItem {
         }
         if (!pKey.validate(digest, rawSignature))
             throw new CryptographyException("Sig validation failure");
-        Condition keyTrust = engine.getKeyTrust(keyId);
+        final Condition keyTrust = engine.getKeyTrust(keyId);
         if (keyTrust != null) {
             engine.addItemTrust(digest, keyTrust);
         }

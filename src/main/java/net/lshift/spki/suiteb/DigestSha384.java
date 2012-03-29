@@ -107,7 +107,7 @@ public class DigestSha384 implements SequenceItem {
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addItemTrust(this, trust);
     }

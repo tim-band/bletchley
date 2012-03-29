@@ -24,7 +24,7 @@ public class Action implements SequenceItem {
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust) {
+    public void process(final InferenceEngine engine, final Condition trust) {
         if (trust.allows(engine, payload)) {
             LOG.debug("Trusting message");
             engine.addAction(payload);

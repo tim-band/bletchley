@@ -12,10 +12,10 @@ public class PositionSequenceConverter<T>
     extends BeanConverter<T> {
     private final List<FieldConvertInfo> fields;
     private final Field seq;
-    private Class<?> contentType;
+    private final Class<?> contentType;
 
-    public PositionSequenceConverter(Class<T> clazz, String name,
-                                     List<FieldConvertInfo> fields, Field seq) {
+    public PositionSequenceConverter(final Class<T> clazz, final String name,
+                                     final List<FieldConvertInfo> fields, final Field seq) {
         super(clazz, name);
         this.fields = fields;
         this.seq = seq;
@@ -23,7 +23,7 @@ public class PositionSequenceConverter<T>
     }
 
     @Override
-    public void write(ConvertOutputStream out, T o)
+    public void write(final ConvertOutputStream out, final T o)
         throws IOException {
         try {
             out.beginSexp();
@@ -42,7 +42,7 @@ public class PositionSequenceConverter<T>
     }
 
     @Override
-    public T readRest(ConvertInputStream in)
+    public T readRest(final ConvertInputStream in)
         throws IOException,
             InvalidInputException {
         final Map<Field, Object> rmap = new HashMap<Field, Object>(fields.size());

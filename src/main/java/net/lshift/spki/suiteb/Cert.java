@@ -13,14 +13,14 @@ public class Cert
     public final DigestSha384 subject;
     public final List<Condition> conditions;
 
-    public Cert(DigestSha384 subject, List<Condition> conditions) {
+    public Cert(final DigestSha384 subject, final List<Condition> conditions) {
         super();
         this.subject = subject;
         this.conditions = conditions;
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addKeyTrust(subject, and(trust, and(conditions)));
     }

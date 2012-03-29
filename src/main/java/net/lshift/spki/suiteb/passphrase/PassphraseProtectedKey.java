@@ -52,9 +52,9 @@ public class PassphraseProtectedKey implements SequenceItem {
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
-        PassphraseDelegate passphraseDelegate = engine.getPassphraseDelegate();
+        final PassphraseDelegate passphraseDelegate = engine.getPassphraseDelegate();
         if (passphraseDelegate != null) {
             final AesKey key = passphraseDelegate.getPassphrase(this);
             if (key != null) {

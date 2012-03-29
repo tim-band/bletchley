@@ -8,25 +8,25 @@ public class Signed implements SequenceItem {
     public final String hashType;
     public final SequenceItem payload;
 
-    public Signed(String hashType, SequenceItem payload) {
+    public Signed(final String hashType, final SequenceItem payload) {
         super();
         this.hashType = hashType;
         this.payload = payload;
     }
 
-    public static Signed signed(SequenceItem payload) {
+    public static Signed signed(final SequenceItem payload) {
         return new Signed(DigestSha384.DIGEST_NAME, payload);
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         if (!DigestSha384.DIGEST_NAME.equals(hashType)) {
             throw new CryptographyException(
                 "Unknown hash type: " + hashType);
         }
         final DigestSha384 digest = DigestSha384.digest(payload);
-        Condition itemTrust = engine.getItemTrust(digest);
+        final Condition itemTrust = engine.getItemTrust(digest);
         if (itemTrust != null) {
             engine.process(payload, itemTrust);
         }

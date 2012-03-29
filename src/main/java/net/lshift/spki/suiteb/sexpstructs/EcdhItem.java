@@ -29,7 +29,7 @@ public class EcdhItem implements SequenceItem {
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust)
+    public void process(final InferenceEngine engine, final Condition trust)
                     throws InvalidInputException {
         final PrivateEncryptionKey key = engine.getPrivateEncryptionKey(recipient);
         if (key != null) {

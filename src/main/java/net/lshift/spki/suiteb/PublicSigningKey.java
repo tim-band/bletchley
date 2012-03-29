@@ -55,7 +55,7 @@ public class PublicSigningKey
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addPublicSigningKey(this);
     }

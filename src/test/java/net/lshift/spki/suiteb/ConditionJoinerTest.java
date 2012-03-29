@@ -14,8 +14,8 @@ public class ConditionJoinerTest  {
 
     @Test
     public void test() {
-        for (Condition a: BOOLEANS)  {
-            for (Condition b: BOOLEANS) {
+        for (final Condition a: BOOLEANS)  {
+            for (final Condition b: BOOLEANS) {
                 assertEquals(
                         a.allows(null, null) || b.allows(null, null),
                         or(a, b).allows(null, null));

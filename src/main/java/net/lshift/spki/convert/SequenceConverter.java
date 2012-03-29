@@ -71,7 +71,7 @@ public class SequenceConverter<T>
     }
 
     public static List<Object> readSequence(
-        Class<?> contentType, final ConvertInputStream in)
+        final Class<?> contentType, final ConvertInputStream in)
         throws ParseException,
             IOException,
             InvalidInputException {

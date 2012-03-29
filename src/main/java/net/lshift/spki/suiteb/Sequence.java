@@ -19,9 +19,9 @@ public class Sequence
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
-        for (SequenceItem i: sequence) {
+        for (final SequenceItem i: sequence) {
             engine.process(i, trust);
         }
     }

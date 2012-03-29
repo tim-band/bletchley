@@ -12,13 +12,13 @@ import net.lshift.spki.convert.Convert;
 public class ValidOnOrAfter implements Condition {
     public final Date date;
 
-    public ValidOnOrAfter(Date date) {
+    public ValidOnOrAfter(final Date date) {
         super();
         this.date = date;
     }
 
     @Override
-    public boolean allows(InferenceEngine engine, ActionType action) {
+    public boolean allows(final InferenceEngine engine, final ActionType action) {
         return !engine.getTime().before(date);
     }
 }

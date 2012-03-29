@@ -15,13 +15,13 @@ public class ConditionJoiner {
     implements Condition {
         private final Condition[] conditions;
 
-        private AndCondition(Condition... conditions) {
+        private AndCondition(final Condition... conditions) {
             this.conditions = conditions;
         }
 
         @Override
-        public boolean allows(InferenceEngine inferenceEngine, ActionType action) {
-            for (Condition c: conditions) {
+        public boolean allows(final InferenceEngine inferenceEngine, final ActionType action) {
+            for (final Condition c: conditions) {
                 if (!c.allows(inferenceEngine, action))
                     return false;
             }
@@ -33,13 +33,13 @@ public class ConditionJoiner {
     implements Condition {
         private final Condition[] conditions;
 
-        private OrCondition(Condition... conditions) {
+        private OrCondition(final Condition... conditions) {
             this.conditions = conditions;
         }
 
         @Override
-        public boolean allows(InferenceEngine inferenceEngine, ActionType payload) {
-            for (Condition c: conditions) {
+        public boolean allows(final InferenceEngine inferenceEngine, final ActionType payload) {
+            for (final Condition c: conditions) {
                 if (c.allows(inferenceEngine, payload))
                     return true;
             }
@@ -48,8 +48,8 @@ public class ConditionJoiner {
     }
 
 
-    private ConditionJoiner(boolean disjunction, Condition identity,
-        Condition destructor) {
+    private ConditionJoiner(final boolean disjunction, final Condition identity,
+        final Condition destructor) {
         super();
         this.disjunction = disjunction;
         this.identity = identity;
@@ -66,7 +66,7 @@ public class ConditionJoiner {
             true, NeverCondition.NEVER, AlwaysCondition.ALWAYS);
     }
 
-    public void addTerm(Condition term) {
+    public void addTerm(final Condition term) {
         if (destroyed || term == null || term == identity) {
             // do nothing
         } else if (term == destructor) {
@@ -80,14 +80,14 @@ public class ConditionJoiner {
         }
     }
 
-    public void addTerms(Condition[] lterms) {
-        for (Condition term: lterms) {
+    public void addTerms(final Condition[] lterms) {
+        for (final Condition term: lterms) {
             addTerm(term);
         }
     }
 
-    public void addTerms(List<Condition> lterms) {
-        for (Condition term: lterms) {
+    public void addTerms(final List<Condition> lterms) {
+        for (final Condition term: lterms) {
             addTerm(term);
         }
     }
@@ -106,26 +106,26 @@ public class ConditionJoiner {
         }
     }
 
-    public static Condition and(Condition... conditions) {
-        ConditionJoiner joiner = conjunction();
+    public static Condition and(final Condition... conditions) {
+        final ConditionJoiner joiner = conjunction();
         joiner.addTerms(conditions);
         return joiner.getCondition();
     }
 
-    public static Condition and(List<Condition> conditions) {
-        ConditionJoiner joiner = conjunction();
+    public static Condition and(final List<Condition> conditions) {
+        final ConditionJoiner joiner = conjunction();
         joiner.addTerms(conditions);
         return joiner.getCondition();
     }
 
-    public static Condition or(Condition... conditions) {
-        ConditionJoiner joiner = disjunction();
+    public static Condition or(final Condition... conditions) {
+        final ConditionJoiner joiner = disjunction();
         joiner.addTerms(conditions);
         return joiner.getCondition();
     }
 
-    public static Condition or(List<Condition> conditions) {
-        ConditionJoiner joiner = disjunction();
+    public static Condition or(final List<Condition> conditions) {
+        final ConditionJoiner joiner = disjunction();
         joiner.addTerms(conditions);
         return joiner.getCondition();
     }

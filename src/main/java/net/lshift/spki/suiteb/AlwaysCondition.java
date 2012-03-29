@@ -12,7 +12,7 @@ public class AlwaysCondition
     }
 
     @Override
-    public boolean allows(InferenceEngine inferenceEngine, ActionType payload) {
+    public boolean allows(final InferenceEngine inferenceEngine, final ActionType payload) {
         return true;
     }
 }

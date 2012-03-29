@@ -31,7 +31,7 @@ public class AesPacket implements SequenceItem {
     }
 
     @Override
-    public void process(InferenceEngine engine, Condition trust)
+    public void process(final InferenceEngine engine, final Condition trust)
                     throws InvalidInputException {
         final AesKey key = engine.getAesKey(keyId);
         if (key != null) {

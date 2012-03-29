@@ -9,7 +9,7 @@ public class NeverCondition
     }
 
     @Override
-    public boolean allows(InferenceEngine inferenceEngine, ActionType payload) {
+    public boolean allows(final InferenceEngine inferenceEngine, final ActionType payload) {
         return false;
     }
 }
