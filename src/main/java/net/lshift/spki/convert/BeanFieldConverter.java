@@ -1,11 +1,8 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
-import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.sexpform.Sexp;
 
 /**
  * Superclass for a converter that reads bean properties based on
@@ -27,33 +24,20 @@ public abstract class BeanFieldConverter<T>
     }
 
     @Override
-    public void write(final ConvertOutputStream out, final T o)
-        throws IOException {
+    public void writeRest(final Converting c, final T o, final List<Sexp> out) {
         try {
-            out.beginSexp();
-            writeName(out);
             for (final FieldConvertInfo f: fields) {
                 final Object property =
                     f.field.get(o);
-                writeField(out, f, property);
+                out.add(writeField(c, f, property));
             }
-            out.endSexp();
         } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(this, clazz, e);
         }
     }
 
-    protected abstract void writeField(
-        ConvertOutputStream out,
+    protected abstract Sexp writeField(
+        Converting c,
         FieldConvertInfo fieldConvertInfo,
-        Object property) throws IOException;
-
-    @Override
-    public T readRest(final ConvertInputStream in)
-        throws IOException, InvalidInputException {
-        return DeserializingConstructor.convertMake(clazz, readFields(in));
-    }
-
-    protected abstract Map<Field, Object> readFields(ConvertInputStream in)
-        throws IOException, InvalidInputException;
+        Object property);
 }

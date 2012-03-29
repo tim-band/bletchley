@@ -1,9 +1,17 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
+import static net.lshift.spki.sexpform.Create.list;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.SpkiInputStream.TokenType;
+import net.lshift.spki.sexpform.Sexp;
+import net.lshift.spki.sexpform.Slist;
+
+import org.bouncycastle.util.Arrays;
 
 /**
  * Superclass for converters that look for a constructor
@@ -32,23 +40,37 @@ public abstract class BeanConverter<T>
         return name;
     }
 
-    /* (non-Javadoc)
-     * @see net.lshift.spki.convert.ListConverter#readRest(net.lshift.spki.convert.ConvertInputStream)
-     */
     @Override
-    public abstract T readRest(ConvertInputStream in)
-            throws IOException, InvalidInputException;
+    public T read(final Converting c, final Sexp in)
+        throws InvalidInputException {
+            final Slist lin = in.list();
+            assertMatches(lin.getHead(), getName());
+            return DeserializingConstructor.convertMake(
+                clazz, readFields(c, lin.getSparts()));
+        }
 
     @Override
-    public T read(final ConvertInputStream in) throws IOException,
-            InvalidInputException {
-        in.nextAssertType(TokenType.OPENPAREN);
-        in.assertAtom(name);
-        return readRest(in);
+    public Sexp write(final Converting c, final T o) {
+        final List<Sexp> tail = new ArrayList<Sexp>();
+        writeRest(c, o, tail);
+        return list(getName(), tail);
     }
 
-    protected void writeName(final ConvertOutputStream out)
-        throws IOException {
-        out.atom(name);
+    public abstract void writeRest(Converting c, T o, List<Sexp> tail);
+
+    public static void assertMatches(final Sexp atom, final String name)
+                    throws ConvertException {
+        assertMatches(atom.atom().getBytes(), name);
     }
+
+    public static void assertMatches(final byte[] bytes, final String name)
+        throws ConvertException {
+        if (!Arrays.areEqual(ConvertUtils.bytes(name), bytes)) {
+            throw new ConvertException("Unexpected name, expected "
+                + name + " got " + ConvertUtils.stringOrNull(bytes));
+        }
+    }
+
+    protected abstract Map<Field, Object> readFields(Converting c, List<Sexp> tail)
+        throws InvalidInputException;
 }

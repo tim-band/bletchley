@@ -1,5 +1,7 @@
 package net.lshift.spki.sexpform;
 
+import java.util.List;
+
 import net.lshift.spki.Constants;
 
 /**
@@ -17,5 +19,9 @@ public class Create {
 
     public static Slist list(final String head, final Sexp... tail) {
         return new Slist(atom(head), tail);
+    }
+
+    public static Sexp list(final String name, final List<Sexp> tail) {
+        return list(name, tail.toArray(new Sexp[tail.size()]));
     }
 }

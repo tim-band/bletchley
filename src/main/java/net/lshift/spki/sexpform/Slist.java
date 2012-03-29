@@ -4,11 +4,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.lshift.spki.convert.ConvertException;
+
 /**
  * A bracketed list in an SPKI S-expression.  Note that
  * the first item in a list must be an atom.
  */
-public final class Slist implements Sexp {
+public final class Slist extends Sexp {
     private final Atom head;
     private final List<Sexp> sparts;
 
@@ -30,6 +32,12 @@ public final class Slist implements Sexp {
 
     public List<Sexp> getSparts() {
         return sparts;
+    }
+
+    @Override
+    public Slist list()
+        throws ConvertException {
+        return this;
     }
 
     @Override

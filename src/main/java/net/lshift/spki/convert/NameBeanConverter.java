@@ -1,13 +1,15 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
+import static net.lshift.spki.sexpform.Create.list;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.SpkiInputStream.TokenType;
+import net.lshift.spki.sexpform.Sexp;
+import net.lshift.spki.sexpform.Slist;
 
 /**
  * SExp converter that produces a SExp that looks like key-value pairs
@@ -22,33 +24,36 @@ public class NameBeanConverter<T>
     }
 
     @Override
-    protected void writeField(
-        final ConvertOutputStream out,
+    protected Sexp writeField(
+        final Converting c,
         final FieldConvertInfo field,
-        final Object property)
-        throws IOException {
-        out.beginSexp();
-        out.atom(field.hyphenatedName);
-        out.writeUnchecked(field.field.getType(), property);
-        out.endSexp();
+        final Object property) {
+        return list(field.hyphenatedName,
+            c.writeUnchecked(field.field.getType(), property));
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ConvertInputStream in)
-        throws InvalidInputException,
-            IOException {
+    protected Map<Field, Object> readFields(final Converting c, final List<Sexp> tail)
+        throws InvalidInputException {
         final Map<Field, Object> res = new HashMap<Field, Object>();
-        for (int i = 0; i < fields.size(); i++) {
-            in.nextAssertType(TokenType.OPENPAREN);
-            in.nextAssertType(TokenType.ATOM);
-            final FieldConvertInfo field = getField(in.atomBytes());
+        for (final Sexp s: tail) {
+            final Slist ls = s.list();
+            final FieldConvertInfo field = getField(ls.getHead().getBytes());
             if (res.containsKey(field.field)) {
                 throw new ConvertException("Repeated field");
             }
-            res.put(field.field, in.read(field.field.getType()));
-            in.nextAssertType(TokenType.CLOSEPAREN);
+            final List<Sexp> ltail = ls.getSparts();
+            if (ltail.size() != 1) {
+                throw new ConvertException("multiple parts to named field");
+            }
+            res.put(field.field,
+                c.read(field.field.getType(), ltail.get(0)));
         }
-        in.nextAssertType(TokenType.CLOSEPAREN);
+        for (final FieldConvertInfo f: fields) {
+            if (!res.containsKey(f.field)) {
+                throw new ConvertException("Missing field: " + f.hyphenatedName);
+            }
+        }
         return res;
     }
 

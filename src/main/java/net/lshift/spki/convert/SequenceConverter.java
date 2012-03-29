@@ -1,6 +1,5 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -11,8 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.ParseException;
-import net.lshift.spki.SpkiInputStream.TokenType;
+import net.lshift.spki.sexpform.Sexp;
 
 /**
  * Converter for a class that has a single field of type List.
@@ -47,48 +45,33 @@ public class SequenceConverter<T>
     }
 
     @Override
-    public void write(final ConvertOutputStream out, final T o)
-        throws IOException {
+    public void writeRest(final Converting c, final T o, final List<Sexp> tail) {
         try {
-            out.beginSexp();
-            writeName(out);
             final List<?> property = (List<?>) beanField.get(o);
             for (final Object v: property) {
-                out.writeUnchecked(contentType, v);
+                tail.add(c.writeUnchecked(contentType, v));
             }
-            out.endSexp();
         } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(clazz, e);
         }
     }
 
     @Override
-    public T readRest(final ConvertInputStream in)
-        throws IOException, InvalidInputException {
+    protected Map<Field, Object> readFields(final Converting c, final List<Sexp> tail)
+        throws InvalidInputException {
             final Map<Field, Object> fields = new HashMap<Field, Object>();
-            fields.put(beanField, readSequence(contentType, in));
-            return DeserializingConstructor.convertMake(clazz, fields);
+            fields.put(beanField, readSequence(c, contentType, tail));
+            return fields;
     }
 
     public static List<Object> readSequence(
-        final Class<?> contentType, final ConvertInputStream in)
-        throws ParseException,
-            IOException,
-            InvalidInputException {
-        final List<Object> components = new ArrayList<Object>();
-        for (;;) {
-            final TokenType token = in.peek();
-            switch (token) {
-            case ATOM:
-            case OPENPAREN:
-                components.add(in.read(contentType));
-                break;
-            case CLOSEPAREN:
-                in.next(); // actually consume peeked token
-                return Collections.unmodifiableList(components);
-            case EOF:
-                throw new ParseException("Unexpected EOF");
-            }
+        final Converting c,
+        final Class<?> contentType,
+        final List<Sexp> in) throws InvalidInputException {
+        final List<Object> components = new ArrayList<Object>(in.size());
+        for (final Sexp s: in) {
+            components.add(c.read(contentType, s));
         }
+        return Collections.unmodifiableList(components);
     }
 }

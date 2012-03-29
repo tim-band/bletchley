@@ -2,10 +2,12 @@ package net.lshift.spki.sexpform;
 
 import java.util.Arrays;
 
+import net.lshift.spki.convert.ConvertException;
+
 /**
  * An atom in an SPKI S-expression
  */
-public final class Atom implements Sexp {
+public final class Atom extends Sexp {
     private final byte[] bytes;
 
     public Atom(final byte[] bytes) {
@@ -16,6 +18,12 @@ public final class Atom implements Sexp {
 
     public byte[] getBytes() {
         return bytes;
+    }
+
+    @Override
+    public Atom atom()
+        throws ConvertException {
+        return this;
     }
 
     @Override

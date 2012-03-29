@@ -22,11 +22,13 @@ import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SpkiInputStream;
 import net.lshift.spki.SpkiInputStream.TokenType;
 import net.lshift.spki.SpkiOutputStream;
+import net.lshift.spki.sexpform.ConvertSexp;
 
 /**
  * Static utilities for conversion between SExps and objects.
  */
 public class ConvertUtils {
+    private static final Converting C = new Converting();
     public static byte[] bytes(final String s) {
         return s.getBytes(Constants.UTF8);
     }
@@ -54,11 +56,12 @@ public class ConvertUtils {
         }
     }
 
+    // FIXME: what about EOF?
     public static <T> void write(
         final Class<T> clazz,
         final T o,
         final SpkiOutputStream os) throws IOException {
-        new ConvertOutputStream(os).write(clazz, o);
+        ConvertSexp.write(os, C.write(clazz, o));
     }
 
     public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
@@ -78,9 +81,10 @@ public class ConvertUtils {
 
     public static <T> T read(final Class<T> clazz, final SpkiInputStream is)
         throws IOException, InvalidInputException {
-        final ConvertInputStream in = new ConvertInputStream(is);
-        final T res = in.read(clazz);
-        in.nextAssertType(TokenType.EOF);
+        final T res = C.read(clazz, ConvertSexp.read(is));
+        if (is.next() != TokenType.EOF) {
+            throw new ConvertException("File continues after object read");
+        }
         return res;
     }
 

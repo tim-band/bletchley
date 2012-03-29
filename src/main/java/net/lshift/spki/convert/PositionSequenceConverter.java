@@ -1,12 +1,12 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.sexpform.Sexp;
 
 public class PositionSequenceConverter<T>
     extends BeanConverter<T> {
@@ -23,33 +23,31 @@ public class PositionSequenceConverter<T>
     }
 
     @Override
-    public void write(final ConvertOutputStream out, final T o)
-        throws IOException {
+    public void writeRest(final Converting c, final T o, final List<Sexp> tail) {
         try {
-            out.beginSexp();
-            writeName(out);
             for (final FieldConvertInfo f: fields) {
-                out.writeUnchecked(f.field.getType(), f.field.get(o));
+                tail.add(c.writeUnchecked(f.field.getType(), f.field.get(o)));
             }
             final List<?> property = (List<?>) seq.get(o);
             for (final Object v: property) {
-                out.writeUnchecked(contentType, v);
+                tail.add(c.writeUnchecked(contentType, v));
             }
-            out.endSexp();
         } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(this, clazz, e);
         }
     }
 
     @Override
-    public T readRest(final ConvertInputStream in)
-        throws IOException,
-            InvalidInputException {
-        final Map<Field, Object> rmap = new HashMap<Field, Object>(fields.size());
-        for (final FieldConvertInfo f: fields) {
-            rmap.put(f.field, in.read(f.field.getType()));
+    protected Map<Field, Object> readFields(final Converting c, final List<Sexp> tail)
+        throws InvalidInputException {
+        final int size = fields.size();
+        final Map<Field, Object> rmap = new HashMap<Field, Object>(size + 1);
+        for (int i = 0; i < size; i++) {
+            final FieldConvertInfo f = fields.get(i);
+            rmap.put(f.field, c.read(f.field.getType(), tail.get(i)));
         }
-        rmap.put(seq, SequenceConverter.readSequence(contentType, in));
-        return DeserializingConstructor.convertMake(clazz, rmap);
+        rmap.put(seq, SequenceConverter.readSequence(c, contentType,
+            tail.subList(size, tail.size())));
+        return rmap;
     }
 }

@@ -1,8 +1,5 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
-
-import net.lshift.spki.InvalidInputException;
 
 /**
  * Extend the idea of the StepConverter to ListConverter in the
@@ -18,11 +15,5 @@ implements ListConverter<TResult> {
     @Override
     public String getName() {
         return getStepConverter().getName();
-    }
-
-    @Override
-    public TResult readRest(final ConvertInputStream in) throws IOException,
-            InvalidInputException {
-        return stepOut(in.readRest(getStepClass()));
     }
 }

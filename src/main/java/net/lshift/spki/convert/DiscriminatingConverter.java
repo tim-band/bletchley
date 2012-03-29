@@ -1,13 +1,12 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.SpkiInputStream.TokenType;
+import net.lshift.spki.sexpform.Sexp;
 
 /**
  * Convert to/from a superclass given a list of known subclasses
@@ -54,32 +53,28 @@ public class DiscriminatingConverter<T>
         return superclass;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public void write(final ConvertOutputStream out, final T o)
-        throws IOException {
+    public Sexp write(final Converting c, final T o) {
+        @SuppressWarnings("unchecked")
         final Class<? extends T> clazz = (Class<? extends T>) o.getClass();
         if (!classes.contains(clazz)) {
             throw new ConvertReflectionException(clazz,
                 "Class not known to discriminator");
         }
-        out.writeUnchecked(clazz, o);
+        return c.writeUnchecked(clazz, o);
     }
 
     @Override
-    public T read(final ConvertInputStream in)
-        throws InvalidInputException,
-            IOException {
-        in.nextAssertType(TokenType.OPENPAREN);
-        in.nextAssertType(TokenType.ATOM);
-        final byte[] discrim = in.atomBytes();
+    public T read(final Converting c, final Sexp in)
+        throws InvalidInputException {
+        final byte[] discrim = in.list().getHead().getBytes();
         final String stringDiscrim = ConvertUtils.stringOrNull(discrim);
-        final Class<? extends T> clazz
-            = nameMap.get(stringDiscrim);
+        final Class<? extends T> clazz = nameMap.get(stringDiscrim);
         if (clazz == null) {
             throw new ConvertException(
                 "Unable to find converter: " + stringDiscrim);
         }
-        return in.readRest(clazz);
+        BeanConverter.assertMatches(discrim, stringDiscrim);
+        return c.read(clazz, in);
     }
 }
