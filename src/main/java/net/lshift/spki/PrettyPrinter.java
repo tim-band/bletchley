@@ -84,6 +84,7 @@ public class PrettyPrinter extends SpkiOutputStream {
             indent += 1;
             firstAtom = false;
         }
+        pw.flush();
     }
 
     @Override
