@@ -60,14 +60,14 @@ public class PrettyPrinter extends SpkiOutputStream {
     @Override
     public void beginSexp()
         throws IOException {
-        flush();
+        clearFirstAtom();
         firstAtom = true;
     }
 
     @Override
     public void endSexp()
         throws IOException {
-        flush();
+        clearFirstAtom();
         if (indent == 0) {
             throw new RuntimeException("Too many closeparens");
         }
@@ -78,12 +78,7 @@ public class PrettyPrinter extends SpkiOutputStream {
 
     @Override
     public void flush() {
-        if (firstAtom) {
-            printPrefix();
-            pw.println('(');
-            indent += 1;
-            firstAtom = false;
-        }
+        clearFirstAtom();
         pw.flush();
     }
 
@@ -93,6 +88,15 @@ public class PrettyPrinter extends SpkiOutputStream {
         flush();
         // Should we assert indent == 0 here?
         pw.close();
+    }
+
+    private void clearFirstAtom() {
+        if (firstAtom) {
+            printPrefix();
+            pw.println('(');
+            indent += 1;
+            firstAtom = false;
+        }
     }
 
     private void printPrefix()
