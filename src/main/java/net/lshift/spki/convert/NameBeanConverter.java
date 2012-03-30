@@ -25,12 +25,11 @@ public class NameBeanConverter<T>
 
     @Override
     protected Sexp writeField(
-        final Converting c,
         final FieldConvertInfo field,
         final Object property) {
         if (property != null) {
             return list(field.hyphenatedName,
-                c.writeUnchecked(field.field.getType(), property));
+                Converting.writeUnchecked(field.field.getType(), property));
         } else if (field.nullable) {
             return null;
         } else {

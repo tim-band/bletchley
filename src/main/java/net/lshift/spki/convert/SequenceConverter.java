@@ -45,11 +45,11 @@ public class SequenceConverter<T>
     }
 
     @Override
-    public void writeRest(final Converting c, final T o, final List<Sexp> tail) {
+    public void writeRest(final T o, final List<Sexp> tail) {
         try {
             final List<?> property = (List<?>) beanField.get(o);
             for (final Object v: property) {
-                tail.add(c.writeUnchecked(contentType, v));
+                tail.add(Converting.writeUnchecked(contentType, v));
             }
         } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(clazz, e);

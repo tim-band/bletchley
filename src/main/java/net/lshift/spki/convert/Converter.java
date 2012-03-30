@@ -10,7 +10,7 @@ import net.lshift.spki.sexpform.Sexp;
 public interface Converter<T> {
     public Class<T> getResultClass();
 
-    public Sexp write(Converting c, T o);
+    public Sexp write(T o);
 
     public T read(Converting c, Sexp in)
         throws InvalidInputException;

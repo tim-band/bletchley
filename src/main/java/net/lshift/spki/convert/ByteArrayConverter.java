@@ -15,7 +15,7 @@ public class ByteArrayConverter
     }
 
     @Override
-    public Sexp write(final Converting c, final byte[] o) {
+    public Sexp write(final byte[] o) {
         return atom(o);
     }
 

@@ -37,9 +37,8 @@ public class PositionBeanConverter<T>
 
     @Override
     protected Sexp writeField(
-        final Converting c,
         final FieldConvertInfo field,
         final Object property) {
-        return c.writeUnchecked(field.field.getType(), property);
+        return Converting.writeUnchecked(field.field.getType(), property);
     }
 }

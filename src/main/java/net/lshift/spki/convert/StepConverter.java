@@ -10,8 +10,8 @@ public abstract class StepConverter<TResult, TStep>
     implements Converter<TResult> {
 
     @Override
-    public Sexp write(final Converting c, final TResult o) {
-        return c.write(getStepClass(), stepIn(o));
+    public Sexp write(final TResult o) {
+        return Converting.write(getStepClass(), stepIn(o));
     }
 
     @Override

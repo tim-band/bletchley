@@ -61,7 +61,7 @@ public class ConvertUtils {
         final Class<T> clazz,
         final T o,
         final SpkiOutputStream os) throws IOException {
-        ConvertSexp.write(os, C.write(clazz, o));
+        ConvertSexp.write(os, Converting.write(clazz, o));
     }
 
     public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)

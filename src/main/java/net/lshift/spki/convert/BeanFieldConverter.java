@@ -24,12 +24,12 @@ public abstract class BeanFieldConverter<T>
     }
 
     @Override
-    public void writeRest(final Converting c, final T o, final List<Sexp> out) {
+    public void writeRest(final T o, final List<Sexp> out) {
         try {
             for (final FieldConvertInfo f: fields) {
                 final Object property =
                     f.field.get(o);
-                final Sexp sexp = writeField(c, f, property);
+                final Sexp sexp = writeField(f, property);
                 if (sexp != null)
                     out.add(sexp);
             }
@@ -39,7 +39,6 @@ public abstract class BeanFieldConverter<T>
     }
 
     protected abstract Sexp writeField(
-        Converting c,
         FieldConvertInfo fieldConvertInfo,
         Object property);
 }

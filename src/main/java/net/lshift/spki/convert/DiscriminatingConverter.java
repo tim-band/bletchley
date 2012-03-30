@@ -54,14 +54,14 @@ public class DiscriminatingConverter<T>
     }
 
     @Override
-    public Sexp write(final Converting c, final T o) {
+    public Sexp write(final T o) {
         @SuppressWarnings("unchecked")
         final Class<? extends T> clazz = (Class<? extends T>) o.getClass();
         if (!classes.contains(clazz)) {
             throw new ConvertReflectionException(clazz,
                 "Class not known to discriminator");
         }
-        return c.writeUnchecked(clazz, o);
+        return Converting.writeUnchecked(clazz, o);
     }
 
     @Override

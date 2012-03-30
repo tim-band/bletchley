@@ -50,13 +50,13 @@ public abstract class BeanConverter<T>
         }
 
     @Override
-    public Sexp write(final Converting c, final T o) {
+    public Sexp write(final T o) {
         final List<Sexp> tail = new ArrayList<Sexp>();
-        writeRest(c, o, tail);
+        writeRest(o, tail);
         return list(getName(), tail);
     }
 
-    public abstract void writeRest(Converting c, T o, List<Sexp> tail);
+    public abstract void writeRest(T o, List<Sexp> tail);
 
     public static void assertMatches(final Sexp atom, final String name)
                     throws ConvertException {
