@@ -118,4 +118,13 @@ public class Convert
     public @interface InstanceOf {
         Class<?> value();
     }
+
+    /**
+     * Mark a field as optional
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.FIELD})
+    public @interface Nullable {
+        // no fields
+    }
 }

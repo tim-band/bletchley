@@ -29,7 +29,9 @@ public abstract class BeanFieldConverter<T>
             for (final FieldConvertInfo f: fields) {
                 final Object property =
                     f.field.get(o);
-                out.add(writeField(c, f, property));
+                final Sexp sexp = writeField(c, f, property);
+                if (sexp != null)
+                    out.add(sexp);
             }
         } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(this, clazz, e);

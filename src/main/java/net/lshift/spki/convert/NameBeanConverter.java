@@ -28,8 +28,16 @@ public class NameBeanConverter<T>
         final Converting c,
         final FieldConvertInfo field,
         final Object property) {
-        return list(field.hyphenatedName,
-            c.writeUnchecked(field.field.getType(), property));
+        if (property != null) {
+            return list(field.hyphenatedName,
+                c.writeUnchecked(field.field.getType(), property));
+        } else if (field.nullable) {
+            return null;
+        } else {
+            throw new NullPointerException(
+                "Field not marked as nullable is null: " +
+                clazz.getCanonicalName() + "." + field.name);
+        }
     }
 
     @Override
@@ -49,9 +57,9 @@ public class NameBeanConverter<T>
             res.put(field.field,
                 c.read(field.field.getType(), ltail.get(0)));
         }
-        for (final FieldConvertInfo f: fields) {
-            if (!res.containsKey(f.field)) {
-                throw new ConvertException("Missing field: " + f.hyphenatedName);
+        for (final FieldConvertInfo field: fields) {
+            if (!res.containsKey(field.field) && !field.nullable) {
+                throw new ConvertException("Missing field: " + field.hyphenatedName);
             }
         }
         return res;

@@ -82,7 +82,7 @@ public class Registry {
         return res;
     }
 
-    private <T> void handleAnnotations(final Class<T> clazz) {
+    private static <T> void handleAnnotations(final Class<T> clazz) {
         try {
             for (final Annotation a : clazz.getAnnotations()) {
                 final HandlerClass handlerClass
@@ -99,7 +99,7 @@ public class Registry {
         }
     }
 
-    private <T, A extends Annotation> void handleAnnotation(
+    private static <T, A extends Annotation> void handleAnnotation(
         final Class<T> clazz,
         final A a,
         final HandlerClass handlerClass)
@@ -111,7 +111,7 @@ public class Registry {
         handler.handle(clazz, a);
     }
 
-    private <T> Converter<T> generateConverter(final Class<T> clazz) {
+    private static <T> Converter<T> generateConverter(final Class<T> clazz) {
         if (clazz.isEnum()) {
             return generateEnumConverter(clazz);
         }
@@ -136,11 +136,11 @@ public class Registry {
     // I happen to know that clazz is an enum here, but try telling the
     // type system that...
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <T> Converter<T> generateEnumConverter(final Class<T> clazz) {
+    private static <T> Converter<T> generateEnumConverter(final Class<T> clazz) {
         return new EnumConverter(clazz);
     }
 
-    private <T, A extends Annotation> Converter<T> getMethod(
+    private static <T, A extends Annotation> Converter<T> getMethod(
         final Class<T> clazz,
         final A a,
         final ConverterFactoryClass factoryClass)

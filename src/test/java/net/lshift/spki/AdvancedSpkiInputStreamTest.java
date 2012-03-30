@@ -105,7 +105,7 @@ public class AdvancedSpkiInputStreamTest extends SpkiInputStreamTest
         assertThat(canonread("base64.spki"), is(canonread("advanced.spki")));
     }
 
-    private byte[] canonread(final String name) throws ParseException, IOException {
+    private static byte[] canonread(final String name) throws ParseException, IOException {
         final ByteArrayOutputStream s = new ByteArrayOutputStream();
         PrettyPrinter.copyStream(
             new AdvancedSpkiInputStream(

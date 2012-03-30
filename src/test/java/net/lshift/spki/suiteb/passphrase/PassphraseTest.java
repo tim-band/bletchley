@@ -52,7 +52,7 @@ public class PassphraseTest extends UsesSimpleMessage {
         assertDecryptsToMessage(ppk.getKey(PASSPHRASE), encrypted);
     }
 
-    private void assertDecryptsToMessage(final AesKey trueKey, final AesPacket encrypted)
+    private static void assertDecryptsToMessage(final AesKey trueKey, final AesPacket encrypted)
         throws InvalidInputException,
             ParseException {
         final SequenceItem decrypted = trueKey.decrypt(encrypted);

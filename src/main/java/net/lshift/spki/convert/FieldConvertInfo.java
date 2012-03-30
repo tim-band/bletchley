@@ -11,6 +11,7 @@ class FieldConvertInfo {
     public final String name;
     public final String hyphenatedName;
     public final Field field;
+    public final boolean nullable;
 
     public FieldConvertInfo(final Field field)
         throws SecurityException {
@@ -23,5 +24,6 @@ class FieldConvertInfo {
             c[i] = StringUtils.lowerCase(c[i]);
         }
         hyphenatedName = StringUtils.join(c, '-');
+        nullable = field.getAnnotation(Convert.Nullable.class) != null;
     }
 }
