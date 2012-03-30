@@ -22,7 +22,7 @@ public class NullableFieldTest {
         @Convert.Nullable
         public final String optional;
 
-        public WithOptional(String mandatory, String optional) {
+        public WithOptional(final String mandatory, final String optional) {
             super();
             this.mandatory = mandatory;
             this.optional = optional;
@@ -40,12 +40,12 @@ public class NullableFieldTest {
                         list("mandatory", atom("foo"))));
     }
 
-    private static void testRoundTripWorks(WithOptional withOptional, Sexp sexp) throws IOException, InvalidInputException {
+    private static void testRoundTripWorks(final WithOptional withOptional, final Sexp sexp) throws IOException, InvalidInputException {
         final WithOptional read = read(WithOptional.class, toConvert(sexp));
         assertEquals(withOptional.mandatory, read.mandatory);
         assertEquals(withOptional.optional, read.optional);
-        byte[] direct = toBytes(Sexp.class, sexp);
-        byte[] indirect = toBytes(WithOptional.class, withOptional);
+        final byte[] direct = toBytes(Sexp.class, sexp);
+        final byte[] indirect = toBytes(WithOptional.class, withOptional);
         assertArrayEquals(direct, indirect);
     }
 
