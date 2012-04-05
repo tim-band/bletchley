@@ -13,13 +13,13 @@ public class DateConverter
 
     @Override
     protected String stepIn(final Date o) {
-        return Constants.DATE_FORMAT.format(o);
+        return Constants.getDateFormat().format(o);
     }
 
     @Override
     protected Date stepOut(final String o) throws ConvertException {
         try {
-            return Constants.DATE_FORMAT.parse(o);
+            return Constants.getDateFormat().parse(o);
         } catch (final java.text.ParseException e) {
             throw new ConvertException(e);
         }
