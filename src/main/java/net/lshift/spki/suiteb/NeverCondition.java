@@ -12,4 +12,8 @@ public class NeverCondition
     public boolean allows(final InferenceEngine inferenceEngine, final ActionType payload) {
         return false;
     }
+
+    public static Condition nullMeansNever(Condition condition) {
+        return condition != null ? condition : NEVER;
+    }
 }

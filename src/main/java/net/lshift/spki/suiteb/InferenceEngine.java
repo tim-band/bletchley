@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.suiteb.ConditionJoiner.or;
+import static net.lshift.spki.suiteb.NeverCondition.nullMeansNever;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class InferenceEngine {
     }
 
     public Condition getItemTrust(final DigestSha384 digest) {
-        return itemTrust.get(digest);
+        return nullMeansNever(itemTrust.get(digest));
     }
 
     public void addItemTrust(final DigestSha384 digest, final Condition condition) {
@@ -103,7 +104,7 @@ public class InferenceEngine {
     }
 
     public Condition getKeyTrust(final DigestSha384 keyId) {
-        return keyTrust.get(keyId);
+        return nullMeansNever(keyTrust.get(keyId));
     }
 
     public void addKeyTrust(final DigestSha384 keyId, final Condition condition) {
@@ -114,7 +115,7 @@ public class InferenceEngine {
         final Map<DigestSha384, Condition> map,
         final DigestSha384 subject,
         final Condition condition) {
-        map.put(subject, or(condition, map.get(subject)));
+        map.put(subject, or(condition, nullMeansNever(map.get(subject))));
     }
 
     public PrivateEncryptionKey getPrivateEncryptionKey(final DigestSha384 recipient) {
@@ -164,8 +165,6 @@ public class InferenceEngine {
     }
 
     public void setTime() {
-        if (this.time != null)
-            throw new IllegalStateException("Time can only be set once");
-        this.time = new Date();
+        setTime(new Date());
     }
 }

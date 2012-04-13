@@ -34,9 +34,6 @@ public class Signature implements SequenceItem {
         }
         if (!pKey.validate(digest, rawSignature))
             throw new CryptographyException("Sig validation failure");
-        final Condition keyTrust = engine.getKeyTrust(keyId);
-        if (keyTrust != null) {
-            engine.addItemTrust(digest, keyTrust);
-        }
+        engine.addItemTrust(digest, engine.getKeyTrust(keyId));
     }
 }

@@ -61,13 +61,15 @@ public class ConditionJoiner {
             false, AlwaysCondition.ALWAYS, NeverCondition.NEVER);
     }
 
-    public  static ConditionJoiner disjunction() {
+    public static ConditionJoiner disjunction() {
         return new ConditionJoiner(
             true, NeverCondition.NEVER, AlwaysCondition.ALWAYS);
     }
 
     public void addTerm(final Condition term) {
-        if (destroyed || term == null || term == identity) {
+        if (term == null)
+            throw new NullPointerException();
+        if (destroyed || term == identity) {
             // do nothing
         } else if (term == destructor) {
             destroyed = true;
