@@ -10,7 +10,6 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
-import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
 
@@ -26,7 +25,7 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
             keys.add(k);
             publicKeys.add(k.getPublicKey());
         }
-        final Action message = SimpleMessage.makeMessage(this.getClass());
+        final Action message = makeMessage();
         final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         final AesKey aesKey = AesKey.generateAESKey();
         System.out.println("Master key:");

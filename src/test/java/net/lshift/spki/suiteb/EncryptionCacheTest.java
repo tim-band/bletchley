@@ -5,7 +5,6 @@ import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static org.junit.Assert.assertSame;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
-import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class EncryptionCacheTest extends UsesSimpleMessage {
         privateKey = roundTrip(PrivateEncryptionKey.class, privateKey);
         PublicEncryptionKey publicKey = privateKey.getPublicKey();
         publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
-        final Action message = SimpleMessage.makeMessage(this.getClass());
+        final Action message = makeMessage();
         final EncryptionCache cache
             = new EncryptionCache(PrivateEncryptionKey.generate());
         final AesKey aesKey = cache.getKeyAsSender(publicKey);

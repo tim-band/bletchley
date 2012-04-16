@@ -15,7 +15,6 @@ import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
-import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
 
     @Test
     public void test() throws InvalidInputException, IOException  {
-        final Action message = SimpleMessage.makeMessage(this.getClass());
+        final Action message = makeMessage();
         final PrivateSigningKey key = PrivateSigningKey.generate();
         // Reorder the public key
         final PublicSigningKey publicKey = key.getPublicKey();

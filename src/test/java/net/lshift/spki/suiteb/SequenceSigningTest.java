@@ -8,7 +8,6 @@ import java.util.Collections;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
-import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
 
@@ -19,7 +18,7 @@ public class SequenceSigningTest extends UsesSimpleMessage
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
         privateKey = roundTrip(PrivateSigningKey.class, privateKey);
         final PublicSigningKey publicKey = privateKey.getPublicKey();
-        final Action message = SimpleMessage.makeMessage(this.getClass());
+        final Action message = makeMessage();
         Sequence sequence = SequenceUtils.sequence(
             publicKey,
             privateKey.sign(message),

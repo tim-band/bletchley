@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Arrays;
 
+import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ConvertUtils;
@@ -17,7 +18,6 @@ import net.lshift.spki.suiteb.AesPacket;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.RoundTrip;
 import net.lshift.spki.suiteb.Sequence;
-import net.lshift.spki.suiteb.SequenceItem;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
@@ -27,8 +27,8 @@ public class PassphraseTest extends UsesSimpleMessage {
     private static final String PASSPHRASE = "passphrase";
     private static final String MESSAGE_TYPE = "passphrase test message";
     private static final String MESSAGE_TEXT = "Squeamish ossifrage";
-    private static final Action MESSAGE
-        = SimpleMessage.makeMessage(MESSAGE_TYPE, MESSAGE_TEXT);
+    private static final Action MESSAGE = new Action(new SimpleMessage(
+        MESSAGE_TYPE, MESSAGE_TEXT.getBytes(Constants.ASCII)));
 
     @Test
     public void testRoundtrip() throws InvalidInputException {
@@ -55,9 +55,8 @@ public class PassphraseTest extends UsesSimpleMessage {
     private static void assertDecryptsToMessage(final AesKey trueKey, final AesPacket encrypted)
         throws InvalidInputException,
             ParseException {
-        final SequenceItem decrypted = trueKey.decrypt(encrypted);
-        assertEquals(SimpleMessage.getContent(MESSAGE),
-            SimpleMessage.getContent(decrypted));
+        final Action decrypted = (Action) trueKey.decrypt(encrypted);
+        assertEquals(MESSAGE.getPayload(), decrypted.getPayload());
     }
 
     @Test
