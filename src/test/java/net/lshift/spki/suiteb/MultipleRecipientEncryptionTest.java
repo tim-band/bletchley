@@ -1,6 +1,6 @@
 package net.lshift.spki.suiteb;
 
-import static org.junit.Assert.assertEquals;
+import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import java.util.List;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.UsesSimpleMessage;
+import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
@@ -31,10 +32,11 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
         System.out.println("Master key:");
         ConvertUtils.prettyPrint(AesKey.class, aesKey, System.out);
         ConvertUtils.prettyPrint(AesKeyId.class, aesKey.getKeyId(), System.out);
-        PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
+        final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
         sequenceItems.add(ephemeral.getPublicKey());
         for (final PublicEncryptionKey pKey : publicKeys) {
-            final AesKey rKey = ephemeral.setupEncrypt(sequenceItems, pKey);
+            sequenceItems.add(EcdhItem.ecdhItem(ephemeral, pKey));
+            final AesKey rKey = ephemeral.getKeyAsSender(pKey);
             System.out.println("Subkey:");
             ConvertUtils.prettyPrint(AesKey.class, rKey, System.out);
             ConvertUtils.prettyPrint(AesKeyId.class, rKey.getKeyId(), System.out);
@@ -49,10 +51,7 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
             final InferenceEngine inferenceEngine = new InferenceEngine();
             inferenceEngine.process(k);
             inferenceEngine.processTrusted(packet);
-            final List<ActionType> messages = inferenceEngine.getActions();
-            assertEquals(1, messages.size());
-            final ActionType result = messages.get(0);
-            assertEquals(message.getPayload(), result);
+            checkMessage(inferenceEngine, message);
         }
     }
 }

@@ -1,11 +1,10 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static net.lshift.spki.suiteb.Signed.signed;
-import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
-import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
@@ -31,8 +30,6 @@ public class SequenceSigningTest extends UsesSimpleMessage
         inference.processTrusted(new Cert(publicKey.getKeyId(),
                 Collections.<Condition>emptyList()));
         inference.process(sequence);
-        final List<ActionType> messages = inference.getActions();
-        assertEquals(1, messages.size());
-        assertEquals(message.getPayload(), messages.get(0));
+        checkMessage(inference, message);
     }
 }

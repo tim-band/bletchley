@@ -1,17 +1,17 @@
 package net.lshift.spki.suiteb.passphrase;
 
+import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
+import static net.lshift.spki.suiteb.InferenceEngineTest.checkNoMessages;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.suiteb.Action;
-import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesPacket;
 import net.lshift.spki.suiteb.InferenceEngine;
@@ -97,9 +97,7 @@ public class PassphraseTest extends UsesSimpleMessage {
             }
         });
         engine.processTrusted(sequence);
-        final List<ActionType> actions = engine.getActions();
-        assertEquals(1, actions.size());
-        assertEquals(MESSAGE.getPayload(), actions.get(0));
+        checkMessage(engine, MESSAGE);
     }
 
     @Test
@@ -110,8 +108,7 @@ public class PassphraseTest extends UsesSimpleMessage {
             kfp.getAesKey().encrypt(MESSAGE)));
         final InferenceEngine engine = new InferenceEngine();
         engine.process(sequence);
-        final List<ActionType> actions = engine.getActions();
-        assertEquals(0, actions.size());
+        checkNoMessages(engine);
     }
 
     @Test
@@ -128,7 +125,6 @@ public class PassphraseTest extends UsesSimpleMessage {
             }
         });
         engine.process(sequence);
-        final List<ActionType> actions = engine.getActions();
-        assertEquals(0, actions.size());
+        checkNoMessages(engine);
     }
 }

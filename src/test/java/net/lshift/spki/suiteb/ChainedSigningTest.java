@@ -1,11 +1,10 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static net.lshift.spki.suiteb.Signed.signed;
-import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
-import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
@@ -35,8 +34,6 @@ public class ChainedSigningTest extends UsesSimpleMessage
         final InferenceEngine inference = new InferenceEngine();
         inference.processTrusted(new Cert(publicKey.getKeyId(), Collections.<Condition>emptyList()));
         inference.process(sequence);
-        final List<ActionType> actions = inference.getActions();
-        assertEquals(1, actions.size());
-        assertEquals(message.getPayload(), actions.get(0));
+        checkMessage(inference, message);
     }
 }

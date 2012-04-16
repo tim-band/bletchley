@@ -1,11 +1,8 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-
-import java.util.List;
-
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
@@ -34,8 +31,6 @@ public class EncryptionCacheTest extends UsesSimpleMessage {
         final InferenceEngine inferenceEngine = new InferenceEngine();
         inferenceEngine.process(privateKey);
         inferenceEngine.processTrusted(sequence);
-        final List<ActionType> messages = inferenceEngine.getActions();
-        assertEquals(1, messages.size());
-        assertEquals(message.getPayload(), messages.get(0));
+        checkMessage(inferenceEngine, message);
     }
 }

@@ -1,12 +1,9 @@
 package net.lshift.spki.suiteb;
 
-import java.util.List;
-
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -80,12 +77,5 @@ public class PrivateEncryptionKey implements SequenceItem {
     public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addPrivateEncryptionKey(this);
-    }
-
-    public AesKey setupEncrypt(
-        List<SequenceItem> sequence,
-        PublicEncryptionKey recipient) {
-        sequence.add(EcdhItem.ecdhItem(this, recipient));
-        return getKeyAsSender(recipient);
     }
 }

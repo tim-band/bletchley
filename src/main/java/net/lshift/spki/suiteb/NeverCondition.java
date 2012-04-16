@@ -13,7 +13,7 @@ public class NeverCondition
         return false;
     }
 
-    public static Condition nullMeansNever(Condition condition) {
+    public static Condition nullMeansNever(final Condition condition) {
         return condition != null ? condition : NEVER;
     }
 }

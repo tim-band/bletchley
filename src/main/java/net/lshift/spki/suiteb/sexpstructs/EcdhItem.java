@@ -18,7 +18,7 @@ public class EcdhItem implements SequenceItem {
     public final DigestSha384 sender;
     public final DigestSha384 recipient;
 
-    private EcdhItem(DigestSha384 sender, DigestSha384 recipient) {
+    private EcdhItem(final DigestSha384 sender, final DigestSha384 recipient) {
         super();
         this.sender = sender;
         this.recipient = recipient;
@@ -39,8 +39,8 @@ public class EcdhItem implements SequenceItem {
     }
 
     public static EcdhItem ecdhItem(
-        PrivateEncryptionKey sender,
-        PublicEncryptionKey recipient) {
+        final PrivateEncryptionKey sender,
+        final PublicEncryptionKey recipient) {
         return new EcdhItem(
             sender.getPublicKey().getKeyId(), recipient.getKeyId());
     }

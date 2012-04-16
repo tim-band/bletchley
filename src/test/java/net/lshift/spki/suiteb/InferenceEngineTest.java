@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.suiteb.Signed.signed;
+import static net.lshift.spki.suiteb.sexpstructs.EcdhItem.ecdhItem;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -18,12 +19,12 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 import org.junit.Test;
 
 public class InferenceEngineTest extends UsesSimpleMessage {
-    static void checkNoMessages(final InferenceEngine engine) {
+    public static void checkNoMessages(final InferenceEngine engine) {
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(0)));
     }
 
-    static void checkMessage(final InferenceEngine engine, final Action message) {
+    public static void checkMessage(final InferenceEngine engine, final Action message) {
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(1)));
         assertThat(res.get(0), is(equalTo(message.getPayload())));
@@ -127,9 +128,10 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         sequence.add(key);
         final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
         sequence.add(ephemeral.getPublicKey());
-        final AesKey aeskey = ephemeral.setupEncrypt(sequence, key.getPublicKey());
         final Action message = SimpleMessage.makeMessage(this.getClass());
-        sequence.add(aeskey.encrypt(message));
+        final PublicEncryptionKey recipient = key.getPublicKey();
+        sequence.add(ecdhItem(ephemeral, recipient));
+        sequence.add(ephemeral.getKeyAsSender(recipient).encrypt(message));
         final InferenceEngine engine = new InferenceEngine();
         engine.processTrusted(new Sequence(sequence));
         checkMessage(engine, message);

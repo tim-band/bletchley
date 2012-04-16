@@ -1,7 +1,6 @@
 package net.lshift.spki.suiteb;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
@@ -13,7 +12,7 @@ public class EncryptionCache {
     private final PrivateEncryptionKey privateKey;
     private final Map<DigestSha384, AesKey> cache = new HashMap<DigestSha384, AesKey>();
 
-    public EncryptionCache(PrivateEncryptionKey privateKey) {
+    public EncryptionCache(final PrivateEncryptionKey privateKey) {
         this.privateKey = privateKey;
     }
 
@@ -26,7 +25,7 @@ public class EncryptionCache {
     }
 
     // Convenience method
-    public EcdhItem ecdhItem(PublicEncryptionKey recipient) {
+    public EcdhItem ecdhItem(final PublicEncryptionKey recipient) {
         return EcdhItem.ecdhItem(privateKey, recipient);
     }
 
@@ -38,12 +37,5 @@ public class EncryptionCache {
             cache.put(publicKey.getKeyId(), res);
         }
         return res;
-    }
-
-    public AesKey setupEncrypt(
-        List<SequenceItem> sequence,
-        PublicEncryptionKey recipient) {
-        sequence.add(ecdhItem(recipient));
-        return getKeyAsSender(recipient);
     }
 }

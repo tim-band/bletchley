@@ -4,6 +4,7 @@ import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
 import static net.lshift.spki.suiteb.Signed.signed;
 import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint;
+import static net.lshift.spki.suiteb.sexpstructs.EcdhItem.ecdhItem;
 
 import java.io.File;
 import java.io.IOException;
@@ -159,12 +160,12 @@ public class Cli {
         throws IOException, InvalidInputException {
         final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         final AesKey aesKey = AesKey.generateAESKey();
-        PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
+        final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
         sequenceItems.add(ephemeral.getPublicKey());
         for (int i = 2; i < args.length - 1; i++) {
             final PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
-            final AesKey rKey = ephemeral.setupEncrypt(sequenceItems, pKey);
-            sequenceItems.add(rKey.encrypt(aesKey));
+            sequenceItems.add(ecdhItem(ephemeral, pKey));
+            sequenceItems.add(ephemeral.getKeyAsSender(pKey).encrypt(aesKey));
         }
 
         final List<SequenceItem> encryptedSequenceItems

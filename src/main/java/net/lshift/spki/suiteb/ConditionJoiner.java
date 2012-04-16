@@ -56,17 +56,17 @@ public class ConditionJoiner {
         this.destructor = destructor;
     }
 
-    public static ConditionJoiner conjunction() {
+    private static ConditionJoiner conjunction() {
         return new ConditionJoiner(
             false, AlwaysCondition.ALWAYS, NeverCondition.NEVER);
     }
 
-    public static ConditionJoiner disjunction() {
+    private static ConditionJoiner disjunction() {
         return new ConditionJoiner(
             true, NeverCondition.NEVER, AlwaysCondition.ALWAYS);
     }
 
-    public void addTerm(final Condition term) {
+    private void addTerm(final Condition term) {
         if (term == null)
             throw new NullPointerException();
         if (destroyed || term == identity) {
@@ -82,19 +82,19 @@ public class ConditionJoiner {
         }
     }
 
-    public void addTerms(final Condition[] lterms) {
+    private void addTerms(final Condition[] lterms) {
         for (final Condition term: lterms) {
             addTerm(term);
         }
     }
 
-    public void addTerms(final List<Condition> lterms) {
+    private void addTerms(final List<Condition> lterms) {
         for (final Condition term: lterms) {
             addTerm(term);
         }
     }
 
-    public Condition getCondition() {
+    private Condition getCondition() {
         if (destroyed) {
             return destructor;
         } else if (terms.isEmpty()) {
