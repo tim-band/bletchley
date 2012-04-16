@@ -16,10 +16,12 @@ import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NameBeanReorderTest extends UsesSimpleMessage {
 
+    @Ignore
     @Test
     public void test() throws InvalidInputException, IOException  {
         final Action message = makeMessage();

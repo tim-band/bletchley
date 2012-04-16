@@ -56,7 +56,7 @@ public class PassphraseTest extends UsesSimpleMessage {
         throws InvalidInputException,
             ParseException {
         final Action decrypted = (Action) trueKey.decrypt(encrypted);
-        assertEquals(MESSAGE.getPayload(), decrypted.getPayload());
+        assertMessagesMatch(MESSAGE.getPayload(), decrypted.getPayload());
     }
 
     @Test

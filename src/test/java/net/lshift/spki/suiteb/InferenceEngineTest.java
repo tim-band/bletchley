@@ -26,7 +26,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     public static void checkMessage(final InferenceEngine engine, final Action message) {
         final List<ActionType> res = engine.getActions();
         assertThat(res.size(), is(equalTo(1)));
-        assertThat(res.get(0), is(equalTo(message.getPayload())));
+        assertMessagesMatch(res.get(0), message.getPayload());
     }
 
     @Test

@@ -24,14 +24,4 @@ public class SimpleMessage implements ActionType {
         this.type = type;
         this.content = content;
     }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
-    }
 }
