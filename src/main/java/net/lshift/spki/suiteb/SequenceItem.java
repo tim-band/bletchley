@@ -17,6 +17,7 @@ import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
     EcdhItem.class,
     PassphraseProtectedKey.class,
     PrivateEncryptionKey.class,
+    PublicEncryptionKey.class,
     PublicSigningKey.class,
     Sequence.class,
     Signature.class,

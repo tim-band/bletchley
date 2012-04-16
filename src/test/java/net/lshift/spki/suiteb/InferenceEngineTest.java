@@ -125,7 +125,9 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final List<SequenceItem> sequence = new ArrayList<SequenceItem>();
         final PrivateEncryptionKey key = PrivateEncryptionKey.generate();
         sequence.add(key);
-        final AesKey aeskey = key.getPublicKey().setupEncrypt(sequence);
+        final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
+        sequence.add(ephemeral.getPublicKey());
+        final AesKey aeskey = ephemeral.setupEncrypt(sequence, key.getPublicKey());
         final Action message = SimpleMessage.makeMessage(this.getClass());
         sequence.add(aeskey.encrypt(message));
         final InferenceEngine engine = new InferenceEngine();

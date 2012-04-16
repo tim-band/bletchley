@@ -6,33 +6,42 @@ import net.lshift.spki.suiteb.Condition;
 import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
+import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.SequenceItem;
-
-import org.bouncycastle.math.ec.ECPoint;
 
 /**
  * An ECDH session key packet
  */
 @Convert.ByPosition(name = "suiteb-ecdh-aes-gcm-key",
-fields={"recipient", "ephemeralKey"})
+fields={"sender", "recipient"})
 public class EcdhItem implements SequenceItem {
+    public final DigestSha384 sender;
     public final DigestSha384 recipient;
-    public final ECPoint ephemeralKey;
 
-    public EcdhItem(
-        final DigestSha384 recipient,
-        final ECPoint ephemeralKey
-    ) {
+    private EcdhItem(DigestSha384 sender, DigestSha384 recipient) {
+        super();
+        this.sender = sender;
         this.recipient = recipient;
-        this.ephemeralKey = ephemeralKey;
     }
 
     @Override
     public void process(final InferenceEngine engine, final Condition trust)
                     throws InvalidInputException {
-        final PrivateEncryptionKey key = engine.getPrivateEncryptionKey(recipient);
-        if (key != null) {
-            engine.process(key.getKey(ephemeralKey), trust);
+        final PrivateEncryptionKey privs = engine.getPrivateEncryptionKey(sender);
+        final PrivateEncryptionKey privr = engine.getPrivateEncryptionKey(recipient);
+        final PublicEncryptionKey pubs = engine.getPublicEncryptionKey(sender);
+        final PublicEncryptionKey pubr = engine.getPublicEncryptionKey(recipient);
+        if (privr != null && pubs != null) {
+            engine.process(privr.getKeyAsReceiver(pubs), trust);
+        } else if (privs != null && pubr != null) {
+            engine.process(privs.getKeyAsSender(pubr), trust);
         }
+    }
+
+    public static EcdhItem ecdhItem(
+        PrivateEncryptionKey sender,
+        PublicEncryptionKey recipient) {
+        return new EcdhItem(
+            sender.getPublicKey().getKeyId(), recipient.getKeyId());
     }
 }

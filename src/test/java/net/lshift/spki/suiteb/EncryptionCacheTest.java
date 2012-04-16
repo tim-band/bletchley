@@ -21,13 +21,15 @@ public class EncryptionCacheTest extends UsesSimpleMessage {
         PublicEncryptionKey publicKey = privateKey.getPublicKey();
         publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
         final Action message = SimpleMessage.makeMessage(this.getClass());
-        final EncryptionCache cache = new EncryptionCache();
-        final EncryptionSetup aesKey = cache.setupEncrypt(publicKey);
-        final EncryptionSetup aesKey2 = cache.setupEncrypt(publicKey);
+        final EncryptionCache cache
+            = new EncryptionCache(PrivateEncryptionKey.generate());
+        final AesKey aesKey = cache.getKeyAsSender(publicKey);
+        final AesKey aesKey2 = cache.getKeyAsSender(publicKey);
         assertSame(aesKey, aesKey2);
         Sequence sequence = SequenceUtils.sequence(
-            aesKey.encryptedKey,
-            aesKey.key.encrypt(message));
+            cache.getPublicKey(),
+            cache.ecdhItem(publicKey),
+            aesKey.encrypt(message));
         sequence = roundTrip(Sequence.class, sequence);
         final InferenceEngine inferenceEngine = new InferenceEngine();
         inferenceEngine.process(privateKey);

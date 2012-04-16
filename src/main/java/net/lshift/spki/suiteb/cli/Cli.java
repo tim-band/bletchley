@@ -159,9 +159,11 @@ public class Cli {
         throws IOException, InvalidInputException {
         final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         final AesKey aesKey = AesKey.generateAESKey();
+        PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
+        sequenceItems.add(ephemeral.getPublicKey());
         for (int i = 2; i < args.length - 1; i++) {
             final PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
-            final AesKey rKey = pKey.setupEncrypt(sequenceItems);
+            final AesKey rKey = ephemeral.setupEncrypt(sequenceItems, pKey);
             sequenceItems.add(rKey.encrypt(aesKey));
         }
 

@@ -1,14 +1,15 @@
 package net.lshift.spki.suiteb;
 
+import java.util.List;
+
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
+import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.math.ec.ECPoint;
 
 /**
  * A private key for decrypting data.
@@ -31,14 +32,20 @@ public class PrivateEncryptionKey implements SequenceItem {
         return new PrivateEncryptionKey(Ec.generate());
     }
 
-    public AesKey getKey(final ECPoint ephemeralKey) {
-        final ECPublicKeyParameters pk =
-            Ec.toECPublicKeyParameters(ephemeralKey);
+    public AesKey getKeyAsSender(final PublicEncryptionKey receiverKey) {
+        return Ec.sessionKey(
+            receiverKey.publicKey,
+            keyPair.getPublic(),
+            keyPair.getPrivate(),
+            receiverKey.publicKey);
+    }
+
+    public AesKey getKeyAsReceiver(final PublicEncryptionKey senderKey) {
         return Ec.sessionKey(
             keyPair.getPublic(),
-            pk,
+            senderKey.publicKey,
             keyPair.getPrivate(),
-            pk);
+            senderKey.publicKey);
     }
 
     public static class Step
@@ -73,5 +80,12 @@ public class PrivateEncryptionKey implements SequenceItem {
     public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addPrivateEncryptionKey(this);
+    }
+
+    public AesKey setupEncrypt(
+        List<SequenceItem> sequence,
+        PublicEncryptionKey recipient) {
+        sequence.add(EcdhItem.ecdhItem(this, recipient));
+        return getKeyAsSender(recipient);
     }
 }
