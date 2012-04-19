@@ -26,7 +26,21 @@ public class Cert
         engine.addKeyTrust(subject, and(trust, and(conditions)));
     }
 
-    public static Cert cert(final DigestSha384 subject, final Condition... conditions) {
+    public static Cert cert(
+        final DigestSha384 subject,
+        final Condition... conditions) {
         return new Cert(subject, Arrays.asList(conditions));
+    }
+
+    public static Cert cert(
+        final PublicSigningKey subject,
+        final Condition... conditions) {
+        return cert(subject.getKeyId(), conditions);
+    }
+
+    public static Cert cert(
+        final PrivateSigningKey subject,
+        final Condition... conditions) {
+        return cert(subject.getPublicKey(), conditions);
     }
 }

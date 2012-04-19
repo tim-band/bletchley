@@ -17,10 +17,10 @@ public class NameBeanTest extends ResetsRegistry {
     @Test(expected=ConvertException.class)
     public void repeatedFieldsRejected() throws IOException, InvalidInputException {
         final ByteOpenable example = new ByteOpenable();
-        OpenableUtils.write(Sexp.class,
+        OpenableUtils.write(Sexp.class, example,
             list("point",
                 list("x", atom("foo")),
-                list("x", atom("bar"))), example);
+                list("x", atom("bar"))));
         OpenableUtils.read(Point.class, example);
     }
 }

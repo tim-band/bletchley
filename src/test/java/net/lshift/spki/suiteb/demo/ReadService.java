@@ -10,7 +10,6 @@ import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.InferenceEngine;
-import net.lshift.spki.suiteb.SequenceItem;
 
 public class ReadService {
     public static Service readService(Openable acl, Openable source)
@@ -18,8 +17,8 @@ public class ReadService {
         Registry.getConverter(Service.class);
         InferenceEngine engine = new InferenceEngine();
         engine.setTime();
-        engine.processTrusted(read(SequenceItem.class, acl));
-        engine.process(read(SequenceItem.class, source));
+        engine.processTrusted(read(acl));
+        engine.process(read(source));
         List<ActionType> actions = engine.getActions();
         if (actions.size() != 1) {
             throw new RuntimeException(

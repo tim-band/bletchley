@@ -6,6 +6,7 @@ import java.io.OutputStream;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.suiteb.SequenceItem;
 
 import org.apache.commons.io.IOUtils;
 
@@ -23,7 +24,7 @@ public class OpenableUtils {
         }
     }
 
-    public static void writeBytes(final byte[] messageBytes, final Openable out)
+    public static void writeBytes(final Openable out, final byte[] messageBytes)
         throws IOException {
         final OutputStream os = out.write();
         try {
@@ -43,7 +44,10 @@ public class OpenableUtils {
         }
     }
 
-    public static <T> void write(final Class<T> clazz, final T o, final Openable open)
+    public static <T> void write(
+        final Class<T> clazz,
+        final Openable open,
+        final T o)
         throws IOException {
         final OutputStream os = open.write();
         try {
@@ -51,5 +55,15 @@ public class OpenableUtils {
         } finally {
             os.close();
         }
+    }
+
+    public static SequenceItem read(final Openable open)
+        throws IOException, InvalidInputException {
+        return read(SequenceItem.class, open);
+    }
+
+    public static void write(final Openable open, final SequenceItem item)
+        throws IOException {
+        write(SequenceItem.class, open, item);
     }
 }

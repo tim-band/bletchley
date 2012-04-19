@@ -15,7 +15,6 @@ import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
-import net.lshift.spki.suiteb.SequenceItem;
 
 public class WriteService {
     public static void writeService(
@@ -27,15 +26,12 @@ public class WriteService {
                     throws IOException, InvalidInputException {
         Registry.getConverter(Service.class);
         PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
-        final Action action = new Action(service);
-        OpenableUtils.write(SequenceItem.class,
+        OpenableUtils.write(target,
             sequence(
                 ephemeral.getPublicKey(),
                 ecdhItem(ephemeral, recipient),
                 ephemeral.getKeyAsSender(recipient).encrypt(sequence(
-                    read(SequenceItem.class, extra),
-                    signingKey.sign(action),
-                    signed(action)))),
-        target);
+                    read(extra),
+                    signed(signingKey, new Action(service))))));
     }
 }

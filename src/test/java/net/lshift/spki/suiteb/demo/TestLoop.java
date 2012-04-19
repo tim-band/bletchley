@@ -14,7 +14,6 @@ import java.util.Date;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.openable.ByteOpenable;
-import net.lshift.spki.suiteb.Cert;
 import net.lshift.spki.suiteb.InvalidOnOrAfter;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -26,7 +25,7 @@ import org.junit.Test;
 public class TestLoop {
     private ByteOpenable writeSequence(SequenceItem... items) throws IOException {
         ByteOpenable res = new ByteOpenable();
-        write(SequenceItem.class, sequence(items), res);
+        write(res, sequence(items));
         return res;
     }
 
@@ -41,13 +40,11 @@ public class TestLoop {
         );
 
         PrivateSigningKey subKey = PrivateSigningKey.generate();
-        Cert myCert = cert(subKey.getPublicKey().getKeyId(),
-            new InvalidOnOrAfter(new Date(System.currentTimeMillis() + 1000)));
         ByteOpenable extra = writeSequence(
             publicKey,
             subKey.getPublicKey(),
-            masterKey.sign(myCert),
-            signed(myCert));
+            signed(masterKey, cert(subKey, new InvalidOnOrAfter(
+                new Date(System.currentTimeMillis() + 1000)))));
 
         Service service = new Service("http", 80);
         ByteOpenable target = new ByteOpenable();
