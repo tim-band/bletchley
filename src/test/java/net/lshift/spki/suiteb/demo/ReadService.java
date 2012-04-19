@@ -12,11 +12,13 @@ import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.SequenceItem;
 
 public class ReadService {
-    public static Service readService(Openable source)
+    public static Service readService(Openable acl, Openable source)
                     throws IOException, InvalidInputException {
         Registry.getConverter(Service.class);
         InferenceEngine engine = new InferenceEngine();
         engine.processTrusted(
+            OpenableUtils.read(SequenceItem.class, acl));
+        engine.process(
             OpenableUtils.read(SequenceItem.class, source));
         List<ActionType> actions = engine.getActions();
         if (actions.size() != 1) {
