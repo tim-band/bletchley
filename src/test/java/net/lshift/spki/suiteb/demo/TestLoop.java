@@ -14,6 +14,7 @@ import java.util.Date;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.openable.ByteOpenable;
+import net.lshift.spki.suiteb.Condition;
 import net.lshift.spki.suiteb.InvalidOnOrAfter;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -42,8 +43,7 @@ public class TestLoop {
         ByteOpenable extra = writeSequence(
             publicKey,
             subKey.getPublicKey(),
-            signed(masterKey, cert(subKey, new InvalidOnOrAfter(
-                new Date(System.currentTimeMillis() + 1000)))));
+            signed(masterKey, cert(subKey, expiresInOneSecond())));
 
         Service service = new Service("http", 80);
         ByteOpenable target = new ByteOpenable();
@@ -54,5 +54,10 @@ public class TestLoop {
         assertThat(readBack.port, is(service.port));
         PrettyPrinter.prettyPrint(
             new PrintWriter(System.out), target.read());
+    }
+
+    protected Condition expiresInOneSecond() {
+        return new InvalidOnOrAfter(
+            new Date(System.currentTimeMillis() + 1000));
     }
 }
