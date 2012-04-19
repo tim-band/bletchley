@@ -4,8 +4,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.openable.ByteOpenable;
 
 import org.junit.Test;
@@ -19,6 +21,7 @@ public class TestLoop {
         Service readBack = ReadService.readService(target);
         assertThat(readBack.name, is(service.name));
         assertThat(readBack.port, is(service.port));
-        System.out.println(target);
+        PrettyPrinter.prettyPrint(
+            new PrintWriter(System.out), target.read());
     }
 }
