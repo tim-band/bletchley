@@ -2,7 +2,7 @@ package net.lshift.spki.suiteb.demo;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
 import static net.lshift.spki.suiteb.Cert.cert;
-import static net.lshift.spki.suiteb.SequenceUtils.sequence;
+import static net.lshift.spki.suiteb.SequenceUtils.sequenceOrItem;
 import static net.lshift.spki.suiteb.Signed.signed;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -25,7 +25,7 @@ import org.junit.Test;
 public class TestLoop {
     private ByteOpenable writeSequence(SequenceItem... items) throws IOException {
         ByteOpenable res = new ByteOpenable();
-        write(res, sequence(items));
+        write(res, sequenceOrItem(items));
         return res;
     }
 
@@ -36,8 +36,7 @@ public class TestLoop {
         PublicSigningKey publicKey = masterKey.getPublicKey();
         ByteOpenable acl = writeSequence(
             decryptionKey,
-            cert(publicKey.getKeyId())
-        );
+            cert(publicKey.getKeyId()));
 
         PrivateSigningKey subKey = PrivateSigningKey.generate();
         ByteOpenable extra = writeSequence(
@@ -48,8 +47,8 @@ public class TestLoop {
 
         Service service = new Service("http", 80);
         ByteOpenable target = new ByteOpenable();
-        WriteService.writeService(subKey, extra, decryptionKey.getPublicKey(),
-            target, service);
+        WriteService.writeService(target, extra, subKey,
+            decryptionKey.getPublicKey(), service);
         Service readBack = ReadService.readService(acl, target);
         assertThat(readBack.name, is(service.name));
         assertThat(readBack.port, is(service.port));

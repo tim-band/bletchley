@@ -1,5 +1,8 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.SequenceUtils.sequence;
+import static net.lshift.spki.suiteb.SequenceUtils.sequenceOrItem;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,5 +40,13 @@ public class EncryptionCache {
             cache.put(publicKey.getKeyId(), res);
         }
         return res;
+    }
+
+    public synchronized Sequence encrypt(
+        final PublicEncryptionKey recipient,
+        SequenceItem... messages) {
+        return sequence(getPublicKey(),
+            ecdhItem(recipient),
+            getKeyAsSender(recipient).encrypt(sequenceOrItem(messages)));
     }
 }

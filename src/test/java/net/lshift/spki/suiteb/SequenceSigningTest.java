@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
+import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
 
 import java.util.Collections;
@@ -19,7 +20,7 @@ public class SequenceSigningTest extends UsesSimpleMessage
         privateKey = roundTrip(PrivateSigningKey.class, privateKey);
         final PublicSigningKey publicKey = privateKey.getPublicKey();
         final Action message = makeMessage();
-        Sequence sequence = SequenceUtils.sequence(
+        Sequence sequence = sequence(
             publicKey,
             privateKey.sign(message),
             signed(message));
