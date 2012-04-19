@@ -33,7 +33,7 @@ public class ConvertUtils {
         return s.getBytes(Constants.UTF8);
     }
 
-    private static final String decodeUtf8(final byte[] bytes)
+    public static final String decodeUtf8(final byte[] bytes)
         throws CharacterCodingException {
         return Constants.UTF8.newDecoder()
             .decode(ByteBuffer.wrap(bytes)).toString();

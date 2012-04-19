@@ -19,5 +19,6 @@ public class TestLoop {
         Service readBack = ReadService.readService(target);
         assertThat(readBack.name, is(service.name));
         assertThat(readBack.port, is(service.port));
+        System.out.println(target);
     }
 }
