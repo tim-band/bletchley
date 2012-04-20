@@ -44,7 +44,7 @@ public class EncryptionCache {
 
     public synchronized Sequence encrypt(
         final PublicEncryptionKey recipient,
-        SequenceItem... messages) {
+        final SequenceItem... messages) {
         return sequence(getPublicKey(),
             ecdhItem(recipient),
             getKeyAsSender(recipient).encrypt(sequenceOrItem(messages)));

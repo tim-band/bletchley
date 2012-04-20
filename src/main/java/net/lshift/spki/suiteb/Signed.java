@@ -20,7 +20,7 @@ public class Signed implements SequenceItem {
     }
 
     public static SequenceItem signed(
-        PrivateSigningKey key, SequenceItem payload) {
+        final PrivateSigningKey key, final SequenceItem payload) {
         return sequence(key.sign(payload), signed(payload));
     }
 

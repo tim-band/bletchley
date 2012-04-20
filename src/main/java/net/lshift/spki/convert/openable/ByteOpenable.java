@@ -33,7 +33,7 @@ public class ByteOpenable
     public String toString() {
         try {
             return ConvertUtils.decodeUtf8(output.toByteArray());
-        } catch (CharacterCodingException e) {
+        } catch (final CharacterCodingException e) {
             throw new RuntimeException(e);
         }
     }

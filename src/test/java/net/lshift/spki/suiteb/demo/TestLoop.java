@@ -26,32 +26,32 @@ import org.junit.Test;
 public class TestLoop {
     @Test
     public void test() throws IOException, InvalidInputException {
-        PrivateEncryptionKey decryptionKey = PrivateEncryptionKey.generate();
-        PrivateSigningKey masterKey = PrivateSigningKey.generate();
-        PublicSigningKey publicKey = masterKey.getPublicKey();
-        ByteOpenable acl = writeSequence(
+        final PrivateEncryptionKey decryptionKey = PrivateEncryptionKey.generate();
+        final PrivateSigningKey masterKey = PrivateSigningKey.generate();
+        final PublicSigningKey publicKey = masterKey.getPublicKey();
+        final ByteOpenable acl = writeSequence(
             decryptionKey,
             cert(publicKey.getKeyId()));
 
-        PrivateSigningKey subKey = PrivateSigningKey.generate();
-        ByteOpenable extra = writeSequence(
+        final PrivateSigningKey subKey = PrivateSigningKey.generate();
+        final ByteOpenable extra = writeSequence(
             publicKey,
             subKey.getPublicKey(),
             signed(masterKey, cert(subKey, expiresInOneSecond())));
 
-        Service service = new Service("http", 80);
-        ByteOpenable target = new ByteOpenable();
+        final Service service = new Service("http", 80);
+        final ByteOpenable target = new ByteOpenable();
         WriteService.writeService(target, extra, subKey,
             decryptionKey.getPublicKey(), service);
-        Service readBack = ReadService.readService(acl, target);
+        final Service readBack = ReadService.readService(acl, target);
         assertThat(readBack.name, is(service.name));
         assertThat(readBack.port, is(service.port));
         PrettyPrinter.prettyPrint(
             new PrintWriter(System.out), target.read());
     }
 
-    private static ByteOpenable writeSequence(SequenceItem... items) throws IOException {
-        ByteOpenable res = new ByteOpenable();
+    private static ByteOpenable writeSequence(final SequenceItem... items) throws IOException {
+        final ByteOpenable res = new ByteOpenable();
         write(res, sequenceOrItem(items));
         return res;
     }

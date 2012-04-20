@@ -10,10 +10,10 @@ import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.InferenceEngine;
 
 public class ReadService {
-    public static Service readService(Openable acl, Openable source)
+    public static Service readService(final Openable acl, final Openable source)
                     throws IOException, InvalidInputException {
         Registry.getConverter(Service.class);
-        InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = new InferenceEngine();
         engine.setTime();
         engine.processTrusted(read(acl));
         engine.process(read(source));

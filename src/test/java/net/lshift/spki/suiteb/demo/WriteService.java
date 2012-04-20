@@ -20,11 +20,11 @@ public class WriteService {
                     new EncryptionCache(PrivateEncryptionKey.generate());
 
     public static void writeService(
-        Openable target,
-        Openable extra,
-        PrivateSigningKey signingKey,
-        PublicEncryptionKey recipient,
-        Service service)
+        final Openable target,
+        final Openable extra,
+        final PrivateSigningKey signingKey,
+        final PublicEncryptionKey recipient,
+        final Service service)
                     throws IOException, InvalidInputException {
         Registry.getConverter(Service.class);
         write(target,

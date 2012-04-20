@@ -9,7 +9,7 @@ public class Service implements ActionType {
     public final String name;
     public final Integer port;
 
-    public Service(String name, Integer port) {
+    public Service(final String name, final Integer port) {
         this.name = name;
         this.port = port;
     }

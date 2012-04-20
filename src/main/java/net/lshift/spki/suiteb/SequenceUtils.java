@@ -14,7 +14,7 @@ public class SequenceUtils
         return new Sequence(Arrays.asList(items));
     }
 
-    public static SequenceItem sequenceOrItem(SequenceItem[] messages) {
+    public static SequenceItem sequenceOrItem(final SequenceItem[] messages) {
         return sequenceOrItem(Arrays.asList(messages));
     }
 

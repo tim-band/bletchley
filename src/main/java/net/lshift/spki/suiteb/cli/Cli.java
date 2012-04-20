@@ -127,7 +127,7 @@ public class Cli {
         inference.process(signingKey);
         inference.process(encryptionKey);
         inference.process(read(packet));
-        ActionType action = inference.getSoleAction();
+        final ActionType action = inference.getSoleAction();
         if (!(action instanceof SimpleMessage)) {
             throw new RuntimeException("Signed object was not message");
         }
