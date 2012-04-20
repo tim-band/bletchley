@@ -64,7 +64,7 @@ public class PositionSequenceConverterTest extends ResetsRegistry {
             is(example));
     }
 
-    private byte[] s(final String string) throws IOException, InvalidInputException {
+    private static byte[] s(final String string) throws IOException, InvalidInputException {
         final Sexp s = ConvertUtils.readAdvanced(Sexp.class,
             new ByteArrayInputStream(ConvertUtils.bytes(string)));
         return ConvertUtils.toBytes(Sexp.class, s);

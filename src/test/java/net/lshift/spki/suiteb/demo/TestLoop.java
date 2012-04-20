@@ -24,12 +24,6 @@ import net.lshift.spki.suiteb.SequenceItem;
 import org.junit.Test;
 
 public class TestLoop {
-    private ByteOpenable writeSequence(SequenceItem... items) throws IOException {
-        ByteOpenable res = new ByteOpenable();
-        write(res, sequenceOrItem(items));
-        return res;
-    }
-
     @Test
     public void test() throws IOException, InvalidInputException {
         PrivateEncryptionKey decryptionKey = PrivateEncryptionKey.generate();
@@ -56,7 +50,13 @@ public class TestLoop {
             new PrintWriter(System.out), target.read());
     }
 
-    protected Condition expiresInOneSecond() {
+    private static ByteOpenable writeSequence(SequenceItem... items) throws IOException {
+        ByteOpenable res = new ByteOpenable();
+        write(res, sequenceOrItem(items));
+        return res;
+    }
+
+    private static Condition expiresInOneSecond() {
         return new InvalidOnOrAfter(
             new Date(System.currentTimeMillis() + 1000));
     }

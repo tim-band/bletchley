@@ -127,14 +127,11 @@ public class Cli {
         inference.process(signingKey);
         inference.process(encryptionKey);
         inference.process(read(packet));
-        final List<ActionType> messages = inference.getActions();
-        if (messages.size() != 1) {
-            throw new RuntimeException("Did not find exactly one signed message");
-        }
-        if (!(messages.get(0) instanceof SimpleMessage)) {
+        ActionType action = inference.getSoleAction();
+        if (!(action instanceof SimpleMessage)) {
             throw new RuntimeException("Signed object was not message");
         }
-        final SimpleMessage message = (SimpleMessage) messages.get(0);
+        final SimpleMessage message = (SimpleMessage) action;
         if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message was not of expected type");
         }
