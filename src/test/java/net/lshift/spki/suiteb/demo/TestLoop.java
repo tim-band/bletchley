@@ -37,7 +37,7 @@ public class TestLoop {
         final ByteOpenable extra = writeSequence(
             publicKey,
             subKey.getPublicKey(),
-            signed(masterKey, cert(subKey, expiresInOneSecond())));
+            signed(masterKey, cert(subKey, expiresInOneHour())));
 
         final Service service = new Service("http", 80);
         final ByteOpenable target = new ByteOpenable();
@@ -56,8 +56,8 @@ public class TestLoop {
         return res;
     }
 
-    private static Condition expiresInOneSecond() {
+    private static Condition expiresInOneHour() {
         return new InvalidOnOrAfter(
-            new Date(System.currentTimeMillis() + 1000));
+            new Date(System.currentTimeMillis() + 1000*3600));
     }
 }
