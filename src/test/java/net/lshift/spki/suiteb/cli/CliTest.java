@@ -43,7 +43,7 @@ public class CliTest extends ResetsRegistry
         Cli.main(null, "genEncryptionKey", ePrivate);
         Cli.main(null, "getPublicEncryptionKey", ePrivate, ePublic);
 
-        OpenableUtils.writeBytes(messageBytes, message);
+        OpenableUtils.writeBytes(message, messageBytes);
         Cli.main(null,
             "genEncryptedSignedMessage", sPrivate, message, ePublic, packet);
         Cli.main(null,

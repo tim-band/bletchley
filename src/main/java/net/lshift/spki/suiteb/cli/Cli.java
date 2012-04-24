@@ -65,26 +65,25 @@ public class Cli {
 
     public static void genSigningKey(final Openable out)
         throws IOException {
-        write(PrivateSigningKey.class, PrivateSigningKey.generate(), out);
+        write(PrivateSigningKey.class, out, PrivateSigningKey.generate());
     }
 
     public static void genEncryptionKey(final Openable out)
         throws IOException {
-        write(PrivateEncryptionKey.class, PrivateEncryptionKey.generate(),
-            out);
+        write(out, PrivateEncryptionKey.generate());
     }
 
     public static void getPublicSigningKey(final Openable privk, final Openable pubk)
         throws IOException, InvalidInputException {
         final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
-        write(PublicSigningKey.class, privatek.getPublicKey(), pubk);
+        write(pubk, privatek.getPublicKey());
     }
 
     public static void getPublicEncryptionKey(final Openable privk, final Openable pubk)
         throws IOException, InvalidInputException {
         final PrivateEncryptionKey privatek
             = read(PrivateEncryptionKey.class, privk);
-        write(PublicEncryptionKey.class, privatek.getPublicKey(), pubk);
+        write(pubk, privatek.getPublicKey());
     }
 
     public static void fingerprintPrivateSigningKey(
@@ -127,19 +126,16 @@ public class Cli {
                 Collections.<Condition>emptyList()));
         inference.process(signingKey);
         inference.process(encryptionKey);
-        inference.process(read(SequenceItem.class, packet));
-        final List<ActionType> messages = inference.getActions();
-        if (messages.size() != 1) {
-            throw new RuntimeException("Did not find exactly one signed message");
-        }
-        if (!(messages.get(0) instanceof SimpleMessage)) {
+        inference.process(read(packet));
+        final ActionType action = inference.getSoleAction();
+        if (!(action instanceof SimpleMessage)) {
             throw new RuntimeException("Signed object was not message");
         }
-        final SimpleMessage message = (SimpleMessage) messages.get(0);
+        final SimpleMessage message = (SimpleMessage) action;
         if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message was not of expected type");
         }
-        OpenableUtils.writeBytes(message.content, out);
+        OpenableUtils.writeBytes(out, message.content);
     }
 
     public static void decryptSignedMessage(
@@ -178,7 +174,7 @@ public class Cli {
 
         sequenceItems.add(aesKey.encrypt(new Sequence(encryptedSequenceItems)));
 
-        write(Sequence.class, new Sequence(sequenceItems), args[args.length - 1]);
+        write(args[args.length - 1], new Sequence(sequenceItems));
     }
 
     public static void speedTest() throws InvalidInputException {

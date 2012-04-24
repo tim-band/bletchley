@@ -23,10 +23,8 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         assertThat(res.size(), is(equalTo(0)));
     }
 
-    public static void checkMessage(final InferenceEngine engine, final Action message) {
-        final List<ActionType> res = engine.getActions();
-        assertThat(res.size(), is(equalTo(1)));
-        assertMessagesMatch(res.get(0), message.getPayload());
+    public static void checkMessage(final InferenceEngine engine, final Action message) throws CryptographyException {
+        assertMessagesMatch(engine.getSoleAction(), message.getPayload());
     }
 
     @Test

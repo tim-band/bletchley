@@ -41,7 +41,7 @@ public class CliMultipleRecipientTest extends ResetsRegistry
             ePublics.add(ePublic);
         }
         final Openable message = new ByteOpenable();
-        OpenableUtils.writeBytes(messageBytes, message);
+        OpenableUtils.writeBytes(message, messageBytes);
         final Openable[] encryptArgs = new Openable[ePublics.size() + 3];
         int i = 0;
         encryptArgs[i++] = sPrivate;

@@ -24,7 +24,7 @@ public class PointTest extends ResetsRegistry {
         final Sexp sexp = list("point",
             list("x", atom("asdf")),
             list("y", atom("qwert")));
-        OpenableUtils.write(Sexp.class, sexp, example);
+        OpenableUtils.write(Sexp.class, example, sexp);
         OpenableUtils.read(ECPoint.class, example);
     }
 

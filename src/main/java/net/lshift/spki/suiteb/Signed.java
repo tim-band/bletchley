@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 
@@ -16,6 +17,11 @@ public class Signed implements SequenceItem {
 
     public static Signed signed(final SequenceItem payload) {
         return new Signed(DigestSha384.DIGEST_NAME, payload);
+    }
+
+    public static SequenceItem signed(
+        final PrivateSigningKey key, final SequenceItem payload) {
+        return sequence(key.sign(payload), signed(payload));
     }
 
     @Override

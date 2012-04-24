@@ -93,6 +93,17 @@ public class InferenceEngine {
         return actions;
     }
 
+    public ActionType getSoleAction() throws CryptographyException {
+        if (actions.size() == 1) {
+            return actions.get(0);
+        } else if (actions.isEmpty()) {
+            throw new CryptographyException("No validated actions found");
+        } else {
+            throw new CryptographyException(
+                    "Expected exactly one validated action, found: " + actions);
+        }
+    }
+
     public void addAction(final ActionType payload) {
         actions.add(payload);
     }
@@ -113,7 +124,7 @@ public class InferenceEngine {
         orPut(keyTrust, keyId, condition);
     }
 
-    private void orPut(
+    private static void orPut(
         final Map<DigestSha384, Condition> map,
         final DigestSha384 subject,
         final Condition condition) {

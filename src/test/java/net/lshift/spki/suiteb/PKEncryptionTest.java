@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
+import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.sexpstructs.EcdhItem.ecdhItem;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
@@ -18,7 +19,7 @@ public class PKEncryptionTest extends UsesSimpleMessage {
         publicKey = roundTrip(PublicEncryptionKey.class, publicKey);
         final Action message = makeMessage();
         final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
-        Sequence sequence = SequenceUtils.sequence(
+        Sequence sequence = sequence(
             ephemeral,
             ecdhItem(ephemeral, publicKey),
             ephemeral.getKeyAsSender(publicKey).encrypt(message));
