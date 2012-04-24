@@ -3,7 +3,6 @@ package net.lshift.spki.suiteb;
 import static net.lshift.spki.suiteb.ConditionJoiner.or;
 import static net.lshift.spki.suiteb.NeverCondition.nullMeansNever;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.SpkiInputStream;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
 
@@ -70,10 +68,6 @@ public class InferenceEngine {
 //    private String digestString(final DigestSha384 digest) {
 //        return namedString(FingerprintUtils.getFingerprint(digest));
 //    }
-
-    public void process(final SpkiInputStream is) throws InvalidInputException, IOException {
-        process(ConvertUtils.read(SequenceItem.class, is));
-    }
 
     public void process(final SequenceItem item) throws InvalidInputException {
         process(item, NeverCondition.NEVER);

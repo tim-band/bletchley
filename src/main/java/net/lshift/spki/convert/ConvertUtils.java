@@ -28,7 +28,7 @@ import net.lshift.spki.sexpform.ConvertSexp;
  * Static utilities for conversion between SExps and objects.
  */
 public class ConvertUtils {
-    private static final Converting C = new Converting();
+    public static final Converting C = new Converting();
     public static byte[] bytes(final String s) {
         return s.getBytes(Constants.UTF8);
     }
