@@ -10,14 +10,16 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
  */
 public abstract class PublicKey extends SexpBacked {
     protected final ECPublicKeyParameters publicKey;
-    protected final DigestSha384 keyId;
+    protected DigestSha384 keyId = null;
 
     PublicKey(final CipherParameters publicKey) {
         this.publicKey = (ECPublicKeyParameters) publicKey;
-        keyId = DigestSha384.digest(this);
     }
 
-    public DigestSha384 getKeyId() {
+    public synchronized DigestSha384 getKeyId() {
+        if (keyId == null) {
+            keyId = DigestSha384.digest(this);
+        }
         return keyId;
     }
 }
