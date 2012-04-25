@@ -21,7 +21,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class NameBeanReorderTest extends UsesSimpleMessage {
-
     @Test
     public void testRoundTrip() throws InvalidInputException, IOException  {
         final Sexp pkSexp =
@@ -37,31 +36,43 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
         PublicSigningKey deserialized = ConvertUtils.C.read(
             PublicSigningKey.class, reversed);
         assertEquals(reversed, deserialized.toSexp());
+        assertEquals(digest(reversed), deserialized.getKeyId());
     }
 
     @Ignore
     @Test
     public void test() throws InvalidInputException, IOException  {
         final Action message = makeMessage();
-        final PrivateSigningKey key = PrivateSigningKey.generate();
+        final PrivateSigningKey key = generateReversedKey();
         // Reorder the public key
         final PublicSigningKey publicKey = key.getPublicKey();
-        final Sexp pkSexp =
-            publicKey.toSexp();
-
-        prettyPrint(pkSexp, System.out);
-        final List<Sexp> coords
-            = pkSexp.list().getSparts().get(0).list().getSparts();
-        final Slist reversed = list("suiteb-p384-ecdsa-public-key",
-            list("point", coords.get(1), coords.get(0)));
-
-        prettyPrint(reversed, System.out);
         final InferenceEngine engine = new InferenceEngine();
-        engine.processTrusted(cert(digest(reversed)));
-        PublicSigningKey deserialized = ConvertUtils.C.read(
-            PublicSigningKey.class, reversed);
-        engine.process(deserialized);
+        engine.processTrusted(cert(publicKey));
+        engine.process(publicKey);
         engine.process(signed(key, message));
         checkMessage(engine, message);
+    }
+
+    protected PrivateSigningKey generateReversedKey() throws IOException, InvalidInputException {
+        Sexp sexp = PrivateSigningKey.generate().toSexp();
+        prettyPrint(sexp, System.out);
+        final List<Sexp> coords
+            = sexp.list().getSparts()
+            .get(0).list().getSparts()
+            .get(0).list().getSparts()
+            .get(0).list().getSparts();
+        Sexp reversedSexp = list("suiteb-p384-ecdsa-private-key",
+            list("public-key",
+                list("suiteb-p384-ecdsa-public-key",
+                    list("point", coords.get(1), coords.get(0)))),
+            sexp.list().getSparts().get(1));
+        prettyPrint(reversedSexp, System.out);
+        final PrivateSigningKey res = ConvertUtils.C.read(
+            PrivateSigningKey.class, reversedSexp);
+        assertEquals(reversedSexp, res.toSexp());
+        assertEquals(reversedSexp.list().getSparts()
+            .get(0).list().getSparts().get(0),
+            res.getPublicKey().toSexp());
+        return res;
     }
 }
