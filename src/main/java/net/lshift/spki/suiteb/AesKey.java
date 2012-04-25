@@ -4,6 +4,7 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.convert.SexpBacked;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESFastEngine;
@@ -15,7 +16,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
  * A key to use with AES/GCM.
  */
 @Convert.ByPosition(name="aes-gcm-key", fields={"key"})
-public class AesKey implements SequenceItem {
+public class AesKey extends SexpBacked implements SequenceItem {
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
         = "8:keyid-ad".getBytes(Constants.ASCII);

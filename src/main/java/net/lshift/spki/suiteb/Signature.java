@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
 /**
@@ -10,7 +11,7 @@ import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
  */
 @Convert.ByPosition(name="signature",
     fields={"digest", "keyId", "rawSignature"})
-public class Signature implements SequenceItem {
+public class Signature extends SexpBacked implements SequenceItem {
     public final DigestSha384 digest;
     public final DigestSha384 keyId;
     public final EcdsaSignature rawSignature;

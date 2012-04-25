@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.convert.Writeable;
+import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
@@ -16,7 +16,7 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
  * A private key for signing
  */
 @ConvertClass(PrivateSigningKey.Step.class)
-public class PrivateSigningKey implements Writeable {
+public class PrivateSigningKey extends SexpBacked {
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();
 

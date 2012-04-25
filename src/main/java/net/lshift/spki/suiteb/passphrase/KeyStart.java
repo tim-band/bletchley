@@ -1,11 +1,11 @@
 package net.lshift.spki.suiteb.passphrase;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.Writeable;
+import net.lshift.spki.convert.SexpBacked;
 
 @Convert.ByPosition(name="digest-this-to-get-the-key",
 fields={"passphraseId", "salt", "iterations", "passphrase"})
-public class KeyStart implements Writeable {
+public class KeyStart extends SexpBacked {
     // This class is only used to create a digest, so
     // no getters are needed
     @SuppressWarnings("unused")

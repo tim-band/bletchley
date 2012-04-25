@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb.passphrase;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesKeyId;
 import net.lshift.spki.suiteb.Condition;
@@ -10,7 +11,7 @@ import net.lshift.spki.suiteb.SequenceItem;
 
 @Convert.ByPosition(name="passphrase-protected-key",
     fields={"passphraseId", "salt", "iterations", "keyId"})
-public class PassphraseProtectedKey implements SequenceItem {
+public class PassphraseProtectedKey extends SexpBacked implements SequenceItem {
     private final String passphraseId;
     private final byte [] salt;
     private final Integer iterations;

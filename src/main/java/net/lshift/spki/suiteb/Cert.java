@@ -7,9 +7,11 @@ import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.SexpBacked;
 
 @Convert.PositionSequence(name="cert", fields={"subject"}, seq="conditions")
 public class Cert
+    extends SexpBacked
     implements SequenceItem {
     public final DigestSha384 subject;
     public final List<Condition> conditions;

@@ -20,7 +20,7 @@ public class EnumTest
     }
 
     @Convert.ByPosition(name="enum-holder", fields="testEnum")
-    public static class EnumHolder implements Writeable {
+    public static class EnumHolder extends SexpBacked {
         public final TestEnum testEnum;
 
         public EnumHolder(TestEnum testEnum) {

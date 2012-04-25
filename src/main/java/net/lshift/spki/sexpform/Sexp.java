@@ -16,4 +16,9 @@ public abstract class Sexp implements Writeable {
     public Slist list() throws ConvertException {
         throw new ConvertException("list expected, atom found");
     }
+
+    @Override
+    public Sexp toSexp() {
+        return this;
+    }
 }

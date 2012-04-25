@@ -3,7 +3,7 @@ package net.lshift.spki.convert;
 import java.math.BigInteger;
 
 @Convert.ByPosition(name="convert-example", fields={"foo", "bar"})
-public class ConvertExample implements Writeable
+public class ConvertExample extends SexpBacked
 {
     public final BigInteger foo;
     public final BigInteger bar;

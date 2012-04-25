@@ -1,6 +1,7 @@
 package net.lshift.spki.convert;
 
+import net.lshift.spki.sexpform.Sexp;
+
 public interface Writeable {
-    // For the moment, just mark the classes
-    // that need to be writable.
+    public Sexp toSexp();
 }

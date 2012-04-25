@@ -3,6 +3,7 @@ package net.lshift.spki.suiteb;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.convert.Convert.SequenceConverted;
 
 /**
@@ -10,6 +11,7 @@ import net.lshift.spki.convert.Convert.SequenceConverted;
  */
 @SequenceConverted("sequence")
 public class Sequence
+    extends SexpBacked
     implements SequenceItem {
     public final List<SequenceItem> sequence;
 

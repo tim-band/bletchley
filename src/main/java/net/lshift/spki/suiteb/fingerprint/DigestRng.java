@@ -3,7 +3,7 @@ package net.lshift.spki.suiteb.fingerprint;
 import java.util.List;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.Writeable;
+import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.DigestSha384;
 
 /**
@@ -22,7 +22,7 @@ public class DigestRng {
     }
 
     @Convert.ByPosition(name = "digest-rng", fields = { "counter", "digest" })
-    private static class NextBytes implements Writeable {
+    private static class NextBytes extends SexpBacked {
         @SuppressWarnings("unused")
         private final Integer counter;
         @SuppressWarnings("unused")

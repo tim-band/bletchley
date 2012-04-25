@@ -2,10 +2,10 @@ package net.lshift.spki.suiteb.passphrase;
 
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkNoMessages;
+import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
@@ -78,9 +78,9 @@ public class PassphraseTest extends UsesSimpleMessage {
     @Test
     public void testInferenceEngineCanRead() throws InvalidInputException {
         final KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
-        final Sequence sequence = new Sequence(Arrays.asList(
+        final Sequence sequence = sequence(
             kfp.getPassphraseProtectedKey(),
-            kfp.getAesKey().encrypt(MESSAGE)));
+            kfp.getAesKey().encrypt(MESSAGE));
         final InferenceEngine engine = new InferenceEngine();
         engine.setPassphraseDelegate(new PassphraseDelegate() {
             @Override
@@ -102,9 +102,9 @@ public class PassphraseTest extends UsesSimpleMessage {
     @Test
     public void testInferenceEngineHandlesNoDelegate() throws InvalidInputException {
         final KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
-        final Sequence sequence = new Sequence(Arrays.asList(
+        final Sequence sequence = sequence(
             kfp.getPassphraseProtectedKey(),
-            kfp.getAesKey().encrypt(MESSAGE)));
+            kfp.getAesKey().encrypt(MESSAGE));
         final InferenceEngine engine = new InferenceEngine();
         engine.process(sequence);
         checkNoMessages(engine);
@@ -113,9 +113,9 @@ public class PassphraseTest extends UsesSimpleMessage {
     @Test
     public void testInferenceEngineHandlesNoPassphrase() throws InvalidInputException {
         final KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
-        final Sequence sequence = new Sequence(Arrays.asList(
+        final Sequence sequence = sequence(
             kfp.getPassphraseProtectedKey(),
-            kfp.getAesKey().encrypt(MESSAGE)));
+            kfp.getAesKey().encrypt(MESSAGE));
         final InferenceEngine engine = new InferenceEngine();
         engine.setPassphraseDelegate(new PassphraseDelegate() {
             @Override

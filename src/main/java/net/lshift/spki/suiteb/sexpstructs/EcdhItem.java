@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.Condition;
 import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.InferenceEngine;
@@ -14,7 +15,7 @@ import net.lshift.spki.suiteb.SequenceItem;
  */
 @Convert.ByPosition(name = "suiteb-ecdh-aes-gcm-key",
 fields={"sender", "recipient"})
-public class EcdhItem implements SequenceItem {
+public class EcdhItem extends SexpBacked implements SequenceItem {
     public final DigestSha384 sender;
     public final DigestSha384 recipient;
 
