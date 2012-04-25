@@ -1,16 +1,24 @@
 package net.lshift.spki.convert;
 
+import java.lang.reflect.Field;
+
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
 public class Converting {
-    public static <T extends Writeable> Sexp write(final Class<T> clazz, final T o) {
-        if (clazz == Sexp.class) {
-            return (Sexp) o;
+    private static final Field SEXP_FIELD = getSexpField();
+
+    private static Field getSexpField() {
+        try {
+            final Field res = SexpBacked.class.getDeclaredField("sexp");
+            res.setAccessible(true);
+            return res;
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
         }
-        return Registry.getConverter(clazz).write(o);
     }
 
+    // FIXME: move this out of there
     @SuppressWarnings("unchecked")
     public static Sexp writeUnchecked(final Class<?> clazz, final Object o) {
         if (clazz == Sexp.class) {
@@ -25,6 +33,16 @@ public class Converting {
         if (clazz == Sexp.class) {
             return (T) sexp;
         }
-        return Registry.getConverter(clazz).read(this, sexp);
+        // FIXME: so is this!
+        T res = Registry.getConverter(clazz).read(this, sexp);
+        // FIXME: use the dynamic class here?
+        if (SexpBacked.class.isAssignableFrom(clazz)) {
+            try {
+                SEXP_FIELD.set(res, sexp);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return res;
     }
 }

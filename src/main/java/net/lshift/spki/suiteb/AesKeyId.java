@@ -1,12 +1,11 @@
 package net.lshift.spki.suiteb;
 
+import java.util.Arrays;
+
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ByteArrayStepConverter;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.SexpBacked;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Identifier for a symmetric key, deterministically generated from the key.
@@ -14,7 +13,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * key to decrypt them with.
  */
 @ConvertClass(AesKeyId.Step.class)
-public class AesKeyId extends SexpBacked {
+public final class AesKeyId extends SexpBacked {
     public final byte[] keyId;
 
     public AesKeyId(final byte[] keyId) {
@@ -24,12 +23,15 @@ public class AesKeyId extends SexpBacked {
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return Arrays.hashCode(keyId);
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        return Arrays.equals(keyId, ((AesKeyId) obj).keyId);
     }
 
     public static class Step

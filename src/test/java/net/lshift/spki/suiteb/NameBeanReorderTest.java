@@ -6,13 +6,13 @@ import static net.lshift.spki.suiteb.Cert.cert;
 import static net.lshift.spki.suiteb.DigestSha384.digest;
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.Signed.signed;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.Converting;
 import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
@@ -22,6 +22,23 @@ import org.junit.Test;
 
 public class NameBeanReorderTest extends UsesSimpleMessage {
 
+    @Test
+    public void testRoundTrip() throws InvalidInputException, IOException  {
+        final Sexp pkSexp =
+            PrivateSigningKey.generate().getPublicKey().toSexp();
+
+        prettyPrint(Sexp.class, pkSexp, System.out);
+        final List<Sexp> coords
+            = pkSexp.list().getSparts().get(0).list().getSparts();
+        final Slist reversed = list("suiteb-p384-ecdsa-public-key",
+            list("point", coords.get(1), coords.get(0)));
+
+        prettyPrint(Sexp.class, reversed, System.out);
+        PublicSigningKey deserialized = ConvertUtils.C.read(
+            PublicSigningKey.class, reversed);
+        assertEquals(reversed, deserialized.toSexp());
+    }
+
     @Ignore
     @Test
     public void test() throws InvalidInputException, IOException  {
@@ -30,7 +47,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
         // Reorder the public key
         final PublicSigningKey publicKey = key.getPublicKey();
         final Sexp pkSexp =
-            Converting.write(PublicSigningKey.class, publicKey);
+            publicKey.toSexp();
 
         prettyPrint(Sexp.class, pkSexp, System.out);
         final List<Sexp> coords
