@@ -4,7 +4,7 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
 public class Converting {
-    public static <T> Sexp write(final Class<T> clazz, final T o) {
+    public static <T extends Writeable> Sexp write(final Class<T> clazz, final T o) {
         if (clazz == Sexp.class) {
             return (Sexp) o;
         }

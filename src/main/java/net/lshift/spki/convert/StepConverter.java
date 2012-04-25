@@ -11,7 +11,7 @@ public abstract class StepConverter<TResult, TStep>
 
     @Override
     public Sexp write(final TResult o) {
-        return Converting.write(getStepClass(), stepIn(o));
+        return Converting.writeUnchecked(getStepClass(), stepIn(o));
     }
 
     @Override

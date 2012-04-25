@@ -3,6 +3,7 @@ package net.lshift.spki.suiteb;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ByteArrayStepConverter;
 import net.lshift.spki.convert.Convert.ConvertClass;
+import net.lshift.spki.convert.Writeable;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -13,7 +14,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * key to decrypt them with.
  */
 @ConvertClass(AesKeyId.Step.class)
-public class AesKeyId {
+public class AesKeyId implements Writeable {
     public final byte[] keyId;
 
     public AesKeyId(final byte[] keyId) {

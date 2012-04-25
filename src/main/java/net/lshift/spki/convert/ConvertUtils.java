@@ -57,19 +57,25 @@ public class ConvertUtils {
     }
 
     // FIXME: what about EOF?
-    public static <T> void write(
+    public static <T extends Writeable> void write(
         final Class<T> clazz,
         final T o,
         final SpkiOutputStream os) throws IOException {
         ConvertSexp.write(os, Converting.write(clazz, o));
     }
 
-    public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
+    public static <T extends Writeable> void write(
+        final Class<T> clazz,
+        final T o,
+        final OutputStream os)
         throws IOException {
         write(clazz, o, new CanonicalSpkiOutputStream(os));
     }
 
-    public static <T> void write(final Class<T> clazz, final T o, final File f)
+    public static <T extends Writeable> void write(
+        final Class<T> clazz,
+        final T o,
+        final File f)
         throws IOException {
         final FileOutputStream os = new FileOutputStream(f);
         try {
@@ -112,7 +118,9 @@ public class ConvertUtils {
         return read(clazz, new AdvancedSpkiInputStream(is));
     }
 
-    public static <T> byte[] toBytes(final Class<T> clazz, final T o) {
+    public static <T extends Writeable> byte[] toBytes(
+        final Class<T> clazz,
+        final T o) {
         try {
             final ByteArrayOutputStream os = new ByteArrayOutputStream();
             write(clazz, o, os);
@@ -134,7 +142,7 @@ public class ConvertUtils {
         }
     }
 
-    public static <T> void prettyPrint(
+    public static <T extends Writeable> void prettyPrint(
         final Class<T> clazz,
         final T o,
         final PrintWriter ps)
@@ -142,7 +150,7 @@ public class ConvertUtils {
         write(clazz, o, new PrettyPrinter(ps));
     }
 
-    public static <T> String prettyPrint(final Class<T> clazz, final T o) {
+    public static <T extends Writeable> String prettyPrint(final Class<T> clazz, final T o) {
         final StringWriter writer = new StringWriter();
         try {
             final PrintWriter pw = new PrintWriter(writer);
@@ -155,7 +163,7 @@ public class ConvertUtils {
         return writer.toString();
     }
 
-    public static <T> void prettyPrint(
+    public static <T extends Writeable> void prettyPrint(
         final Class<T> clazz,
         final T o,
         final OutputStream out) throws IOException {

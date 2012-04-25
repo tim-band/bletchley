@@ -55,12 +55,11 @@ public class ConvertTest extends ResetsRegistry
     }
 
     @Test
-    public void convertFromUUID() throws InvalidInputException {
+    public void convertFromUUID() {
         final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
         final UUID uuid = UUID.fromString(uidstring);
-        final byte[] uBytes = ConvertUtils.toBytes(UUID.class, uuid);
-        assertEquals(atom(uidstring),
-            ConvertUtils.fromBytes(Sexp.class, uBytes));
+        final Sexp uBytes = Converting.writeUnchecked(UUID.class, uuid);
+        assertEquals(atom(uidstring), uBytes);
     }
 
     @Test

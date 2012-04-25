@@ -6,6 +6,7 @@ import java.io.OutputStream;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.suiteb.SequenceItem;
 
 import org.apache.commons.io.IOUtils;
@@ -44,7 +45,7 @@ public class OpenableUtils {
         }
     }
 
-    public static <T> void write(
+    public static <T extends Writeable> void write(
         final Class<T> clazz,
         final Openable open,
         final T o)

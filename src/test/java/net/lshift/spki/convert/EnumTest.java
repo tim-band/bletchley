@@ -19,15 +19,25 @@ public class EnumTest
         RIGHT
     }
 
+    @Convert.ByPosition(name="enum-holder", fields="testEnum")
+    public static class EnumHolder implements Writeable {
+        public final TestEnum testEnum;
+
+        public EnumHolder(TestEnum testEnum) {
+            super();
+            this.testEnum = testEnum;
+        }
+    }
+
     @Test
     public void enumTest() throws InvalidInputException, IOException {
-        final TestEnum test = TestEnum.LEFT;
-        final byte[] bytes = ConvertUtils.toBytes(TestEnum.class, test);
+        final EnumHolder test = new EnumHolder(TestEnum.LEFT);
+        final byte[] bytes = ConvertUtils.toBytes(EnumHolder.class, test);
         PrettyPrinter.prettyPrint(new PrintWriter(System.out),
             new ByteArrayInputStream(bytes));
-        assertArrayEquals("4:left".getBytes("US-ASCII"), bytes);
-        final TestEnum changeBack = ConvertUtils.fromBytes(
-            TestEnum.class, bytes);
-        assertEquals(test, changeBack);
+        assertArrayEquals("(11:enum-holder4:left)".getBytes("US-ASCII"), bytes);
+        final EnumHolder changeBack = ConvertUtils.fromBytes(
+            EnumHolder.class, bytes);
+        assertEquals(test.testEnum, changeBack.testEnum);
     }
 }

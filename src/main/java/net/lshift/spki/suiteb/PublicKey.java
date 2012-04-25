@@ -1,12 +1,14 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.spki.convert.Writeable;
+
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 /**
  * A superclass for PublicKey objects
  */
-public abstract class PublicKey {
+public abstract class PublicKey implements Writeable {
     protected final ECPublicKeyParameters publicKey;
     protected final DigestSha384 keyId;
 

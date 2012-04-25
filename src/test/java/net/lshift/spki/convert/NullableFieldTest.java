@@ -17,7 +17,7 @@ import org.junit.Test;
 
 public class NullableFieldTest {
     @Convert.ByName("with-optional")
-    public static class WithOptional {
+    public static class WithOptional implements Writeable {
         public final String mandatory;
         @Convert.Nullable
         public final String optional;

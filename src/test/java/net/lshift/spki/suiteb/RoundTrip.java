@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
+import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.convert.openable.ByteOpenable;
 
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class RoundTrip
 {
     private static final Logger LOG = LoggerFactory.getLogger(RoundTrip.class);
 
-    public static <T> T roundTrip(final Class<T> clazz, final T o)
+    public static <T extends Writeable> T roundTrip(final Class<T> clazz, final T o)
     {
         try {
             final ByteOpenable buf = new ByteOpenable();

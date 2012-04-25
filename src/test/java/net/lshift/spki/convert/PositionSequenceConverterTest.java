@@ -16,7 +16,7 @@ import org.junit.Test;
 public class PositionSequenceConverterTest extends ResetsRegistry {
 
     @Convert.PositionSequence(name="position-convert", fields={"first"}, seq="rest")
-    public static class PositionSequenceExample {
+    public static class PositionSequenceExample implements Writeable {
         public final String first;
         public final List<String> rest;
 
