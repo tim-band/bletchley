@@ -61,9 +61,4 @@ public class OpenableUtils {
         throws IOException, InvalidInputException {
         return read(SequenceItem.class, open);
     }
-
-    public static void write(final Openable open, final SequenceItem item)
-        throws IOException {
-        write(open, item);
-    }
 }

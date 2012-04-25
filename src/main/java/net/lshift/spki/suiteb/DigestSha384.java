@@ -48,10 +48,6 @@ public class DigestSha384 extends SexpBacked implements SequenceItem {
         return new DigestSha384(digest);
     }
 
-    public static DigestSha384 digest(final SequenceItem item) {
-        return digest(item);
-    }
-
     public static class Step
         extends ListStepConverter<DigestSha384, Hash> {
 
