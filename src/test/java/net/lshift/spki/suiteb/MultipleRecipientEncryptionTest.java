@@ -29,16 +29,16 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
         final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         final AesKey aesKey = AesKey.generateAESKey();
         System.out.println("Master key:");
-        ConvertUtils.prettyPrint(AesKey.class, aesKey, System.out);
-        ConvertUtils.prettyPrint(AesKeyId.class, aesKey.getKeyId(), System.out);
+        ConvertUtils.prettyPrint(aesKey, System.out);
+        ConvertUtils.prettyPrint(aesKey.getKeyId(), System.out);
         final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
         sequenceItems.add(ephemeral.getPublicKey());
         for (final PublicEncryptionKey pKey : publicKeys) {
             sequenceItems.add(EcdhItem.ecdhItem(ephemeral, pKey));
             final AesKey rKey = ephemeral.getKeyAsSender(pKey);
             System.out.println("Subkey:");
-            ConvertUtils.prettyPrint(AesKey.class, rKey, System.out);
-            ConvertUtils.prettyPrint(AesKeyId.class, rKey.getKeyId(), System.out);
+            ConvertUtils.prettyPrint(rKey, System.out);
+            ConvertUtils.prettyPrint(rKey.getKeyId(), System.out);
             sequenceItems.add(rKey.encrypt(aesKey));
         }
         sequenceItems.add(aesKey.encrypt(message));

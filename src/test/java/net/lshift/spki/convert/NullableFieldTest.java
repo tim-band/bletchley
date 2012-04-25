@@ -44,8 +44,8 @@ public class NullableFieldTest {
         final WithOptional read = read(WithOptional.class, toConvert(sexp));
         assertEquals(withOptional.mandatory, read.mandatory);
         assertEquals(withOptional.optional, read.optional);
-        final byte[] direct = toBytes(Sexp.class, sexp);
-        final byte[] indirect = toBytes(WithOptional.class, withOptional);
+        final byte[] direct = toBytes(sexp);
+        final byte[] indirect = toBytes(withOptional);
         assertArrayEquals(direct, indirect);
     }
 
@@ -58,6 +58,6 @@ public class NullableFieldTest {
 
     @Test(expected=NullPointerException.class)
     public void mandatoryCannotBeNull() {
-        toBytes(WithOptional.class, new WithOptional(null, "bar"));
+        toBytes(new WithOptional(null, "bar"));
     }
 }

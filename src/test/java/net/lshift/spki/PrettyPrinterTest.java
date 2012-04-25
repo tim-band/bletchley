@@ -65,7 +65,7 @@ public class PrettyPrinterTest {
     @Theory
     public void theoryPrettyPrintingIsStable(final TestPair pair) throws IOException {
         final String prettyPrinted
-            = ConvertUtils.prettyPrint(Sexp.class, pair.getSexp());
+            = ConvertUtils.prettyPrint(pair.getSexp());
         assertThat(prettyPrinted,
             is(IOUtils.toString(pair.getResourceAsStream())));
     }
@@ -82,7 +82,7 @@ public class PrettyPrinterTest {
         if (WRITE_TEST_OUTPUT) {
             for (final TestPair pair : data()) {
                 final String prettyPrinted = ConvertUtils.prettyPrint(
-                    Sexp.class, pair.getSexp());
+                    pair.getSexp());
                 final FileOutputStream out
                     = new FileOutputStream("/tmp/out/" + pair.getResourceName());
                 IOUtils.write(prettyPrinted, out);

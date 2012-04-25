@@ -37,8 +37,7 @@ public class DigestRng {
 
     private int nextByte() {
         if (randomBytes == null || byteOff >= randomBytes.length) {
-            final DigestSha384 digest = DigestSha384.digest(NextBytes.class,
-                new NextBytes(useCounter++, initialBytes));
+            final DigestSha384 digest = DigestSha384.digest(new NextBytes(useCounter++, initialBytes));
             randomBytes = digest.getBytes();
             byteOff = 0;
         }

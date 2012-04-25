@@ -32,7 +32,7 @@ public class EnumTest
     @Test
     public void enumTest() throws InvalidInputException, IOException {
         final EnumHolder test = new EnumHolder(TestEnum.LEFT);
-        final byte[] bytes = ConvertUtils.toBytes(EnumHolder.class, test);
+        final byte[] bytes = ConvertUtils.toBytes(test);
         PrettyPrinter.prettyPrint(new PrintWriter(System.out),
             new ByteArrayInputStream(bytes));
         assertArrayEquals("(11:enum-holder4:left)".getBytes("US-ASCII"), bytes);

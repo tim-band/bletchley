@@ -65,7 +65,7 @@ public class Cli {
 
     public static void genSigningKey(final Openable out)
         throws IOException {
-        write(PrivateSigningKey.class, out, PrivateSigningKey.generate());
+        write(out, PrivateSigningKey.generate());
     }
 
     public static void genEncryptionKey(final Openable out)

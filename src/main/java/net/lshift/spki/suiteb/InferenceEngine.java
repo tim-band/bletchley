@@ -79,7 +79,7 @@ public class InferenceEngine {
 
     public void process(final SequenceItem item, final Condition trust) throws InvalidInputException {
         LOG.debug("Processing item:\n{}",
-            ConvertUtils.prettyPrint(SequenceItem.class, item));
+            ConvertUtils.prettyPrint(item));
         item.process(this, trust);
     }
 

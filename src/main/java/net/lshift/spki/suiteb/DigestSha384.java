@@ -33,12 +33,12 @@ public class DigestSha384 extends SexpBacked implements SequenceItem {
         return bytes;
     }
 
-    public static <T extends Writeable> DigestSha384 digest(final Class<T> clazz, final T o) {
+    public static DigestSha384 digest(final Writeable o) {
         final SHA384Digest sha = new SHA384Digest();
         final DigestOutputStream digester = new DigestOutputStream(
             new DevnullOutputStream(), sha);
         try {
-            ConvertUtils.write(clazz, o, digester);
+            ConvertUtils.write(o, digester);
             digester.close();
         } catch (final IOException e) {
             throw new AssertionError("CANTHAPPEN:" + e);
@@ -49,7 +49,7 @@ public class DigestSha384 extends SexpBacked implements SequenceItem {
     }
 
     public static DigestSha384 digest(final SequenceItem item) {
-        return digest(SequenceItem.class, item);
+        return digest(item);
     }
 
     public static class Step

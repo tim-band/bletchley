@@ -20,7 +20,7 @@ public class ConvertTest extends ResetsRegistry
     public void convertTest() throws InvalidInputException {
         final ConvertExample test = new ConvertExample(
             BigInteger.valueOf(3), BigInteger.valueOf(17));
-        final byte[] bytes = ConvertUtils.toBytes(ConvertExample.class, test);
+        final byte[] bytes = ConvertUtils.toBytes(test);
         //PrettyPrinter.prettyPrint(System.out, sexp);
         final ConvertExample changeBack = ConvertUtils.fromBytes(
             ConvertExample.class, bytes);
@@ -44,7 +44,7 @@ public class ConvertTest extends ResetsRegistry
     public void marshalTest() {
         final byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.ASCII);
         final Sexp struct = list("test", atom("abcdefghijklmnopqrstuvwxyz"), atom("12345"), atom(":: ::"));
-        assertArrayEquals(bytes, ConvertUtils.toBytes(Sexp.class, struct));
+        assertArrayEquals(bytes, ConvertUtils.toBytes(struct));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ConvertTest extends ResetsRegistry
     @Test
     public void convertToUUID() throws InvalidInputException {
         final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
-        final byte[] uBytes = ConvertUtils.toBytes(Sexp.class, atom(uidstring));
+        final byte[] uBytes = ConvertUtils.toBytes(atom(uidstring));
         assertEquals(UUID.fromString(uidstring),
             ConvertUtils.fromBytes(UUID.class, uBytes));
     }

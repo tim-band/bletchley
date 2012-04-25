@@ -45,14 +45,13 @@ public class OpenableUtils {
         }
     }
 
-    public static <T extends Writeable> void write(
-        final Class<T> clazz,
+    public static void write(
         final Openable open,
-        final T o)
+        final Writeable o)
         throws IOException {
         final OutputStream os = open.write();
         try {
-            ConvertUtils.write(clazz, o, os);
+            ConvertUtils.write(o, os);
         } finally {
             os.close();
         }
@@ -65,6 +64,6 @@ public class OpenableUtils {
 
     public static void write(final Openable open, final SequenceItem item)
         throws IOException {
-        write(SequenceItem.class, open, item);
+        write(open, item);
     }
 }

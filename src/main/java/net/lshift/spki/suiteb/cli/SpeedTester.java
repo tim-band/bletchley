@@ -26,7 +26,6 @@ public class SpeedTester {
         super();
         this.privateKey = PrivateSigningKey.generate();
         this.publicKeyBytes = ConvertUtils.toBytes(
-            PublicEncryptionKey.class,
             PrivateEncryptionKey.generate().getPublicKey());
         this.messageBytes = new byte[100];
     }
@@ -60,7 +59,7 @@ public class SpeedTester {
                 privateKey.sign(message),
                 signed(message)
         )));
-        ConvertUtils.toBytes(Sequence.class, sequence);
+        ConvertUtils.toBytes(sequence);
     }
 
 }

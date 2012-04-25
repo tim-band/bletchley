@@ -61,7 +61,7 @@ public class AesKey extends SexpBacked implements SequenceItem {
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, nonce, ZERO_BYTES));
             final byte[] plaintext =
-                ConvertUtils.toBytes(SequenceItem.class, message);
+                ConvertUtils.toBytes(message);
             final byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
             final int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);

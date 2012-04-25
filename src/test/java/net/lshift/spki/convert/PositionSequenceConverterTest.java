@@ -57,7 +57,7 @@ public class PositionSequenceConverterTest extends ResetsRegistry {
             Arrays.asList("that", "theother"));
         final byte[] exampleBytes = s("(position-convert this that theother)");
         assertThat(
-            ConvertUtils.toBytes(PositionSequenceExample.class, example),
+            ConvertUtils.toBytes(example),
             is(exampleBytes));
         assertThat(
             ConvertUtils.fromBytes(PositionSequenceExample.class, exampleBytes),
@@ -67,7 +67,7 @@ public class PositionSequenceConverterTest extends ResetsRegistry {
     private static byte[] s(final String string) throws IOException, InvalidInputException {
         final Sexp s = ConvertUtils.readAdvanced(Sexp.class,
             new ByteArrayInputStream(ConvertUtils.bytes(string)));
-        return ConvertUtils.toBytes(Sexp.class, s);
+        return ConvertUtils.toBytes(s);
     }
 
 }

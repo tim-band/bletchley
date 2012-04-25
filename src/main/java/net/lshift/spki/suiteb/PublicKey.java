@@ -12,11 +12,9 @@ public abstract class PublicKey extends SexpBacked {
     protected final ECPublicKeyParameters publicKey;
     protected final DigestSha384 keyId;
 
-    @SuppressWarnings("unchecked")
     PublicKey(final CipherParameters publicKey) {
         this.publicKey = (ECPublicKeyParameters) publicKey;
-        keyId = DigestSha384.digest(
-            (Class<PublicKey>) this.getClass(), this);
+        keyId = DigestSha384.digest(this);
     }
 
     public DigestSha384 getKeyId() {
