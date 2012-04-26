@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.InferenceVariables.NOW;
 import static net.lshift.spki.suiteb.Limit.limit;
 import static net.lshift.spki.suiteb.Signed.signed;
 import static net.lshift.spki.suiteb.sexpstructs.EcdhItem.ecdhItem;
@@ -129,8 +130,8 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     @Test(expected = IllegalStateException.class)
     public void timeCanOnlyBeSetOnce() {
         final InferenceEngine engine = new InferenceEngine();
-        engine.setTime();
-        engine.setTime();
+        NOW.set(engine, new Date());
+        NOW.set(engine, new Date());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -150,7 +151,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Date later = new Date(now.getTime() + 1000000);
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
-        engine.setTime(now);
+        NOW.set(engine, now);
         engine.processTrusted(limit(key.getPublicKey(),
             new InvalidOnOrAfter(later)));
         engine.process(signed(key, message));
@@ -164,7 +165,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Date earlier = new Date(now.getTime() - 1000000);
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
-        engine.setTime(now);
+        NOW.set(engine, now);
         engine.processTrusted(limit(key.getPublicKey(),
             new InvalidOnOrAfter(earlier)));
         engine.process(key.getPublicKey());

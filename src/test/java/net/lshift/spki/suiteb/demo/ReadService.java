@@ -1,8 +1,10 @@
 package net.lshift.spki.suiteb.demo;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.read;
+import static net.lshift.spki.suiteb.InferenceVariables.NOW;
 
 import java.io.IOException;
+import java.util.Date;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Registry;
@@ -14,7 +16,7 @@ public class ReadService {
                     throws IOException, InvalidInputException {
         Registry.getConverter(Service.class);
         final InferenceEngine engine = new InferenceEngine();
-        engine.setTime();
+        NOW.set(engine, new Date());
         engine.processTrusted(read(acl));
         engine.process(read(source));
         return (Service) engine.getSoleAction();

@@ -1,5 +1,7 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.InferenceVariables.NOW;
+
 import java.util.Date;
 
 import net.lshift.spki.convert.Convert;
@@ -19,6 +21,6 @@ public class ValidOnOrAfter implements Condition {
 
     @Override
     public boolean allows(final InferenceEngine engine, final ActionType action) {
-        return !engine.getTime().before(date);
+        return !NOW.get(engine).before(date);
     }
 }

@@ -4,7 +4,6 @@ import static net.lshift.spki.suiteb.ConditionJoiner.or;
 import static net.lshift.spki.suiteb.UntrustedCondition.nullMeansUntrusted;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +41,10 @@ public class InferenceEngine {
     private final Map<AesKeyId, AesKey> aesKeys
         = new HashMap<AesKeyId, AesKey>();
 
-    private PassphraseDelegate passphraseDelegate;
+    private final Map<InferenceVariable<?>, Object> variables
+        = new HashMap<InferenceVariable<?>, Object>();
 
-    private Date time;
+    private PassphraseDelegate passphraseDelegate;
 
 //    private final Map<String, String> byteNames = new HashMap<String,String>();
 //
@@ -152,20 +152,24 @@ public class InferenceEngine {
         this.passphraseDelegate = passphraseDelegate;
     }
 
-    public Date getTime() {
-        if (time == null) {
-            throw new IllegalStateException("No time set on InferenceEngine");
+    public Object getVar(InferenceVariable<?> v) {
+        Object res = variables.get(v);
+        if (res == null) {
+            throw new IllegalStateException(
+                "Variable not set on InferenceEngine:" + v.toString());
         }
-        return time;
+        return res;
     }
 
-    public void setTime(final Date time) {
-        if (this.time != null)
-            throw new IllegalStateException("Time can only be set once");
-        this.time = time;
-    }
-
-    public void setTime() {
-        setTime(new Date());
+    public void setVar(InferenceVariable<?> v, Object val) {
+        if (val == null) {
+            throw new NullPointerException(
+                "Cannot set null value on variable: " + v);
+        }
+        if (variables.containsKey(v)) {
+            throw new IllegalStateException(
+                "Variable can only be set once:" + v.toString());
+        }
+        variables.put(v, val);
     }
 }
