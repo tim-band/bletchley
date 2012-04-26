@@ -36,8 +36,7 @@ public final class AesKeyId extends SexpBacked {
 
     public static class Step
         extends ByteArrayStepConverter<AesKeyId> {
-        @Override
-        public Class<AesKeyId> getResultClass() { return AesKeyId.class; }
+        public Step() { super(AesKeyId.class); }
 
         @Override
         protected byte[] stepIn(final AesKeyId o) {

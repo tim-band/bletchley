@@ -57,10 +57,7 @@ public class PrivateSigningKey extends SexpBacked {
 
     public static class Step
         extends ListStepConverter<PrivateSigningKey, EcdsaPrivateKey> {
-        @Override
-        public Class<PrivateSigningKey> getResultClass() {
-            return PrivateSigningKey.class;
-        }
+        public Step() { super(PrivateSigningKey.class); }
 
         @Override
         protected Class<EcdsaPrivateKey> getStepClass() {

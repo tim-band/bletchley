@@ -8,6 +8,10 @@ package net.lshift.spki.convert;
 public abstract class ListStepConverter<TResult, TStep>
 extends StepConverter<TResult, TStep>
 implements ListConverter<TResult> {
+    public ListStepConverter(Class<TResult> clazz) {
+        super(clazz);
+    }
+
     protected ListConverter<TStep> getStepConverter() {
         return (ListConverter<TStep>)Registry.getConverter(getStepClass());
     }

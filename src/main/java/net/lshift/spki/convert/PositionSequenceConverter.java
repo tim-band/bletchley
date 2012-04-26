@@ -26,11 +26,11 @@ public class PositionSequenceConverter<T>
     public void writeRest(final T o, final List<Sexp> tail) {
         try {
             for (final FieldConvertInfo f: fields) {
-                tail.add(Converting.writeUnchecked(f.field.getType(), f.field.get(o)));
+                tail.add(writeUnchecked(f.field.getType(), f.field.get(o)));
             }
             final List<?> property = (List<?>) seq.get(o);
             for (final Object v: property) {
-                tail.add(Converting.writeUnchecked(contentType, v));
+                tail.add(writeUnchecked(contentType, v));
             }
         } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(this, clazz, e);

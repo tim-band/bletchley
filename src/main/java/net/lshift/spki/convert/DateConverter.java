@@ -9,7 +9,7 @@ import net.lshift.spki.Constants;
  */
 public class DateConverter
     extends StringStepConverter<Date> {
-    @Override public Class<Date> getResultClass() { return Date.class; }
+    public DateConverter() { super(Date.class); }
 
     @Override
     protected String stepIn(final Date o) {

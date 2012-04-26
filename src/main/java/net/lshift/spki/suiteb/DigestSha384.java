@@ -51,10 +51,7 @@ public class DigestSha384 extends SexpBacked implements SequenceItem {
     public static class Step
         extends ListStepConverter<DigestSha384, Hash> {
 
-        @Override
-        public Class<DigestSha384> getResultClass() {
-            return DigestSha384.class;
-        }
+        public Step() { super(DigestSha384.class); }
 
         @Override
         protected Class<Hash> getStepClass() {

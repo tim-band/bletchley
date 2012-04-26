@@ -36,13 +36,10 @@ public class ECPointConverter
         }
     }
 
-    public ECPointConverter() { super(); }
+    public ECPointConverter() { super(ECPoint.class); }
 
     @Override
     public Class<Point> getStepClass() { return Point.class; }
-
-    @Override
-    public Class<ECPoint> getResultClass() { return ECPoint.class; }
 
     @Override
     public ECPointConverter.Point stepIn(final ECPoint q) {

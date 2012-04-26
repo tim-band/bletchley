@@ -29,7 +29,7 @@ public class NameBeanConverter<T>
         final Object property) {
         if (property != null) {
             return list(field.hyphenatedName,
-                Converting.writeUnchecked(field.field.getType(), property));
+                writeUnchecked(field.field.getType(), property));
         } else if (field.nullable) {
             return null;
         } else {

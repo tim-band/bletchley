@@ -18,23 +18,14 @@ public class Converting {
         }
     }
 
-    // FIXME: move this out of there
-    @SuppressWarnings("unchecked")
-    public static Sexp writeUnchecked(final Class<?> clazz, final Object o) {
-        if (clazz == Sexp.class) {
-            return (Sexp) o;
-        }
-        return ((Converter<Object>) Registry.getConverter(clazz)).write(o);
-    }
-
     @SuppressWarnings("unchecked")
     public <T> T read(final Class<T> clazz, final Sexp sexp) throws InvalidInputException {
         // FIXME: this sure is ugly!
         if (clazz == Sexp.class) {
             return (T) sexp;
         }
-        // FIXME: so is this!
         final T res = Registry.getConverter(clazz).read(this, sexp);
+        // FIXME: so is this!
         // FIXME: use the dynamic class here?
         if (SexpBacked.class.isAssignableFrom(clazz)) {
             try {

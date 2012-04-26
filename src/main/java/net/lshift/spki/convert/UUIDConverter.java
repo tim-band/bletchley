@@ -8,7 +8,7 @@ import java.util.UUID;
 public class UUIDConverter
     extends StringStepConverter<UUID>
 {
-    @Override public Class<UUID> getResultClass() { return UUID.class; }
+    public UUIDConverter() { super(UUID.class); }
 
     @Override
     protected String stepIn(final UUID o) { return o.toString(); }

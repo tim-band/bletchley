@@ -11,17 +11,16 @@ public class EnumConverter<T extends Enum<T>>
 extends StringStepConverter<T> {
     private static final String VALID_ENUM =
                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
-    private final Class<T> resultClass;
     private final Map<T, String> forwardMap
         = new HashMap<T, String>();
     private final Map<String, T> backMap
         = new HashMap<String, T>();
 
     public EnumConverter(final Class<T> resultClass) {
+        super(resultClass);
         if (!resultClass.isEnum()) {
             throw new IllegalArgumentException();
         }
-        this.resultClass = resultClass;
         for (final T t: resultClass.getEnumConstants()) {
             final String name = t.name();
             if (!StringUtils.containsOnly(name, VALID_ENUM)) {
@@ -33,8 +32,6 @@ extends StringStepConverter<T> {
             backMap.put(conversion, t);
         }
     }
-
-    @Override public Class<T> getResultClass() { return resultClass; }
 
     @Override
     protected T stepOut(final String s)

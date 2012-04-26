@@ -57,10 +57,7 @@ public class PrivateEncryptionKey extends SexpBacked implements SequenceItem {
     public static class Step
         extends ListStepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
 
-        @Override
-        public Class<PrivateEncryptionKey> getResultClass() {
-            return PrivateEncryptionKey.class;
-        }
+        public Step() { super(PrivateEncryptionKey.class); }
 
         @Override
         protected Class<EcdhPrivateKey> getStepClass() {

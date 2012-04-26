@@ -30,11 +30,7 @@ public class PublicSigningKey
 
     public static class Step
         extends ListStepConverter<PublicSigningKey, EcdsaPublicKey> {
-
-        @Override
-        public Class<PublicSigningKey> getResultClass() {
-            return PublicSigningKey.class;
-        }
+        public Step() { super(PublicSigningKey.class); }
 
         @Override
         protected Class<EcdsaPublicKey> getStepClass() {

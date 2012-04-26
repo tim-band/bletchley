@@ -49,7 +49,7 @@ public class SequenceConverter<T>
         try {
             final List<?> property = (List<?>) beanField.get(o);
             for (final Object v: property) {
-                tail.add(Converting.writeUnchecked(contentType, v));
+                tail.add(writeUnchecked(contentType, v));
             }
         } catch (final IllegalAccessException e) {
             throw new ConvertReflectionException(clazz, e);

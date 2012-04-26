@@ -9,10 +9,7 @@ import net.lshift.spki.InvalidInputException;
  */
 public class BigIntegerConverter
     extends ByteArrayStepConverter<BigInteger> {
-    @Override
-    public Class<BigInteger> getResultClass() {
-        return BigInteger.class;
-    }
+    public BigIntegerConverter() { super(BigInteger.class); }
 
     @Override
     protected BigInteger stepOut(final byte[] s)

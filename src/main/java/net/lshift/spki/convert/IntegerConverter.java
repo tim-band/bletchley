@@ -6,8 +6,7 @@ import net.lshift.spki.InvalidInputException;
 
 public class IntegerConverter
     extends StepConverter<Integer,BigInteger> {
-
-    @Override public Class<Integer> getResultClass() { return Integer.class; }
+    public IntegerConverter() { super(Integer.class); }
 
     @Override protected Class<BigInteger> getStepClass() { return BigInteger.class; }
 

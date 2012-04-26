@@ -7,11 +7,15 @@ import net.lshift.spki.sexpform.Sexp;
  * Convert TResult to SExp by first converting it to TStep using stepIn/stepOut
  */
 public abstract class StepConverter<TResult, TStep>
-    implements Converter<TResult> {
+    extends ConverterImpl<TResult> {
+
+    public StepConverter(Class<TResult> clazz) {
+        super(clazz);
+    }
 
     @Override
     public Sexp write(final TResult o) {
-        return Converting.writeUnchecked(getStepClass(), stepIn(o));
+        return writeUnchecked(getStepClass(), stepIn(o));
     }
 
     @Override
