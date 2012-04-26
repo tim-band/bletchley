@@ -58,7 +58,7 @@ public class ConvertTest extends ResetsRegistry
     public void convertFromUUID() {
         final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
         final UUID uuid = UUID.fromString(uidstring);
-        final Sexp uBytes = ConverterImpl.writeUnchecked(UUID.class, uuid);
+        final Sexp uBytes = Registry.getConverter(UUID.class).write(uuid);
         assertEquals(atom(uidstring), uBytes);
     }
 

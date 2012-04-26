@@ -1,5 +1,8 @@
 package net.lshift.spki.convert;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
@@ -10,6 +13,8 @@ import org.bouncycastle.util.Arrays;
  */
 public abstract class ConverterImpl<T> implements Converter<T> {
     protected final Class<T> clazz;
+    private final Map<Class<?>, Converter<?>> extraConverters
+        = new HashMap<Class<?>, Converter<?>>();
 
     public ConverterImpl(Class<T> clazz) {
         this.clazz = clazz;
@@ -20,20 +25,24 @@ public abstract class ConverterImpl<T> implements Converter<T> {
         return clazz;
     }
 
+    public void addConverter(Converter<?> converter) {
+        extraConverters.put(converter.getResultClass(), converter);
+    }
+
     protected <U> U readElement(
         final Class<U> elementClass,
         final Converting c,
         final Sexp in)
         throws InvalidInputException {
-        return c.read(elementClass, in);
+        return c.read(elementClass, extraConverters, in);
     }
 
     @SuppressWarnings("unchecked")
-    public static Sexp writeUnchecked(final Class<?> clazz, final Object o) {
+    public Sexp writeUnchecked(final Class<?> clazz, final Object o) {
         if (clazz == Sexp.class) {
             return (Sexp) o;
         }
-        return ((Converter<Object>) Registry.getConverter(clazz)).write(o);
+        return ((Converter<Object>) Converting.getConverter(extraConverters, clazz)).write(o);
     }
 
     public static void assertMatches(final Sexp atom, final String name)

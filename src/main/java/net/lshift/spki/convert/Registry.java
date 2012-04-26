@@ -30,14 +30,6 @@ public class Registry {
         }
     }
 
-    /**
-     * Register this converter, unless we already have a converter for this
-     * result class.
-     */
-    public static <T> void register(final Converter<T> converter) {
-        REGISTRY.registerInternal(converter);
-    }
-
     static {
         resetRegistry();
     }
@@ -71,7 +63,7 @@ public class Registry {
             converterMap.put(clazz, res);
             boolean success = false;
             try {
-                handleAnnotations(clazz);
+                handleAnnotations(clazz, res);
                 success = true;
             } finally {
                 if (!success) {
@@ -82,14 +74,16 @@ public class Registry {
         return res;
     }
 
-    private static <T> void handleAnnotations(final Class<T> clazz) {
+    private static <T> void handleAnnotations(
+        final Class<T> clazz,
+        final Converter<T> converter) {
         try {
             for (final Annotation a : clazz.getAnnotations()) {
                 final HandlerClass handlerClass
                     = a.annotationType().getAnnotation(
                         Convert.HandlerClass.class);
                 if (handlerClass != null) {
-                    handleAnnotation(clazz, a, handlerClass);
+                    handleAnnotation(clazz, converter, a, handlerClass);
                 }
             }
         } catch (final InstantiationException e) {
@@ -101,14 +95,14 @@ public class Registry {
 
     private static <T, A extends Annotation> void handleAnnotation(
         final Class<T> clazz,
+        final Converter<T> converter,
         final A a,
         final HandlerClass handlerClass)
         throws InstantiationException, IllegalAccessException {
         @SuppressWarnings("unchecked")
-        final
-        AnnotationHandler<A> handler =
+        final AnnotationHandler<A> handler =
             (AnnotationHandler<A>) handlerClass.value().newInstance();
-        handler.handle(clazz, a);
+        handler.handle(clazz, converter, a);
     }
 
     private static <T> Converter<T> generateConverter(final Class<T> clazz) {
