@@ -13,7 +13,7 @@ import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
     Action.class,
     AesKey.class,
     AesPacket.class,
-    Cert.class,
+    Limit.class,
     DigestSha384.class,
     EcdhItem.class,
     PassphraseProtectedKey.class,

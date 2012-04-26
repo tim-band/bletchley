@@ -2,7 +2,6 @@ package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.convert.ConvertUtils.prettyPrint;
 import static net.lshift.spki.sexpform.Create.list;
-import static net.lshift.spki.suiteb.Cert.cert;
 import static net.lshift.spki.suiteb.DigestSha384.digest;
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.Signed.signed;
@@ -17,7 +16,6 @@ import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NameBeanReorderTest extends UsesSimpleMessage {
@@ -46,8 +44,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
         // Reorder the public key
         final PublicSigningKey publicKey = key.getPublicKey();
         final InferenceEngine engine = new InferenceEngine();
-        engine.processTrusted(cert(publicKey));
-        engine.process(publicKey);
+        engine.processTrusted(publicKey);
         engine.process(signed(key, message));
         checkMessage(engine, message);
     }

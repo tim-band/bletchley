@@ -35,6 +35,6 @@ public class Signature extends SexpBacked implements SequenceItem {
         }
         if (!pKey.validate(digest, rawSignature))
             throw new CryptographyException("Sig validation failure");
-        engine.addItemTrust(digest, engine.getKeyTrust(keyId));
+        engine.addItemTrust(digest, engine.getItemTrust(keyId));
     }
 }

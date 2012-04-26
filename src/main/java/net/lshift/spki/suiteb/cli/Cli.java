@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.lshift.spki.AdvancedSpkiInputStream;
@@ -26,8 +25,6 @@ import net.lshift.spki.convert.openable.OpenableUtils;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;
-import net.lshift.spki.suiteb.Cert;
-import net.lshift.spki.suiteb.Condition;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -122,9 +119,7 @@ public class Cli {
         final Openable out)
         throws IOException, InvalidInputException {
         final InferenceEngine inference = new InferenceEngine();
-        inference.processTrusted(new Cert(signingKey.getKeyId(),
-                Collections.<Condition>emptyList()));
-        inference.process(signingKey);
+        inference.processTrusted(signingKey);
         inference.process(encryptionKey);
         inference.process(read(packet));
         final ActionType action = inference.getSoleAction();

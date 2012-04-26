@@ -33,9 +33,6 @@ public class InferenceEngine {
     private final Map<DigestSha384, Condition> itemTrust
         = new HashMap<DigestSha384, Condition>();
 
-    private final Map<DigestSha384, Condition> keyTrust
-        = new HashMap<DigestSha384, Condition>();
-
     private final Map<DigestSha384, PublicEncryptionKey> publicEncryptionKeys
     = new HashMap<DigestSha384, PublicEncryptionKey>();
     private final Map<DigestSha384, PrivateEncryptionKey> privateEncryptionKeys
@@ -107,22 +104,7 @@ public class InferenceEngine {
     }
 
     public void addItemTrust(final DigestSha384 digest, final Condition condition) {
-        orPut(itemTrust, digest, condition);
-    }
-
-    public Condition getKeyTrust(final DigestSha384 keyId) {
-        return nullMeansNever(keyTrust.get(keyId));
-    }
-
-    public void addKeyTrust(final DigestSha384 keyId, final Condition condition) {
-        orPut(keyTrust, keyId, condition);
-    }
-
-    private static void orPut(
-        final Map<DigestSha384, Condition> map,
-        final DigestSha384 subject,
-        final Condition condition) {
-        map.put(subject, or(condition, nullMeansNever(map.get(subject))));
+        itemTrust.put(digest, or(condition, nullMeansNever(itemTrust.get(digest))));
     }
 
     public PublicEncryptionKey getPublicEncryptionKey(final DigestSha384 recipient) {

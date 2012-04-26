@@ -4,9 +4,6 @@ import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
-
-import java.util.Collections;
-
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
 
@@ -22,13 +19,11 @@ public class SequenceSigningTest extends UsesSimpleMessage
         final Action message = makeMessage();
         Sequence sequence = sequence(
             publicKey,
-            privateKey.sign(message),
-            signed(message));
+            signed(privateKey, message));
         sequence = roundTrip(Sequence.class, sequence);
 
         final InferenceEngine inference = new InferenceEngine();
-        inference.processTrusted(new Cert(publicKey.getKeyId(),
-                Collections.<Condition>emptyList()));
+        inference.processTrusted(publicKey.getKeyId());
         inference.process(sequence);
         checkMessage(inference, message);
     }

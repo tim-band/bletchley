@@ -51,12 +51,12 @@ public class PublicSigningKey
             throws ParseException {
             return new PublicSigningKey(s.getParameters());
         }
-
     }
 
     @Override
     public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addPublicSigningKey(this);
+        engine.addItemTrust(keyId, trust);
     }
 }

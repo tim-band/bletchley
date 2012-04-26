@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.Limit.limit;
 import static net.lshift.spki.suiteb.Signed.signed;
 import static net.lshift.spki.suiteb.sexpstructs.EcdhItem.ecdhItem;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -7,8 +8,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -31,8 +30,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     public void emptyListIfSignerHasDoneNothing() throws InvalidInputException {
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
-        engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
-                Collections.<Condition>emptyList()));
+        engine.processTrusted(key.getPublicKey());
         checkNoMessages(engine);
     }
 
@@ -42,8 +40,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final InferenceEngine engine = new InferenceEngine();
         engine.process(key.getPublicKey());
         final Action message = makeMessage();
-        engine.process(key.sign(message));
-        engine.process(signed(message));
+        engine.process(signed(key, message));
         checkNoMessages(engine);
     }
 
@@ -52,11 +49,8 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Action message = makeMessage();
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
-        engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
-                Collections.<Condition>emptyList()));
-        engine.process(key.getPublicKey());
-        engine.process(key.sign(message));
-        engine.process(signed(message));
+        engine.processTrusted(key.getPublicKey());
+        engine.process(signed(key, message));
         checkMessage(engine, message);
     }
 
@@ -66,15 +60,9 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final PrivateSigningKey masterKey = PrivateSigningKey.generate();
         final PrivateSigningKey subKey = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
-        engine.processTrusted(new Cert(masterKey.getPublicKey().getKeyId(), Collections.<Condition>emptyList()));
-        engine.process(masterKey.getPublicKey());
-        final Cert cert = new Cert(subKey.getPublicKey().getKeyId(),
-                Collections.<Condition>emptyList());
-        engine.process(masterKey.sign(cert));
-        engine.process(signed(cert));
-        engine.process(subKey.getPublicKey());
-        engine.process(subKey.sign(message));
-        engine.process(signed(message));
+        engine.processTrusted(masterKey.getPublicKey());
+        engine.process(signed(masterKey, subKey.getPublicKey()));
+        engine.process(signed(subKey, message));
         checkMessage(engine, message);
     }
 
@@ -84,14 +72,9 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final PrivateSigningKey masterKey = PrivateSigningKey.generate();
         final PrivateSigningKey subKey = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
-        engine.processTrusted(new Cert(masterKey.getPublicKey().getKeyId(), Collections.<Condition>emptyList()));
-        engine.process(masterKey.getPublicKey());
-        final Cert cert = new Cert(subKey.getPublicKey().getKeyId(),
-                Collections.<Condition>emptyList());
-        engine.process(signed(cert));
-        engine.process(subKey.getPublicKey());
-        engine.process(subKey.sign(message));
-        engine.process(signed(message));
+        engine.processTrusted(masterKey.getPublicKey());
+        engine.process(signed(subKey.getPublicKey()));
+        engine.process(signed(subKey, message));
         checkNoMessages(engine);
     }
 
@@ -101,12 +84,10 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final AesKey aeskey = AesKey.generateAESKey();
         final InferenceEngine engine = new InferenceEngine();
-        engine.processTrusted(new Cert(key.getPublicKey().getKeyId(), Collections.<Condition>emptyList()));
-        engine.process(key.getPublicKey());
+        engine.processTrusted(key.getPublicKey());
         engine.process(aeskey);
         final AesPacket encrypted = aeskey.encrypt(message);
-        engine.process(key.sign(encrypted));
-        engine.process(signed(encrypted));
+        engine.process(signed(key, encrypted));
         checkMessage(engine, message);
     }
 
@@ -146,8 +127,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Action message = makeMessage();
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
-        engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
-                Arrays.<Condition>asList(new InvalidOnOrAfter(new Date()))));
+        engine.processTrusted(limit(key, new InvalidOnOrAfter(new Date())));
         engine.process(key.getPublicKey());
         engine.process(key.sign(message));
         engine.process(signed(message));
@@ -161,11 +141,9 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
         engine.setTime(now);
-        engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
-                Arrays.<Condition>asList(new InvalidOnOrAfter(later))));
+        engine.processTrusted(limit(key, new InvalidOnOrAfter(later)));
         engine.process(key.getPublicKey());
-        engine.process(key.sign(message));
-        engine.process(signed(message));
+        engine.process(signed(key, message));
         checkMessage(engine, message);
     }
 
@@ -177,11 +155,9 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
         engine.setTime(later);
-        engine.processTrusted(new Cert(key.getPublicKey().getKeyId(),
-                Arrays.<Condition>asList(new InvalidOnOrAfter(now))));
+        engine.processTrusted(limit(key, new InvalidOnOrAfter(now)));
         engine.process(key.getPublicKey());
-        engine.process(key.sign(message));
-        engine.process(signed(message));
+        engine.process(signed(key, message));
         checkNoMessages(engine);
     }
 }

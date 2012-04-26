@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb.demo;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
-import static net.lshift.spki.suiteb.Cert.cert;
+import static net.lshift.spki.suiteb.Limit.limit;
 import static net.lshift.spki.suiteb.SequenceUtils.sequenceOrItem;
 import static net.lshift.spki.suiteb.Signed.signed;
 import static org.hamcrest.CoreMatchers.is;
@@ -31,13 +31,12 @@ public class TestLoop {
         final PublicSigningKey publicKey = masterKey.getPublicKey();
         final ByteOpenable acl = writeSequence(
             decryptionKey,
-            cert(publicKey.getKeyId()));
+            publicKey.getKeyId());
 
         final PrivateSigningKey subKey = PrivateSigningKey.generate();
         final ByteOpenable extra = writeSequence(
             publicKey,
-            subKey.getPublicKey(),
-            signed(masterKey, cert(subKey, expiresInOneHour())));
+            signed(masterKey, limit(subKey, expiresInOneHour())));
 
         final Service service = new Service("http", 80);
         final ByteOpenable target = new ByteOpenable();
