@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.suiteb.ConditionJoiner.or;
-import static net.lshift.spki.suiteb.NeverCondition.nullMeansNever;
+import static net.lshift.spki.suiteb.UntrustedCondition.nullMeansUntrusted;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,11 +67,11 @@ public class InferenceEngine {
 //    }
 
     public void process(final SequenceItem item) throws InvalidInputException {
-        process(item, NeverCondition.NEVER);
+        process(item, UntrustedCondition.UNTRUSTED);
     }
 
     public void processTrusted(final SequenceItem item) throws InvalidInputException {
-        process(item, AlwaysCondition.ALWAYS);
+        process(item, TrustedCondition.TRUSTED);
     }
 
     public void process(final SequenceItem item, final Condition trust) throws InvalidInputException {
@@ -100,11 +100,11 @@ public class InferenceEngine {
     }
 
     public Condition getItemTrust(final DigestSha384 digest) {
-        return nullMeansNever(itemTrust.get(digest));
+        return nullMeansUntrusted(itemTrust.get(digest));
     }
 
     public void addItemTrust(final DigestSha384 digest, final Condition condition) {
-        itemTrust.put(digest, or(condition, nullMeansNever(itemTrust.get(digest))));
+        itemTrust.put(digest, or(condition, getItemTrust(digest)));
     }
 
     public PublicEncryptionKey getPublicEncryptionKey(final DigestSha384 recipient) {

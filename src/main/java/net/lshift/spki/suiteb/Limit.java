@@ -29,20 +29,8 @@ public class Limit
     }
 
     public static Limit limit(
-        final DigestSha384 subject,
+        final SequenceItem subject,
         final Condition... conditions) {
         return new Limit(subject, Arrays.asList(conditions));
-    }
-
-    public static Limit limit(
-        final PublicSigningKey subject,
-        final Condition... conditions) {
-        return limit(subject.getKeyId(), conditions);
-    }
-
-    public static Limit limit(
-        final PrivateSigningKey subject,
-        final Condition... conditions) {
-        return limit(subject.getPublicKey(), conditions);
     }
 }

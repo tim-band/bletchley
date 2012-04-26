@@ -1,16 +1,16 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.suiteb.AlwaysCondition.ALWAYS;
+import static net.lshift.spki.suiteb.TrustedCondition.TRUSTED;
 import static net.lshift.spki.suiteb.ConditionJoiner.and;
 import static net.lshift.spki.suiteb.ConditionJoiner.or;
-import static net.lshift.spki.suiteb.NeverCondition.NEVER;
+import static net.lshift.spki.suiteb.UntrustedCondition.UNTRUSTED;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 public class ConditionJoinerTest  {
     private static final Condition[] BOOLEANS
-        = new Condition[] {NEVER, ALWAYS};
+        = new Condition[] {UNTRUSTED, TRUSTED};
 
     @Test
     public void test() {

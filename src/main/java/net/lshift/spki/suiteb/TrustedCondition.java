@@ -3,11 +3,11 @@ package net.lshift.spki.suiteb;
 /**
  * Condition that always passes
  */
-public class AlwaysCondition
+public class TrustedCondition
     implements Condition {
-    public static AlwaysCondition ALWAYS = new AlwaysCondition();
+    public static TrustedCondition TRUSTED = new TrustedCondition();
 
-    private AlwaysCondition() {
+    private TrustedCondition() {
         // use static instance
     }
 

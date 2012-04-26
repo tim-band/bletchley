@@ -58,12 +58,12 @@ public class ConditionJoiner {
 
     private static ConditionJoiner conjunction() {
         return new ConditionJoiner(
-            false, AlwaysCondition.ALWAYS, NeverCondition.NEVER);
+            false, TrustedCondition.TRUSTED, UntrustedCondition.UNTRUSTED);
     }
 
     private static ConditionJoiner disjunction() {
         return new ConditionJoiner(
-            true, NeverCondition.NEVER, AlwaysCondition.ALWAYS);
+            true, UntrustedCondition.UNTRUSTED, TrustedCondition.TRUSTED);
     }
 
     private void addTerm(final Condition term) {

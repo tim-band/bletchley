@@ -36,7 +36,8 @@ public class TestLoop {
         final PrivateSigningKey subKey = PrivateSigningKey.generate();
         final ByteOpenable extra = writeSequence(
             publicKey,
-            signed(masterKey, limit(subKey, expiresInOneHour())));
+            signed(masterKey, limit(subKey.getPublicKey(),
+                expiresInOneHour())));
 
         final Service service = new Service("http", 80);
         final ByteOpenable target = new ByteOpenable();

@@ -55,6 +55,17 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     }
 
     @Test
+    public void untrustedDestroysTrust() throws InvalidInputException {
+        final Action message = makeMessage();
+        final PrivateSigningKey key = PrivateSigningKey.generate();
+        final InferenceEngine engine = new InferenceEngine();
+        engine.processTrusted(limit(key.getPublicKey(),
+            UntrustedCondition.UNTRUSTED));
+        engine.process(signed(key, message));
+        checkNoMessages(engine);
+    }
+
+    @Test
     public void foundIfAuthorityDelegated() throws InvalidInputException {
         final Action message = makeMessage();
         final PrivateSigningKey masterKey = PrivateSigningKey.generate();
@@ -127,10 +138,9 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Action message = makeMessage();
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
-        engine.processTrusted(limit(key, new InvalidOnOrAfter(new Date())));
-        engine.process(key.getPublicKey());
-        engine.process(key.sign(message));
-        engine.process(signed(message));
+        engine.processTrusted(limit(key.getPublicKey(),
+            new InvalidOnOrAfter(new Date())));
+        engine.process(signed(key, message));
     }
 
     @Test
@@ -141,8 +151,8 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
         engine.setTime(now);
-        engine.processTrusted(limit(key, new InvalidOnOrAfter(later)));
-        engine.process(key.getPublicKey());
+        engine.processTrusted(limit(key.getPublicKey(),
+            new InvalidOnOrAfter(later)));
         engine.process(signed(key, message));
         checkMessage(engine, message);
     }
@@ -151,11 +161,12 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     public void failsIfLate() throws InvalidInputException {
         final Action message = makeMessage();
         final Date now = new Date();
-        final Date later = new Date(now.getTime() + 1000000);
+        final Date earlier = new Date(now.getTime() - 1000000);
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final InferenceEngine engine = new InferenceEngine();
-        engine.setTime(later);
-        engine.processTrusted(limit(key, new InvalidOnOrAfter(now)));
+        engine.setTime(now);
+        engine.processTrusted(limit(key.getPublicKey(),
+            new InvalidOnOrAfter(earlier)));
         engine.process(key.getPublicKey());
         engine.process(signed(key, message));
         checkNoMessages(engine);
