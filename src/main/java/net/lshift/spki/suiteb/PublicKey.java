@@ -1,8 +1,12 @@
 package net.lshift.spki.suiteb;
 
+import java.math.BigInteger;
+
 import net.lshift.spki.convert.SexpBacked;
 
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 /**
@@ -21,5 +25,11 @@ public abstract class PublicKey extends SexpBacked {
             keyId = DigestSha384.digest(this);
         }
         return keyId;
+    }
+
+    public AsymmetricCipherKeyPair getKeyPair(BigInteger d) {
+        // FIXME: check d is actually a match
+        return new AsymmetricCipherKeyPair(publicKey,
+            new ECPrivateKeyParameters(d, Ec.DOMAIN_PARAMETERS));
     }
 }

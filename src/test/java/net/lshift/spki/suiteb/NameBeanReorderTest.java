@@ -39,7 +39,6 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
         assertEquals(digest(reversed), deserialized.getKeyId());
     }
 
-    @Ignore
     @Test
     public void test() throws InvalidInputException, IOException  {
         final Action message = makeMessage();

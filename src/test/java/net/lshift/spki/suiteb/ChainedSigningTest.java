@@ -22,7 +22,7 @@ public class ChainedSigningTest extends UsesSimpleMessage
         final Action message = makeMessage();
         final Sequence subsequence = sequence(
             DigestSha384.digest(message),
-            publicKey.keyId // Some rubbish
+            publicKey.getKeyId() // Some rubbish
         );
         Sequence sequence = sequence(
             publicKey,

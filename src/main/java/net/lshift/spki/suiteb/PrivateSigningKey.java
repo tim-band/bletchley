@@ -10,6 +10,7 @@ import net.lshift.spki.suiteb.sexpstructs.EcdsaPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
 /**
@@ -17,21 +18,27 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
  */
 @ConvertClass(PrivateSigningKey.Step.class)
 public class PrivateSigningKey extends SexpBacked {
+    private final PublicSigningKey publicKey;
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();
 
-    private PrivateSigningKey(final AsymmetricCipherKeyPair keyPair) {
+    private PrivateSigningKey(PublicSigningKey publicKey,
+                              AsymmetricCipherKeyPair keyPair) {
         super();
+        this.publicKey = publicKey;
         this.keyPair = keyPair;
         signer.init(true, keyPair.getPrivate());
     }
 
     public PublicSigningKey getPublicKey() {
-        return new PublicSigningKey(keyPair.getPublic());
+        return publicKey;
     }
 
     public static PrivateSigningKey generate() {
-        return new PrivateSigningKey(Ec.generate());
+        final AsymmetricCipherKeyPair keyPair = Ec.generate();
+        return new PrivateSigningKey(
+            new PublicSigningKey(keyPair.getPublic()),
+            keyPair);
     }
 
     public EcdsaSignature rawSignature(final DigestSha384 digest) {
@@ -63,14 +70,17 @@ public class PrivateSigningKey extends SexpBacked {
         @SuppressWarnings("synthetic-access")
         @Override
         protected EcdsaPrivateKey stepIn(final PrivateSigningKey o) {
-            return new EcdsaPrivateKey(o.keyPair);
+            return new EcdsaPrivateKey(o.publicKey,
+                ((ECPrivateKeyParameters)o.keyPair.getPrivate()).getD());
         }
 
         @SuppressWarnings("synthetic-access")
         @Override
         protected PrivateSigningKey stepOut(final EcdsaPrivateKey s)
             throws ParseException {
-            return new PrivateSigningKey(s.getKeypair());
+            return new PrivateSigningKey(
+                s.publicKey,
+                s.publicKey.getKeyPair(s.d));
         }
     }
 }

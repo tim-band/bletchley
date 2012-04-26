@@ -8,26 +8,34 @@ import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 
 /**
  * A private key for decrypting data.
  */
 @ConvertClass(PrivateEncryptionKey.Step.class)
 public class PrivateEncryptionKey extends SexpBacked implements SequenceItem {
+    private final PublicEncryptionKey publicKey;
     private final AsymmetricCipherKeyPair keyPair;
 
-    private PrivateEncryptionKey(final AsymmetricCipherKeyPair keyPair) {
+
+    private PrivateEncryptionKey(PublicEncryptionKey publicKey,
+                                 AsymmetricCipherKeyPair keyPair) {
         super();
+        this.publicKey = publicKey;
         this.keyPair = keyPair;
     }
 
     // FIXME: cache this or regenerate every time?
     public PublicEncryptionKey getPublicKey() {
-        return new PublicEncryptionKey(keyPair.getPublic());
+        return publicKey;
     }
 
     public static PrivateEncryptionKey generate() {
-        return new PrivateEncryptionKey(Ec.generate());
+        final AsymmetricCipherKeyPair keyPair = Ec.generate();
+        return new PrivateEncryptionKey(
+            new PublicEncryptionKey(keyPair.getPublic()),
+            keyPair);
     }
 
     public AesKey getKeyAsSender(final PublicEncryptionKey receiverKey) {
@@ -62,16 +70,18 @@ public class PrivateEncryptionKey extends SexpBacked implements SequenceItem {
         @SuppressWarnings("synthetic-access")
         @Override
         protected EcdhPrivateKey stepIn(final PrivateEncryptionKey o) {
-            return new EcdhPrivateKey(o.keyPair);
+            return new EcdhPrivateKey(o.publicKey,
+                ((ECPrivateKeyParameters)o.keyPair.getPrivate()).getD());
         }
 
         @SuppressWarnings("synthetic-access")
         @Override
         protected PrivateEncryptionKey stepOut(final EcdhPrivateKey s)
             throws ParseException {
-            return new PrivateEncryptionKey(s.getKeypair());
+            return new PrivateEncryptionKey(
+                s.publicKey,
+                s.publicKey.getKeyPair(s.d));
         }
-
     }
 
     @Override
