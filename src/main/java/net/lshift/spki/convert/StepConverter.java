@@ -21,7 +21,7 @@ public abstract class StepConverter<TResult, TStep>
     @Override
     public TResult read(final Converting c, final Sexp in)
         throws InvalidInputException {
-        return stepOut(c.read(getStepClass(), in));
+        return stepOut(readElement(getStepClass(), c, in));
     }
 
     protected abstract Class<TStep> getStepClass();

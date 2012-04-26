@@ -4,6 +4,7 @@ import static net.lshift.spki.sexpform.Create.list;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -53,4 +54,13 @@ public abstract class BeanConverter<T> extends ConverterImpl<T>
 
     protected abstract Map<Field, Object> readFields(Converting c, List<Sexp> tail)
         throws InvalidInputException;
+
+    public List<Object> readSequence(final Converting c, final Class<?> contentType, final List<Sexp> in)
+        throws InvalidInputException {
+            final List<Object> components = new ArrayList<Object>(in.size());
+            for (final Sexp s: in) {
+                components.add(readElement(contentType, c, s));
+            }
+            return Collections.unmodifiableList(components);
+        }
 }

@@ -3,8 +3,6 @@ package net.lshift.spki.convert;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,16 +60,5 @@ public class SequenceConverter<T>
             final Map<Field, Object> fields = new HashMap<Field, Object>();
             fields.put(beanField, readSequence(c, contentType, tail));
             return fields;
-    }
-
-    public static List<Object> readSequence(
-        final Converting c,
-        final Class<?> contentType,
-        final List<Sexp> in) throws InvalidInputException {
-        final List<Object> components = new ArrayList<Object>(in.size());
-        for (final Sexp s: in) {
-            components.add(c.read(contentType, s));
-        }
-        return Collections.unmodifiableList(components);
     }
 }

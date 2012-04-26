@@ -69,6 +69,6 @@ public class DiscriminatingConverter<T>
                 "Unable to find converter: " + stringDiscrim);
         }
         assertMatches(discrim, stringDiscrim);
-        return c.read(subclass, in);
+        return readElement(subclass, c, in);
     }
 }

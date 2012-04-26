@@ -44,9 +44,9 @@ public class PositionSequenceConverter<T>
         final Map<Field, Object> rmap = new HashMap<Field, Object>(size + 1);
         for (int i = 0; i < size; i++) {
             final FieldConvertInfo f = fields.get(i);
-            rmap.put(f.field, c.read(f.field.getType(), tail.get(i)));
+            rmap.put(f.field, readElement(f.field.getType(), c, tail.get(i)));
         }
-        rmap.put(seq, SequenceConverter.readSequence(c, contentType,
+        rmap.put(seq, readSequence(c, contentType,
             tail.subList(size, tail.size())));
         return rmap;
     }

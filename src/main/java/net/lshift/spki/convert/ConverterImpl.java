@@ -1,5 +1,6 @@
 package net.lshift.spki.convert;
 
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
 import org.bouncycastle.util.Arrays;
@@ -17,6 +18,14 @@ public abstract class ConverterImpl<T> implements Converter<T> {
     @Override
     public Class<T> getResultClass() {
         return clazz;
+    }
+
+    protected <U> U readElement(
+        final Class<U> elementClass,
+        final Converting c,
+        final Sexp in)
+        throws InvalidInputException {
+        return c.read(elementClass, in);
     }
 
     @SuppressWarnings("unchecked")

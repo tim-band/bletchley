@@ -54,7 +54,7 @@ public class NameBeanConverter<T>
                 throw new ConvertException("multiple parts to named field");
             }
             res.put(field.field,
-                c.read(field.field.getType(), ltail.get(0)));
+                readElement(field.field.getType(), c, ltail.get(0)));
         }
         for (final FieldConvertInfo field: fields) {
             if (!res.containsKey(field.field) && !field.nullable) {

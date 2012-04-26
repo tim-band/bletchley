@@ -30,7 +30,7 @@ public class PositionBeanConverter<T>
         final Map<Field, Object> res = new HashMap<Field, Object>(size);
         for (int i = 0; i < size; i++) {
             final FieldConvertInfo f = fields.get(i);
-            res.put(f.field, c.read(f.field.getType(), tail.get(i)));
+            res.put(f.field, readElement(f.field.getType(), c, tail.get(i)));
         }
         return res;
     }
