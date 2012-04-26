@@ -31,7 +31,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
             list("point", coords.get(1), coords.get(0)));
 
         prettyPrint(reversed, System.out);
-        PublicSigningKey deserialized = ConvertUtils.C.read(
+        final PublicSigningKey deserialized = ConvertUtils.C.read(
             PublicSigningKey.class, reversed);
         assertEquals(reversed, deserialized.toSexp());
         assertEquals(digest(reversed), deserialized.getKeyId());
@@ -50,14 +50,14 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
     }
 
     protected PrivateSigningKey generateReversedKey() throws IOException, InvalidInputException {
-        Sexp sexp = PrivateSigningKey.generate().toSexp();
+        final Sexp sexp = PrivateSigningKey.generate().toSexp();
         prettyPrint(sexp, System.out);
         final List<Sexp> coords
             = sexp.list().getSparts()
             .get(0).list().getSparts()
             .get(0).list().getSparts()
             .get(0).list().getSparts();
-        Sexp reversedSexp = list("suiteb-p384-ecdsa-private-key",
+        final Sexp reversedSexp = list("suiteb-p384-ecdsa-private-key",
             list("public-key",
                 list("suiteb-p384-ecdsa-public-key",
                     list("point", coords.get(1), coords.get(0)))),

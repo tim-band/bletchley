@@ -19,8 +19,8 @@ public class PrivateEncryptionKey extends SexpBacked implements SequenceItem {
     private final AsymmetricCipherKeyPair keyPair;
 
 
-    private PrivateEncryptionKey(PublicEncryptionKey publicKey,
-                                 AsymmetricCipherKeyPair keyPair) {
+    private PrivateEncryptionKey(final PublicEncryptionKey publicKey,
+                                 final AsymmetricCipherKeyPair keyPair) {
         super();
         this.publicKey = publicKey;
         this.keyPair = keyPair;

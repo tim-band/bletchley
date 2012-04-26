@@ -27,7 +27,7 @@ public abstract class PublicKey extends SexpBacked {
         return keyId;
     }
 
-    public AsymmetricCipherKeyPair getKeyPair(BigInteger d) {
+    public AsymmetricCipherKeyPair getKeyPair(final BigInteger d) {
         // FIXME: check d is actually a match
         return new AsymmetricCipherKeyPair(publicKey,
             new ECPrivateKeyParameters(d, Ec.DOMAIN_PARAMETERS));

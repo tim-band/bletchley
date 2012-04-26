@@ -1,8 +1,8 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.suiteb.TrustedCondition.TRUSTED;
 import static net.lshift.spki.suiteb.ConditionJoiner.and;
 import static net.lshift.spki.suiteb.ConditionJoiner.or;
+import static net.lshift.spki.suiteb.TrustedCondition.TRUSTED;
 import static net.lshift.spki.suiteb.UntrustedCondition.UNTRUSTED;
 import static org.junit.Assert.assertEquals;
 

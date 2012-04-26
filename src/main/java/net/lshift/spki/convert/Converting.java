@@ -13,7 +13,7 @@ public class Converting {
             final Field res = SexpBacked.class.getDeclaredField("sexp");
             res.setAccessible(true);
             return res;
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
     }
@@ -34,12 +34,12 @@ public class Converting {
             return (T) sexp;
         }
         // FIXME: so is this!
-        T res = Registry.getConverter(clazz).read(this, sexp);
+        final T res = Registry.getConverter(clazz).read(this, sexp);
         // FIXME: use the dynamic class here?
         if (SexpBacked.class.isAssignableFrom(clazz)) {
             try {
                 SEXP_FIELD.set(res, sexp);
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }

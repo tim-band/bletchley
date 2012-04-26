@@ -152,8 +152,8 @@ public class InferenceEngine {
         this.passphraseDelegate = passphraseDelegate;
     }
 
-    public Object getVar(InferenceVariable<?> v) {
-        Object res = variables.get(v);
+    public Object getVar(final InferenceVariable<?> v) {
+        final Object res = variables.get(v);
         if (res == null) {
             throw new IllegalStateException(
                 "Variable not set on InferenceEngine:" + v.toString());
@@ -161,7 +161,7 @@ public class InferenceEngine {
         return res;
     }
 
-    public void setVar(InferenceVariable<?> v, Object val) {
+    public void setVar(final InferenceVariable<?> v, final Object val) {
         if (val == null) {
             throw new NullPointerException(
                 "Cannot set null value on variable: " + v);

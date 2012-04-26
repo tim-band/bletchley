@@ -23,7 +23,7 @@ public class EnumTest
     public static class EnumHolder extends SexpBacked {
         public final TestEnum testEnum;
 
-        public EnumHolder(TestEnum testEnum) {
+        public EnumHolder(final TestEnum testEnum) {
             super();
             this.testEnum = testEnum;
         }

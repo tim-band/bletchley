@@ -22,8 +22,8 @@ public class PrivateSigningKey extends SexpBacked {
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();
 
-    private PrivateSigningKey(PublicSigningKey publicKey,
-                              AsymmetricCipherKeyPair keyPair) {
+    private PrivateSigningKey(final PublicSigningKey publicKey,
+                              final AsymmetricCipherKeyPair keyPair) {
         super();
         this.publicKey = publicKey;
         this.keyPair = keyPair;

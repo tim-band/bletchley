@@ -10,18 +10,18 @@ public final class InferenceVariable<T> {
     private final long v1 = random.nextLong();
     private final long v2 = random.nextLong();
 
-    public InferenceVariable(Class<?> type, String name) {
+    public InferenceVariable(final Class<?> type, final String name) {
         super();
         this.type = type;
         this.name = name;
     }
 
     @SuppressWarnings("unchecked")
-    public T get(InferenceEngine engine) {
+    public T get(final InferenceEngine engine) {
         return (T) engine.getVar(this);
     }
 
-    public void set(InferenceEngine engine, T o) {
+    public void set(final InferenceEngine engine, final T o) {
         engine.setVar(this, o);
     }
 
@@ -37,12 +37,12 @@ public final class InferenceVariable<T> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         @SuppressWarnings("rawtypes")
-        InferenceVariable other = (InferenceVariable) obj;
+        final InferenceVariable other = (InferenceVariable) obj;
         if (name == null) {
             if (other.name != null) return false;
         } else if (!name.equals(other.name)) return false;

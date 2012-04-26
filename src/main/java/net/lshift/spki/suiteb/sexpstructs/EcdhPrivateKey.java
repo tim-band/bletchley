@@ -13,7 +13,7 @@ public class EcdhPrivateKey {
     public final PublicEncryptionKey publicKey;
     public final BigInteger d;
 
-    public EcdhPrivateKey(PublicEncryptionKey publicKey, BigInteger d) {
+    public EcdhPrivateKey(final PublicEncryptionKey publicKey, final BigInteger d) {
         super();
         this.publicKey = publicKey;
         this.d = d;
