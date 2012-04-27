@@ -9,7 +9,7 @@ import net.lshift.spki.sexpform.Sexp;
 public abstract class StepConverter<TResult, TStep>
     extends ConverterImpl<TResult> {
 
-    public StepConverter(Class<TResult> clazz) {
+    public StepConverter(final Class<TResult> clazz) {
         super(clazz);
     }
 

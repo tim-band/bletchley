@@ -25,7 +25,7 @@ public class SpeedTester {
     private final byte[] messageBytes;
 
     private static Converting getConverting() {
-        Converting c = new Converting();
+        final Converting c = new Converting();
         c.register(SimpleMessage.class);
         return c;
     }

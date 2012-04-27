@@ -11,9 +11,9 @@ public class RequiresConverterHandler
 {
     @Override
     public <U> void handle(
-        Class<U> clazz,
-        Converter<U> converter,
-        RequiresConverter annotation) {
+        final Class<U> clazz,
+        final Converter<U> converter,
+        final RequiresConverter annotation) {
         try {
             ((ConverterImpl<U>)converter).addConverter(annotation.value().newInstance());
         } catch (final InstantiationException e) {

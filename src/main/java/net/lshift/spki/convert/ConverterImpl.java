@@ -16,7 +16,7 @@ public abstract class ConverterImpl<T> implements Converter<T> {
     private final Map<Class<?>, Converter<?>> extraConverters
         = new HashMap<Class<?>, Converter<?>>();
 
-    public ConverterImpl(Class<T> clazz) {
+    public ConverterImpl(final Class<T> clazz) {
         this.clazz = clazz;
     }
 
@@ -25,7 +25,7 @@ public abstract class ConverterImpl<T> implements Converter<T> {
         return clazz;
     }
 
-    public void addConverter(Converter<?> converter) {
+    public void addConverter(final Converter<?> converter) {
         extraConverters.put(converter.getResultClass(), converter);
     }
 

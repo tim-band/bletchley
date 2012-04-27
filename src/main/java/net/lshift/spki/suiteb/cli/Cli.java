@@ -40,16 +40,18 @@ public class Cli {
     private static Converting C = getConverting();
 
     private static Converting getConverting() {
-        Converting c = new Converting();
+        final Converting c = new Converting();
         c.register(SimpleMessage.class);
         return c;
     }
 
-    private static <U> U read(Class<U> clazz, Openable open) throws IOException, InvalidInputException {
+    private static <U> U read(final Class<U> clazz, final Openable open)
+        throws IOException, InvalidInputException {
         return OpenableUtils.read(C, clazz, open);
     }
 
-    private static SequenceItem read(Openable open) throws IOException, InvalidInputException {
+    private static SequenceItem read(final Openable open)
+        throws IOException, InvalidInputException {
         return read(SequenceItem.class, open);
     }
 
@@ -150,7 +152,8 @@ public class Cli {
         final Openable packet,
         final Openable out)
         throws IOException, InvalidInputException {
-        final PrivateEncryptionKey encryptionKey = read(PrivateEncryptionKey.class, ePrivate);
+        final PrivateEncryptionKey encryptionKey
+            = read(PrivateEncryptionKey.class, ePrivate);
         final PublicSigningKey signingKey = read(PublicSigningKey.class, sPublic);
         decryptSignedMessage(messageType, encryptionKey, signingKey, packet, out);
     }
@@ -164,7 +167,8 @@ public class Cli {
         final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         sequenceItems.add(ephemeral.getPublicKey());
         for (int i = 2; i < args.length - 1; i++) {
-            final PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
+            final PublicEncryptionKey pKey
+                = read(PublicEncryptionKey.class, args[i]);
             sequenceItems.add(ephemeral.encrypt(pKey, aesKey));
         }
 
@@ -172,7 +176,8 @@ public class Cli {
             = new ArrayList<SequenceItem>();
         final Action message = new Action(new SimpleMessage(
             messageType, OpenableUtils.readBytes(args[1])));
-        final PrivateSigningKey privateKey = read(PrivateSigningKey.class, args[0]);
+        final PrivateSigningKey privateKey
+            = read(PrivateSigningKey.class, args[0]);
         encryptedSequenceItems.add(privateKey.sign(message));
         encryptedSequenceItems.add(signed(message));
 
@@ -185,7 +190,10 @@ public class Cli {
         new SpeedTester().speedTest();
     }
 
-    public static void main(final PrintStream stdout, final String command, final Openable... args)
+    public static void main(
+        final PrintStream stdout,
+        final String command,
+        final Openable... args)
         throws IOException, InvalidInputException {
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);

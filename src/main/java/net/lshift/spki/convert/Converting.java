@@ -48,26 +48,28 @@ public class Converting {
         return read(clazz, null, sexp);
     }
 
-    private <U> String discrimMapKey(Class<U> clazz, String name) {
+    private <U> String discrimMapKey(final Class<U> clazz, final String name) {
         return clazz.getCanonicalName() + ";" + name;
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized <U> Class<? extends U> getExtraDiscrim(Class<U> clazz, String name) {
+    public synchronized <U> Class<? extends U> getExtraDiscrim(
+        final Class<U> clazz,
+        final String name) {
         // FIXME: class <-> canonicalName is not a 1-1 map.
         return (Class<? extends U>)
             discrimMap.get(discrimMapKey(clazz, name));
     }
 
-    public synchronized void register(Class<?> clazz) {
-        InstanceOf instanceOf = clazz.getAnnotation(Convert.InstanceOf.class);
+    public synchronized void register(final Class<?> clazz) {
+        final InstanceOf instanceOf = clazz.getAnnotation(InstanceOf.class);
         if (instanceOf == null)
             throw new ConvertReflectionException(clazz, "has no InstanceOf annotation");
         if (!instanceOf.value().isAssignableFrom(clazz)) {
             throw new ConvertReflectionException(clazz,
                 " is not a subclass of: " + instanceOf.value().getSimpleName());
         }
-        Converter<?> converter = Registry.getConverter(clazz);
+        final Converter<?> converter = Registry.getConverter(clazz);
         if (!(converter instanceof ListConverter<?>)) {
             throw new ConvertReflectionException(clazz,
                 "defines no name, cannot be instance of a discrim");

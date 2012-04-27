@@ -6,7 +6,7 @@ package net.lshift.spki.convert;
 public abstract class ByteArrayStepConverter<T>
     extends StepConverter<T, byte[]> {
 
-    public ByteArrayStepConverter(Class<T> clazz) {
+    public ByteArrayStepConverter(final Class<T> clazz) {
         super(clazz);
     }
 

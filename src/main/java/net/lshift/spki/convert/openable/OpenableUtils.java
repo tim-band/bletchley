@@ -61,7 +61,7 @@ public class OpenableUtils {
         }
     }
 
-    public static SequenceItem read(Converting c, final Openable open)
+    public static SequenceItem read(final Converting c, final Openable open)
         throws IOException, InvalidInputException {
         return read(c, SequenceItem.class, open);
     }

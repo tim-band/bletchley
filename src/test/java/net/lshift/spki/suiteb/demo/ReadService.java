@@ -15,7 +15,7 @@ public class ReadService {
     private static Converting C = getConverting();
 
     static Converting getConverting() {
-        Converting c = new Converting();
+        final Converting c = new Converting();
         c.register(Service.class);
         return c;
     }

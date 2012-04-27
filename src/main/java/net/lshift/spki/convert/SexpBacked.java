@@ -16,7 +16,7 @@ public class SexpBacked
         return sexp;
     }
 
-    synchronized void setSexp(Sexp sexp) {
+    synchronized void setSexp(final Sexp sexp) {
         if (this.sexp == null)
             this.sexp = sexp;
     }

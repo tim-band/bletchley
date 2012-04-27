@@ -67,7 +67,7 @@ public class DiscriminatingConverter<T>
     }
 
     protected Class<? extends T> lookupSubclass(
-        Converting c,
+        final Converting c,
         final String stringDiscrim)
         throws ConvertException {
         Class<? extends T> subclass = nameMap.get(stringDiscrim);

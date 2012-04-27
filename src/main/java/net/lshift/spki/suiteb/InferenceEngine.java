@@ -49,7 +49,7 @@ public class InferenceEngine {
 
     private PassphraseDelegate passphraseDelegate;
 
-    public InferenceEngine(Converting converting) {
+    public InferenceEngine(final Converting converting) {
         this.converting = converting;
     }
 
@@ -92,9 +92,10 @@ public class InferenceEngine {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ActionType> T getSoleAction(Class<T> clazz) throws CryptographyException {
+    public <T extends ActionType> T getSoleAction(final Class<T> clazz)
+        throws CryptographyException {
         if (actions.size() == 1) {
-            ActionType res = actions.get(0);
+            final ActionType res = actions.get(0);
             if (!clazz.isInstance(res)) {
                 throw new CryptographyException("Action is not an instance of "
                     + clazz.getSimpleName() + " :" + res.getClass().getSimpleName());
