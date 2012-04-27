@@ -9,19 +9,8 @@ import net.lshift.spki.convert.Convert.InstanceOf;
 import net.lshift.spki.sexpform.Sexp;
 
 public class Converting {
-    private static final Field SEXP_FIELD = getSexpField();
     private static final Map<String, Class<?>> discrimMap
         = new HashMap<String,Class<?>>();
-
-    private static Field getSexpField() {
-        try {
-            final Field res = SexpBacked.class.getDeclaredField("sexp");
-            res.setAccessible(true);
-            return res;
-        } catch (final NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @SuppressWarnings("unchecked")
     public <T> T read(
@@ -36,12 +25,8 @@ public class Converting {
         final T res = getConverter(extraConverters, clazz).read(this, sexp);
         // FIXME: so is this!
         // FIXME: use the dynamic class here?
-        if (SexpBacked.class.isAssignableFrom(clazz)) {
-            try {
-                SEXP_FIELD.set(res, sexp);
-            } catch (final IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+        if (res instanceof SexpBacked) {
+            ((SexpBacked)res).setSexp(sexp);
         }
         return res;
     }
