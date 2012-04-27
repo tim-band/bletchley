@@ -1,9 +1,9 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.EcdhItem.ecdhItem;
 import static net.lshift.spki.suiteb.InferenceVariables.NOW;
 import static net.lshift.spki.suiteb.Limit.limit;
 import static net.lshift.spki.suiteb.Signed.signed;
-import static net.lshift.spki.suiteb.sexpstructs.EcdhItem.ecdhItem;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

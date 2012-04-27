@@ -1,14 +1,8 @@
-package net.lshift.spki.suiteb.sexpstructs;
+package net.lshift.spki.suiteb;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.SexpBacked;
-import net.lshift.spki.suiteb.Condition;
-import net.lshift.spki.suiteb.DigestSha384;
-import net.lshift.spki.suiteb.InferenceEngine;
-import net.lshift.spki.suiteb.PrivateEncryptionKey;
-import net.lshift.spki.suiteb.PublicEncryptionKey;
-import net.lshift.spki.suiteb.SequenceItem;
 
 /**
  * An ECDH session key packet

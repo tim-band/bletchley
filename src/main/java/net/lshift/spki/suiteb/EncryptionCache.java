@@ -6,7 +6,6 @@ import static net.lshift.spki.suiteb.SequenceUtils.sequenceOrItem;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 
 /**
  * Cache PK encryption operations for a given PK.

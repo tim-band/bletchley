@@ -1,8 +1,8 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.EcdhItem.ecdhItem;
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
-import static net.lshift.spki.suiteb.sexpstructs.EcdhItem.ecdhItem;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
 

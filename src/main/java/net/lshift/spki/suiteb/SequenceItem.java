@@ -4,7 +4,6 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
-import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
 
 /**
  * Item that can go in a sequence and so be interpreted by the InferenceEngine.

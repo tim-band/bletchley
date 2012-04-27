@@ -1,9 +1,9 @@
 package net.lshift.spki.suiteb.cli;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
+import static net.lshift.spki.suiteb.EcdhItem.ecdhItem;
 import static net.lshift.spki.suiteb.Signed.signed;
 import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint;
-import static net.lshift.spki.suiteb.sexpstructs.EcdhItem.ecdhItem;
 
 import java.io.File;
 import java.io.IOException;
