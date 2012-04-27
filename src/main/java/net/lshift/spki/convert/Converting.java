@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert.InstanceOf;
 import net.lshift.spki.sexpform.Sexp;
 
 public class Converting {
@@ -62,12 +61,10 @@ public class Converting {
     }
 
     public synchronized void register(final Class<?> clazz) {
-        final InstanceOf instanceOf = clazz.getAnnotation(InstanceOf.class);
-        if (instanceOf == null)
-            throw new ConvertReflectionException(clazz, "has no InstanceOf annotation");
-        if (!instanceOf.value().isAssignableFrom(clazz)) {
+        Class<?> superclass = getDiscriminatedSuperclass(clazz, clazz);
+        if (superclass == null) {
             throw new ConvertReflectionException(clazz,
-                " is not a subclass of: " + instanceOf.value().getSimpleName());
+                "has no discriminated superclass");
         }
         final Converter<?> converter = Registry.getConverter(clazz);
         if (!(converter instanceof ListConverter<?>)) {
@@ -75,7 +72,7 @@ public class Converting {
                 "defines no name, cannot be instance of a discrim");
         }
         final String key = discrimMapKey(
-            instanceOf.value(), ((ListConverter<?>)converter).getName());
+            superclass, ((ListConverter<?>)converter).getName());
         if (discrimMap.containsKey(key)) {
             if (discrimMap.get(key) == clazz)
                 return;
@@ -84,5 +81,21 @@ public class Converting {
                 " has it: " + key);
         }
         discrimMap.put(key, clazz);
+    }
+
+    private Class<?> getDiscriminatedSuperclass(Class<?> clazz, Class<?> sup) {
+        if (sup == null)
+            return null;
+        if (sup.getAnnotation(Convert.Discriminated.class) != null)
+            return sup;
+        Class<?> res = getDiscriminatedSuperclass(clazz, sup.getSuperclass());
+        if (res != null)
+            return res;
+        for (Class<?> supsup: sup.getInterfaces()) {
+            res = getDiscriminatedSuperclass(clazz, supsup);
+            if (res != null)
+                return res;
+        }
+        return null;
     }
 }

@@ -109,16 +109,6 @@ public class Convert
     }
 
     /**
-     * This class should be registered after the fact with a
-     * DiscriminatingConverter of another class.
-     */
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.TYPE})
-    public @interface InstanceOf {
-        Class<?> value();
-    }
-
-    /**
      * Mark a field as optional
      */
     @Retention(RetentionPolicy.RUNTIME)

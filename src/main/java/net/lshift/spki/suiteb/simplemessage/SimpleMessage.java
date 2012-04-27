@@ -8,7 +8,6 @@ import net.lshift.spki.suiteb.ActionType;
  * can be encrypted and/or signed.
  */
 @Convert.ByPosition(name="simple-message", fields={"type", "content"})
-@Convert.InstanceOf(ActionType.class)
 public class SimpleMessage implements ActionType {
     public final String type;
     public final byte[] content;
