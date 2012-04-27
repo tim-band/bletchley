@@ -1,6 +1,5 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.suiteb.EcdhItem.ecdhItem;
 import static net.lshift.spki.suiteb.InferenceVariables.NOW;
 import static net.lshift.spki.suiteb.Limit.limit;
 import static net.lshift.spki.suiteb.Signed.signed;
@@ -116,12 +115,11 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final List<SequenceItem> sequence = new ArrayList<SequenceItem>();
         final PrivateEncryptionKey key = PrivateEncryptionKey.generate();
         sequence.add(key);
-        final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
+        final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         sequence.add(ephemeral.getPublicKey());
         final Action message = makeMessage();
         final PublicEncryptionKey recipient = key.getPublicKey();
-        sequence.add(ecdhItem(ephemeral, recipient));
-        sequence.add(ephemeral.getKeyAsSender(recipient).encrypt(message));
+        sequence.add(ephemeral.encrypt(recipient, message));
         final InferenceEngine engine = newEngine();
         engine.processTrusted(new Sequence(sequence));
         checkMessage(engine, message);

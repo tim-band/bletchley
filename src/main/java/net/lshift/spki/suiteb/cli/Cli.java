@@ -1,7 +1,6 @@
 package net.lshift.spki.suiteb.cli;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
-import static net.lshift.spki.suiteb.EcdhItem.ecdhItem;
 import static net.lshift.spki.suiteb.Signed.signed;
 import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint;
 
@@ -18,13 +17,13 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.Converting;
-import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;
+import net.lshift.spki.suiteb.EncryptionCache;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
@@ -166,12 +165,11 @@ public class Cli {
         throws IOException, InvalidInputException {
         final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         final AesKey aesKey = AesKey.generateAESKey();
-        final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
+        final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         sequenceItems.add(ephemeral.getPublicKey());
         for (int i = 2; i < args.length - 1; i++) {
             final PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
-            sequenceItems.add(ecdhItem(ephemeral, pKey));
-            sequenceItems.add(ephemeral.getKeyAsSender(pKey).encrypt(aesKey));
+            sequenceItems.add(ephemeral.encrypt(pKey, aesKey));
         }
 
         final List<SequenceItem> encryptedSequenceItems
@@ -193,7 +191,6 @@ public class Cli {
 
     public static void main(final PrintStream stdout, final String command, final Openable... args)
         throws IOException, InvalidInputException {
-        Registry.getConverter(SimpleMessage.class);
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
         } else if ("prettyPrintToFile".equals(command)) {

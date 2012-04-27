@@ -2,13 +2,13 @@ package net.lshift.spki.suiteb.demo;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
+import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
 
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Converting;
-import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.EncryptionCache;
@@ -29,10 +29,10 @@ public class WriteService {
         final PublicEncryptionKey recipient,
         final Service service)
                     throws IOException, InvalidInputException {
-        Registry.getConverter(Service.class);
-        write(target,
+        write(target, sequence(
+            ephemeral.getPublicKey(),
             ephemeral.encrypt(recipient,
                 read(C, extra),
-                signed(signingKey, new Action(service))));
+                signed(signingKey, new Action(service)))));
     }
 }

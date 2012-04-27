@@ -13,7 +13,7 @@ public class EcdhItem extends SexpBacked implements SequenceItem {
     public final DigestSha384 sender;
     public final DigestSha384 recipient;
 
-    private EcdhItem(final DigestSha384 sender, final DigestSha384 recipient) {
+    public EcdhItem(final DigestSha384 sender, final DigestSha384 recipient) {
         super();
         this.sender = sender;
         this.recipient = recipient;
@@ -31,12 +31,5 @@ public class EcdhItem extends SexpBacked implements SequenceItem {
         } else if (privs != null && pubr != null) {
             engine.process(privs.getKeyAsSender(pubr), trust);
         }
-    }
-
-    public static EcdhItem ecdhItem(
-        final PrivateEncryptionKey sender,
-        final PublicEncryptionKey recipient) {
-        return new EcdhItem(
-            sender.getPublicKey().getKeyId(), recipient.getKeyId());
     }
 }

@@ -28,7 +28,8 @@ public class EncryptionCache {
 
     // Convenience method
     public EcdhItem ecdhItem(final PublicEncryptionKey recipient) {
-        return EcdhItem.ecdhItem(privateKey, recipient);
+        return new EcdhItem(
+            privateKey.getPublicKey().getKeyId(), recipient.getKeyId());
     }
 
     public synchronized AesKey getKeyAsSender(
@@ -44,8 +45,12 @@ public class EncryptionCache {
     public synchronized Sequence encrypt(
         final PublicEncryptionKey recipient,
         final SequenceItem... messages) {
-        return sequence(getPublicKey(),
+        return sequence(
             ecdhItem(recipient),
             getKeyAsSender(recipient).encrypt(sequenceOrItem(messages)));
+    }
+
+    public static EncryptionCache ephemeralKey() {
+        return new EncryptionCache(PrivateEncryptionKey.generate());
     }
 }

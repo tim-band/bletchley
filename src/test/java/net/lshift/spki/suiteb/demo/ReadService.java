@@ -8,7 +8,6 @@ import java.util.Date;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Converting;
-import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.InferenceEngine;
 
@@ -22,14 +21,14 @@ public class ReadService {
     }
 
     private static InferenceEngine newEngine() {
-        return new InferenceEngine(C);
+        final InferenceEngine engine = new InferenceEngine(C);
+        NOW.set(engine, new Date());
+        return engine;
     }
 
     public static Service readService(final Openable acl, final Openable source)
                     throws IOException, InvalidInputException {
-        Registry.getConverter(Service.class);
         final InferenceEngine engine = newEngine();
-        NOW.set(engine, new Date());
         engine.processTrusted(read(C, acl));
         engine.process(read(C, source));
         return (Service) engine.getSoleAction();

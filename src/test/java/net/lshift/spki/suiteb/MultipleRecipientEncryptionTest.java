@@ -30,15 +30,10 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
         System.out.println("Master key:");
         ConvertUtils.prettyPrint(aesKey, System.out);
         ConvertUtils.prettyPrint(aesKey.getKeyId(), System.out);
-        final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
+        final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         sequenceItems.add(ephemeral.getPublicKey());
         for (final PublicEncryptionKey pKey : publicKeys) {
-            sequenceItems.add(EcdhItem.ecdhItem(ephemeral, pKey));
-            final AesKey rKey = ephemeral.getKeyAsSender(pKey);
-            System.out.println("Subkey:");
-            ConvertUtils.prettyPrint(rKey, System.out);
-            ConvertUtils.prettyPrint(rKey.getKeyId(), System.out);
-            sequenceItems.add(rKey.encrypt(aesKey));
+            sequenceItems.add(ephemeral.encrypt(pKey, aesKey));
         }
         sequenceItems.add(aesKey.encrypt(message));
         SequenceItem packet

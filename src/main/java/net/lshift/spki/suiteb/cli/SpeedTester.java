@@ -1,6 +1,5 @@
 package net.lshift.spki.suiteb.cli;
 
-import static net.lshift.spki.suiteb.EcdhItem.ecdhItem;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
 import net.lshift.spki.InvalidInputException;
@@ -8,6 +7,7 @@ import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.Converting;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.AesKey;
+import net.lshift.spki.suiteb.EncryptionCache;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
@@ -55,14 +55,13 @@ public class SpeedTester {
         final AesKey aesKey = AesKey.generateAESKey();
         final PublicEncryptionKey pKey
             = ConvertUtils.fromBytes(C, PublicEncryptionKey.class, publicKeyBytes);
-        final PrivateEncryptionKey ephemeral = PrivateEncryptionKey.generate();
+        final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         final Action message = new Action(new SimpleMessage(
             MESSAGE_TYPE, messageBytes));
 
         final Sequence sequence = sequence(
-            ephemeral,
-            ecdhItem(ephemeral, pKey),
-            ephemeral.getKeyAsSender(pKey).encrypt(aesKey),
+            ephemeral.getPublicKey(),
+            ephemeral.encrypt(pKey, aesKey),
             aesKey.encrypt(sequence(
                 privateKey.sign(message),
                 signed(message)
