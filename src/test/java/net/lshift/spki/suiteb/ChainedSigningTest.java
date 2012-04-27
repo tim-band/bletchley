@@ -2,7 +2,6 @@ package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.suiteb.DigestSha384.digest;
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
-import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
 import net.lshift.spki.InvalidInputException;
@@ -27,7 +26,7 @@ public class ChainedSigningTest extends UsesSimpleMessage
             signed(message));
         sequence = roundTrip(Sequence.class, sequence);
 
-        final InferenceEngine inference = new InferenceEngine();
+        final InferenceEngine inference = newEngine();
         inference.processTrusted(publicKey.getKeyId());
         inference.process(sequence);
         checkMessage(inference, message);

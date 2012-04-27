@@ -10,14 +10,12 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Before;
 
-public class UsesSimpleMessage extends ResetsRegistry{
+public class UsesSimpleMessage extends UsesConverting {
     private static final byte[] CONTENT = "The magic words are squeamish ossifrage".getBytes(Constants.ASCII);
 
     @Before
-    @Override
-    public void resetRegistry() {
-        super.resetRegistry();
-        Registry.getConverter(SimpleMessage.class);
+    public void registerSimpleMessage() {
+        C.register(SimpleMessage.class);
     }
 
     protected Action makeMessage() {

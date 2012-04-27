@@ -10,6 +10,7 @@ import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.convert.Converting;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
 
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ import org.slf4j.LoggerFactory;
 public class InferenceEngine {
     private static final Logger LOG
         = LoggerFactory.getLogger(InferenceEngine.class);
+
+    private final Converting converting;
 
     private final List<ActionType> actions
         = new ArrayList<ActionType>();
@@ -45,6 +48,10 @@ public class InferenceEngine {
         = new HashMap<InferenceVariable<?>, Object>();
 
     private PassphraseDelegate passphraseDelegate;
+
+    public InferenceEngine(Converting converting) {
+        this.converting = converting;
+    }
 
 //    private final Map<String, String> byteNames = new HashMap<String,String>();
 //
@@ -171,5 +178,9 @@ public class InferenceEngine {
                 "Variable can only be set once:" + v.toString());
         }
         variables.put(v, val);
+    }
+
+    public Converting getConverting() {
+        return converting;
     }
 }

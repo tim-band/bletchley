@@ -44,10 +44,10 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
         sequenceItems.add(aesKey.encrypt(message));
         SequenceItem packet
             = new Sequence(sequenceItems);
-        packet = RoundTrip.roundTrip(
+        packet = roundTrip(
             SequenceItem.class, packet);
         for (final PrivateEncryptionKey k: keys) {
-            final InferenceEngine inferenceEngine = new InferenceEngine();
+            final InferenceEngine inferenceEngine = newEngine();
             inferenceEngine.process(k);
             inferenceEngine.processTrusted(packet);
             checkMessage(inferenceEngine, message);

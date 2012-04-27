@@ -38,11 +38,12 @@ public abstract class ConverterImpl<T> implements Converter<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public Sexp writeUnchecked(final Class<?> clazz, final Object o) {
-        if (clazz == Sexp.class) {
+    public Sexp writeUnchecked(final Class<?> writingClazz, final Object o) {
+        if (writingClazz == Sexp.class) {
             return (Sexp) o;
         }
-        return ((Converter<Object>) Converting.getConverter(extraConverters, clazz)).write(o);
+        return ((Converter<Object>) Converting.getConverter(
+            extraConverters, writingClazz)).write(o);
     }
 
     public static void assertMatches(final Sexp atom, final String name)

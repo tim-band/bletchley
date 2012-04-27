@@ -30,7 +30,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     @Test
     public void emptyListIfSignerHasDoneNothing() throws InvalidInputException {
         final PrivateSigningKey key = PrivateSigningKey.generate();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(key.getPublicKey());
         checkNoMessages(engine);
     }
@@ -38,7 +38,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     @Test
     public void emptyListIfNotSignedByTrustedKey() throws InvalidInputException {
         final PrivateSigningKey key = PrivateSigningKey.generate();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.process(key.getPublicKey());
         final Action message = makeMessage();
         engine.process(signed(key, message));
@@ -49,7 +49,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     public void foundIfSignedByTrustedKey() throws InvalidInputException {
         final Action message = makeMessage();
         final PrivateSigningKey key = PrivateSigningKey.generate();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(key.getPublicKey());
         engine.process(signed(key, message));
         checkMessage(engine, message);
@@ -59,7 +59,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     public void untrustedDestroysTrust() throws InvalidInputException {
         final Action message = makeMessage();
         final PrivateSigningKey key = PrivateSigningKey.generate();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(limit(key.getPublicKey(),
             UntrustedCondition.UNTRUSTED));
         engine.process(signed(key, message));
@@ -71,7 +71,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Action message = makeMessage();
         final PrivateSigningKey masterKey = PrivateSigningKey.generate();
         final PrivateSigningKey subKey = PrivateSigningKey.generate();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(masterKey.getPublicKey());
         engine.process(signed(masterKey, subKey.getPublicKey()));
         engine.process(signed(subKey, message));
@@ -83,7 +83,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Action message = makeMessage();
         final PrivateSigningKey masterKey = PrivateSigningKey.generate();
         final PrivateSigningKey subKey = PrivateSigningKey.generate();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(masterKey.getPublicKey());
         engine.process(signed(subKey.getPublicKey()));
         engine.process(signed(subKey, message));
@@ -95,7 +95,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Action message = makeMessage();
         final PrivateSigningKey key = PrivateSigningKey.generate();
         final AesKey aeskey = AesKey.generateAESKey();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(key.getPublicKey());
         engine.process(aeskey);
         final AesPacket encrypted = aeskey.encrypt(message);
@@ -106,7 +106,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     @Test
     public void foundIfBlindlyTrusting() throws InvalidInputException {
         final Action message = makeMessage();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(message);
         checkMessage(engine, message);
     }
@@ -122,14 +122,14 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final PublicEncryptionKey recipient = key.getPublicKey();
         sequence.add(ecdhItem(ephemeral, recipient));
         sequence.add(ephemeral.getKeyAsSender(recipient).encrypt(message));
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(new Sequence(sequence));
         checkMessage(engine, message);
     }
 
     @Test(expected = IllegalStateException.class)
     public void timeCanOnlyBeSetOnce() {
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         NOW.set(engine, new Date());
         NOW.set(engine, new Date());
     }
@@ -138,7 +138,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
     public void failsIfNoDateSet() throws InvalidInputException {
         final Action message = makeMessage();
         final PrivateSigningKey key = PrivateSigningKey.generate();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(limit(key.getPublicKey(),
             new InvalidOnOrAfter(new Date())));
         engine.process(signed(key, message));
@@ -150,7 +150,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Date now = new Date();
         final Date later = new Date(now.getTime() + 1000000);
         final PrivateSigningKey key = PrivateSigningKey.generate();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         NOW.set(engine, now);
         engine.processTrusted(limit(key.getPublicKey(),
             new InvalidOnOrAfter(later)));
@@ -164,7 +164,7 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final Date now = new Date();
         final Date earlier = new Date(now.getTime() - 1000000);
         final PrivateSigningKey key = PrivateSigningKey.generate();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         NOW.set(engine, now);
         engine.processTrusted(limit(key.getPublicKey(),
             new InvalidOnOrAfter(earlier)));

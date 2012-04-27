@@ -8,38 +8,18 @@ import net.lshift.spki.convert.Convert.ConverterFactoryClass;
 import net.lshift.spki.convert.Convert.HandlerClass;
 
 /**
- * Registry of SExp converters.  If a class implements the Convertible
- * interface, that means it knows how to convert itself and so doesn't
- * need to be registered in advance.
+ * Registry of class -> converter map.  With the exception of a fixed list
+ * of converters initialized at startup, this contains only those converters
+ * that a class defines for itself based on annotations.  Foreign conversions
+ * must be registered with the containing converter.
  */
 public class Registry {
     private static final Registry REGISTRY = new Registry();
 
-    protected Registry() {
-        // Do nothing; this is here only to prevent anyone else creating one.
-    }
-
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 
-    private synchronized <T> void registerInternal(final Converter<T> converter) {
-        final Class<T> clazz = converter.getResultClass();
-        final Converter<?> already = converterMap.get(clazz);
-        if (already == null) {
-            converterMap.put(clazz, converter);
-        }
-    }
-
-    static {
-        resetRegistry();
-    }
-
-    public static void resetRegistry() {
-        REGISTRY.resetRegistryInternal();
-    }
-
-    private synchronized void resetRegistryInternal() {
-        converterMap.clear();
+    protected Registry() {
         registerInternal(new ByteArrayConverter());
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());
@@ -48,6 +28,10 @@ public class Registry {
         registerInternal(new URIConverter());
         registerInternal(new URLConverter());
         registerInternal(new UUIDConverter());
+    }
+
+    private <T> void registerInternal(final Converter<T> converter) {
+        converterMap.put(converter.getResultClass(), converter);
     }
 
     public static <T> Converter<T> getConverter(final Class<T> clazz) {

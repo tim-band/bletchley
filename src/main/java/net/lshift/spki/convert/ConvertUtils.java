@@ -28,7 +28,6 @@ import net.lshift.spki.sexpform.ConvertSexp;
  * Static utilities for conversion between SExps and objects.
  */
 public class ConvertUtils {
-    public static final Converting C = new Converting();
     public static byte[] bytes(final String s) {
         return s.getBytes(Constants.UTF8);
     }
@@ -82,26 +81,32 @@ public class ConvertUtils {
         }
     }
 
-    public static <T> T read(final Class<T> clazz, final SpkiInputStream is)
+    public static <T> T read(
+        final Converting c,
+        final Class<T> clazz, final SpkiInputStream is)
         throws IOException, InvalidInputException {
-        final T res = C.read(clazz, ConvertSexp.read(is));
+        final T res = c.read(clazz, ConvertSexp.read(is));
         if (is.next() != TokenType.EOF) {
             throw new ConvertException("File continues after object read");
         }
         return res;
     }
 
-    public static <T> T read(final Class<T> clazz, final InputStream is)
+    public static <T> T read(
+        final Converting c,
+        final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
-        return read(clazz, new CanonicalSpkiInputStream(is));
+        return read(c, clazz, new CanonicalSpkiInputStream(is));
     }
 
-    public static <T> T read(final Class<T> clazz, final File f)
+    public static <T> T read(
+        final Converting c,
+        final Class<T> clazz, final File f)
         throws IOException,
             InvalidInputException {
         final FileInputStream is = new FileInputStream(f);
         try {
-            return read(clazz, is);
+            return read(c, clazz, is);
         } finally {
             is.close();
         }
@@ -110,9 +115,11 @@ public class ConvertUtils {
     /**
      * WARNING: this closes the stream passed in!
      */
-    public static <T> T readAdvanced(final Class<T> clazz, final InputStream is)
+    public static <T> T readAdvanced(
+        final Converting c,
+        final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
-        return read(clazz, new AdvancedSpkiInputStream(is));
+        return read(c, clazz, new AdvancedSpkiInputStream(is));
     }
 
     public static byte[] toBytes(
@@ -128,10 +135,12 @@ public class ConvertUtils {
         }
     }
 
-    public static <T> T fromBytes(final Class<T> clazz, final byte[] bytes)
+    public static <T> T fromBytes(
+        final Converting c,
+        final Class<T> clazz, final byte[] bytes)
         throws InvalidInputException {
         try {
-            return read(clazz, new ByteArrayInputStream(bytes));
+            return read(c, clazz, new ByteArrayInputStream(bytes));
         } catch (final IOException e) {
             throw new RuntimeException(
                 "ByteArrayInputStream cannot throw IOException", e);

@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
@@ -31,7 +30,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
             list("point", coords.get(1), coords.get(0)));
 
         prettyPrint(reversed, System.out);
-        final PublicSigningKey deserialized = ConvertUtils.C.read(
+        final PublicSigningKey deserialized = C.read(
             PublicSigningKey.class, reversed);
         assertEquals(reversed, deserialized.toSexp());
         assertEquals(digest(reversed), deserialized.getKeyId());
@@ -43,7 +42,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
         final PrivateSigningKey key = generateReversedKey();
         // Reorder the public key
         final PublicSigningKey publicKey = key.getPublicKey();
-        final InferenceEngine engine = new InferenceEngine();
+        final InferenceEngine engine = newEngine();
         engine.processTrusted(publicKey);
         engine.process(signed(key, message));
         checkMessage(engine, message);
@@ -63,7 +62,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
                     list("point", coords.get(1), coords.get(0)))),
             sexp.list().getSparts().get(1));
         prettyPrint(reversedSexp, System.out);
-        final PrivateSigningKey res = ConvertUtils.C.read(
+        final PrivateSigningKey res = C.read(
             PrivateSigningKey.class, reversedSexp);
         assertEquals(reversedSexp, res.toSexp());
         assertEquals(reversedSexp.list().getSparts()

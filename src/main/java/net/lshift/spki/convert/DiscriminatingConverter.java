@@ -28,7 +28,7 @@ public class DiscriminatingConverter<T>
         }
     }
 
-    public void addClass(final Class<? extends T> subclass) {
+    private void addClass(final Class<? extends T> subclass) {
         if (!clazz.isAssignableFrom(subclass)) {
             throw new ConvertReflectionException(this, subclass,
                 "Class is not a subclass of " + clazz.getCanonicalName());
@@ -36,7 +36,7 @@ public class DiscriminatingConverter<T>
         final Converter<? extends T> converter = Registry.getConverter(subclass);
         if (!(converter instanceof ListConverter<?>)) {
             throw new ConvertReflectionException(this, subclass,
-                    "Converter isn't a list converter");
+                "Converter isn't a list converter");
         }
         final String name = ((ListConverter<? extends T>)converter).getName();
         if (nameMap.containsKey(name)) {
@@ -51,10 +51,8 @@ public class DiscriminatingConverter<T>
     public Sexp write(final T o) {
         @SuppressWarnings("unchecked")
         final Class<? extends T> subclass = (Class<? extends T>) o.getClass();
-        if (!classes.contains(subclass)) {
-            throw new ConvertReflectionException(subclass,
-                "Class not known to discriminator");
-        }
+        // FIXME: add some sort of test that this class expects to be
+        // part of our discriminated union
         return writeUnchecked(subclass, o);
     }
 
@@ -63,12 +61,23 @@ public class DiscriminatingConverter<T>
         throws InvalidInputException {
         final byte[] discrim = in.list().getHead().getBytes();
         final String stringDiscrim = ConvertUtils.stringOrNull(discrim);
-        final Class<? extends T> subclass = nameMap.get(stringDiscrim);
+        final Class<? extends T> subclass = lookupSubclass(c, stringDiscrim);
+        assertMatches(discrim, stringDiscrim);
+        return readElement(subclass, c, in);
+    }
+
+    protected Class<? extends T> lookupSubclass(
+        Converting c,
+        final String stringDiscrim)
+        throws ConvertException {
+        Class<? extends T> subclass = nameMap.get(stringDiscrim);
+        if (subclass == null) {
+            subclass =  c.getExtraDiscrim(clazz, stringDiscrim);
+        }
         if (subclass == null) {
             throw new ConvertException(
                 "Unable to find converter: " + stringDiscrim);
         }
-        assertMatches(discrim, stringDiscrim);
-        return readElement(subclass, c, in);
+        return subclass;
     }
 }

@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ResetsRegistry;
+import net.lshift.spki.convert.UsesConverting;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
 
 import org.junit.Test;
 
-public class CliMultipleRecipientTest extends ResetsRegistry
+public class CliMultipleRecipientTest extends UsesConverting
 {
     @Test
     public void cliTest()

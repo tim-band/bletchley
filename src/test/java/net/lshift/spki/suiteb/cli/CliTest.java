@@ -11,7 +11,7 @@ import java.io.PrintStream;
 import java.util.regex.Pattern;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ResetsRegistry;
+import net.lshift.spki.convert.UsesConverting;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
@@ -19,7 +19,7 @@ import net.lshift.spki.convert.openable.OpenableUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-public class CliTest extends ResetsRegistry
+public class CliTest extends UsesConverting
 {
     private static final Pattern FINGERPRINT_OUTPUT
         = Pattern.compile("[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}\n");

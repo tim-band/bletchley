@@ -1,6 +1,5 @@
 package net.lshift.spki.suiteb.cli;
 
-import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
 import static net.lshift.spki.suiteb.Signed.signed;
 import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint;
@@ -18,6 +17,7 @@ import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
+import net.lshift.spki.convert.Converting;
 import net.lshift.spki.convert.Registry;
 import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
@@ -39,6 +39,21 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
  */
 public class Cli {
     private static final String CLI_MESSAGE = Cli.class.toString();
+    private static Converting C = getConverting();
+
+    private static Converting getConverting() {
+        Converting c = new Converting();
+        c.register(SimpleMessage.class);
+        return c;
+    }
+
+    private static <U> U read(Class<U> clazz, Openable open) throws IOException, InvalidInputException {
+        return OpenableUtils.read(C, clazz, open);
+    }
+
+    private static SequenceItem read(Openable open) throws IOException, InvalidInputException {
+        return read(SequenceItem.class, open);
+    }
 
     public static void prettyPrint(final Openable file)
         throws IOException,
@@ -118,7 +133,7 @@ public class Cli {
         final Openable packet,
         final Openable out)
         throws IOException, InvalidInputException {
-        final InferenceEngine inference = new InferenceEngine();
+        final InferenceEngine inference = new InferenceEngine(C);
         inference.processTrusted(signingKey);
         inference.process(encryptionKey);
         inference.process(read(packet));

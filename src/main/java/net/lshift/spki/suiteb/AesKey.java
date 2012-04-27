@@ -4,6 +4,7 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.convert.Converting;
 import net.lshift.spki.convert.SexpBacked;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -75,7 +76,7 @@ public class AesKey extends SexpBacked implements SequenceItem {
             return new AesPacket(getKeyId(), nonce, ciphertext);
     }
 
-    public SequenceItem decrypt(final AesPacket packet)
+    public SequenceItem decrypt(final Converting c, final AesPacket packet)
         throws InvalidInputException {
         final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
         gcm.init(false, new AEADParameters(
@@ -89,7 +90,7 @@ public class AesKey extends SexpBacked implements SequenceItem {
         } catch (final InvalidCipherTextException e) {
             throw new CryptographyException(e);
         }
-        return ConvertUtils.fromBytes(SequenceItem.class, newtext);
+        return ConvertUtils.fromBytes(c, SequenceItem.class, newtext);
     }
 
     public static AesKey generateAESKey() {
