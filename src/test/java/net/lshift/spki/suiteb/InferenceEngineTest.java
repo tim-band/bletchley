@@ -13,6 +13,7 @@ import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
+import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
 
@@ -22,8 +23,12 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         assertThat(res.size(), is(equalTo(0)));
     }
 
-    public static void checkMessage(final InferenceEngine engine, final Action message) throws CryptographyException {
-        assertMessagesMatch(engine.getSoleAction(), message.getPayload());
+    public static void checkMessage(
+        final InferenceEngine engine,
+        final Action message)
+        throws CryptographyException {
+        assertMessagesMatch(engine.getSoleAction(SimpleMessage.class),
+            message.getPayload());
     }
 
     @Test

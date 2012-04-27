@@ -21,7 +21,6 @@ import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
 import net.lshift.spki.suiteb.Action;
-import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.EncryptionCache;
 import net.lshift.spki.suiteb.InferenceEngine;
@@ -136,11 +135,8 @@ public class Cli {
         inference.processTrusted(signingKey);
         inference.process(encryptionKey);
         inference.process(read(packet));
-        final ActionType action = inference.getSoleAction();
-        if (!(action instanceof SimpleMessage)) {
-            throw new RuntimeException("Signed object was not message");
-        }
-        final SimpleMessage message = (SimpleMessage) action;
+        final SimpleMessage message
+            = inference.getSoleAction(SimpleMessage.class);
         if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message was not of expected type");
         }

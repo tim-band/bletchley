@@ -91,9 +91,15 @@ public class InferenceEngine {
         return actions;
     }
 
-    public ActionType getSoleAction() throws CryptographyException {
+    @SuppressWarnings("unchecked")
+    public <T extends ActionType> T getSoleAction(Class<T> clazz) throws CryptographyException {
         if (actions.size() == 1) {
-            return actions.get(0);
+            ActionType res = actions.get(0);
+            if (!clazz.isInstance(res)) {
+                throw new CryptographyException("Action is not an instance of "
+                    + clazz.getSimpleName() + " :" + res.getClass().getSimpleName());
+            }
+            return (T) res;
         } else if (actions.isEmpty()) {
             throw new CryptographyException("No validated actions found");
         } else {

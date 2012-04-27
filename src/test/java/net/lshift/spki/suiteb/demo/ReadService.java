@@ -31,6 +31,6 @@ public class ReadService {
         final InferenceEngine engine = newEngine();
         engine.processTrusted(read(C, acl));
         engine.process(read(C, source));
-        return (Service) engine.getSoleAction();
+        return engine.getSoleAction(Service.class);
     }
 }
