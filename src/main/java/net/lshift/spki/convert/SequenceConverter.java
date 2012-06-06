@@ -24,6 +24,10 @@ public class SequenceConverter<T>
     public SequenceConverter(final Class<T> clazz, final String name, final Field field) {
         super(clazz, name);
         beanName = field.getName();
+        contentType = findListContentType(clazz, field);
+    }
+
+    public static Class<?> findListContentType(final Class<?> clazz, final Field field) {
         if (!(field.getGenericType() instanceof ParameterizedType)) {
             throw new ConvertReflectionException(clazz,
                 "Field must be parameterized List type");
@@ -38,7 +42,7 @@ public class SequenceConverter<T>
             throw new ConvertReflectionException(clazz,
                 "Constructor type must have one parameter");
         }
-        contentType = (Class<?>) typeArgs[0];
+        return (Class<?>) typeArgs[0];
     }
 
     @Override
@@ -62,6 +66,21 @@ public class SequenceConverter<T>
     @Override
     public T readRest(final ConvertInputStream in)
         throws IOException, InvalidInputException {
+        try {
+            final Map<Field, Object> fields = new HashMap<Field, Object>();
+            fields.put(clazz.getDeclaredField(beanName), readList(contentType, in));
+            return DeserializingConstructor.make(clazz, fields);
+        } catch (final InstantiationException e) {
+            throw new ConvertReflectionException(clazz, e);
+        } catch (final IllegalAccessException e) {
+            throw new ConvertReflectionException(clazz, e);
+        } catch (final NoSuchFieldException e) {
+            throw new ConvertReflectionException(clazz, e);
+        }
+    }
+
+    public static List<Object> readList(Class<?> contentType, final ConvertInputStream in)
+        throws IOException, InvalidInputException {
         final List<Object> components = new ArrayList<Object>();
         for (;;) {
             final TokenType token = in.peek();
@@ -72,17 +91,7 @@ public class SequenceConverter<T>
                 break;
             case CLOSEPAREN:
                 in.next(); // actually consume peeked token
-                try {
-                    final Map<Field, Object> fields = new HashMap<Field, Object>();
-                    fields.put(clazz.getDeclaredField(beanName), components);
-                    return DeserializingConstructor.make(clazz, fields);
-                } catch (final InstantiationException e) {
-                    throw new ConvertReflectionException(clazz, e);
-                } catch (final IllegalAccessException e) {
-                    throw new ConvertReflectionException(clazz, e);
-                } catch (final NoSuchFieldException e) {
-                    throw new ConvertReflectionException(clazz, e);
-                }
+                return components;
             case EOF:
                 throw new ParseException("Unexpected EOF");
             }

@@ -14,7 +14,7 @@ implements ConverterFactory<Convert.ByPosition>
     public <T> Converter<T> converter(final Class<T> clazz, final Convert.ByPosition a) {
         final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
         for (final String fname: a.fields()) {
-            fields.add(new FieldConvertInfo(
+            fields.add(new FieldConvertInfo(clazz,
                 getField(clazz, clazz, fname)));
         }
         return new PositionBeanConverter<T>(clazz, a.name(), fields);

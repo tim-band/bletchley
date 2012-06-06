@@ -115,4 +115,15 @@ public class Convert
     public @interface Nullable {
         // no fields
     }
+
+    /**
+     * Mark that a field in a ByName converted class is a list, and
+     * will have zero or more list elements after the name, rather than
+     * always having one element.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.FIELD})
+    public @interface InlineList {
+        // no fields
+    }
 }

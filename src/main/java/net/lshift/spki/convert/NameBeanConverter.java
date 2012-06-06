@@ -30,7 +30,13 @@ public class NameBeanConverter<T>
         if (property != null) {
             out.beginSexp();
             out.atom(field.hyphenatedName);
-            out.writeUnchecked(field.field.getType(), property);
+            if (field.inlineList) {
+                for (final Object v: (List<?>)property) {
+                    out.writeUnchecked(field.inlineListType, v);
+                }
+            } else {
+                out.writeUnchecked(field.field.getType(), property);
+            }
             out.endSexp();
         } else if (!field.nullable) {
             throw new NullPointerException(
@@ -52,8 +58,13 @@ public class NameBeanConverter<T>
             if (res.containsKey(field.field)) {
                 throw new ConvertException("Repeated field");
             }
-            res.put(field.field, in.read(field.field.getType()));
-            in.nextAssertType(TokenType.CLOSEPAREN);
+            if (field.inlineList) {
+                res.put(field.field,
+                    SequenceConverter.readList(field.inlineListType, in));
+            } else {
+                res.put(field.field, in.read(field.field.getType()));
+                in.nextAssertType(TokenType.CLOSEPAREN);
+            }
         }
         in.nextAssertType(TokenType.CLOSEPAREN);
         for (final FieldConvertInfo field: fields) {

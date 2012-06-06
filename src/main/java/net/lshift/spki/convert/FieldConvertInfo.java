@@ -11,9 +11,11 @@ class FieldConvertInfo {
     public final String name;
     public final String hyphenatedName;
     public final Field field;
+    public final boolean inlineList;
     public final boolean nullable;
+    public final Class<?> inlineListType;
 
-    public FieldConvertInfo(final Field field)
+    public FieldConvertInfo(final Class<?> clazz, final Field field)
         throws SecurityException {
         super();
         this.field = field;
@@ -25,5 +27,11 @@ class FieldConvertInfo {
         }
         hyphenatedName = StringUtils.join(c, '-');
         nullable = field.getAnnotation(Convert.Nullable.class) != null;
+        inlineList = field.getAnnotation(Convert.InlineList.class) != null;
+        if (inlineList) {
+            inlineListType = SequenceConverter.findListContentType(clazz, field);
+        } else {
+            inlineListType = null;
+        }
     }
 }
