@@ -11,7 +11,6 @@ class FieldConvertInfo {
     public final String name;
     public final String hyphenatedName;
     public final Field field;
-    public final boolean inlineList;
     public final boolean nullable;
     public final Class<?> inlineListType;
 
@@ -27,11 +26,16 @@ class FieldConvertInfo {
         }
         hyphenatedName = StringUtils.join(c, '-');
         nullable = field.getAnnotation(Convert.Nullable.class) != null;
-        inlineList = field.getAnnotation(Convert.InlineList.class) != null;
-        if (inlineList) {
-            inlineListType = SequenceConverter.getTypeInList(clazz, field);
-        } else {
-            inlineListType = null;
+        inlineListType = findListContentTypeOrNull(clazz, field);
+    }
+
+    private static Class<?> findListContentTypeOrNull(
+            final Class<?> clazz,
+            final Field field) {
+        try {
+            return SequenceConverter.getTypeInList(clazz, field);
+        } catch (ConvertReflectionException e) {
+            return null;
         }
     }
 }

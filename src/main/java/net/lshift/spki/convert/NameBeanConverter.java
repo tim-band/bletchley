@@ -27,11 +27,11 @@ public class NameBeanConverter<T>
         final FieldConvertInfo field,
         final Object property) {
         if (property != null) {
-            if (field.inlineList) {
-                return writeListField(field, property);
-            } else {
+            if (field.inlineListType == null) {
                 return list(field.hyphenatedName,
                         writeUnchecked(field.field.getType(), property));
+            } else {
+                return writeListField(field, property);
             }
         } else if (field.nullable) {
             return null;
@@ -63,14 +63,14 @@ public class NameBeanConverter<T>
                 throw new ConvertException("Repeated field");
             }
             final List<Sexp> ltail = ls.getSparts();
-            if(field.inlineList) {
-                res.put(field.field, readSequence(r, field.inlineListType, ltail));
-            } else {
+            if(field.inlineListType == null) {
                 if (ltail.size() != 1) {
                     throw new ConvertException("multiple parts to named field");
                 }
                 res.put(field.field,
                         readElement(field.field.getType(), r, ltail.get(0)));
+            } else {
+                res.put(field.field, readSequence(r, field.inlineListType, ltail));
             }
         }
         for (final FieldConvertInfo field: fields) {

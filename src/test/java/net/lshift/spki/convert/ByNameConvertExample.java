@@ -9,7 +9,6 @@ public class ByNameConvertExample extends SexpBacked
     public final BigInteger foo;
     public final BigInteger bar;
     final String baz;
-    @Convert.InlineList
     public final List<String> inlineList;
 
     public ByNameConvertExample(BigInteger foo, BigInteger bar, String baz,
