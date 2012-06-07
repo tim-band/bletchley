@@ -20,7 +20,6 @@ import org.junit.Test;
 public class InlineListTest {
     @Convert.ByName("uses-inline-list")
     public static class UsesInlineList {
-        @Convert.InlineList
         public final List<String> inlineList;
 
         public UsesInlineList(List<String> inlineList) {
