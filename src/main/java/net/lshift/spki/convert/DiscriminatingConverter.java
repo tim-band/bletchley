@@ -1,7 +1,9 @@
 package net.lshift.spki.convert;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,8 +53,12 @@ public class DiscriminatingConverter<T>
     public Sexp write(final T o) {
         @SuppressWarnings("unchecked")
         final Class<? extends T> subclass = (Class<? extends T>) o.getClass();
-        // FIXME: add some sort of test that this class expects to be
-        // part of our discriminated union
+        if (!classes.contains(subclass) &&
+                        getDiscriminatedSuperclass(subclass) != clazz) {
+                throw new ConvertReflectionException(this, subclass,
+                        "Class is not a member of discriminated union: "
+                                        + clazz.getCanonicalName());
+        }
         return writeUnchecked(subclass, o);
     }
 
@@ -79,5 +85,36 @@ public class DiscriminatingConverter<T>
                 "Unable to find converter: " + stringDiscrim);
         }
         return subclass;
+    }
+
+    public static Class<?> getDiscriminatedSuperclass(Class<?> clazz) {
+        List<Class<?>> answers = new ArrayList<Class<?>>();
+        getDiscriminatedSuperclasses(clazz, answers, clazz);
+        if (answers.isEmpty()) {
+            throw new ConvertReflectionException(clazz,
+                "has no discriminated superclass");
+        }
+        if (answers.size() > 1) {
+            throw new ConvertReflectionException(clazz,
+                "is ambiguous: discriminated superclasses "
+                                + answers);
+        }
+        return answers.get(0);
+    }
+
+    private static void getDiscriminatedSuperclasses(
+        Class<?> clazz,
+        List<Class<?>> answers,
+        Class<?> sup) {
+        if (sup == null)
+            return;
+        if (sup.getAnnotation(Convert.Discriminated.class) != null) {
+            answers.add(sup);
+            return;
+        }
+        getDiscriminatedSuperclasses(clazz, answers,  sup.getSuperclass());
+        for (Class<?> supsup: sup.getInterfaces()) {
+            getDiscriminatedSuperclasses(clazz, answers, supsup);
+        }
     }
 }

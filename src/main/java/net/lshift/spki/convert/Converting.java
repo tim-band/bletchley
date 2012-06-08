@@ -1,8 +1,6 @@
 package net.lshift.spki.convert;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
@@ -63,7 +61,7 @@ public class Converting {
     }
 
     public synchronized void register(final Class<?> clazz) {
-        Class<?> superclass = getDiscriminatedSuperclass(clazz);
+        Class<?> superclass = DiscriminatingConverter.getDiscriminatedSuperclass(clazz);
         final Converter<?> converter = Registry.getConverter(clazz);
         if (!(converter instanceof ListConverter<?>)) {
             throw new ConvertReflectionException(clazz,
@@ -79,36 +77,5 @@ public class Converting {
                 " has it: " + key);
         }
         discrimMap.put(key, clazz);
-    }
-
-    private Class<?> getDiscriminatedSuperclass(Class<?> clazz) {
-        List<Class<?>> answers = new ArrayList<Class<?>>();
-        getDiscriminatedSuperclasses(clazz, answers, clazz);
-        if (answers.isEmpty()) {
-            throw new ConvertReflectionException(clazz,
-                "has no discriminated superclass");
-        }
-        if (answers.size() > 1) {
-            throw new ConvertReflectionException(clazz,
-                "is ambiguous: discriminated superclasses "
-                + answers);
-        }
-        return answers.get(0);
-    }
-
-    private void getDiscriminatedSuperclasses(
-        Class<?> clazz,
-        List<Class<?>> answers,
-        Class<?> sup) {
-        if (sup == null)
-            return;
-        if (sup.getAnnotation(Convert.Discriminated.class) != null) {
-            answers.add(sup);
-            return;
-        }
-        getDiscriminatedSuperclasses(clazz, answers,  sup.getSuperclass());
-        for (Class<?> supsup: sup.getInterfaces()) {
-            getDiscriminatedSuperclasses(clazz, answers, supsup);
-        }
     }
 }

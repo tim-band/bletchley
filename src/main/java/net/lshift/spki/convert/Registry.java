@@ -16,6 +16,9 @@ import net.lshift.spki.convert.Convert.HandlerClass;
 public class Registry {
     private static final Registry REGISTRY = new Registry();
 
+    private final Map<Class<?>, ConverterFactory<?>> factoryCache
+        = new HashMap<Class<?>, ConverterFactory<?>>();
+
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 
@@ -89,7 +92,7 @@ public class Registry {
         handler.handle(clazz, converter, a);
     }
 
-    private static <T> Converter<T> generateConverter(final Class<T> clazz) {
+    private <T> Converter<T> generateConverter(final Class<T> clazz) {
         if (clazz.isEnum()) {
             return generateEnumConverter(clazz);
         }
@@ -118,20 +121,29 @@ public class Registry {
         return new EnumConverter(clazz);
     }
 
-    private static <T, A extends Annotation> Converter<T> getMethod(
+    private <T, A extends Annotation> Converter<T> getMethod(
         final Class<T> clazz,
         final A a,
         final ConverterFactoryClass factoryClass)
-        throws InstantiationException, IllegalAccessException {
-        // FIXME: cache these?
-        @SuppressWarnings("unchecked")
-        final ConverterFactory<A> factoryInstance
-            = (ConverterFactory<A>) factoryClass.value().newInstance();
-        final Converter<T> res = factoryInstance.converter(clazz, a);
+                        throws InstantiationException, IllegalAccessException {
+        final Converter<T> res = getFactoryInstance(factoryClass.value())
+                        .converter(clazz, a);
         if (!res.getResultClass().equals(clazz)) {
             throw new ConvertReflectionException(clazz,
-                "Didn't get appropriate converter!");
+                            "Didn't get appropriate converter!");
         }
         return res;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <A extends Annotation> ConverterFactory<A> getFactoryInstance(
+        final Class<? extends ConverterFactory<?>> clazz)
+                        throws InstantiationException, IllegalAccessException {
+        ConverterFactory<?> res = factoryCache.get(clazz);
+        if (res == null) {
+            res = clazz.newInstance();
+            factoryCache.put(clazz, res);
+        }
+        return (ConverterFactory<A>) res;
     }
 }

@@ -42,12 +42,11 @@ public class PassphraseProtectedKey extends SexpBacked implements SequenceItem {
         return keyId;
     }
 
-    public AesKey getKey(final String passphrase) throws InvalidInputException {
+    public AesKey getKey(final String passphrase) {
         final AesKey res = PassphraseUtils.getKey(
             passphraseId, salt, iterations, passphrase);
         if (!keyId.equals(res.getKeyId())) {
-            // FIXME use CryptographyException
-            throw new InvalidInputException("Wrong passphrase");
+                return null;
         }
         return res;
     }

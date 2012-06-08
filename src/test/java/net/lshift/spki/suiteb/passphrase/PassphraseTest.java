@@ -4,6 +4,7 @@ import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkNoMessages;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
@@ -67,11 +68,11 @@ public class PassphraseTest extends UsesSimpleMessage {
         assertDecryptsToMessage(ppk.getKey(PASSPHRASE), encrypted);
     }
 
-    @Test(expected=InvalidInputException.class)
+    @Test
     public void testBadPassphraseRejected() throws InvalidInputException {
-        PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE)
-        .getPassphraseProtectedKey()
-        .getKey(PASSPHRASE + " ");
+        assertNull(PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE)
+                .getPassphraseProtectedKey()
+                .getKey(PASSPHRASE + " "));
     }
 
     @Test
@@ -85,11 +86,7 @@ public class PassphraseTest extends UsesSimpleMessage {
             @Override
             public AesKey getPassphrase(final PassphraseProtectedKey ppk) {
                 if (PASSPHRASE_ID.equals(ppk.getPassphraseId())) {
-                    try {
                         return ppk.getKey(PASSPHRASE);
-                    } catch (final InvalidInputException e) {
-                        return null;
-                    }
                 }
                 return null;
             }

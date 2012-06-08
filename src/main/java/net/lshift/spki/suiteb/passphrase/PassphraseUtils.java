@@ -78,11 +78,10 @@ public class PassphraseUtils {
         while (true) {
             final String passphrase = new String(console.readPassword(
                 "Passphrase for \"%s\": ", ppk.getPassphraseId()));
-            try {
-                return ppk.getKey(passphrase);
-            } catch (final InvalidInputException e) {
-                System.out.println("Wrong passphrase, trying again");
-            }
+            AesKey res = ppk.getKey(passphrase);
+            if (res == null)
+                return res;
+            System.out.println("Wrong passphrase, trying again");
         }
     }
 }
