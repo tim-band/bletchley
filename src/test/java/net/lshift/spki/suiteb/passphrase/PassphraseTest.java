@@ -69,7 +69,7 @@ public class PassphraseTest extends UsesSimpleMessage {
     }
 
     @Test
-    public void testBadPassphraseRejected() throws InvalidInputException {
+    public void testBadPassphraseRejected() {
         assertNull(PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE)
                 .getPassphraseProtectedKey()
                 .getKey(PASSPHRASE + " "));

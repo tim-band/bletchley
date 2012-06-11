@@ -2,7 +2,6 @@ package net.lshift.spki.suiteb.passphrase;
 
 import java.io.Console;
 
-import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.AesKey;
 
 /**
