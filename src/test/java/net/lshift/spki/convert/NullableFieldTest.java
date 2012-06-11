@@ -41,7 +41,7 @@ public class NullableFieldTest extends UsesConverting {
     }
 
     private void testRoundTripWorks(final WithOptional withOptional, final Sexp sexp) throws IOException, InvalidInputException {
-        final WithOptional read = read(C, WithOptional.class, toConvert(sexp));
+        final WithOptional read = read(getConverting(), WithOptional.class, toConvert(sexp));
         assertEquals(withOptional.mandatory, read.mandatory);
         assertEquals(withOptional.optional, read.optional);
         final byte[] direct = toBytes(sexp);
@@ -51,7 +51,7 @@ public class NullableFieldTest extends UsesConverting {
 
     @Test(expected=InvalidInputException.class)
     public void mandatoryIsMandatory() throws IOException, InvalidInputException {
-        read(C, WithOptional.class, toConvert(
+        read(getConverting(), WithOptional.class, toConvert(
                 list("with-optional",
                         list("optional", atom("foo")))));
     }

@@ -7,8 +7,26 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
 public class Converting {
-    private static final Map<String, Class<?>> discrimMap
-        = new HashMap<String,Class<?>>();
+    private final Map<String, Class<?>> discrimMap;
+
+    private Converting(Converting base, Class<?>... classes) {
+        if (base == null) {
+            discrimMap = new HashMap<String,Class<?>>();
+        } else {
+            discrimMap = new HashMap<String,Class<?>>(base.discrimMap);
+        }
+        for (Class<?> clazz: classes) {
+            register(discrimMap, clazz);
+        }
+    }
+
+    public Converting(Class<?>... classes) {
+        this(null, classes);
+    }
+
+    public Converting extend(Class<?>... classes) {
+        return new Converting(this, classes);
+    }
 
     @SuppressWarnings("unchecked")
     public <T> T read(
@@ -47,12 +65,12 @@ public class Converting {
         return read(clazz, null, sexp);
     }
 
-    private <U> String discrimMapKey(final Class<U> clazz, final String name) {
+    private static <U> String discrimMapKey(final Class<U> clazz, final String name) {
         return clazz.getCanonicalName() + ";" + name;
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized <U> Class<? extends U> getExtraDiscrim(
+    public <U> Class<? extends U> getExtraDiscrim(
         final Class<U> clazz,
         final String name) {
         // FIXME: class <-> canonicalName is not a 1-1 map.
@@ -60,7 +78,7 @@ public class Converting {
             discrimMap.get(discrimMapKey(clazz, name));
     }
 
-    public synchronized void register(final Class<?> clazz) {
+    private static void register(Map<String, Class<?>> discrimMap, final Class<?> clazz) {
         Class<?> superclass = DiscriminatingConverter.getDiscriminatedSuperclass(clazz);
         final Converter<?> converter = Registry.getConverter(clazz);
         if (!(converter instanceof ListConverter<?>)) {

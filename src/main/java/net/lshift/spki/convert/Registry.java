@@ -22,7 +22,7 @@ public class Registry {
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 
-    protected Registry() {
+    private Registry() {
         registerInternal(new ByteArrayConverter());
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());

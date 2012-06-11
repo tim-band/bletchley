@@ -15,9 +15,7 @@ public class ReadService {
     private static Converting C = getConverting();
 
     static Converting getConverting() {
-        final Converting c = new Converting();
-        c.register(Service.class);
-        return c;
+        return new Converting(Service.class);
     }
 
     private static InferenceEngine newEngine() {

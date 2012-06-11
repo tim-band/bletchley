@@ -36,7 +36,7 @@ public class EnumTest
         PrettyPrinter.prettyPrint(new PrintWriter(System.out),
             new ByteArrayInputStream(bytes));
         assertArrayEquals("(11:enum-holder4:left)".getBytes("US-ASCII"), bytes);
-        final EnumHolder changeBack = ConvertUtils.fromBytes(C,
+        final EnumHolder changeBack = ConvertUtils.fromBytes(getConverting(),
             EnumHolder.class, bytes);
         assertEquals(test.testEnum, changeBack.testEnum);
     }

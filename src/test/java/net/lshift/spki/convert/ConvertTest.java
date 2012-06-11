@@ -22,7 +22,7 @@ public class ConvertTest extends UsesConverting
             BigInteger.valueOf(3), BigInteger.valueOf(17));
         final byte[] bytes = ConvertUtils.toBytes(test);
         //PrettyPrinter.prettyPrint(System.out, sexp);
-        final ConvertExample changeBack = ConvertUtils.fromBytes(C,
+        final ConvertExample changeBack = ConvertUtils.fromBytes(getConverting(),
             ConvertExample.class, bytes);
         assertEquals(test, changeBack);
     }
@@ -31,13 +31,13 @@ public class ConvertTest extends UsesConverting
     public void sexpTest() throws InvalidInputException {
         final byte[] bytes = ConvertUtils.bytes("(3:foo)");
         assertEquals(list("foo"),
-            ConvertUtils.fromBytes(C, Sexp.class, bytes));
+            ConvertUtils.fromBytes(getConverting(), Sexp.class, bytes));
     }
 
     @Test(expected=ConvertException.class)
     public void extraBytesMeansParseException() throws InvalidInputException {
         final byte[] bytes = ConvertUtils.bytes("(3:foo)1:o");
-        ConvertUtils.fromBytes(C, Sexp.class, bytes);
+        ConvertUtils.fromBytes(getConverting(), Sexp.class, bytes);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class ConvertTest extends UsesConverting
     public void unmarshalTest() throws InvalidInputException {
         final byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.ASCII);
         final Sexp struct = list("test", atom("abcdefghijklmnopqrstuvwxyz"), atom("12345"), atom(":: ::"));
-        assertEquals(struct, ConvertUtils.fromBytes(C, Sexp.class, bytes));
+        assertEquals(struct, ConvertUtils.fromBytes(getConverting(), Sexp.class, bytes));
     }
 
     @Test
@@ -67,6 +67,6 @@ public class ConvertTest extends UsesConverting
         final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
         final byte[] uBytes = ConvertUtils.toBytes(atom(uidstring));
         assertEquals(UUID.fromString(uidstring),
-            ConvertUtils.fromBytes(C, UUID.class, uBytes));
+            ConvertUtils.fromBytes(getConverting(), UUID.class, uBytes));
     }
 }

@@ -19,6 +19,6 @@ public class NameBeanTest extends UsesConverting {
         OpenableUtils.write(example, list("point",
             list("x", atom("foo")),
             list("x", atom("bar"))));
-        OpenableUtils.read(C, Point.class, example);
+        OpenableUtils.read(getConverting(), Point.class, example);
     }
 }

@@ -74,7 +74,7 @@ public class PrettyPrinterTest extends UsesConverting {
     @Theory
     public void theoryCanParsePrettyPrintedData(final TestPair pair)
                     throws IOException, InvalidInputException {
-        final Sexp parsed = ConvertUtils.readAdvanced(C, Sexp.class, pair.getResourceAsStream());
+        final Sexp parsed = ConvertUtils.readAdvanced(getConverting(), Sexp.class, pair.getResourceAsStream());
         assertThat(parsed, is(pair.getSexp()));
     }
 

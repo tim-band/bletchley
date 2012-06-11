@@ -60,12 +60,12 @@ public class PositionSequenceConverterTest extends UsesConverting {
             ConvertUtils.toBytes(example),
             is(exampleBytes));
         assertThat(
-            ConvertUtils.fromBytes(C, PositionSequenceExample.class, exampleBytes),
+            ConvertUtils.fromBytes(getConverting(), PositionSequenceExample.class, exampleBytes),
             is(example));
     }
 
     private byte[] s(final String string) throws IOException, InvalidInputException {
-        final Sexp s = ConvertUtils.readAdvanced(C, Sexp.class,
+        final Sexp s = ConvertUtils.readAdvanced(getConverting(), Sexp.class,
             new ByteArrayInputStream(ConvertUtils.bytes(string)));
         return ConvertUtils.toBytes(s);
     }

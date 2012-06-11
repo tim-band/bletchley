@@ -40,9 +40,8 @@ public class Cli {
     private static Converting C = getConverting();
 
     private static Converting getConverting() {
-        final Converting c = new Converting();
-        c.register(SimpleMessage.class);
-        return c;
+        return new Converting(
+            SimpleMessage.class);
     }
 
     private static <U> U read(final Class<U> clazz, final Openable open)

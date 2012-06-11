@@ -8,15 +8,15 @@ import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
-import org.junit.Before;
-
 public class UsesSimpleMessage extends UsesConverting {
     private static final byte[] CONTENT = "The magic words are squeamish ossifrage".getBytes(Constants.ASCII);
+    private Converting CONVERTING = super.getConverting().extend(SimpleMessage.class);
 
-    @Before
-    public void registerSimpleMessage() {
-        C.register(SimpleMessage.class);
+    @Override
+    protected Converting getConverting() {
+        return CONVERTING;
     }
+
 
     protected Action makeMessage() {
         return new Action(new SimpleMessage(

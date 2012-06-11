@@ -25,7 +25,7 @@ public class DiscriminatingConverterTest extends UsesConverting
         throws IOException, InvalidInputException
     {
         assertEquals(new ImplementingClass(),
-            ConvertUtils.read(C, Interface.class,
+            ConvertUtils.read(getConverting(), Interface.class,
                 ConvertTestHelper.toConvert(
                     list("implementing-class"))));
     }
@@ -35,7 +35,7 @@ public class DiscriminatingConverterTest extends UsesConverting
         throws IOException, InvalidInputException
     {
         assertEquals(new OtherImplementingClass(),
-            ConvertUtils.read(C, Interface.class,
+            ConvertUtils.read(getConverting(), Interface.class,
                 ConvertTestHelper.toConvert(
                     list("other-implementing-class"))));
     }
@@ -49,10 +49,10 @@ public class DiscriminatingConverterTest extends UsesConverting
 
     @Test
     public void canHandleLateClass() throws InvalidInputException {
-        C.register(LateImplementingClass.class);
+        Converting cextra = getConverting().extend(LateImplementingClass.class);
         final LateImplementingClass obj = new LateImplementingClass();
         final byte[] bytes = ConvertUtils.toBytes(obj);
-        final Interface res = ConvertUtils.fromBytes(C, Interface.class, bytes);
+        final Interface res = ConvertUtils.fromBytes(cextra, Interface.class, bytes);
         assertEquals(obj, res);
     }
 }

@@ -16,7 +16,11 @@ import org.slf4j.LoggerFactory;
 
 public class UsesConverting {
     private static final Logger LOG = LoggerFactory.getLogger(UsesConverting.class);
-    protected Converting C = new Converting();
+    private Converting CONVERTING = new Converting();
+
+    protected Converting getConverting() {
+        return CONVERTING;
+    }
 
     /**
      * Put the argument through a serialization/deserialization round trip
@@ -29,7 +33,7 @@ public class UsesConverting {
             final ByteOpenable buf = new ByteOpenable();
             write(buf, o);
             LOG.info("\n{}", PrettyPrinter.prettyPrint(buf.read()));
-            return read(C, clazz, buf);
+            return read(getConverting(), clazz, buf);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } catch (final InvalidInputException e) {
@@ -38,6 +42,6 @@ public class UsesConverting {
     }
 
     public InferenceEngine newEngine() {
-        return new InferenceEngine(C);
+        return new InferenceEngine(getConverting());
     }
 }

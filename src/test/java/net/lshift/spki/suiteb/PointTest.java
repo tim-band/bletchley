@@ -23,6 +23,6 @@ public class PointTest extends UsesConverting {
                 list("x", atom("asdf")),
                 list("y", atom("qwert"))));
         OpenableUtils.write(example, sexp);
-        OpenableUtils.read(C, EcdhPublicKey.class, example);
+        OpenableUtils.read(getConverting(), EcdhPublicKey.class, example);
     }
 }
