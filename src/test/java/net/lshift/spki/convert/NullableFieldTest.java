@@ -15,7 +15,7 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class NullableFieldTest extends UsesConverting {
+public class NullableFieldTest extends UsesReadInfo {
     @Convert.ByName("with-optional")
     public static class WithOptional extends SexpBacked {
         public final String mandatory;
@@ -41,7 +41,7 @@ public class NullableFieldTest extends UsesConverting {
     }
 
     private void testRoundTripWorks(final WithOptional withOptional, final Sexp sexp) throws IOException, InvalidInputException {
-        final WithOptional read = read(getConverting(), WithOptional.class, toConvert(sexp));
+        final WithOptional read = read(getReadInfo(), WithOptional.class, toConvert(sexp));
         assertEquals(withOptional.mandatory, read.mandatory);
         assertEquals(withOptional.optional, read.optional);
         final byte[] direct = toBytes(sexp);
@@ -51,7 +51,7 @@ public class NullableFieldTest extends UsesConverting {
 
     @Test(expected=InvalidInputException.class)
     public void mandatoryIsMandatory() throws IOException, InvalidInputException {
-        read(getConverting(), WithOptional.class, toConvert(
+        read(getReadInfo(), WithOptional.class, toConvert(
                 list("with-optional",
                         list("optional", atom("foo")))));
     }

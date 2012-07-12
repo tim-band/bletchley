@@ -3,12 +3,12 @@ package net.lshift.spki.suiteb;
 import static net.lshift.spki.sexpform.Create.list;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import net.lshift.spki.convert.UsesConverting;
+import net.lshift.spki.convert.UsesReadInfo;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
-public class DigestTest extends UsesConverting
+public class DigestTest extends UsesReadInfo
 {
     @Test
     public void digestValueMatches() {

@@ -12,7 +12,7 @@ import net.lshift.spki.InvalidInputException;
 
 import org.junit.Test;
 
-public class DiscriminatingConverterTest extends UsesConverting
+public class DiscriminatingConverterTest extends UsesReadInfo
 {
     @Test
     public void testAssertDistinguishesExampleClasses() {
@@ -25,7 +25,7 @@ public class DiscriminatingConverterTest extends UsesConverting
         throws IOException, InvalidInputException
     {
         assertEquals(new ImplementingClass(),
-            ConvertUtils.read(getConverting(), Interface.class,
+            ConvertUtils.read(getReadInfo(), Interface.class,
                 ConvertTestHelper.toConvert(
                     list("implementing-class"))));
     }
@@ -35,7 +35,7 @@ public class DiscriminatingConverterTest extends UsesConverting
         throws IOException, InvalidInputException
     {
         assertEquals(new OtherImplementingClass(),
-            ConvertUtils.read(getConverting(), Interface.class,
+            ConvertUtils.read(getReadInfo(), Interface.class,
                 ConvertTestHelper.toConvert(
                     list("other-implementing-class"))));
     }
@@ -49,7 +49,7 @@ public class DiscriminatingConverterTest extends UsesConverting
 
     @Test
     public void canHandleLateClass() throws InvalidInputException {
-        Converting cextra = getConverting().extend(LateImplementingClass.class);
+        ReadInfo cextra = getReadInfo().extend(LateImplementingClass.class);
         final LateImplementingClass obj = new LateImplementingClass();
         final byte[] bytes = ConvertUtils.toBytes(obj);
         final Interface res = ConvertUtils.fromBytes(cextra, Interface.class, bytes);

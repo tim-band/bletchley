@@ -12,13 +12,13 @@ import net.lshift.spki.suiteb.sexpstructs.ECPointConverter.Point;
 
 import org.junit.Test;
 
-public class NameBeanTest extends UsesConverting {
+public class NameBeanTest extends UsesReadInfo {
     @Test(expected=ConvertException.class)
     public void repeatedFieldsRejected() throws IOException, InvalidInputException {
         final ByteOpenable example = new ByteOpenable();
         OpenableUtils.write(example, list("point",
             list("x", atom("foo")),
             list("x", atom("bar"))));
-        OpenableUtils.read(getConverting(), Point.class, example);
+        OpenableUtils.read(getReadInfo(), Point.class, example);
     }
 }

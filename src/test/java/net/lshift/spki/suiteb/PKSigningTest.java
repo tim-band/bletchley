@@ -2,13 +2,13 @@ package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.sexpform.Create.atom;
 import static org.junit.Assert.assertTrue;
-import net.lshift.spki.convert.UsesConverting;
+import net.lshift.spki.convert.UsesReadInfo;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
 import org.junit.Test;
 
-public class PKSigningTest extends UsesConverting {
+public class PKSigningTest extends UsesReadInfo {
     @Test
     public void test() {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();

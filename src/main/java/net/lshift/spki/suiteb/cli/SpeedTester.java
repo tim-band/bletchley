@@ -4,7 +4,7 @@ import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.Converting;
+import net.lshift.spki.convert.ReadInfo;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.EncryptionCache;
@@ -19,13 +19,13 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
  */
 public class SpeedTester {
     private static final String MESSAGE_TYPE = "speed-test-message";
-    private static final Converting C = getConverting();
+    private static final ReadInfo R = getReadInfo();
     private final PrivateSigningKey privateKey;
     private final byte[] publicKeyBytes;
     private final byte[] messageBytes;
 
-    private static Converting getConverting() {
-        return new Converting(SimpleMessage.class);
+    private static ReadInfo getReadInfo() {
+        return new ReadInfo(SimpleMessage.class);
     }
 
     public SpeedTester() {
@@ -52,7 +52,7 @@ public class SpeedTester {
     private void doRun() throws InvalidInputException {
         final AesKey aesKey = AesKey.generateAESKey();
         final PublicEncryptionKey pKey
-            = ConvertUtils.fromBytes(C, PublicEncryptionKey.class, publicKeyBytes);
+            = ConvertUtils.fromBytes(R, PublicEncryptionKey.class, publicKeyBytes);
         final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         final Action message = new Action(new SimpleMessage(
             MESSAGE_TYPE, messageBytes));

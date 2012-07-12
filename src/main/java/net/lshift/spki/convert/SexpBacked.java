@@ -10,7 +10,7 @@ public class SexpBacked
     @Override
     public synchronized Sexp toSexp() {
         if (sexp == null) {
-            sexp = ((Converter<Object>) Registry.getConverter(
+            sexp = ((Converter<Object>) ConverterCache.getConverter(
                 (Class<Object>)(Class<?>)getClass())).write(this);
         }
         return sexp;

@@ -8,13 +8,13 @@ import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
-public class UsesSimpleMessage extends UsesConverting {
+public class UsesSimpleMessage extends UsesReadInfo {
     private static final byte[] CONTENT = "The magic words are squeamish ossifrage".getBytes(Constants.ASCII);
-    private Converting CONVERTING = super.getConverting().extend(SimpleMessage.class);
+    private ReadInfo READ_INFO = super.getReadInfo().extend(SimpleMessage.class);
 
     @Override
-    protected Converting getConverting() {
-        return CONVERTING;
+    protected ReadInfo getReadInfo() {
+        return READ_INFO;
     }
 
 

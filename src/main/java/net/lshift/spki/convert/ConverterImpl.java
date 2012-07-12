@@ -31,10 +31,10 @@ public abstract class ConverterImpl<T> implements Converter<T> {
 
     protected <U> U readElement(
         final Class<U> elementClass,
-        final Converting c,
+        final ReadInfo r,
         final Sexp in)
         throws InvalidInputException {
-        return c.read(elementClass, extraConverters, in);
+        return r.read(elementClass, extraConverters, in);
     }
 
     @SuppressWarnings("unchecked")
@@ -42,7 +42,7 @@ public abstract class ConverterImpl<T> implements Converter<T> {
         if (writingClazz == Sexp.class) {
             return (Sexp) o;
         }
-        return ((Converter<Object>) Converting.getConverter(
+        return ((Converter<Object>) ReadInfo.getConverter(
             extraConverters, writingClazz)).write(o);
     }
 

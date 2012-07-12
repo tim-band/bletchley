@@ -8,7 +8,7 @@ import static net.lshift.spki.suiteb.Signed.signed;
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Converting;
+import net.lshift.spki.convert.ReadInfo;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.EncryptionCache;
@@ -17,7 +17,7 @@ import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 
 public class WriteService {
-    private static Converting C = ReadService.getConverting();
+    private static ReadInfo R = ReadService.getReadInfo();
 
     private static EncryptionCache ephemeral =
                     new EncryptionCache(PrivateEncryptionKey.generate());
@@ -32,7 +32,7 @@ public class WriteService {
         write(target, sequence(
             ephemeral.getPublicKey(),
             ephemeral.encrypt(recipient,
-                read(C, extra),
+                read(R, extra),
                 signed(signingKey, new Action(service)))));
     }
 }

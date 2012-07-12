@@ -16,7 +16,7 @@ import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.Converting;
+import net.lshift.spki.convert.ReadInfo;
 import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
@@ -37,10 +37,10 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
  */
 public class Cli {
     private static final String CLI_MESSAGE = Cli.class.toString();
-    private static Converting C = getConverting();
+    private static ReadInfo C = getConverting();
 
-    private static Converting getConverting() {
-        return new Converting(
+    private static ReadInfo getConverting() {
+        return new ReadInfo(
             SimpleMessage.class);
     }
 

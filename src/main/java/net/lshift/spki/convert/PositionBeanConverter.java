@@ -21,7 +21,7 @@ public class PositionBeanConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final Converting c, final List<Sexp> tail)
+    protected Map<Field, Object> readFields(final ReadInfo r, final List<Sexp> tail)
         throws InvalidInputException {
         final int size = fields.size();
         if (tail.size() != size) {
@@ -30,7 +30,7 @@ public class PositionBeanConverter<T>
         final Map<Field, Object> res = new HashMap<Field, Object>(size);
         for (int i = 0; i < size; i++) {
             final FieldConvertInfo f = fields.get(i);
-            res.put(f.field, readElement(f.field.getType(), c, tail.get(i)));
+            res.put(f.field, readElement(f.field.getType(), r, tail.get(i)));
         }
         return res;
     }

@@ -30,7 +30,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
             list("point", coords.get(1), coords.get(0)));
 
         prettyPrint(reversed, System.out);
-        final PublicSigningKey deserialized = getConverting().read(
+        final PublicSigningKey deserialized = getReadInfo().read(
             PublicSigningKey.class, reversed);
         assertEquals(reversed, deserialized.toSexp());
         assertEquals(digest(reversed), deserialized.getKeyId());
@@ -62,7 +62,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
                     list("point", coords.get(1), coords.get(0)))),
             sexp.list().getSparts().get(1));
         prettyPrint(reversedSexp, System.out);
-        final PrivateSigningKey res = getConverting().read(
+        final PrivateSigningKey res = getReadInfo().read(
             PrivateSigningKey.class, reversedSexp);
         assertEquals(reversedSexp, res.toSexp());
         assertEquals(reversedSexp.list().getSparts()

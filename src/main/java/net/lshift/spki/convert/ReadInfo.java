@@ -6,10 +6,10 @@ import java.util.Map;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
-public class Converting {
+public class ReadInfo {
     private final Map<String, Class<?>> discrimMap;
 
-    private Converting(Converting base, Class<?>... classes) {
+    private ReadInfo(ReadInfo base, Class<?>... classes) {
         if (base == null) {
             discrimMap = new HashMap<String,Class<?>>();
         } else {
@@ -20,12 +20,12 @@ public class Converting {
         }
     }
 
-    public Converting(Class<?>... classes) {
+    public ReadInfo(Class<?>... classes) {
         this(null, classes);
     }
 
-    public Converting extend(Class<?>... classes) {
-        return new Converting(this, classes);
+    public ReadInfo extend(Class<?>... classes) {
+        return new ReadInfo(this, classes);
     }
 
     @SuppressWarnings("unchecked")
@@ -54,7 +54,7 @@ public class Converting {
         if (extraConverters != null && extraConverters.containsKey(clazz)) {
             return (Converter<T>) extraConverters.get(clazz);
         } else {
-            return Registry.getConverter(clazz);
+            return ConverterCache.getConverter(clazz);
         }
     }
 
@@ -80,7 +80,7 @@ public class Converting {
 
     private static void register(Map<String, Class<?>> discrimMap, final Class<?> clazz) {
         Class<?> superclass = DiscriminatingConverter.getDiscriminatedSuperclass(clazz);
-        final Converter<?> converter = Registry.getConverter(clazz);
+        final Converter<?> converter = ConverterCache.getConverter(clazz);
         if (!(converter instanceof ListConverter<?>)) {
             throw new ConvertReflectionException(clazz,
                 "defines no name, cannot be instance of a discrim");

@@ -35,12 +35,12 @@ public abstract class BeanConverter<T> extends ConverterImpl<T>
     }
 
     @Override
-    public T read(final Converting c, final Sexp in)
+    public T read(final ReadInfo r, final Sexp in)
         throws InvalidInputException {
         final Slist lin = in.list();
         assertMatches(lin.getHead(), getName());
         return DeserializingConstructor.convertMake(
-            clazz, readFields(c, lin.getSparts()));
+            clazz, readFields(r, lin.getSparts()));
     }
 
     @Override
@@ -52,14 +52,14 @@ public abstract class BeanConverter<T> extends ConverterImpl<T>
 
     public abstract void writeRest(T o, List<Sexp> tail);
 
-    protected abstract Map<Field, Object> readFields(Converting c, List<Sexp> tail)
+    protected abstract Map<Field, Object> readFields(ReadInfo r, List<Sexp> tail)
         throws InvalidInputException;
 
-    public List<Object> readSequence(final Converting c, final Class<?> contentType, final List<Sexp> in)
+    public List<Object> readSequence(final ReadInfo r, final Class<?> contentType, final List<Sexp> in)
         throws InvalidInputException {
             final List<Object> components = new ArrayList<Object>(in.size());
             for (final Sexp s: in) {
-                components.add(readElement(contentType, c, s));
+                components.add(readElement(contentType, r, s));
             }
             return Collections.unmodifiableList(components);
         }

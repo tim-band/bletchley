@@ -55,10 +55,10 @@ public class SequenceConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final Converting c, final List<Sexp> tail)
+    protected Map<Field, Object> readFields(final ReadInfo r, final List<Sexp> tail)
         throws InvalidInputException {
             final Map<Field, Object> fields = new HashMap<Field, Object>();
-            fields.put(beanField, readSequence(c, contentType, tail));
+            fields.put(beanField, readSequence(r, contentType, tail));
             return fields;
     }
 }

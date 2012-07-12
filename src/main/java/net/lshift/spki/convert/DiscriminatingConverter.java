@@ -35,7 +35,7 @@ public class DiscriminatingConverter<T>
             throw new ConvertReflectionException(this, subclass,
                 "Class is not a subclass of " + clazz.getCanonicalName());
         }
-        final Converter<? extends T> converter = Registry.getConverter(subclass);
+        final Converter<? extends T> converter = ConverterCache.getConverter(subclass);
         if (!(converter instanceof ListConverter<?>)) {
             throw new ConvertReflectionException(this, subclass,
                 "Converter isn't a list converter");
@@ -63,22 +63,22 @@ public class DiscriminatingConverter<T>
     }
 
     @Override
-    public T read(final Converting c, final Sexp in)
+    public T read(final ReadInfo r, final Sexp in)
         throws InvalidInputException {
         final byte[] discrim = in.list().getHead().getBytes();
         final String stringDiscrim = ConvertUtils.stringOrNull(discrim);
-        final Class<? extends T> subclass = lookupSubclass(c, stringDiscrim);
+        final Class<? extends T> subclass = lookupSubclass(r, stringDiscrim);
         assertMatches(discrim, stringDiscrim);
-        return readElement(subclass, c, in);
+        return readElement(subclass, r, in);
     }
 
     protected Class<? extends T> lookupSubclass(
-        final Converting c,
+        final ReadInfo r,
         final String stringDiscrim)
         throws ConvertException {
         Class<? extends T> subclass = nameMap.get(stringDiscrim);
         if (subclass == null) {
-            subclass =  c.getExtraDiscrim(clazz, stringDiscrim);
+            subclass =  r.getExtraDiscrim(clazz, stringDiscrim);
         }
         if (subclass == null) {
             throw new ConvertException(

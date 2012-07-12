@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.UsesConverting;
+import net.lshift.spki.convert.UsesReadInfo;
 import net.lshift.spki.sexpform.Sexp;
 
 import org.apache.commons.io.IOUtils;
@@ -22,7 +22,7 @@ import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
 @RunWith(Theories.class)
-public class PrettyPrinterTest extends UsesConverting {
+public class PrettyPrinterTest extends UsesReadInfo {
     private static final boolean WRITE_TEST_OUTPUT = false;
     private static class TestPair {
         private final String resourceName;
@@ -74,7 +74,7 @@ public class PrettyPrinterTest extends UsesConverting {
     @Theory
     public void theoryCanParsePrettyPrintedData(final TestPair pair)
                     throws IOException, InvalidInputException {
-        final Sexp parsed = ConvertUtils.readAdvanced(getConverting(), Sexp.class, pair.getResourceAsStream());
+        final Sexp parsed = ConvertUtils.readAdvanced(getReadInfo(), Sexp.class, pair.getResourceAsStream());
         assertThat(parsed, is(pair.getSexp()));
     }
 

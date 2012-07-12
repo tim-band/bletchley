@@ -13,8 +13,8 @@ import net.lshift.spki.convert.Convert.HandlerClass;
  * that a class defines for itself based on annotations.  Foreign conversions
  * must be registered with the containing converter.
  */
-public class Registry {
-    private static final Registry REGISTRY = new Registry();
+public class ConverterCache {
+    private static final ConverterCache GLOBAL_CACHE = new ConverterCache();
 
     private final Map<Class<?>, ConverterFactory<?>> factoryCache
         = new HashMap<Class<?>, ConverterFactory<?>>();
@@ -22,7 +22,7 @@ public class Registry {
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 
-    private Registry() {
+    private ConverterCache() {
         registerInternal(new ByteArrayConverter());
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());
@@ -38,7 +38,7 @@ public class Registry {
     }
 
     public static <T> Converter<T> getConverter(final Class<T> clazz) {
-        return REGISTRY.getConverterInternal(clazz);
+        return GLOBAL_CACHE.getConverterInternal(clazz);
     }
 
     @SuppressWarnings("unchecked")

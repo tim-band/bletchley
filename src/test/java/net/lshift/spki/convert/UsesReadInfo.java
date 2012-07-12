@@ -14,12 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class UsesConverting {
-    private static final Logger LOG = LoggerFactory.getLogger(UsesConverting.class);
-    private Converting CONVERTING = new Converting();
+public class UsesReadInfo {
+    private static final Logger LOG = LoggerFactory.getLogger(UsesReadInfo.class);
+    private static final ReadInfo READ_INFO = new ReadInfo();
 
-    protected Converting getConverting() {
-        return CONVERTING;
+    protected ReadInfo getReadInfo() {
+        return READ_INFO;
     }
 
     /**
@@ -33,7 +33,7 @@ public class UsesConverting {
             final ByteOpenable buf = new ByteOpenable();
             write(buf, o);
             LOG.info("\n{}", PrettyPrinter.prettyPrint(buf.read()));
-            return read(getConverting(), clazz, buf);
+            return read(getReadInfo(), clazz, buf);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } catch (final InvalidInputException e) {
@@ -42,6 +42,6 @@ public class UsesConverting {
     }
 
     public InferenceEngine newEngine() {
-        return new InferenceEngine(getConverting());
+        return new InferenceEngine(getReadInfo());
     }
 }

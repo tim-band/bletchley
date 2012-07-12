@@ -13,7 +13,7 @@ implements ListConverter<TResult> {
     }
 
     protected ListConverter<TStep> getStepConverter() {
-        return (ListConverter<TStep>)Registry.getConverter(getStepClass());
+        return (ListConverter<TStep>)ConverterCache.getConverter(getStepClass());
     }
 
     @Override

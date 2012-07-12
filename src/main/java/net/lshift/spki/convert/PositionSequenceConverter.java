@@ -38,7 +38,7 @@ public class PositionSequenceConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final Converting c, final List<Sexp> tail)
+    protected Map<Field, Object> readFields(final ReadInfo c, final List<Sexp> tail)
         throws InvalidInputException {
         final int size = fields.size();
         final Map<Field, Object> rmap = new HashMap<Field, Object>(size + 1);

@@ -13,7 +13,7 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class PositionSequenceConverterTest extends UsesConverting {
+public class PositionSequenceConverterTest extends UsesReadInfo {
 
     @Convert.PositionSequence(name="position-convert", fields={"first"}, seq="rest")
     public static class PositionSequenceExample extends SexpBacked {
@@ -60,12 +60,12 @@ public class PositionSequenceConverterTest extends UsesConverting {
             ConvertUtils.toBytes(example),
             is(exampleBytes));
         assertThat(
-            ConvertUtils.fromBytes(getConverting(), PositionSequenceExample.class, exampleBytes),
+            ConvertUtils.fromBytes(getReadInfo(), PositionSequenceExample.class, exampleBytes),
             is(example));
     }
 
     private byte[] s(final String string) throws IOException, InvalidInputException {
-        final Sexp s = ConvertUtils.readAdvanced(getConverting(), Sexp.class,
+        final Sexp s = ConvertUtils.readAdvanced(getReadInfo(), Sexp.class,
             new ByteArrayInputStream(ConvertUtils.bytes(string)));
         return ConvertUtils.toBytes(s);
     }

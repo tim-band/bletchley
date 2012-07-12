@@ -40,7 +40,7 @@ public class NameBeanConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final Converting c, final List<Sexp> tail)
+    protected Map<Field, Object> readFields(final ReadInfo r, final List<Sexp> tail)
         throws InvalidInputException {
         final Map<Field, Object> res = new HashMap<Field, Object>();
         for (final Sexp s: tail) {
@@ -54,7 +54,7 @@ public class NameBeanConverter<T>
                 throw new ConvertException("multiple parts to named field");
             }
             res.put(field.field,
-                readElement(field.field.getType(), c, ltail.get(0)));
+                readElement(field.field.getType(), r, ltail.get(0)));
         }
         for (final FieldConvertInfo field: fields) {
             if (!res.containsKey(field.field) && !field.nullable) {

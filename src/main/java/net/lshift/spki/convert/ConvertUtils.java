@@ -82,10 +82,10 @@ public class ConvertUtils {
     }
 
     public static <T> T read(
-        final Converting c,
+        final ReadInfo r,
         final Class<T> clazz, final SpkiInputStream is)
         throws IOException, InvalidInputException {
-        final T res = c.read(clazz, ConvertSexp.read(is));
+        final T res = r.read(clazz, ConvertSexp.read(is));
         if (is.next() != TokenType.EOF) {
             throw new ConvertException("File continues after object read");
         }
@@ -93,20 +93,20 @@ public class ConvertUtils {
     }
 
     public static <T> T read(
-        final Converting c,
+        final ReadInfo r,
         final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
-        return read(c, clazz, new CanonicalSpkiInputStream(is));
+        return read(r, clazz, new CanonicalSpkiInputStream(is));
     }
 
     public static <T> T read(
-        final Converting c,
+        final ReadInfo r,
         final Class<T> clazz, final File f)
         throws IOException,
             InvalidInputException {
         final FileInputStream is = new FileInputStream(f);
         try {
-            return read(c, clazz, is);
+            return read(r, clazz, is);
         } finally {
             is.close();
         }
@@ -116,10 +116,10 @@ public class ConvertUtils {
      * WARNING: this closes the stream passed in!
      */
     public static <T> T readAdvanced(
-        final Converting c,
+        final ReadInfo r,
         final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
-        return read(c, clazz, new AdvancedSpkiInputStream(is));
+        return read(r, clazz, new AdvancedSpkiInputStream(is));
     }
 
     public static byte[] toBytes(
@@ -136,11 +136,11 @@ public class ConvertUtils {
     }
 
     public static <T> T fromBytes(
-        final Converting c,
+        final ReadInfo r,
         final Class<T> clazz, final byte[] bytes)
         throws InvalidInputException {
         try {
-            return read(c, clazz, new ByteArrayInputStream(bytes));
+            return read(r, clazz, new ByteArrayInputStream(bytes));
         } catch (final IOException e) {
             throw new RuntimeException(
                 "ByteArrayInputStream cannot throw IOException", e);

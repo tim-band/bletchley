@@ -7,19 +7,19 @@ import java.io.IOException;
 import java.util.Date;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Converting;
+import net.lshift.spki.convert.ReadInfo;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.InferenceEngine;
 
 public class ReadService {
-    private static Converting C = getConverting();
+    private static ReadInfo R = getReadInfo();
 
-    static Converting getConverting() {
-        return new Converting(Service.class);
+    static ReadInfo getReadInfo() {
+        return new ReadInfo(Service.class);
     }
 
     private static InferenceEngine newEngine() {
-        final InferenceEngine engine = new InferenceEngine(C);
+        final InferenceEngine engine = new InferenceEngine(R);
         NOW.set(engine, new Date());
         return engine;
     }
@@ -27,8 +27,8 @@ public class ReadService {
     public static Service readService(final Openable acl, final Openable source)
                     throws IOException, InvalidInputException {
         final InferenceEngine engine = newEngine();
-        engine.processTrusted(read(C, acl));
-        engine.process(read(C, source));
+        engine.processTrusted(read(R, acl));
+        engine.process(read(R, source));
         return engine.getSoleAction(Service.class);
     }
 }

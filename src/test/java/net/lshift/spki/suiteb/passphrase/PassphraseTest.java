@@ -55,13 +55,13 @@ public class PassphraseTest extends UsesSimpleMessage {
     private void assertDecryptsToMessage(final AesKey trueKey, final AesPacket encrypted)
         throws InvalidInputException,
             ParseException {
-        final Action decrypted = (Action) trueKey.decrypt(getConverting(), encrypted);
+        final Action decrypted = (Action) trueKey.decrypt(getReadInfo(), encrypted);
         assertMessagesMatch(MESSAGE.getPayload(), decrypted.getPayload());
     }
 
     @Test
     public void testStability() throws IOException, InvalidInputException {
-        final Sequence sequence = ConvertUtils.read(getConverting(), Sequence.class,
+        final Sequence sequence = ConvertUtils.read(getReadInfo(), Sequence.class,
             getClass().getResourceAsStream("encrypted.spki"));
         final PassphraseProtectedKey ppk = (PassphraseProtectedKey) sequence.sequence.get(0);
         final AesPacket encrypted = (AesPacket) sequence.sequence.get(1);
