@@ -1,10 +1,9 @@
 package net.lshift.spki.suiteb.demo;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.read;
-import static net.lshift.spki.suiteb.InferenceVariables.NOW;
+import static net.lshift.spki.suiteb.InferenceVariables.setNow;
 
 import java.io.IOException;
-import java.util.Date;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ReadInfo;
@@ -20,7 +19,7 @@ public class ReadService {
 
     private static InferenceEngine newEngine() {
         final InferenceEngine engine = new InferenceEngine(R);
-        NOW.set(engine, new Date());
+        setNow(engine);
         return engine;
     }
 
