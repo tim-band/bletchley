@@ -3,7 +3,6 @@ package net.lshift.spki.convert;
 import static net.lshift.spki.sexpform.Create.list;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +39,10 @@ public class NameBeanConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ReadInfo r, final List<Sexp> tail)
+    protected Map<Field, Object> readFields(final ReadInfo r, final Slist tail)
         throws InvalidInputException {
-        final Map<Field, Object> res = new HashMap<Field, Object>();
-        for (final Sexp s: tail) {
+        final Map<Field, Object> res = SexpBacked.getResMap(tail);
+        for (final Sexp s: tail.getSparts()) {
             final Slist ls = s.list();
             final FieldConvertInfo field = getField(ls.getHead().getBytes());
             if (res.containsKey(field.field)) {

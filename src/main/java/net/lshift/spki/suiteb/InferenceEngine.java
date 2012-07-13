@@ -187,7 +187,7 @@ public class InferenceEngine {
         variables.put(v, val);
     }
 
-    public ReadInfo getConverting() {
+    public ReadInfo getReadInfo() {
         return readInfo;
     }
 }

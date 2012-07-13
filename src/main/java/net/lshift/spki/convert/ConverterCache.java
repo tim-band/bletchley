@@ -23,6 +23,7 @@ public class ConverterCache {
         = new HashMap<Class<?>, Converter<?>>();
 
     private ConverterCache() {
+        registerInternal(new SexpConverter());
         registerInternal(new ByteArrayConverter());
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());

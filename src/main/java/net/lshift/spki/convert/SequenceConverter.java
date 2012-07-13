@@ -3,12 +3,12 @@ package net.lshift.spki.convert;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
+import net.lshift.spki.sexpform.Slist;
 
 /**
  * Converter for a class that has a single field of type List.
@@ -55,10 +55,10 @@ public class SequenceConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ReadInfo r, final List<Sexp> tail)
+    protected Map<Field, Object> readFields(final ReadInfo r, final Slist tail)
         throws InvalidInputException {
-            final Map<Field, Object> fields = new HashMap<Field, Object>();
-            fields.put(beanField, readSequence(r, contentType, tail));
+            final Map<Field, Object> fields = SexpBacked.getResMap(tail);
+            fields.put(beanField, readSequence(r, contentType, tail.getSparts()));
             return fields;
     }
 }

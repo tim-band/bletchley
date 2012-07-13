@@ -37,7 +37,7 @@ public class AesPacket extends SexpBacked implements SequenceItem {
         final AesKey key = engine.getAesKey(keyId);
         if (key != null) {
             final SequenceItem contents = key.decrypt(
-                engine.getConverting(), this);
+                engine.getReadInfo(), this);
             LOG.debug("Decryption successful");
             engine.process(contents, trust);
         } else {

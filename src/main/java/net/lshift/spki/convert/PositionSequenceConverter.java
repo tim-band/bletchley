@@ -1,12 +1,12 @@
 package net.lshift.spki.convert;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
+import net.lshift.spki.sexpform.Slist;
 
 public class PositionSequenceConverter<T>
     extends BeanConverter<T> {
@@ -38,16 +38,16 @@ public class PositionSequenceConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ReadInfo c, final List<Sexp> tail)
+    protected Map<Field, Object> readFields(final ReadInfo c, final Slist tail)
         throws InvalidInputException {
         final int size = fields.size();
-        final Map<Field, Object> rmap = new HashMap<Field, Object>(size + 1);
+        final Map<Field, Object> rmap = SexpBacked.getResMap(tail);
         for (int i = 0; i < size; i++) {
             final FieldConvertInfo f = fields.get(i);
-            rmap.put(f.field, readElement(f.field.getType(), c, tail.get(i)));
+            rmap.put(f.field, readElement(f.field.getType(), c, tail.getSparts().get(i)));
         }
         rmap.put(seq, readSequence(c, contentType,
-            tail.subList(size, tail.size())));
+            tail.getSparts().subList(size, tail.getSparts().size())));
         return rmap;
     }
 }

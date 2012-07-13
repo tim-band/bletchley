@@ -28,23 +28,12 @@ public class ReadInfo {
         return new ReadInfo(this, classes);
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T read(
         final Class<T> clazz,
         final Map<Class<?>, Converter<?>> extraConverters,
         final Sexp sexp)
         throws InvalidInputException {
-        // FIXME: this sure is ugly!
-        if (clazz == Sexp.class) {
-            return (T) sexp;
-        }
-        final T res = getConverter(extraConverters, clazz).read(this, sexp);
-        // FIXME: so is this!
-        // FIXME: use the dynamic class here?
-        if (res instanceof SexpBacked) {
-            ((SexpBacked)res).setSexp(sexp);
-        }
-        return res;
+        return getConverter(extraConverters, clazz).read(this, sexp);
     }
 
     @SuppressWarnings("unchecked")

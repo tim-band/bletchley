@@ -4,6 +4,7 @@ import java.math.BigInteger;
 
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ListStepConverter;
+import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.CryptographyException;
 import net.lshift.spki.suiteb.Ec;
 
@@ -22,7 +23,7 @@ public class ECPointConverter
      * Serialization format for an ECPoint ie a point on an elliptic curve.
      */
     @Convert.ByName("point")
-    public static class Point {
+    public static class Point extends SexpBacked {
         public final BigInteger x;
         public final BigInteger y;
 
