@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.suiteb.DigestSha384;
 
 import org.apache.commons.io.IOUtils;
@@ -34,8 +35,8 @@ public class FingerprintUtils {
         }
     }
 
-    public static <T> String getFingerprint(final Class<T> clazz, final T o) {
-        return getFingerprint(DigestSha384.digest(clazz, o));
+    public static String getFingerprint(final Writeable o) {
+        return getFingerprint(DigestSha384.digest(o));
     }
 
     public static String getFingerprint(final DigestSha384 digest) {

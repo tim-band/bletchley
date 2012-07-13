@@ -22,6 +22,7 @@ import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SpkiInputStream;
 import net.lshift.spki.SpkiInputStream.TokenType;
 import net.lshift.spki.SpkiOutputStream;
+import net.lshift.spki.sexpform.ConvertSexp;
 
 /**
  * Static utilities for conversion between SExps and objects.
@@ -31,7 +32,7 @@ public class ConvertUtils {
         return s.getBytes(Constants.UTF8);
     }
 
-    private static final String decodeUtf8(final byte[] bytes)
+    public static final String decodeUtf8(final byte[] bytes)
         throws CharacterCodingException {
         return Constants.UTF8.newDecoder()
             .decode(ByteBuffer.wrap(bytes)).toString();
@@ -54,47 +55,58 @@ public class ConvertUtils {
         }
     }
 
-    public static <T> void write(
-        final Class<T> clazz,
+    // FIXME: what about EOF?
+    public static <T extends Writeable> void write(
         final T o,
         final SpkiOutputStream os) throws IOException {
-        new ConvertOutputStream(os).write(clazz, o);
+        ConvertSexp.write(os, o.toSexp());
     }
 
-    public static <T> void write(final Class<T> clazz, final T o, final OutputStream os)
+    public static void write(
+        final Writeable o,
+        final OutputStream os)
         throws IOException {
-        write(clazz, o, new CanonicalSpkiOutputStream(os));
+        write(o, new CanonicalSpkiOutputStream(os));
     }
 
-    public static <T> void write(final Class<T> clazz, final T o, final File f)
+    public static void write(
+        final Writeable o,
+        final File f)
         throws IOException {
         final FileOutputStream os = new FileOutputStream(f);
         try {
-            write(clazz, o, os);
+            write(o, os);
         } finally {
             os.close();
         }
     }
 
-    public static <T> T read(final Class<T> clazz, final SpkiInputStream is)
+    public static <T> T read(
+        final ReadInfo r,
+        final Class<T> clazz, final SpkiInputStream is)
         throws IOException, InvalidInputException {
-        final ConvertInputStream in = new ConvertInputStream(is);
-        final T res = in.read(clazz);
-        in.nextAssertType(TokenType.EOF);
+        final T res = r.read(clazz, ConvertSexp.read(is));
+        if (is.next() != TokenType.EOF) {
+            throw new ConvertException("File continues after object read");
+        }
         return res;
     }
 
-    public static <T> T read(final Class<T> clazz, final InputStream is)
+    public static <T> T read(
+        final ReadInfo r,
+        final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
-        return read(clazz, new CanonicalSpkiInputStream(is));
+        return read(r, clazz, new CanonicalSpkiInputStream(is));
     }
 
-    public static <T> T read(final Class<T> clazz, final File f)
+    public static <T> T read(
+        final ReadInfo r,
+        final Class<T> clazz, final File f)
         throws IOException,
             InvalidInputException {
         final FileInputStream is = new FileInputStream(f);
         try {
-            return read(clazz, is);
+            return read(r, clazz, is);
         } finally {
             is.close();
         }
@@ -103,46 +115,50 @@ public class ConvertUtils {
     /**
      * WARNING: this closes the stream passed in!
      */
-    public static <T> T readAdvanced(final Class<T> clazz, final InputStream is)
+    public static <T> T readAdvanced(
+        final ReadInfo r,
+        final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
-        return read(clazz, new AdvancedSpkiInputStream(is));
+        return read(r, clazz, new AdvancedSpkiInputStream(is));
     }
 
-    public static <T> byte[] toBytes(final Class<T> clazz, final T o) {
+    public static byte[] toBytes(
+        final Writeable o) {
         try {
             final ByteArrayOutputStream os = new ByteArrayOutputStream();
-            write(clazz, o, os);
+            write(o, os);
             os.close();
             return os.toByteArray();
         } catch (final IOException e) {
-            throw new ConvertReflectionException(clazz,
-                "ByteArrayOutputStream cannot throw IOException", e);
-        }
-    }
-
-    public static <T> T fromBytes(final Class<T> clazz, final byte[] bytes)
-        throws InvalidInputException {
-        try {
-            return read(clazz, new ByteArrayInputStream(bytes));
-        } catch (final IOException e) {
-            throw new ConvertReflectionException(clazz,
+            throw new RuntimeException(
                 "ByteArrayInputStream cannot throw IOException", e);
         }
     }
 
-    public static <T> void prettyPrint(
-        final Class<T> clazz,
-        final T o,
-        final PrintWriter ps)
-        throws IOException {
-        write(clazz, o, new PrettyPrinter(ps));
+    public static <T> T fromBytes(
+        final ReadInfo r,
+        final Class<T> clazz, final byte[] bytes)
+        throws InvalidInputException {
+        try {
+            return read(r, clazz, new ByteArrayInputStream(bytes));
+        } catch (final IOException e) {
+            throw new RuntimeException(
+                "ByteArrayInputStream cannot throw IOException", e);
+        }
     }
 
-    public static <T> String prettyPrint(final Class<T> clazz, final T o) {
+    public static void prettyPrint(
+        final Writeable o,
+        final PrintWriter ps)
+        throws IOException {
+        write(o, new PrettyPrinter(ps));
+    }
+
+    public static String prettyPrint(final Writeable o) {
         final StringWriter writer = new StringWriter();
         try {
             final PrintWriter pw = new PrintWriter(writer);
-            prettyPrint(clazz, o, pw);
+            prettyPrint(o, pw);
             pw.close();
         } catch (final IOException e) {
             // should not be possible
@@ -151,12 +167,11 @@ public class ConvertUtils {
         return writer.toString();
     }
 
-    public static <T> void prettyPrint(
-        final Class<T> clazz,
-        final T o,
+    public static void prettyPrint(
+        final Writeable o,
         final OutputStream out) throws IOException {
         final PrintWriter ps = new PrintWriter(out);
-        prettyPrint(clazz, o, ps);
+        prettyPrint(o, ps);
         ps.flush();
     }
 }

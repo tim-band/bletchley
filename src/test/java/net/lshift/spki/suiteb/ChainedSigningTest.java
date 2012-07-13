@@ -1,14 +1,11 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.suiteb.RoundTrip.roundTrip;
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
+import static net.lshift.spki.suiteb.DigestSha384.digest;
+import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
+import static net.lshift.spki.suiteb.SequenceUtils.sequence;
+import static net.lshift.spki.suiteb.Signed.signed;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
-import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
 
@@ -19,23 +16,19 @@ public class ChainedSigningTest extends UsesSimpleMessage
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
         privateKey = roundTrip(PrivateSigningKey.class, privateKey);
         final PublicSigningKey publicKey = privateKey.getPublicKey();
-        final Action message = SimpleMessage.makeMessage(this.getClass());
-        final Sequence subsequence = SequenceUtils.sequence(
-            DigestSha384.digest(message),
-            publicKey.keyId // Some rubbish
-        );
-        Sequence sequence = SequenceUtils.sequence(
+        final Action message = makeMessage();
+        Sequence sequence = sequence(
             publicKey,
-            privateKey.sign(subsequence),
-            subsequence,
-            message);
+            signed(privateKey, sequence(
+                digest(message),
+                publicKey.getKeyId() // Some rubbish
+            )),
+            signed(message));
         sequence = roundTrip(Sequence.class, sequence);
 
-        final InferenceEngine inference = new InferenceEngine();
-        inference.addTrustedKey(publicKey.getKeyId());
+        final InferenceEngine inference = newEngine();
+        inference.processTrusted(publicKey.getKeyId());
         inference.process(sequence);
-        final List<ActionType> actions = inference.getActions();
-        assertEquals(1, actions.size());
-        assertEquals(message.getPayload(), actions.get(0));
+        checkMessage(inference, message);
     }
 }

@@ -3,25 +3,20 @@ package net.lshift.spki.suiteb.sexpstructs;
 import java.math.BigInteger;
 
 import net.lshift.spki.convert.Convert;
-
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import net.lshift.spki.convert.SexpBacked;
+import net.lshift.spki.suiteb.PublicEncryptionKey;
 
 /**
  * Serialization format for private encryption keys
  */
-@Convert.RequiresConverter(ECPointConverter.class)
 @Convert.ByName("suiteb-p384-ecdh-private-key")
-public class EcdhPrivateKey
-    extends EcPrivateKey {
+public class EcdhPrivateKey extends SexpBacked {
+    public final PublicEncryptionKey publicKey;
+    public final BigInteger d;
 
-    public EcdhPrivateKey(
-        final EcdhPublicKey publicKey,
-        final BigInteger d
-    ) {
-        super(publicKey, d);
-    }
-
-    public EcdhPrivateKey(final AsymmetricCipherKeyPair keyPair) {
-        super(new EcdhPublicKey(keyPair), keyPair);
+    public EcdhPrivateKey(final PublicEncryptionKey publicKey, final BigInteger d) {
+        super();
+        this.publicKey = publicKey;
+        this.d = d;
     }
 }

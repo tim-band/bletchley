@@ -15,9 +15,9 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class NullableFieldTest {
+public class NullableFieldTest extends UsesReadInfo {
     @Convert.ByName("with-optional")
-    public static class WithOptional {
+    public static class WithOptional extends SexpBacked {
         public final String mandatory;
         @Convert.Nullable
         public final String optional;
@@ -40,24 +40,24 @@ public class NullableFieldTest {
                         list("mandatory", atom("foo"))));
     }
 
-    private static void testRoundTripWorks(final WithOptional withOptional, final Sexp sexp) throws IOException, InvalidInputException {
-        final WithOptional read = read(WithOptional.class, toConvert(sexp));
+    private void testRoundTripWorks(final WithOptional withOptional, final Sexp sexp) throws IOException, InvalidInputException {
+        final WithOptional read = read(getReadInfo(), WithOptional.class, toConvert(sexp));
         assertEquals(withOptional.mandatory, read.mandatory);
         assertEquals(withOptional.optional, read.optional);
-        final byte[] direct = toBytes(Sexp.class, sexp);
-        final byte[] indirect = toBytes(WithOptional.class, withOptional);
+        final byte[] direct = toBytes(sexp);
+        final byte[] indirect = toBytes(withOptional);
         assertArrayEquals(direct, indirect);
     }
 
     @Test(expected=InvalidInputException.class)
     public void mandatoryIsMandatory() throws IOException, InvalidInputException {
-        read(WithOptional.class, toConvert(
+        read(getReadInfo(), WithOptional.class, toConvert(
                 list("with-optional",
                         list("optional", atom("foo")))));
     }
 
     @Test(expected=NullPointerException.class)
     public void mandatoryCannotBeNull() {
-        toBytes(WithOptional.class, new WithOptional(null, "bar"));
+        toBytes(new WithOptional(null, "bar"));
     }
 }

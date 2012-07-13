@@ -2,7 +2,6 @@ package net.lshift.spki.suiteb.passphrase;
 
 import java.io.Console;
 
-import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.AesKey;
 
 /**
@@ -20,14 +19,13 @@ public class ConsolePassphraseDelegate
         while (true) {
             final String passphrase = new String(console.readPassword(
                 "Passphrase for \"%s\": ", ppk.getPassphraseId()));
-            try {
-                return ppk.getKey(passphrase);
-            } catch (final InvalidInputException e) {
-                if (passphrase.isEmpty()) {
-                    return null;
-                }
-                System.out.println("Wrong passphrase, trying again");
+            AesKey res = ppk.getKey(passphrase);
+            if (res != null)
+                return res;
+            if (passphrase.isEmpty()) {
+                return null;
             }
+            System.out.println("Wrong passphrase, trying again");
         }
     }
 }

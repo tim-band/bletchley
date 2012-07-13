@@ -9,7 +9,7 @@ import java.net.URL;
 public class URLConverter
     extends StringStepConverter<URL>
 {
-    @Override public Class<URL> getResultClass() { return URL.class; }
+    public URLConverter() { super(URL.class); }
 
     @Override
     protected String stepIn(final URL o) { return o.toString(); }

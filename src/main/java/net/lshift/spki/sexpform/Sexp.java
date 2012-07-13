@@ -1,13 +1,24 @@
 package net.lshift.spki.sexpform;
 
-import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.ConvertException;
+import net.lshift.spki.convert.Writeable;
 
 /**
  * SPKI S-expression type.  Should have only two implementors,
  * @see Atom
  * @see Slist
  */
-@Convert.ConvertClass(SexpConverter.class)
-public interface Sexp {
-    // Define no methods - all in Atom or SList.
+public abstract class Sexp implements Writeable {
+    public Atom atom() throws ConvertException {
+        throw new ConvertException("atom expected, list found");
+    }
+
+    public Slist list() throws ConvertException {
+        throw new ConvertException("list expected, atom found");
+    }
+
+    @Override
+    public Sexp toSexp() {
+        return this;
+    }
 }

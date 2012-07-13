@@ -12,12 +12,23 @@ implements ConverterFactory<Convert.ByPosition>
 {
     @Override
     public <T> Converter<T> converter(final Class<T> clazz, final Convert.ByPosition a) {
+        return new PositionBeanConverter<T>(
+            clazz, a.name(), getFields(clazz, a.fields()));
+    }
+
+    public static <T> List<FieldConvertInfo> getFields(
+        final Class<T> clazz,
+        final String[] fieldNames) {
         final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
-        for (final String fname: a.fields()) {
+        for (final String fname: fieldNames) {
             fields.add(new FieldConvertInfo(
-                getField(clazz, clazz, fname)));
+                getField(clazz, fname)));
         }
-        return new PositionBeanConverter<T>(clazz, a.name(), fields);
+        return fields;
+    }
+
+    public static <T> Field getField(final Class<T> clazz, final String fname) {
+        return getField(clazz, clazz, fname);
     }
 
     private static <T> Field getField(

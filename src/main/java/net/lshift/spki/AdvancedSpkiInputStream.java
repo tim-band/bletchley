@@ -26,11 +26,10 @@ public class AdvancedSpkiInputStream extends FileSpkiInputStream {
     private int read() throws IOException {
         if (pushback == NO_PUSHBACK) {
             return is.read();
-        } else {
-            final int res = pushback;
-            pushback = NO_PUSHBACK;
-            return res;
         }
+        final int res = pushback;
+        pushback = NO_PUSHBACK;
+        return res;
     }
 
     @Override

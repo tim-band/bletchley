@@ -10,6 +10,6 @@ public class ConvertTestHelper
     public static InputStream toConvert(final Sexp sexp)
     {
         return new ByteArrayInputStream(
-            ConvertUtils.toBytes(Sexp.class, sexp));
+            ConvertUtils.toBytes(sexp));
     }
 }

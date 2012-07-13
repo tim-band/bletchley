@@ -14,15 +14,15 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class ConvertTest extends ResetsRegistry
+public class ConvertTest extends UsesReadInfo
 {
     @Test
     public void convertTest() throws InvalidInputException {
         final ConvertExample test = new ConvertExample(
             BigInteger.valueOf(3), BigInteger.valueOf(17));
-        final byte[] bytes = ConvertUtils.toBytes(ConvertExample.class, test);
+        final byte[] bytes = ConvertUtils.toBytes(test);
         //PrettyPrinter.prettyPrint(System.out, sexp);
-        final ConvertExample changeBack = ConvertUtils.fromBytes(
+        final ConvertExample changeBack = ConvertUtils.fromBytes(getReadInfo(),
             ConvertExample.class, bytes);
         assertEquals(test, changeBack);
     }
@@ -31,43 +31,42 @@ public class ConvertTest extends ResetsRegistry
     public void sexpTest() throws InvalidInputException {
         final byte[] bytes = ConvertUtils.bytes("(3:foo)");
         assertEquals(list("foo"),
-            ConvertUtils.fromBytes(Sexp.class, bytes));
+            ConvertUtils.fromBytes(getReadInfo(), Sexp.class, bytes));
     }
 
     @Test(expected=ConvertException.class)
     public void extraBytesMeansParseException() throws InvalidInputException {
         final byte[] bytes = ConvertUtils.bytes("(3:foo)1:o");
-        ConvertUtils.fromBytes(Sexp.class, bytes);
+        ConvertUtils.fromBytes(getReadInfo(), Sexp.class, bytes);
     }
 
     @Test
     public void marshalTest() {
         final byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.ASCII);
         final Sexp struct = list("test", atom("abcdefghijklmnopqrstuvwxyz"), atom("12345"), atom(":: ::"));
-        assertArrayEquals(bytes, ConvertUtils.toBytes(Sexp.class, struct));
+        assertArrayEquals(bytes, ConvertUtils.toBytes(struct));
     }
 
     @Test
     public void unmarshalTest() throws InvalidInputException {
         final byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.ASCII);
         final Sexp struct = list("test", atom("abcdefghijklmnopqrstuvwxyz"), atom("12345"), atom(":: ::"));
-        assertEquals(struct, ConvertUtils.fromBytes(Sexp.class, bytes));
+        assertEquals(struct, ConvertUtils.fromBytes(getReadInfo(), Sexp.class, bytes));
     }
 
     @Test
-    public void convertFromUUID() throws InvalidInputException {
+    public void convertFromUUID() {
         final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
         final UUID uuid = UUID.fromString(uidstring);
-        final byte[] uBytes = ConvertUtils.toBytes(UUID.class, uuid);
-        assertEquals(atom(uidstring),
-            ConvertUtils.fromBytes(Sexp.class, uBytes));
+        final Sexp uBytes = ConverterCache.getConverter(UUID.class).write(uuid);
+        assertEquals(atom(uidstring), uBytes);
     }
 
     @Test
     public void convertToUUID() throws InvalidInputException {
         final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
-        final byte[] uBytes = ConvertUtils.toBytes(Sexp.class, atom(uidstring));
+        final byte[] uBytes = ConvertUtils.toBytes(atom(uidstring));
         assertEquals(UUID.fromString(uidstring),
-            ConvertUtils.fromBytes(UUID.class, uBytes));
+            ConvertUtils.fromBytes(getReadInfo(), UUID.class, uBytes));
     }
 }

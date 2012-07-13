@@ -1,23 +1,35 @@
 package net.lshift.spki.suiteb;
 
+import java.math.BigInteger;
+
+import net.lshift.spki.convert.SexpBacked;
+
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 /**
  * A superclass for PublicKey objects
  */
-public abstract class PublicKey {
+public abstract class PublicKey extends SexpBacked {
     protected final ECPublicKeyParameters publicKey;
-    protected final DigestSha384 keyId;
+    protected DigestSha384 keyId = null;
 
-    @SuppressWarnings("unchecked")
     PublicKey(final CipherParameters publicKey) {
         this.publicKey = (ECPublicKeyParameters) publicKey;
-        keyId = DigestSha384.digest(
-            (Class<PublicKey>) this.getClass(), this);
     }
 
-    public DigestSha384 getKeyId() {
+    public synchronized DigestSha384 getKeyId() {
+        if (keyId == null) {
+            keyId = DigestSha384.digest(this);
+        }
         return keyId;
+    }
+
+    public AsymmetricCipherKeyPair getKeyPair(final BigInteger d) {
+        // FIXME: check d is actually a match
+        return new AsymmetricCipherKeyPair(publicKey,
+            new ECPrivateKeyParameters(d, Ec.DOMAIN_PARAMETERS));
     }
 }

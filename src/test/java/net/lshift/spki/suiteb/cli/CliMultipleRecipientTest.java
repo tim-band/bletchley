@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ResetsRegistry;
+import net.lshift.spki.convert.UsesReadInfo;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
 
 import org.junit.Test;
 
-public class CliMultipleRecipientTest extends ResetsRegistry
+public class CliMultipleRecipientTest extends UsesReadInfo
 {
     @Test
     public void cliTest()
@@ -41,7 +41,7 @@ public class CliMultipleRecipientTest extends ResetsRegistry
             ePublics.add(ePublic);
         }
         final Openable message = new ByteOpenable();
-        OpenableUtils.writeBytes(messageBytes, message);
+        OpenableUtils.writeBytes(message, messageBytes);
         final Openable[] encryptArgs = new Openable[ePublics.size() + 3];
         int i = 0;
         encryptArgs[i++] = sPrivate;

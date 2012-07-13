@@ -3,6 +3,7 @@ package net.lshift.spki.suiteb.sexpstructs;
 import java.math.BigInteger;
 
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.SexpBacked;
 
 import org.bouncycastle.math.ec.ECPoint;
 
@@ -13,7 +14,7 @@ import org.bouncycastle.math.ec.ECPoint;
 @Convert.RequiresConverter(ECPointConverter.class)
 @Convert.ByPosition(name="suiteb-p384-ecdh-shared-secret",
     fields={"receiverKey", "senderKey", "sharedSecret"})
-public class EcdhSharedSecret {
+public class EcdhSharedSecret extends SexpBacked {
     public final ECPoint receiverKey;
     public final ECPoint senderKey;
     public final BigInteger sharedSecret;

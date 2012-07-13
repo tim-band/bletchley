@@ -3,25 +3,21 @@ package net.lshift.spki.suiteb.sexpstructs;
 import java.math.BigInteger;
 
 import net.lshift.spki.convert.Convert;
-
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import net.lshift.spki.convert.SexpBacked;
+import net.lshift.spki.suiteb.PublicSigningKey;
 
 /**
  * Serialization format for private signing keys
  */
 @Convert.RequiresConverter(ECPointConverter.class)
 @Convert.ByName("suiteb-p384-ecdsa-private-key")
-public class EcdsaPrivateKey
-    extends EcPrivateKey {
+public class EcdsaPrivateKey extends SexpBacked {
+    public final PublicSigningKey publicKey;
+    public final BigInteger d;
 
-    public EcdsaPrivateKey(
-        final EcdsaPublicKey publicKey,
-        final BigInteger d
-    ) {
-        super(publicKey, d);
-    }
-
-    public EcdsaPrivateKey(final AsymmetricCipherKeyPair keyPair) {
-        super(new EcdsaPublicKey(keyPair), keyPair);
+    public EcdsaPrivateKey(final PublicSigningKey publicKey, final BigInteger d) {
+        super();
+        this.publicKey = publicKey;
+        this.d = d;
     }
 }

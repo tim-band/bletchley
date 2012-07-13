@@ -1,7 +1,7 @@
 package net.lshift.spki.suiteb.cli;
 
-import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
+import static net.lshift.spki.suiteb.Signed.signed;
 import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint;
 
 import java.io.File;
@@ -16,20 +16,20 @@ import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.Registry;
+import net.lshift.spki.convert.ReadInfo;
 import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
 import net.lshift.spki.suiteb.Action;
-import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.AesKey;
+import net.lshift.spki.suiteb.EncryptionCache;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
-import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+import net.lshift.spki.suiteb.Sequence;
+import net.lshift.spki.suiteb.SequenceItem;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 /**
@@ -37,6 +37,22 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
  */
 public class Cli {
     private static final String CLI_MESSAGE = Cli.class.toString();
+    private static ReadInfo R = getReadInfo();
+
+    private static ReadInfo getReadInfo() {
+        return new ReadInfo(
+            SimpleMessage.class);
+    }
+
+    private static <U> U read(final Class<U> clazz, final Openable open)
+        throws IOException, InvalidInputException {
+        return OpenableUtils.read(R, clazz, open);
+    }
+
+    private static SequenceItem read(final Openable open)
+        throws IOException, InvalidInputException {
+        return read(SequenceItem.class, open);
+    }
 
     public static void prettyPrint(final Openable file)
         throws IOException,
@@ -60,26 +76,25 @@ public class Cli {
 
     public static void genSigningKey(final Openable out)
         throws IOException {
-        write(PrivateSigningKey.class, PrivateSigningKey.generate(), out);
+        write(out, PrivateSigningKey.generate());
     }
 
     public static void genEncryptionKey(final Openable out)
         throws IOException {
-        write(PrivateEncryptionKey.class, PrivateEncryptionKey.generate(),
-            out);
+        write(out, PrivateEncryptionKey.generate());
     }
 
     public static void getPublicSigningKey(final Openable privk, final Openable pubk)
         throws IOException, InvalidInputException {
         final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
-        write(PublicSigningKey.class, privatek.getPublicKey(), pubk);
+        write(pubk, privatek.getPublicKey());
     }
 
     public static void getPublicEncryptionKey(final Openable privk, final Openable pubk)
         throws IOException, InvalidInputException {
         final PrivateEncryptionKey privatek
             = read(PrivateEncryptionKey.class, privk);
-        write(PublicEncryptionKey.class, privatek.getPublicKey(), pubk);
+        write(pubk, privatek.getPublicKey());
     }
 
     public static void fingerprintPrivateSigningKey(
@@ -117,23 +132,16 @@ public class Cli {
         final Openable packet,
         final Openable out)
         throws IOException, InvalidInputException {
-        final InferenceEngine inference = new InferenceEngine();
-        inference.addTrustedKey(signingKey.getKeyId());
-        inference.process(signingKey);
+        final InferenceEngine inference = new InferenceEngine(R);
+        inference.processTrusted(signingKey);
         inference.process(encryptionKey);
-        inference.process(read(SequenceItem.class, packet));
-        final List<ActionType> messages = inference.getActions();
-        if (messages.size() != 1) {
-            throw new RuntimeException("Did not find exactly one signed message");
-        }
-        if (!(messages.get(0) instanceof SimpleMessage)) {
-            throw new RuntimeException("Signed object was not message");
-        }
-        final SimpleMessage message = (SimpleMessage) messages.get(0);
+        inference.process(read(packet));
+        final SimpleMessage message
+            = inference.getSoleAction(SimpleMessage.class);
         if (!messageType.equals(message.type)) {
             throw new RuntimeException("Message was not of expected type");
         }
-        OpenableUtils.writeBytes(message.content, out);
+        OpenableUtils.writeBytes(out, message.content);
     }
 
     public static void decryptSignedMessage(
@@ -143,7 +151,8 @@ public class Cli {
         final Openable packet,
         final Openable out)
         throws IOException, InvalidInputException {
-        final PrivateEncryptionKey encryptionKey = read(PrivateEncryptionKey.class, ePrivate);
+        final PrivateEncryptionKey encryptionKey
+            = read(PrivateEncryptionKey.class, ePrivate);
         final PublicSigningKey signingKey = read(PublicSigningKey.class, sPublic);
         decryptSignedMessage(messageType, encryptionKey, signingKey, packet, out);
     }
@@ -154,32 +163,37 @@ public class Cli {
         throws IOException, InvalidInputException {
         final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
         final AesKey aesKey = AesKey.generateAESKey();
+        final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
+        sequenceItems.add(ephemeral.getPublicKey());
         for (int i = 2; i < args.length - 1; i++) {
-            final PublicEncryptionKey pKey = read(PublicEncryptionKey.class, args[i]);
-            final AesKey rKey = pKey.setupEncrypt(sequenceItems);
-            sequenceItems.add(rKey.encrypt(aesKey));
+            final PublicEncryptionKey pKey
+                = read(PublicEncryptionKey.class, args[i]);
+            sequenceItems.add(ephemeral.encrypt(pKey, aesKey));
         }
 
         final List<SequenceItem> encryptedSequenceItems
             = new ArrayList<SequenceItem>();
         final Action message = new Action(new SimpleMessage(
             messageType, OpenableUtils.readBytes(args[1])));
-        final PrivateSigningKey privateKey = read(PrivateSigningKey.class, args[0]);
+        final PrivateSigningKey privateKey
+            = read(PrivateSigningKey.class, args[0]);
         encryptedSequenceItems.add(privateKey.sign(message));
-        encryptedSequenceItems.add(message);
+        encryptedSequenceItems.add(signed(message));
 
         sequenceItems.add(aesKey.encrypt(new Sequence(encryptedSequenceItems)));
 
-        write(Sequence.class, new Sequence(sequenceItems), args[args.length - 1]);
+        write(args[args.length - 1], new Sequence(sequenceItems));
     }
 
     public static void speedTest() throws InvalidInputException {
         new SpeedTester().speedTest();
     }
 
-    public static void main(final PrintStream stdout, final String command, final Openable... args)
+    public static void main(
+        final PrintStream stdout,
+        final String command,
+        final Openable... args)
         throws IOException, InvalidInputException {
-        Registry.getConverter(SimpleMessage.class);
         if ("prettyPrint".equals(command)) {
             prettyPrint(args[0]);
         } else if ("prettyPrintToFile".equals(command)) {

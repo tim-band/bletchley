@@ -8,46 +8,22 @@ import net.lshift.spki.convert.Convert.ConverterFactoryClass;
 import net.lshift.spki.convert.Convert.HandlerClass;
 
 /**
- * Registry of SExp converters.  If a class implements the Convertible
- * interface, that means it knows how to convert itself and so doesn't
- * need to be registered in advance.
+ * Registry of class -> converter map.  With the exception of a fixed list
+ * of converters initialized at startup, this contains only those converters
+ * that a class defines for itself based on annotations.  Foreign conversions
+ * must be registered with the containing converter.
  */
-public class Registry {
-    private static final Registry REGISTRY = new Registry();
+public class ConverterCache {
+    private static final ConverterCache GLOBAL_CACHE = new ConverterCache();
 
-    protected Registry() {
-        // Do nothing; this is here only to prevent anyone else creating one.
-    }
+    private final Map<Class<?>, ConverterFactory<?>> factoryCache
+        = new HashMap<Class<?>, ConverterFactory<?>>();
 
     private final Map<Class<?>, Converter<?>> converterMap
         = new HashMap<Class<?>, Converter<?>>();
 
-    private synchronized <T> void registerInternal(final Converter<T> converter) {
-        final Class<T> clazz = converter.getResultClass();
-        final Converter<?> already = converterMap.get(clazz);
-        if (already == null) {
-            converterMap.put(clazz, converter);
-        }
-    }
-
-    /**
-     * Register this converter, unless we already have a converter for this
-     * result class.
-     */
-    public static <T> void register(final Converter<T> converter) {
-        REGISTRY.registerInternal(converter);
-    }
-
-    static {
-        resetRegistry();
-    }
-
-    public static void resetRegistry() {
-        REGISTRY.resetRegistryInternal();
-    }
-
-    private synchronized void resetRegistryInternal() {
-        converterMap.clear();
+    private ConverterCache() {
+        registerInternal(new SexpConverter());
         registerInternal(new ByteArrayConverter());
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());
@@ -58,8 +34,12 @@ public class Registry {
         registerInternal(new UUIDConverter());
     }
 
+    private <T> void registerInternal(final Converter<T> converter) {
+        converterMap.put(converter.getResultClass(), converter);
+    }
+
     public static <T> Converter<T> getConverter(final Class<T> clazz) {
-        return REGISTRY.getConverterInternal(clazz);
+        return GLOBAL_CACHE.getConverterInternal(clazz);
     }
 
     @SuppressWarnings("unchecked")
@@ -71,7 +51,7 @@ public class Registry {
             converterMap.put(clazz, res);
             boolean success = false;
             try {
-                handleAnnotations(clazz);
+                handleAnnotations(clazz, res);
                 success = true;
             } finally {
                 if (!success) {
@@ -82,14 +62,16 @@ public class Registry {
         return res;
     }
 
-    private static <T> void handleAnnotations(final Class<T> clazz) {
+    private static <T> void handleAnnotations(
+        final Class<T> clazz,
+        final Converter<T> converter) {
         try {
             for (final Annotation a : clazz.getAnnotations()) {
                 final HandlerClass handlerClass
                     = a.annotationType().getAnnotation(
                         Convert.HandlerClass.class);
                 if (handlerClass != null) {
-                    handleAnnotation(clazz, a, handlerClass);
+                    handleAnnotation(clazz, converter, a, handlerClass);
                 }
             }
         } catch (final InstantiationException e) {
@@ -101,17 +83,17 @@ public class Registry {
 
     private static <T, A extends Annotation> void handleAnnotation(
         final Class<T> clazz,
+        final Converter<T> converter,
         final A a,
         final HandlerClass handlerClass)
         throws InstantiationException, IllegalAccessException {
         @SuppressWarnings("unchecked")
-        final
-        AnnotationHandler<A> handler =
+        final AnnotationHandler<A> handler =
             (AnnotationHandler<A>) handlerClass.value().newInstance();
-        handler.handle(clazz, a);
+        handler.handle(clazz, converter, a);
     }
 
-    private static <T> Converter<T> generateConverter(final Class<T> clazz) {
+    private <T> Converter<T> generateConverter(final Class<T> clazz) {
         if (clazz.isEnum()) {
             return generateEnumConverter(clazz);
         }
@@ -140,20 +122,29 @@ public class Registry {
         return new EnumConverter(clazz);
     }
 
-    private static <T, A extends Annotation> Converter<T> getMethod(
+    private <T, A extends Annotation> Converter<T> getMethod(
         final Class<T> clazz,
         final A a,
         final ConverterFactoryClass factoryClass)
-        throws InstantiationException, IllegalAccessException {
-        // FIXME: cache these?
-        @SuppressWarnings("unchecked")
-        final ConverterFactory<A> factoryInstance
-            = (ConverterFactory<A>) factoryClass.value().newInstance();
-        final Converter<T> res = factoryInstance.converter(clazz, a);
+                        throws InstantiationException, IllegalAccessException {
+        final Converter<T> res = getFactoryInstance(factoryClass.value())
+                        .converter(clazz, a);
         if (!res.getResultClass().equals(clazz)) {
             throw new ConvertReflectionException(clazz,
-                "Didn't get appropriate converter!");
+                            "Didn't get appropriate converter!");
         }
         return res;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <A extends Annotation> ConverterFactory<A> getFactoryInstance(
+        final Class<? extends ConverterFactory<?>> clazz)
+                        throws InstantiationException, IllegalAccessException {
+        ConverterFactory<?> res = factoryCache.get(clazz);
+        if (res == null) {
+            res = clazz.newInstance();
+            factoryCache.put(clazz, res);
+        }
+        return (ConverterFactory<A>) res;
     }
 }

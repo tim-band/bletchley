@@ -7,8 +7,9 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.ListStepConverter;
+import net.lshift.spki.convert.SexpBacked;
+import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.io.DigestOutputStream;
@@ -18,8 +19,8 @@ import org.bouncycastle.util.encoders.Hex;
  * A SHA-384 digest of a SExp.
  */
 @ConvertClass(DigestSha384.Step.class)
-public class DigestSha384 implements SequenceItem {
-    private static final String DIGEST_NAME = "sha384";
+public class DigestSha384 extends SexpBacked implements SequenceItem {
+    public static final String DIGEST_NAME = "sha384";
     private static final int DIGEST_LENGTH = 48;
     private final byte[] bytes;
 
@@ -32,12 +33,12 @@ public class DigestSha384 implements SequenceItem {
         return bytes;
     }
 
-    public static <T> DigestSha384 digest(final Class<T> clazz, final T o) {
+    public static DigestSha384 digest(final Writeable o) {
         final SHA384Digest sha = new SHA384Digest();
         final DigestOutputStream digester = new DigestOutputStream(
             new DevnullOutputStream(), sha);
         try {
-            ConvertUtils.write(clazz, o, digester);
+            ConvertUtils.write(o, digester);
             digester.close();
         } catch (final IOException e) {
             throw new AssertionError("CANTHAPPEN:" + e);
@@ -47,17 +48,10 @@ public class DigestSha384 implements SequenceItem {
         return new DigestSha384(digest);
     }
 
-    public static DigestSha384 digest(final SequenceItem item) {
-        return digest(SequenceItem.class, item);
-    }
-
     public static class Step
         extends ListStepConverter<DigestSha384, Hash> {
 
-        @Override
-        public Class<DigestSha384> getResultClass() {
-            return DigestSha384.class;
-        }
+        public Step() { super(DigestSha384.class); }
 
         @Override
         protected Class<Hash> getStepClass() {
@@ -105,5 +99,11 @@ public class DigestSha384 implements SequenceItem {
         final DigestSha384 other = (DigestSha384) obj;
         if (!Arrays.equals(bytes, other.bytes)) return false;
         return true;
+    }
+
+    @Override
+    public void process(final InferenceEngine engine, final Condition trust)
+        throws InvalidInputException {
+        engine.addItemTrust(this, trust);
     }
 }

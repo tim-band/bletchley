@@ -13,21 +13,31 @@ import net.lshift.spki.PrettyPrinter;
 import org.junit.Test;
 
 public class EnumTest
-    extends ResetsRegistry {
+    extends UsesReadInfo {
     public static enum TestEnum {
         LEFT,
         RIGHT
     }
 
+    @Convert.ByPosition(name="enum-holder", fields="testEnum")
+    public static class EnumHolder extends SexpBacked {
+        public final TestEnum testEnum;
+
+        public EnumHolder(final TestEnum testEnum) {
+            super();
+            this.testEnum = testEnum;
+        }
+    }
+
     @Test
     public void enumTest() throws InvalidInputException, IOException {
-        final TestEnum test = TestEnum.LEFT;
-        final byte[] bytes = ConvertUtils.toBytes(TestEnum.class, test);
+        final EnumHolder test = new EnumHolder(TestEnum.LEFT);
+        final byte[] bytes = ConvertUtils.toBytes(test);
         PrettyPrinter.prettyPrint(new PrintWriter(System.out),
             new ByteArrayInputStream(bytes));
-        assertArrayEquals("4:left".getBytes("US-ASCII"), bytes);
-        final TestEnum changeBack = ConvertUtils.fromBytes(
-            TestEnum.class, bytes);
-        assertEquals(test, changeBack);
+        assertArrayEquals("(11:enum-holder4:left)".getBytes("US-ASCII"), bytes);
+        final EnumHolder changeBack = ConvertUtils.fromBytes(getReadInfo(),
+            EnumHolder.class, bytes);
+        assertEquals(test.testEnum, changeBack.testEnum);
     }
 }

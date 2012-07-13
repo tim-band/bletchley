@@ -49,7 +49,7 @@ public class FingerprintStabilityTest {
     @Theory
     public void theoryFingerprintsAreStable(final TestPair pair) {
         assertThat(
-            FingerprintUtils.getFingerprint(Sexp.class, pair.getTest()),
+            FingerprintUtils.getFingerprint(pair.getTest()),
             is(pair.getFingerprint()));
     }
 }

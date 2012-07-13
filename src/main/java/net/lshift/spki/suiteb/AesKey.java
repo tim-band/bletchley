@@ -4,7 +4,8 @@ import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+import net.lshift.spki.convert.ReadInfo;
+import net.lshift.spki.convert.SexpBacked;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESFastEngine;
@@ -16,8 +17,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
  * A key to use with AES/GCM.
  */
 @Convert.ByPosition(name="aes-gcm-key", fields={"key"})
-public class AesKey implements SequenceItem {
-
+public class AesKey extends SexpBacked implements SequenceItem {
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
         = "8:keyid-ad".getBytes(Constants.ASCII);
@@ -62,7 +62,7 @@ public class AesKey implements SequenceItem {
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, nonce, ZERO_BYTES));
             final byte[] plaintext =
-                ConvertUtils.toBytes(SequenceItem.class, message);
+                ConvertUtils.toBytes(message);
             final byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
             final int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);
@@ -76,7 +76,7 @@ public class AesKey implements SequenceItem {
             return new AesPacket(getKeyId(), nonce, ciphertext);
     }
 
-    public SequenceItem decrypt(final AesPacket packet)
+    public SequenceItem decrypt(final ReadInfo r, final AesPacket packet)
         throws InvalidInputException {
         final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
         gcm.init(false, new AEADParameters(
@@ -90,10 +90,16 @@ public class AesKey implements SequenceItem {
         } catch (final InvalidCipherTextException e) {
             throw new CryptographyException(e);
         }
-        return ConvertUtils.fromBytes(SequenceItem.class, newtext);
+        return ConvertUtils.fromBytes(r, SequenceItem.class, newtext);
     }
 
     public static AesKey generateAESKey() {
         return new AesKey(Ec.randomBytes(AES_KEY_BYTES));
+    }
+
+    @Override
+    public void process(final InferenceEngine engine, final Condition trust)
+        throws InvalidInputException {
+        engine.addAesKey(this);
     }
 }

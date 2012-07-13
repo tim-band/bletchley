@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 public class URIConverter
     extends StringStepConverter<URI>
 {
-    @Override public Class<URI> getResultClass() { return URI.class; }
+    public URIConverter() { super(URI.class); }
 
     @Override
     protected URI stepOut(final String s) throws ConvertException {

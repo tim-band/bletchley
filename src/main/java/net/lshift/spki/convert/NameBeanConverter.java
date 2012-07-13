@@ -1,13 +1,14 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
+import static net.lshift.spki.sexpform.Create.list;
+
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.SpkiInputStream.TokenType;
+import net.lshift.spki.sexpform.Sexp;
+import net.lshift.spki.sexpform.Slist;
 
 /**
  * SExp converter that produces a SExp that looks like key-value pairs
@@ -22,42 +23,40 @@ public class NameBeanConverter<T>
     }
 
     @Override
-    protected void writeField(
-        final ConvertOutputStream out,
+    protected Sexp writeField(
         final FieldConvertInfo field,
-        final Object property)
-        throws IOException {
+        final Object property) {
         if (property != null) {
-            out.beginSexp();
-            out.atom(field.hyphenatedName);
-            out.writeUnchecked(field.field.getType(), property);
-            out.endSexp();
-        } else if (!field.nullable) {
+            return list(field.hyphenatedName,
+                writeUnchecked(field.field.getType(), property));
+        } else if (field.nullable) {
+            return null;
+        } else {
             throw new NullPointerException(
                 "Field not marked as nullable is null: " +
                 clazz.getCanonicalName() + "." + field.name);
         }
-        // else ignore it - write nothing, report nothing
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ConvertInputStream in)
-        throws InvalidInputException,
-            IOException {
-        final Map<Field, Object> res = new HashMap<Field, Object>();
-        while (in.peek() == TokenType.OPENPAREN) {
-            in.next();
-            in.nextAssertType(TokenType.ATOM);
-            final FieldConvertInfo field = getField(in.atomBytes());
+    protected Map<Field, Object> readFields(final ReadInfo r, final Slist tail)
+        throws InvalidInputException {
+        final Map<Field, Object> res = SexpBacked.getResMap(tail);
+        for (final Sexp s: tail.getSparts()) {
+            final Slist ls = s.list();
+            final FieldConvertInfo field = getField(ls.getHead().getBytes());
             if (res.containsKey(field.field)) {
                 throw new ConvertException("Repeated field");
             }
-            res.put(field.field, in.read(field.field.getType()));
-            in.nextAssertType(TokenType.CLOSEPAREN);
+            final List<Sexp> ltail = ls.getSparts();
+            if (ltail.size() != 1) {
+                throw new ConvertException("multiple parts to named field");
+            }
+            res.put(field.field,
+                readElement(field.field.getType(), r, ltail.get(0)));
         }
-        in.nextAssertType(TokenType.CLOSEPAREN);
         for (final FieldConvertInfo field: fields) {
-            if (!field.nullable && !res.containsKey(field.field)) {
+            if (!res.containsKey(field.field) && !field.nullable) {
                 throw new ConvertException("Missing field: " + field.hyphenatedName);
             }
         }

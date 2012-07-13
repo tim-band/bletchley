@@ -11,7 +11,7 @@ import java.io.PrintStream;
 import java.util.regex.Pattern;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ResetsRegistry;
+import net.lshift.spki.convert.UsesReadInfo;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
@@ -19,7 +19,7 @@ import net.lshift.spki.convert.openable.OpenableUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-public class CliTest extends ResetsRegistry
+public class CliTest extends UsesReadInfo
 {
     private static final Pattern FINGERPRINT_OUTPUT
         = Pattern.compile("[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}\n");
@@ -43,7 +43,7 @@ public class CliTest extends ResetsRegistry
         Cli.main(null, "genEncryptionKey", ePrivate);
         Cli.main(null, "getPublicEncryptionKey", ePrivate, ePublic);
 
-        OpenableUtils.writeBytes(messageBytes, message);
+        OpenableUtils.writeBytes(message, messageBytes);
         Cli.main(null,
             "genEncryptedSignedMessage", sPrivate, message, ePublic, packet);
         Cli.main(null,

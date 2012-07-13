@@ -2,13 +2,16 @@ package net.lshift.spki.suiteb.passphrase;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesKeyId;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
+import net.lshift.spki.suiteb.Condition;
+import net.lshift.spki.suiteb.InferenceEngine;
+import net.lshift.spki.suiteb.SequenceItem;
 
 @Convert.ByPosition(name="passphrase-protected-key",
     fields={"passphraseId", "salt", "iterations", "keyId"})
-public class PassphraseProtectedKey implements SequenceItem {
+public class PassphraseProtectedKey extends SexpBacked implements SequenceItem {
     private final String passphraseId;
     private final byte [] salt;
     private final Integer iterations;
@@ -39,13 +42,24 @@ public class PassphraseProtectedKey implements SequenceItem {
         return keyId;
     }
 
-    public AesKey getKey(final String passphrase) throws InvalidInputException {
+    public AesKey getKey(final String passphrase) {
         final AesKey res = PassphraseUtils.getKey(
             passphraseId, salt, iterations, passphrase);
         if (!keyId.equals(res.getKeyId())) {
-            // FIXME use CryptographyException
-            throw new InvalidInputException("Wrong passphrase");
+                return null;
         }
         return res;
+    }
+
+    @Override
+    public void process(final InferenceEngine engine, final Condition trust)
+        throws InvalidInputException {
+        final PassphraseDelegate passphraseDelegate = engine.getPassphraseDelegate();
+        if (passphraseDelegate != null) {
+            final AesKey key = passphraseDelegate.getPassphrase(this);
+            if (key != null) {
+                engine.process(key, trust);
+            }
+        }
     }
 }

@@ -7,10 +7,7 @@ import net.lshift.spki.InvalidInputException;
  */
 public class StringConverter
     extends ByteArrayStepConverter<String> {
-    @Override
-    public Class<String> getResultClass() {
-        return String.class;
-    }
+    public StringConverter() { super(String.class); }
 
     @Override
     protected String stepOut(final byte[] s)

@@ -1,8 +1,7 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
-
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.sexpform.Sexp;
 
 /**
  * Interface for an object in the class conversion registry, which can
@@ -11,8 +10,8 @@ import net.lshift.spki.InvalidInputException;
 public interface Converter<T> {
     public Class<T> getResultClass();
 
-    public void write(ConvertOutputStream out, T o) throws IOException;
+    public Sexp write(T o);
 
-    public T read(ConvertInputStream in)
-        throws IOException, InvalidInputException;
+    public T read(ReadInfo r, Sexp in)
+        throws InvalidInputException;
 }

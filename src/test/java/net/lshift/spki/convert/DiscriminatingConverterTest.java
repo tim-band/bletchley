@@ -9,11 +9,10 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class DiscriminatingConverterTest extends ResetsRegistry
+public class DiscriminatingConverterTest extends UsesReadInfo
 {
     @Test
     public void testAssertDistinguishesExampleClasses() {
@@ -26,7 +25,7 @@ public class DiscriminatingConverterTest extends ResetsRegistry
         throws IOException, InvalidInputException
     {
         assertEquals(new ImplementingClass(),
-            ConvertUtils.read(Interface.class,
+            ConvertUtils.read(getReadInfo(), Interface.class,
                 ConvertTestHelper.toConvert(
                     list("implementing-class"))));
     }
@@ -36,26 +35,24 @@ public class DiscriminatingConverterTest extends ResetsRegistry
         throws IOException, InvalidInputException
     {
         assertEquals(new OtherImplementingClass(),
-            ConvertUtils.read(Interface.class,
+            ConvertUtils.read(getReadInfo(), Interface.class,
                 ConvertTestHelper.toConvert(
                     list("other-implementing-class"))));
     }
 
     @Test
     public void canConvertImplementingClassToSexp() {
-        final byte[] expected = ConvertUtils.toBytes(Sexp.class,
-            list("implementing-class"));
-        final byte[] actual = ConvertUtils.toBytes(Interface.class,
-            new ImplementingClass());
+        final byte[] expected = ConvertUtils.toBytes(list("implementing-class"));
+        final byte[] actual = ConvertUtils.toBytes(new ImplementingClass());
         assertThat(actual, is(expected));
     }
 
     @Test
     public void canHandleLateClass() throws InvalidInputException {
-        Registry.getConverter(LateImplementingClass.class);
+        ReadInfo cextra = getReadInfo().extend(LateImplementingClass.class);
         final LateImplementingClass obj = new LateImplementingClass();
-        final byte[] bytes = ConvertUtils.toBytes(Interface.class, obj);
-        final Interface res = ConvertUtils.fromBytes(Interface.class, bytes);
+        final byte[] bytes = ConvertUtils.toBytes(obj);
+        final Interface res = ConvertUtils.fromBytes(cextra, Interface.class, bytes);
         assertEquals(obj, res);
     }
 }

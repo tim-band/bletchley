@@ -1,22 +1,18 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.ConditionJoiner.or;
+import static net.lshift.spki.suiteb.UntrustedCondition.nullMeansUntrusted;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.suiteb.fingerprint.FingerprintUtils;
+import net.lshift.spki.convert.ReadInfo;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
-import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
-import net.lshift.spki.suiteb.sexpstructs.EcdhItem;
-import net.lshift.spki.suiteb.sexpstructs.Sequence;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,229 +27,167 @@ public class InferenceEngine {
     private static final Logger LOG
         = LoggerFactory.getLogger(InferenceEngine.class);
 
-    private final Map<DigestSha384, PrivateEncryptionKey> dhKeys
-        = new HashMap<DigestSha384, PrivateEncryptionKey>();
-    private final Map<DigestSha384, PublicSigningKey> dsaKeys
-        = new HashMap<DigestSha384, PublicSigningKey>();
-    private final Map<AesKeyId, AesKey> aesKeys
-        = new HashMap<AesKeyId, AesKey>();
-    private final Map<DigestSha384, DigestSha384> signedBy
-        = new HashMap<DigestSha384, DigestSha384>();
+    private final ReadInfo readInfo;
 
-    private boolean blindlyTrusting = false;
-    private final Set<DigestSha384> trustedKeys
-        = new HashSet<DigestSha384>();
     private final List<ActionType> actions
         = new ArrayList<ActionType>();
 
-    private final Map<String, String> byteNames = new HashMap<String,String>();
+    private final Map<DigestSha384, Condition> itemTrust
+        = new HashMap<DigestSha384, Condition>();
+
+    private final Map<DigestSha384, PublicEncryptionKey> publicEncryptionKeys
+    = new HashMap<DigestSha384, PublicEncryptionKey>();
+    private final Map<DigestSha384, PrivateEncryptionKey> privateEncryptionKeys
+        = new HashMap<DigestSha384, PrivateEncryptionKey>();
+    private final Map<DigestSha384, PublicSigningKey> publicSigningKeys
+        = new HashMap<DigestSha384, PublicSigningKey>();
+    private final Map<AesKeyId, AesKey> aesKeys
+        = new HashMap<AesKeyId, AesKey>();
+
+    private final Map<InferenceVariable<?>, Object> variables
+        = new HashMap<InferenceVariable<?>, Object>();
 
     private PassphraseDelegate passphraseDelegate;
 
-    private String namedString(final String string) {
-        String name = byteNames.get(string);
-        if (name == null) {
-            name = Integer.toString(byteNames.size(), 36);
-            byteNames.put(string, name);
-        }
-        return "" + name + ":" + string;
+    public InferenceEngine(final ReadInfo readInfo) {
+        this.readInfo = readInfo;
     }
 
-    private String bytesString(final byte[] bytes) {
-        final String string = "|" + Base64.encodeBase64String(bytes) + "|";
-        return namedString(string);
-    }
-
-    private String digestString(final DigestSha384 digest) {
-        return namedString(FingerprintUtils.getFingerprint(digest));
-    }
-
-    public boolean isBlindlyTrusting() {
-        return blindlyTrusting;
-    }
-
-    /**
-     * WARNING: When this is set, the engine will report on all actions it sees,
-     * signed or unsigned.
-     */
-    public void setBlindlyTrusting(final boolean blindlyTrusting) {
-        this.blindlyTrusting = blindlyTrusting;
-    }
-
-    public void addTrustedKey(final DigestSha384 key) {
-        trustedKeys.add(key);
-    }
+//    private final Map<String, String> byteNames = new HashMap<String,String>();
+//
+//    private String namedString(final String string) {
+//        String name = byteNames.get(string);
+//        if (name == null) {
+//            name = Integer.toString(byteNames.size(), 36);
+//            byteNames.put(string, name);
+//        }
+//        return "" + name + ":" + string;
+//    }
+//
+//    public String bytesString(final byte[] bytes) {
+//        final String string = "|" + Base64.encodeBase64String(bytes) + "|";
+//        return namedString(string);
+//    }
+//
+//    private String digestString(final DigestSha384 digest) {
+//        return namedString(FingerprintUtils.getFingerprint(digest));
+//    }
 
     public void process(final SequenceItem item) throws InvalidInputException {
-        process(item, null);
+        process(item, UntrustedCondition.UNTRUSTED);
     }
 
-    // FIXME: use dynamic dispatch here
-    public void process(
-        final SequenceItem item,
-        final DigestSha384 contextSigner)
-        throws InvalidInputException {
-        DigestSha384 signer = contextSigner;
-        if (signer == null) {
-            final DigestSha384 digest = DigestSha384.digest(item);
-            signer = signedBy.get(digest);
-            if (signer != null && LOG.isDebugEnabled()) {
-                LOG.debug("Signed object found, signer {} signed {}",
-                    digestString(signer), digestString(digest));
-                LOG.debug("\n{}",
-                    ConvertUtils.prettyPrint(SequenceItem.class, item));
-            }
-        }
-        if (item instanceof Action) {
-            doProcess((Action) item, signer);
-        } else if (item instanceof AesKey) {
-            doProcess((AesKey) item);
-        } else if (item instanceof AesPacket) {
-            doProcess((AesPacket) item, signer);
-        } else if (item instanceof DigestSha384) {
-            doProcess((DigestSha384) item, signer);
-        } else if (item instanceof EcdhItem) {
-            doProcess((EcdhItem) item);
-        } else if (item instanceof PassphraseProtectedKey) {
-            doProcess((PassphraseProtectedKey)item);
-        } else if (item instanceof PrivateEncryptionKey) {
-            doProcess((PrivateEncryptionKey)item);
-        } else if (item instanceof PublicSigningKey) {
-            doProcess((PublicSigningKey) item);
-        } else if (item instanceof Sequence) {
-            doProcess((Sequence) item, signer);
-        } else if (item instanceof Signature) {
-            doProcess((Signature) item);
-        } else {
-            // Shouldn't happen - there should be a clause here
-            // for every kind of SequenceItem
-            throw new RuntimeException(
-                "Don't know how to process sequence item: "
-                + item.getClass().getCanonicalName());
-        }
+    public void processTrusted(final SequenceItem item) throws InvalidInputException {
+        process(item, TrustedCondition.TRUSTED);
     }
 
-    private void doProcess(final Action message, final DigestSha384 signer) {
-        if (LOG.isDebugEnabled()) {
-            if (signer != null) {
-                LOG.debug("Found message signed by {}:\n{}",
-                    digestString(signer),
-                    ConvertUtils.prettyPrint(Action.class, message));
-            } else {
-                LOG.debug("Message has no known signer:\n{}",
-                    ConvertUtils.prettyPrint(Action.class, message));
-            }
-        }
-        if (blindlyTrusting || trustedKeys.contains(signer)) {
-            LOG.debug("Trusting message");
-            actions.add(message.getPayload());
-        }
-    }
-
-    private void doProcess(final AesKey key) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Adding AES key id {}",
-                bytesString(key.getKeyId().keyId));
-        }
-        aesKeys.put(key.getKeyId(), key);
-    }
-
-    private void doProcess(final AesPacket packet, final DigestSha384 signer) throws InvalidInputException {
-        final AesKey key = aesKeys.get(packet.keyId);
-        if (key != null) {
-            final SequenceItem contents = key.decrypt(packet);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Decrypted packet with key {}:\n{}",
-                    bytesString(packet.keyId.keyId),
-                    ConvertUtils.prettyPrint(SequenceItem.class, contents));
-            }
-            process(contents, signer);
-        } else {
-            LOG.debug("Skipping packet encrypted with unknown key {}",
-                bytesString(packet.keyId.keyId));
-        }
-    }
-
-    private void doProcess(final DigestSha384 digest, final DigestSha384 signer) {
-        if (signer != null) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Chained signature from {} for {}",
-                    digestString(signer), digestString(digest));
-            }
-            signedBy.put(digest, signer);
-        }
-    }
-
-    private void doProcess(final EcdhItem item) {
-        final PrivateEncryptionKey key = dhKeys.get(item.recipient);
-        if (key == null) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Skipping encrypted packet for recipient {}",
-                    digestString(item.recipient));
-            }
-        } else {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Processing encrypted packet for recipient {}",
-                    digestString(item.recipient));
-            }
-            doProcess(key.getKey(item.ephemeralKey));
-        }
-    }
-
-    private void doProcess(final PassphraseProtectedKey item) {
-        if (passphraseDelegate != null) {
-            final AesKey key = passphraseDelegate.getPassphrase(item);
-            if (key != null) {
-                doProcess(key);
-            }
-        }
-    }
-
-    private void doProcess(final PrivateEncryptionKey privateKey) {
-        final DigestSha384 keyId = privateKey.getPublicKey().getKeyId();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Adding private encryption key: {}", digestString(keyId));
-        }
-        dhKeys.put(keyId, privateKey);
-    }
-
-    private void doProcess(final PublicSigningKey pKey) {
-        final DigestSha384 keyId = pKey.getKeyId();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Adding public signing key: {}", digestString(keyId));
-        }
-        dsaKeys.put(keyId, pKey);
-    }
-
-    private void doProcess(final Sequence items, final DigestSha384 signer)
-        throws InvalidInputException {
-        LOG.debug("Processing sequence...");
-        for (final SequenceItem item: items.sequence) {
-            process(item, signer);
-        }
-        LOG.debug("...sequence processed.");
-    }
-
-    private void doProcess(final Signature sig) throws InvalidInputException {
-        final PublicSigningKey pKey = dsaKeys.get(sig.keyId);
-        if (pKey == null) {
-            LOG.debug("Skipping signature from unknown signer {} for {}",
-                digestString(sig.keyId), digestString(sig.digest));
-            return;
-        }
-        if (!pKey.validate(sig.digest, sig.rawSignature))
-            throw new CryptographyException("Sig validation failure");
-        LOG.debug("Signer {} attests to {}",
-            digestString(sig.keyId), digestString(sig.digest));
-        // FIXME: assert that it's not already signed?
-        signedBy.put(sig.digest, sig.keyId);
+    public void process(final SequenceItem item, final Condition trust) throws InvalidInputException {
+        LOG.debug("Processing item:\n{}",
+            ConvertUtils.prettyPrint(item));
+        item.process(this, trust);
     }
 
     public List<ActionType> getActions() {
         return actions;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends ActionType> T getSoleAction(final Class<T> clazz)
+        throws CryptographyException {
+        if (actions.size() == 1) {
+            final ActionType res = actions.get(0);
+            if (!clazz.isInstance(res)) {
+                throw new CryptographyException("Action is not an instance of "
+                    + clazz.getSimpleName() + " :" + res.getClass().getSimpleName());
+            }
+            return (T) res;
+        } else if (actions.isEmpty()) {
+            throw new CryptographyException("No validated actions found");
+        } else {
+            throw new CryptographyException(
+                    "Expected exactly one validated action, found: " + actions);
+        }
+    }
+
+    public void addAction(final ActionType payload) {
+        actions.add(payload);
+    }
+
+    public Condition getItemTrust(final DigestSha384 digest) {
+        return nullMeansUntrusted(itemTrust.get(digest));
+    }
+
+    public void addItemTrust(final DigestSha384 digest, final Condition condition) {
+        itemTrust.put(digest, or(condition, getItemTrust(digest)));
+    }
+
+    public PublicEncryptionKey getPublicEncryptionKey(final DigestSha384 recipient) {
+        return publicEncryptionKeys.get(recipient);
+    }
+
+    public void addPublicEncryptionKey(
+        final PublicEncryptionKey key) {
+        publicEncryptionKeys.put(key.getKeyId(), key);
+    }
+
+    public PrivateEncryptionKey getPrivateEncryptionKey(final DigestSha384 recipient) {
+        return privateEncryptionKeys.get(recipient);
+    }
+
+    public void addPrivateEncryptionKey(
+        final PrivateEncryptionKey key) {
+        final PublicEncryptionKey publicKey = key.getPublicKey();
+        final DigestSha384 keyId = publicKey.getKeyId();
+        privateEncryptionKeys.put(keyId, key);
+        publicEncryptionKeys.put(keyId, publicKey);
+    }
+
+    public PublicSigningKey getPublicSigningKey(final DigestSha384 keyId) {
+        return publicSigningKeys.get(keyId);
+    }
+
+    public void addPublicSigningKey(final PublicSigningKey key) {
+        publicSigningKeys.put(key.getKeyId(), key);
+    }
+
+    public AesKey getAesKey(final AesKeyId keyId) {
+        return aesKeys.get(keyId);
+    }
+
+    public void addAesKey(final AesKey key) {
+        aesKeys.put(key.getKeyId(), key);
+    }
+
+    public PassphraseDelegate getPassphraseDelegate() {
+        return passphraseDelegate;
+    }
+
     public void setPassphraseDelegate(final PassphraseDelegate passphraseDelegate) {
         this.passphraseDelegate = passphraseDelegate;
+    }
+
+    public Object getVar(final InferenceVariable<?> v) {
+        final Object res = variables.get(v);
+        if (res == null) {
+            throw new IllegalStateException(
+                "Variable not set on InferenceEngine:" + v.toString());
+        }
+        return res;
+    }
+
+    public void setVar(final InferenceVariable<?> v, final Object val) {
+        if (val == null) {
+            throw new NullPointerException(
+                "Cannot set null value on variable: " + v);
+        }
+        if (variables.containsKey(v)) {
+            throw new IllegalStateException(
+                "Variable can only be set once:" + v.toString());
+        }
+        variables.put(v, val);
+    }
+
+    public ReadInfo getReadInfo() {
+        return readInfo;
     }
 }

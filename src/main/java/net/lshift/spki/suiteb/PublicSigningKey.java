@@ -1,11 +1,11 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
-import net.lshift.spki.suiteb.sexpstructs.SequenceItem;
 
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
@@ -30,11 +30,7 @@ public class PublicSigningKey
 
     public static class Step
         extends ListStepConverter<PublicSigningKey, EcdsaPublicKey> {
-
-        @Override
-        public Class<PublicSigningKey> getResultClass() {
-            return PublicSigningKey.class;
-        }
+        public Step() { super(PublicSigningKey.class); }
 
         @Override
         protected Class<EcdsaPublicKey> getStepClass() {
@@ -51,6 +47,12 @@ public class PublicSigningKey
             throws ParseException {
             return new PublicSigningKey(s.getParameters());
         }
+    }
 
+    @Override
+    public void process(final InferenceEngine engine, final Condition trust)
+        throws InvalidInputException {
+        engine.addPublicSigningKey(this);
+        engine.addItemTrust(keyId, trust);
     }
 }

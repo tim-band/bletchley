@@ -1,28 +1,32 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
-
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.sexpform.Sexp;
 
 /**
  * Convert TResult to SExp by first converting it to TStep using stepIn/stepOut
  */
 public abstract class StepConverter<TResult, TStep>
-    implements Converter<TResult> {
-    @Override
-    public void write(final ConvertOutputStream out, final TResult o)
-        throws IOException {
-        out.write(getStepClass(), stepIn(o));
+    extends ConverterImpl<TResult> {
+
+    public StepConverter(final Class<TResult> clazz) {
+        super(clazz);
     }
 
     @Override
-    public TResult read(final ConvertInputStream in)
-        throws IOException, InvalidInputException {
-        return stepOut(in.read(getStepClass()));
+    public Sexp write(final TResult o) {
+        return writeUnchecked(getStepClass(), stepIn(o));
     }
 
     @Override
-    public abstract Class<TResult> getResultClass();
+    public TResult read(final ReadInfo c, final Sexp in)
+        throws InvalidInputException {
+        TResult res = stepOut(readElement(getStepClass(), c, in));
+        if (SexpBacked.class.isAssignableFrom(clazz)) {
+            ((SexpBacked)res).setSexp(in);
+        }
+        return res;
+    }
 
     protected abstract Class<TStep> getStepClass();
 

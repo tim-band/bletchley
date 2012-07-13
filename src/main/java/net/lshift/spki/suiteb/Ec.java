@@ -54,8 +54,7 @@ public class Ec {
             ((ECPublicKeyParameters)receiverKey).getQ(),
             ((ECPublicKeyParameters)senderKey).getQ(),
             senderAgreement.calculateAgreement(publicKey));
-        final DigestSha384 hash = DigestSha384.digest(
-            EcdhSharedSecret.class, sharedSecret);
+        final DigestSha384 hash = DigestSha384.digest(sharedSecret);
         return new AesKey(Arrays.copyOf(hash.getBytes(), AesKey.AES_KEY_BYTES));
     }
 

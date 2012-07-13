@@ -10,9 +10,12 @@ public class RequiresConverterHandler
     implements AnnotationHandler<Convert.RequiresConverter>
 {
     @Override
-    public void handle(final Class<?> clazz, final RequiresConverter annotation) {
+    public <U> void handle(
+        final Class<U> clazz,
+        final Converter<U> converter,
+        final RequiresConverter annotation) {
         try {
-            Registry.register(annotation.value().newInstance());
+            ((ConverterImpl<U>)converter).addConverter(annotation.value().newInstance());
         } catch (final InstantiationException e) {
             throw new ConvertReflectionException(clazz, e);
         } catch (final IllegalAccessException e) {

@@ -3,7 +3,6 @@ package net.lshift.spki.suiteb.passphrase;
 import java.io.Console;
 import java.util.Arrays;
 
-import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.Ec;
@@ -37,7 +36,7 @@ public class PassphraseUtils {
         final int iterations,
         final String passphrase) {
         final KeyStart keyStart = new KeyStart(passphraseId, salt, iterations, passphrase);
-        final DigestSha384 initialDigest = DigestSha384.digest(KeyStart.class, keyStart);
+        final DigestSha384 initialDigest = DigestSha384.digest(keyStart);
         final byte[] digest = initialDigest.getBytes().clone();
         for (int i = 0; i < 1<<iterations; i++) {
             final SHA384Digest sha = new SHA384Digest();
@@ -78,11 +77,10 @@ public class PassphraseUtils {
         while (true) {
             final String passphrase = new String(console.readPassword(
                 "Passphrase for \"%s\": ", ppk.getPassphraseId()));
-            try {
-                return ppk.getKey(passphrase);
-            } catch (final InvalidInputException e) {
-                System.out.println("Wrong passphrase, trying again");
-            }
+            AesKey res = ppk.getKey(passphrase);
+            if (res == null)
+                return res;
+            System.out.println("Wrong passphrase, trying again");
         }
     }
 }

@@ -1,13 +1,12 @@
 package net.lshift.spki.convert;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.SpkiInputStream.TokenType;
+import net.lshift.spki.sexpform.Sexp;
+import net.lshift.spki.sexpform.Slist;
 
 /**
  * SExp converter that lists the bean fields in a fixed order.
@@ -22,22 +21,24 @@ public class PositionBeanConverter<T>
     }
 
     @Override
-    protected void writeField(
-        final ConvertOutputStream out,
-        final FieldConvertInfo field,
-        final Object property)
-        throws IOException {
-        out.writeUnchecked(field.field.getType(), property);
+    protected Map<Field, Object> readFields(final ReadInfo r, Slist tail)
+        throws InvalidInputException {
+        final int size = fields.size();
+        if (tail.getSparts().size() != size) {
+            throw new ConvertException("Wrong number of fields");
+        }
+        final Map<Field, Object> res = SexpBacked.getResMap(tail);
+        for (int i = 0; i < size; i++) {
+            final FieldConvertInfo f = fields.get(i);
+            res.put(f.field, readElement(f.field.getType(), r, tail.getSparts().get(i)));
+        }
+        return res;
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ConvertInputStream in)
-        throws IOException, InvalidInputException {
-        final Map<Field, Object> res = new HashMap<Field, Object>(fields.size());
-        for (final FieldConvertInfo f: fields) {
-            res.put(f.field, in.read(f.field.getType()));
-        }
-        in.nextAssertType(TokenType.CLOSEPAREN);
-        return res;
+    protected Sexp writeField(
+        final FieldConvertInfo field,
+        final Object property) {
+        return writeUnchecked(field.field.getType(), property);
     }
 }
