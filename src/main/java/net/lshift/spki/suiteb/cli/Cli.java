@@ -37,16 +37,16 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
  */
 public class Cli {
     private static final String CLI_MESSAGE = Cli.class.toString();
-    private static ReadInfo C = getConverting();
+    private static ReadInfo R = getReadInfo();
 
-    private static ReadInfo getConverting() {
+    private static ReadInfo getReadInfo() {
         return new ReadInfo(
             SimpleMessage.class);
     }
 
     private static <U> U read(final Class<U> clazz, final Openable open)
         throws IOException, InvalidInputException {
-        return OpenableUtils.read(C, clazz, open);
+        return OpenableUtils.read(R, clazz, open);
     }
 
     private static SequenceItem read(final Openable open)
@@ -132,7 +132,7 @@ public class Cli {
         final Openable packet,
         final Openable out)
         throws IOException, InvalidInputException {
-        final InferenceEngine inference = new InferenceEngine(C);
+        final InferenceEngine inference = new InferenceEngine(R);
         inference.processTrusted(signingKey);
         inference.process(encryptionKey);
         inference.process(read(packet));
