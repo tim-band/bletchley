@@ -46,7 +46,6 @@ public class PassphraseTest extends UsesSimpleMessage {
 //                    encrypted
 //                    )), new File("/tmp/saveme"));
 //        } catch (IOException e) {
-//            // TODO Auto-generated catch block
 //            throw new RuntimeException(e);
 //        }
         assertDecryptsToMessage(ppk.getKey(PASSPHRASE), encrypted);

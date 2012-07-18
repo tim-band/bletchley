@@ -27,8 +27,10 @@ public abstract class PublicKey extends SexpBacked {
         return keyId;
     }
 
-    public AsymmetricCipherKeyPair getKeyPair(final BigInteger d) {
-        // FIXME: check d is actually a match
+    public AsymmetricCipherKeyPair getKeyPair(final BigInteger d) throws CryptographyException {
+        if (!publicKey.getQ().equals(Ec.DOMAIN_PARAMETERS.getG().multiply(d))) {
+            throw new CryptographyException("Private key does not match public");
+        }
         return new AsymmetricCipherKeyPair(publicKey,
             new ECPrivateKeyParameters(d, Ec.DOMAIN_PARAMETERS));
     }

@@ -74,7 +74,7 @@ public class PrivateEncryptionKey extends SexpBacked implements SequenceItem {
         @SuppressWarnings("synthetic-access")
         @Override
         protected PrivateEncryptionKey stepOut(final EcdhPrivateKey s)
-            throws ParseException {
+            throws ParseException, CryptographyException {
             return new PrivateEncryptionKey(
                 s.publicKey,
                 s.publicKey.getKeyPair(s.d));

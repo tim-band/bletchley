@@ -74,7 +74,7 @@ public class PrivateSigningKey extends SexpBacked {
         @SuppressWarnings("synthetic-access")
         @Override
         protected PrivateSigningKey stepOut(final EcdsaPrivateKey s)
-            throws ParseException {
+            throws ParseException, CryptographyException {
             return new PrivateSigningKey(
                 s.publicKey,
                 s.publicKey.getKeyPair(s.d));
