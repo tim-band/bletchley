@@ -9,8 +9,10 @@ import org.apache.commons.lang.StringUtils;
 
 public class EnumConverter<T extends Enum<T>>
 extends StringStepConverter<T> {
+    private static final String VALID_ENUM_FIRST =
+       "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String VALID_ENUM =
-                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+       "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
     private final Class<T> resultClass;
     private final Map<T, String> forwardMap
         = new HashMap<T, String>();
@@ -24,7 +26,8 @@ extends StringStepConverter<T> {
         this.resultClass = resultClass;
         for (final T t: resultClass.getEnumConstants()) {
             final String name = t.name();
-            if (!StringUtils.containsOnly(name, VALID_ENUM)) {
+            if (!StringUtils.containsOnly(name, VALID_ENUM) || 
+                VALID_ENUM_FIRST.indexOf(name.charAt(0)) < 0) {
                 throw new IllegalArgumentException(
                     "Enum contains non-standard name: " + name);
             }
