@@ -25,6 +25,7 @@ public class ConverterCache {
     private ConverterCache() {
         registerInternal(new SexpConverter());
         registerInternal(new ByteArrayConverter());
+	registerInternal(new BooleanConverter());
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());
         registerInternal(new IntegerConverter());

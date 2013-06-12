@@ -117,4 +117,8 @@ public class DiscriminatingConverter<T>
             getDiscriminatedSuperclasses(clazz, answers, supsup);
         }
     }
+
+    public String toString() {
+        return String.format("DiscriminatingConverter<%s>", superclass.getSimpleName()) ;
+    }
 }
