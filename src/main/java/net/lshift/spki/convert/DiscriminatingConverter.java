@@ -38,7 +38,7 @@ public class DiscriminatingConverter<T>
         final Converter<? extends T> converter = Registry.getConverter(clazz);
         if (!(converter instanceof ListConverter<?>)) {
             throw new ConvertReflectionException(this, clazz,
-                    "Converter isn't a list converter");
+                    String.format("Converter for %s isn't a list converter: %s", clazz.getSimpleName(), converter));
         }
         final String name = ((ListConverter<? extends T>)converter).getName();
         if (nameMap.containsKey(name)) {
@@ -81,5 +81,9 @@ public class DiscriminatingConverter<T>
                 "Unable to find converter: " + stringDiscrim);
         }
         return in.readRest(clazz);
+    }
+
+    public String toString() {
+        return String.format("DiscriminatingConverter<%s>", superclass.getSimpleName()) ;
     }
 }
