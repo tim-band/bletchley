@@ -119,6 +119,6 @@ public class DiscriminatingConverter<T>
     }
 
     public String toString() {
-        return String.format("DiscriminatingConverter<%s>", superclass.getSimpleName()) ;
+        return String.format("DiscriminatingConverter<%s>", clazz.getSimpleName()) ;
     }
 }

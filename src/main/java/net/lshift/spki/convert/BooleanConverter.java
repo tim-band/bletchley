@@ -5,6 +5,7 @@ import net.lshift.spki.InvalidInputException;
 public class BooleanConverter
     extends StepConverter<Boolean, BooleanEnum>
 {
+    public BooleanConverter() { super(Boolean.class); }
 
     @Override
     protected Class<BooleanEnum> getStepClass() {
