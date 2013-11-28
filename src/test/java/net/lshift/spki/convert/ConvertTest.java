@@ -5,11 +5,13 @@ import static net.lshift.spki.sexpform.Create.list;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.UUID;
 
 import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
@@ -17,14 +19,39 @@ import org.junit.Test;
 public class ConvertTest extends ResetsRegistry
 {
     @Test
-    public void convertTest() throws InvalidInputException {
+    public void convertTest() throws InvalidInputException, IOException {
         final ConvertExample test = new ConvertExample(
-            BigInteger.valueOf(3), BigInteger.valueOf(17));
+            BigInteger.valueOf(3), BigInteger.valueOf(17), "test");
+        testExample(test);
+    }
+
+    private static void testExample(final ConvertExample test)
+        throws InvalidInputException, IOException {
+        testConanonicalConvert(test);
+        testAdvancedConvert(test);
+    }
+
+    private static void testAdvancedConvert(ConvertExample test) throws IOException, InvalidInputException {
+        ByteOpenable printed = new ByteOpenable();
+        ConvertUtils.prettyPrint(ConvertExample.class, test, printed.write());
+        ConvertUtils.prettyPrint(ConvertExample.class, test, System.out);
+        final ConvertExample changeBack = ConvertUtils.readAdvanced(ConvertExample.class, printed.read());
+        assertEquals(test, changeBack);
+    }
+
+    private static void testConanonicalConvert(final ConvertExample test)
+        throws InvalidInputException {
         final byte[] bytes = ConvertUtils.toBytes(ConvertExample.class, test);
-        //PrettyPrinter.prettyPrint(System.out, sexp);
         final ConvertExample changeBack = ConvertUtils.fromBytes(
             ConvertExample.class, bytes);
         assertEquals(test, changeBack);
+    }
+
+    @Test
+    public void convertHyphenTest() throws InvalidInputException, IOException {
+        final ConvertExample test = new ConvertExample(
+            BigInteger.valueOf(3), BigInteger.valueOf(17), "-");
+        testExample(test);
     }
 
     @Test

@@ -25,7 +25,11 @@ public class ConvertInputStreamTest
             new CanonicalSpkiInputStream(
                 new ByteArrayInputStream(
                     ConvertUtils.bytes("3:foo"))));
-        testStream.peek();
-        testStream.atomBytes();
+        try {
+            testStream.peek();
+            testStream.atomBytes();
+        } finally {
+            testStream.close();
+        }
     }
 }

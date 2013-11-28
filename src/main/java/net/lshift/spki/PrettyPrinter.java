@@ -38,7 +38,7 @@ public class PrettyPrinter extends SpkiOutputStream {
                 .decode(ByteBuffer.wrap(bytes, off, len)).toString();
             if (StringUtils.containsOnly(string,
                 "abcdefghijklmnopqrstuvwxyz0123456789-") &&
-                !Character.isDigit(string.charAt(0))) {
+                Character.isLetter(string.charAt(0))) {
                 pw.println(string);
             } else {
                 pw.print("\"");
