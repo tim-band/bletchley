@@ -22,7 +22,7 @@ public class UUIDConverterTest
         testPartFormat("%08x");
     }
 
-    private void testPartFormat(String partFormat) {
+    private static void testPartFormat(String partFormat) {
         StringBuffer buffer = new StringBuffer();
         StringTokenizer tokens = new StringTokenizer(UUID.randomUUID().toString(), "-");
         buffer.append(String.format(partFormat, Long.decode("0x" + tokens.nextToken())));

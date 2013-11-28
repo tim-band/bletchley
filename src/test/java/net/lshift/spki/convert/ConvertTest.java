@@ -5,6 +5,7 @@ import static net.lshift.spki.sexpform.Create.list;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.UUID;
 
@@ -19,7 +20,12 @@ public class ConvertTest extends UsesReadInfo
     @Test
     public void convertTest() throws InvalidInputException {
         final ConvertExample test = new ConvertExample(
-            BigInteger.valueOf(3), BigInteger.valueOf(17));
+            BigInteger.valueOf(3), BigInteger.valueOf(17), "test");
+        testExample(test);
+    }
+
+    private void testExample(final ConvertExample test)
+            throws InvalidInputException {
         final byte[] bytes = ConvertUtils.toBytes(test);
         //PrettyPrinter.prettyPrint(System.out, sexp);
         final ConvertExample changeBack = ConvertUtils.fromBytes(getReadInfo(),
@@ -69,4 +75,12 @@ public class ConvertTest extends UsesReadInfo
         assertEquals(UUID.fromString(uidstring),
             ConvertUtils.fromBytes(getReadInfo(), UUID.class, uBytes));
     }
+
+    @Test
+    public void convertHyphenTest() throws InvalidInputException, IOException {
+        final ConvertExample test = new ConvertExample(
+            BigInteger.valueOf(3), BigInteger.valueOf(17), "-");
+        testExample(test);
+    }
+
 }
