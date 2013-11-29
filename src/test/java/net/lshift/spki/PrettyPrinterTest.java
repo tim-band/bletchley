@@ -60,6 +60,9 @@ public class PrettyPrinterTest extends UsesReadInfo {
             new TestPair(counter++, list("fo-o",  atom("baz"))),
             new TestPair(counter++, list("foo bar",  atom("baz"))),
             new TestPair(counter++, list("\0x80fsssssssssssssoo bar",  atom("baz"))),
+            new TestPair(counter++, atom("foo-bar")),
+            new TestPair(counter++, atom("-")),
+            new TestPair(counter++, atom("includes ~ tilde")),
         };
     }
 
