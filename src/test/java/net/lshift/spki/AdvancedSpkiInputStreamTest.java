@@ -40,6 +40,15 @@ public class AdvancedSpkiInputStreamTest extends SpkiInputStreamTest
     }
 
     @Test
+    public void getTildeAtom()
+        throws IOException, ParseException {
+        setInput("\"~foo\"");
+        assertThat(sis.next(), is(ATOM));
+        assertThat(sis.atomBytes(), is(s("~foo")));
+        assertThat(sis.next(), is(EOF));
+    }
+
+    @Test
     public void getQuotedStringWithBackslashes() throws ParseException, IOException {
         setInput("\"this\\\"and\\\\that\"");
         assertThat(sis.next(), is(ATOM));
