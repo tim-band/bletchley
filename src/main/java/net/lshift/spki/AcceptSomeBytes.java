@@ -35,7 +35,7 @@ public class AcceptSomeBytes {
 
     private static AcceptSomeBytes getPrintables() {
         final AcceptSomeBytes res = new AcceptSomeBytes();
-        for (int i = 0x20; i < 0x7E; i++)
+        for (int i = 0x20; i < 0x7F; i++)
             res.accept[i] = 1;
         return res;
     }
