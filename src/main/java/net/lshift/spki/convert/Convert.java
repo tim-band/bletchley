@@ -10,6 +10,10 @@ import java.lang.annotation.Target;
  */
 public class Convert
 {
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.FIELD})
+    public @interface Transient { }
+
     /**
      * An annotation for annotations - the registry uses this
      * to learn how to interpret an annotation in order to

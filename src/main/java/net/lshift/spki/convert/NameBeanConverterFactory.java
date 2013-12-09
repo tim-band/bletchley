@@ -32,7 +32,8 @@ implements ConverterFactory<Convert.ByName>
         }
         for (final Field f: clazz.getDeclaredFields()) {
             if (!f.getName().startsWith("$") &&
-                            (f.getModifiers() & Modifier.STATIC) == 0)
+                (f.getModifiers() & (Modifier.STATIC|Modifier.TRANSIENT)) == 0 &&
+                !f.isAnnotationPresent(Convert.Transient.class))
             fields.add(new FieldConvertInfo(clazz, f));
         }
     }
