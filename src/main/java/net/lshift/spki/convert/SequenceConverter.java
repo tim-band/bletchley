@@ -19,7 +19,7 @@ import net.lshift.spki.SpkiInputStream.TokenType;
 public class SequenceConverter<T>
     extends BeanConverter<T> {
     protected final String beanName;
-    private final Class<?> contentType;
+    protected final Class<?> contentType;
 
     public SequenceConverter(final Class<T> clazz, final String name, final Field field) {
         super(clazz, name);

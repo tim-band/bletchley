@@ -18,7 +18,7 @@ public class DiscriminatingConverter<T>
     private final Class<T> superclass;
     private final Map<String, Class<? extends T>> nameMap
         = new HashMap<String, Class<? extends T>>();
-    private final Set<Class<? extends T>> classes
+    protected final Set<Class<? extends T>> classes
         = new HashSet<Class<? extends T>>();
 
     public DiscriminatingConverter(

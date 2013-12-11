@@ -36,6 +36,13 @@ public class ExportHelper {
         PRIMITIVE = Collections.unmodifiableSet(primitive);
     }
 
+    /**
+     * This is called for any class annotated with {@link Convert.ByName} or
+     * {@link Convert.ByPosition}. I.e. any composite. It's intended to let you
+     * handle passing through type information in whatever way your serializer 
+     * benefits from, if any. You could just return the fields parameter, 
+     * add some meta data using a special namespace, etc.
+     */
     public interface ObjectFactory {
         public Object create(Class<?> clazz, String name, Map<String, Object> fields);
     }
@@ -77,6 +84,75 @@ public class ExportHelper {
             return list;
         } else {
             return convertable;
+        }
+    }
+
+    public static boolean isNamed(Class<?> c) {
+        return Registry.getConverter(c) instanceof ListConverter;
+    }
+
+    public static String getName(Class<?> c) {
+        if(isNamed(c)) {
+            return ((ListConverter)Registry.getConverter(c)).getName();
+        } else {
+            throw new IllegalArgumentException("class not named");
+        }
+    }
+
+    public static boolean isDiscriminated(Class<?> c) {
+        return Registry.getConverter(c) instanceof DiscriminatingConverter;
+    }
+
+    public static Set<Class<?>> discriminatorOptions(Class<?> c) {
+        if(isDiscriminated(c)) {
+            DiscriminatingConverter converter = (DiscriminatingConverter)Registry.getConverter(c);
+            return converter.classes;
+        } else {
+            throw new IllegalArgumentException("class not descriminated");
+        }
+    }
+
+    public static boolean isComposite(Class<?> c) {
+        return Registry.getConverter(c) instanceof BeanFieldConverter;
+    }
+
+    public static class FieldInfo {
+        public final Class<?> type;
+        public final boolean nullable;
+        public final boolean sequence;
+        public final Class<?> itemType;
+
+        private FieldInfo(FieldConvertInfo info) {
+            this.type = info.field.getType();
+            this.nullable = info.nullable;
+            this.sequence = info.inlineListType != null;
+            this.itemType = info.inlineListType;
+        }
+    }
+
+    public static Map<String,FieldInfo> compositeFields(Class<?> c) {
+        if(isComposite(c)) {
+            BeanFieldConverter<?> converter = (BeanFieldConverter)Registry.getConverter(c);
+            Map<String, FieldInfo> fields = new HashMap<String, FieldInfo>();
+            for(FieldConvertInfo field: converter.fields) {
+                fields.put(field.hyphenatedName, new FieldInfo(field));
+            }
+            return fields;
+        } else {
+            throw new IllegalArgumentException("class not composite");
+        }
+    }
+
+    public static boolean isSequence(Class<?> c) {
+        return Registry.getConverter(c) instanceof SequenceConverter;
+    }
+
+    public static Class<?> sequenceItemType(Class<?> c) {
+        if(isSequence(c)) {
+            SequenceConverter converter = (SequenceConverter)Registry.getConverter(c);
+            return converter.contentType;
+        } else {
+            throw new IllegalArgumentException("class not sequence");
         }
     }
 }
