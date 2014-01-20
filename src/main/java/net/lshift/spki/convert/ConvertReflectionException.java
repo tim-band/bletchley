@@ -74,13 +74,11 @@ public class ConvertReflectionException
         this.type = type;
     }
 
-    public Converter<?> getConverter()
-    {
+    public Converter<?> getConverter() {
         return converter;
     }
 
-    public Class<?> getType()
-    {
+    public Class<?> getType() {
         return type;
     }
 }

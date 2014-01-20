@@ -16,10 +16,9 @@ import org.slf4j.LoggerFactory;
 
 public class UsesReadInfo {
     private static final Logger LOG = LoggerFactory.getLogger(UsesReadInfo.class);
-    private static final ReadInfo READ_INFO = new ReadInfo();
 
     protected ReadInfo getReadInfo() {
-        return READ_INFO;
+        return ReadInfo.BASE;
     }
 
     /**

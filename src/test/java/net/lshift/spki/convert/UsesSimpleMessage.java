@@ -17,7 +17,6 @@ public class UsesSimpleMessage extends UsesReadInfo {
         return READ_INFO;
     }
 
-
     protected Action makeMessage() {
         return new Action(new SimpleMessage(
             this.getClass().getCanonicalName(), CONTENT));

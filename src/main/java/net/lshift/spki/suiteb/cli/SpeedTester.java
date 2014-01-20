@@ -19,14 +19,10 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
  */
 public class SpeedTester {
     private static final String MESSAGE_TYPE = "speed-test-message";
-    private static final ReadInfo R = getReadInfo();
+    private static final ReadInfo R = ReadInfo.BASE.extend(SimpleMessage.class);
     private final PrivateSigningKey privateKey;
     private final byte[] publicKeyBytes;
     private final byte[] messageBytes;
-
-    private static ReadInfo getReadInfo() {
-        return new ReadInfo(SimpleMessage.class);
-    }
 
     public SpeedTester() {
         super();

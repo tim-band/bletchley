@@ -14,7 +14,7 @@ public class ReadService {
     private static ReadInfo R = getReadInfo();
 
     static ReadInfo getReadInfo() {
-        return new ReadInfo(Service.class);
+        return ReadInfo.BASE.extend(Service.class);
     }
 
     private static InferenceEngine newEngine() {

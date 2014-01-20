@@ -37,12 +37,7 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
  */
 public class Cli {
     private static final String CLI_MESSAGE = Cli.class.toString();
-    private static ReadInfo R = getReadInfo();
-
-    private static ReadInfo getReadInfo() {
-        return new ReadInfo(
-            SimpleMessage.class);
-    }
+    private static ReadInfo R = ReadInfo.BASE.extend(SimpleMessage.class);
 
     private static <U> U read(final Class<U> clazz, final Openable open)
         throws IOException, InvalidInputException {

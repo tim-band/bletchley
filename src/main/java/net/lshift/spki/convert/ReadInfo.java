@@ -7,21 +7,19 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
 public class ReadInfo {
+    public static final ReadInfo BASE = new ReadInfo();
+
     private final Map<String, Class<?>> discrimMap;
 
+    private ReadInfo() {
+        discrimMap = new HashMap<String,Class<?>>();
+    }
+
     private ReadInfo(ReadInfo base, Class<?>... classes) {
-        if (base == null) {
-            discrimMap = new HashMap<String,Class<?>>();
-        } else {
-            discrimMap = new HashMap<String,Class<?>>(base.discrimMap);
-        }
+        discrimMap = new HashMap<String,Class<?>>(base.discrimMap);
         for (Class<?> clazz: classes) {
             register(discrimMap, clazz);
         }
-    }
-
-    public ReadInfo(Class<?>... classes) {
-        this(null, classes);
     }
 
     public ReadInfo extend(Class<?>... classes) {
