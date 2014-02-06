@@ -9,26 +9,9 @@ import java.io.PrintWriter;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.openable.ByteOpenable;
-import net.lshift.spki.suiteb.Action;
-
 import org.junit.Test;
 
 public class TestLoop {
-    @Test
-    public void simpleTest() throws IOException, InvalidInputException {
-        final PrivateSigningKey masterKey = PrivateSigningKey.generate();
-        final ByteOpenable acl = writeSequence(masterKey.getPublicKey());
-
-        final Service service = new Service("http", 80);
-        final ByteOpenable target = new ByteOpenable();
-        write(target, signed(masterKey, new Action(service)));
-        final Service readBack = ReadService.readService(acl, target);
-        assertThat(readBack.name, is(service.name));
-        assertThat(readBack.port, is(service.port));
-        PrettyPrinter.prettyPrint(
-            new PrintWriter(System.out), target.read());
-    }
-
     @Test
     public void test() throws IOException, InvalidInputException {
         final Master master = new Master();
