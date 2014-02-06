@@ -11,19 +11,24 @@ import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.InferenceEngine;
 
 public class ReadService {
-    private static ReadInfo R = getReadInfo();
-
+    private static final ReadInfo R = getReadInfo();
+    private final Openable acl; 
+    
     static ReadInfo getReadInfo() {
         return ReadInfo.BASE.extend(Service.class);
     }
 
-    private static InferenceEngine newEngine() {
+    public ReadService(Openable acl) {
+        this.acl = acl;
+    }
+
+    private InferenceEngine newEngine() {
         final InferenceEngine engine = new InferenceEngine(R);
         setNow(engine);
         return engine;
     }
 
-    public static Service readService(final Openable acl, final Openable source)
+    public Service readMessage(final Openable source)
                     throws IOException, InvalidInputException {
         final InferenceEngine engine = newEngine();
         engine.processTrusted(read(R, acl));

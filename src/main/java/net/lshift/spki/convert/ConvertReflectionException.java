@@ -32,7 +32,7 @@ public class ConvertReflectionException
     }
 
     private static String context(
-        @SuppressWarnings("unused") final Converter<?> converter,
+        final Converter<?> converter,
         final Class<?> type)    {
         return "error converting " + type.getCanonicalName();
     }
