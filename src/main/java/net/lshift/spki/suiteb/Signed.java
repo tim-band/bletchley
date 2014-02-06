@@ -32,10 +32,7 @@ public class Signed extends SexpBacked implements SequenceItem {
             throw new CryptographyException(
                 "Unknown hash type: " + hashType);
         }
-        final DigestSha384 digest = DigestSha384.digest(payload);
-        final Condition itemTrust = engine.getItemTrust(digest);
-        if (itemTrust != null) {
-            engine.process(payload, itemTrust);
-        }
+        engine.process(payload,
+            engine.getItemTrust(DigestSha384.digest(payload)));
     }
 }
