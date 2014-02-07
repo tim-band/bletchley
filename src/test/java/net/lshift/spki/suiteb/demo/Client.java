@@ -3,42 +3,22 @@ package net.lshift.spki.suiteb.demo;
 import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
 import static net.lshift.spki.suiteb.InferenceVariables.setNow;
-import static net.lshift.spki.suiteb.SequenceUtils.sequence;
+import static net.lshift.spki.suiteb.demo.Utilities.R;
+import static net.lshift.spki.suiteb.demo.Utilities.emptyByteOpenable;
 
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ReadInfo;
-import net.lshift.spki.convert.openable.ByteOpenable;
-import net.lshift.spki.suiteb.DigestSha384;
+import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
-import net.lshift.spki.suiteb.Sequence;
 
 public class Client {
-    private static final ReadInfo R = ReadInfo.BASE.extend(Service.class);
+    private final Openable secrets = emptyByteOpenable();
+    private final Openable acl = emptyByteOpenable();
 
-    final PrivateEncryptionKey myDecryptionKey;
-    final DigestSha384 trustedPublicKeyId;
-
-    public Client(DigestSha384 trustedPublicKeyId) throws IOException {
-        this.myDecryptionKey = PrivateEncryptionKey.generate();
-        this.trustedPublicKeyId = trustedPublicKeyId;
-    }
-
-    public PublicEncryptionKey getPublicEncryptionKey() {
-        return myDecryptionKey.getPublicKey();
-    }
-
-    public Service receiveMessage(ByteOpenable message) throws IOException,
-            InvalidInputException {
-        final InferenceEngine engine = newEngine();
-        final ByteOpenable acl = makeAcl();
-        engine.processTrusted(read(R, acl));
-        engine.process(read(R, message));
-        return engine.getSoleAction(Service.class);
-    }
+    private PublicEncryptionKey publicEncryptionKey = null;
 
     private InferenceEngine newEngine() {
         final InferenceEngine engine = new InferenceEngine(R);
@@ -46,13 +26,26 @@ public class Client {
         return engine;
     }
 
-    private ByteOpenable makeAcl() throws IOException {
-        return asOpenable(sequence(myDecryptionKey, trustedPublicKeyId));
+    public Openable getAcl() {
+        return acl;
     }
 
-    private ByteOpenable asOpenable(Sequence sequence) throws IOException {
-        final ByteOpenable target = new ByteOpenable();
-        write(target, sequence);
-        return target;
+    public void generateEncryptionKeypair() throws IOException {
+        PrivateEncryptionKey privateKey = PrivateEncryptionKey.generate();
+        write(secrets, privateKey);
+        publicEncryptionKey = privateKey.getPublicKey();
+    }
+
+    public Service receiveMessage(Openable message) throws IOException,
+            InvalidInputException {
+        final InferenceEngine engine = newEngine();
+        engine.processTrusted(read(R, acl));
+        engine.processTrusted(read(R, secrets));
+        engine.process(read(R, message));
+        return engine.getSoleAction(Service.class);
+    }
+
+    public PublicEncryptionKey getPublicEncryptionKey() {
+        return publicEncryptionKey;
     }
 }

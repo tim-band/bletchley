@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb.demo;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static net.lshift.spki.convert.openable.OpenableUtils.write;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,7 +23,8 @@ public class TestLoop {
     public void serverSendsPlainTextMessageToClientThatTrustsIt()
             throws IOException, InvalidInputException {
         Server server = new Server();
-        Client client = new Client(server.getPublicSigningKey().getKeyId());
+        Client client = new Client();
+        write(client.getAcl(), server.getPublicSigningKey());
         sendMessageFromServerToClient(server, client);
     }
 
@@ -30,7 +32,9 @@ public class TestLoop {
     public void serverSendsEncryptedMessageToClientThatTrustsIt()
             throws IOException, InvalidInputException {
         ServerWithEncryption server = new ServerWithEncryption();
-        Client client = new Client(server.getPublicSigningKey().getKeyId());
+        Client client = new Client();
+        client.generateEncryptionKeypair();
+        write(client.getAcl(), server.getPublicSigningKey());
         server.setRecipient(client.getPublicEncryptionKey());
 
         sendMessageFromServerToClient(server, client);
@@ -41,10 +45,13 @@ public class TestLoop {
             throws IOException, InvalidInputException {
         final Master master = new Master();
         final PartiallyTrustedServer server = new PartiallyTrustedServer();
-        final Client client = new Client(master.getMasterPublicKeyId());
+        master.delegateTrustTo(server.getCertificate(),
+                server.getPublicSigningKey());
+
+        final Client client = new Client();
+        client.generateEncryptionKeypair();
+        master.writeMasterTrust(client.getAcl());
         server.setRecipient(client.getPublicEncryptionKey());
-        server.setCertificate(master.delegateTrustTo(server
-                .getPublicSigningKey()));
 
         sendMessageFromServerToClient(server, client);
     }
@@ -52,7 +59,8 @@ public class TestLoop {
     private void sendMessageFromServerToClient(Server server, Client client)
             throws IOException, InvalidInputException, ParseException {
         final Service service = new Service("http", 80);
-        final ByteOpenable message = server.generateMessage(service);
+        final ByteOpenable message = new ByteOpenable();
+        server.writeServiceMessage(message, service);
         final Service readBack = client.receiveMessage(message);
         assertThat(readBack.name, is(service.name));
         assertThat(readBack.port, is(service.port));

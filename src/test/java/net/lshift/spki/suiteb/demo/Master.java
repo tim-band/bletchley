@@ -2,44 +2,33 @@ package net.lshift.spki.suiteb.demo;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
 import static net.lshift.spki.suiteb.Limit.limit;
-import static net.lshift.spki.suiteb.SequenceUtils.sequenceOrItem;
+import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
 
 import java.io.IOException;
 import java.util.Date;
 
-import net.lshift.spki.convert.openable.ByteOpenable;
+import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.Condition;
-import net.lshift.spki.suiteb.DigestSha384;
 import net.lshift.spki.suiteb.InvalidOnOrAfter;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
-import net.lshift.spki.suiteb.SequenceItem;
 
 public class Master {
-    private final PrivateSigningKey key;
-    private final PublicSigningKey publicKey;
+    private final PrivateSigningKey privateKey;
 
     public Master() {
-        key = PrivateSigningKey.generate();
-        publicKey = key.getPublicKey();
+        privateKey = PrivateSigningKey.generate();
     }
 
-    public DigestSha384 getMasterPublicKeyId() {
-        return publicKey.getKeyId();
+    public void writeMasterTrust(Openable target) throws IOException {
+        write(target, privateKey.getPublicKey().getKeyId());
     }
 
-    public ByteOpenable delegateTrustTo(PublicSigningKey signingKey)
+    public void delegateTrustTo(Openable target, PublicSigningKey signingKey)
             throws IOException {
-        return writeSequence(publicKey,
-                signed(key, limit(signingKey, expiresInOneHour())));
-    }
-
-    private static ByteOpenable writeSequence(final SequenceItem... items)
-            throws IOException {
-        final ByteOpenable res = new ByteOpenable();
-        write(res, sequenceOrItem(items));
-        return res;
+        write(target, sequence(privateKey.getPublicKey(),
+                signed(privateKey, limit(signingKey, expiresInOneHour()))));
     }
 
     private static Condition expiresInOneHour() {
