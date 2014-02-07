@@ -16,28 +16,23 @@ import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.Sequence;
 
-public class Client
-{
+public class Client {
     private static final ReadInfo R = ReadInfo.BASE.extend(Service.class);
-    
+
     final PrivateEncryptionKey decryptionKey;
     final DigestSha384 masterPublicKeyId;
-    
-    public Client(DigestSha384 masterPublicKeyId) 
-            throws IOException
-    {
+
+    public Client(DigestSha384 masterPublicKeyId) throws IOException {
         this.decryptionKey = PrivateEncryptionKey.generate();
         this.masterPublicKeyId = masterPublicKeyId;
     }
 
-    public PublicEncryptionKey getPublicEncryptionKey()
-    {
+    public PublicEncryptionKey getPublicEncryptionKey() {
         return decryptionKey.getPublicKey();
     }
 
-    public Service receiveMessage(ByteOpenable message) 
-            throws IOException, InvalidInputException
-    {
+    public Service receiveMessage(ByteOpenable message) throws IOException,
+            InvalidInputException {
         final InferenceEngine engine = newEngine();
         final ByteOpenable acl = makeAcl();
         engine.processTrusted(read(R, acl));
@@ -50,16 +45,12 @@ public class Client
         setNow(engine);
         return engine;
     }
-    
-    private ByteOpenable makeAcl()
-        throws IOException {
-        return asOpenable(sequence(
-            decryptionKey,       // We can decrypt anything encrypted with our public key
-            masterPublicKeyId)); // We trust anything signed with master private key
+
+    private ByteOpenable makeAcl() throws IOException {
+        return asOpenable(sequence(decryptionKey, masterPublicKeyId));
     }
 
-    private ByteOpenable asOpenable(Sequence sequence) 
-            throws IOException {
+    private ByteOpenable asOpenable(Sequence sequence) throws IOException {
         final ByteOpenable target = new ByteOpenable();
         write(target, sequence);
         return target;

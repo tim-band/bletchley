@@ -18,58 +18,49 @@ import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
 import net.lshift.spki.suiteb.Sequence;
 
-public class Server
-{
+public class Server {
     private static ReadInfo R = ReadInfo.BASE.extend(Service.class);
-    private EncryptionCache ephemeral; 
-    
+    private EncryptionCache ephemeral;
+
     private final PrivateSigningKey signingKey;
     private ByteOpenable certificate;
-    
-    public Server()
-    {
+
+    public Server() {
         signingKey = PrivateSigningKey.generate();
-        ephemeral = new EncryptionCache(
-            PrivateEncryptionKey.generate());
+        ephemeral = new EncryptionCache(PrivateEncryptionKey.generate());
     }
 
-    public PublicSigningKey getPublicSigningKey()
-    {
+    public PublicSigningKey getPublicSigningKey() {
         return signingKey.getPublicKey();
     }
 
-    public void setCertificate(ByteOpenable certificate)
-    {
-        this.certificate = certificate;        
+    public void setCertificate(ByteOpenable certificate) {
+        this.certificate = certificate;
     }
-    
-    public ByteOpenable generateMessage(Service service) 
-            throws IOException, InvalidInputException {
+
+    public ByteOpenable generateMessage(Service service) throws IOException,
+            InvalidInputException {
         return asOpenable(signedMessage(service));
-    }    
-    public ByteOpenable generateEncryptedMessageFor(Service service, 
-        PublicEncryptionKey recipient) 
-            throws IOException, InvalidInputException {
-        return asOpenable(sequence(
-            ephemeral.getPublicKey(),
-            ephemeral.encrypt(recipient, 
-                signedMessage(service))));
     }
-    
-    private Sequence signedMessage(Service service) 
-            throws IOException, InvalidInputException {
-        Sequence message = sequence(signed(signingKey, 
-            new Action(service)));
+
+    public ByteOpenable generateEncryptedMessageFor(Service service,
+            PublicEncryptionKey recipient) throws IOException,
+            InvalidInputException {
+        return asOpenable(sequence(ephemeral.getPublicKey(),
+                ephemeral.encrypt(recipient, signedMessage(service))));
+    }
+
+    private Sequence signedMessage(Service service) throws IOException,
+            InvalidInputException {
+        Sequence message = sequence(signed(signingKey, new Action(service)));
         if (certificate != null) {
-            message = sequence(
-                read(R, certificate),
-                message);
+            message = sequence(read(R, certificate), message);
         }
         return message;
-            
+
     }
-    private ByteOpenable asOpenable(Sequence sequence) 
-            throws IOException {
+
+    private ByteOpenable asOpenable(Sequence sequence) throws IOException {
         final ByteOpenable target = new ByteOpenable();
         write(target, sequence);
         return target;
