@@ -52,12 +52,12 @@ public class Server {
 
     private Sequence signedMessage(Service service) throws IOException,
             InvalidInputException {
-        Sequence message = sequence(signed(signingKey, new Action(service)));
+        Sequence message = sequence(getPublicSigningKey(),
+                signed(signingKey, new Action(service)));
         if (certificate != null) {
             message = sequence(read(R, certificate), message);
         }
         return message;
-
     }
 
     private ByteOpenable asOpenable(Sequence sequence) throws IOException {

@@ -19,16 +19,16 @@ import net.lshift.spki.suiteb.Sequence;
 public class Client {
     private static final ReadInfo R = ReadInfo.BASE.extend(Service.class);
 
-    final PrivateEncryptionKey decryptionKey;
-    final DigestSha384 masterPublicKeyId;
+    final PrivateEncryptionKey myDecryptionKey;
+    final DigestSha384 trustedPublicKeyId;
 
-    public Client(DigestSha384 masterPublicKeyId) throws IOException {
-        this.decryptionKey = PrivateEncryptionKey.generate();
-        this.masterPublicKeyId = masterPublicKeyId;
+    public Client(DigestSha384 trustedPublicKeyId) throws IOException {
+        this.myDecryptionKey = PrivateEncryptionKey.generate();
+        this.trustedPublicKeyId = trustedPublicKeyId;
     }
 
     public PublicEncryptionKey getPublicEncryptionKey() {
-        return decryptionKey.getPublicKey();
+        return myDecryptionKey.getPublicKey();
     }
 
     public Service receiveMessage(ByteOpenable message) throws IOException,
@@ -47,7 +47,7 @@ public class Client {
     }
 
     private ByteOpenable makeAcl() throws IOException {
-        return asOpenable(sequence(decryptionKey, masterPublicKeyId));
+        return asOpenable(sequence(myDecryptionKey, trustedPublicKeyId));
     }
 
     private ByteOpenable asOpenable(Sequence sequence) throws IOException {
