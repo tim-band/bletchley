@@ -7,29 +7,55 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import org.junit.Test;
 
 public class TestLoop {
     @Test
-    public void test() throws IOException, InvalidInputException {
-        final Master master = new Master();
-        // A client that trusts things signed by the master's key
-        final Client client = new Client(master.getMasterPublicKeyId());
-        // A server that wants to send encrypted messages to client
-        // and have the client trust those messages
-        final Server server = new Server(client.getPublicEncryptionKey());
+    public void serverSendsPlainTextMessageToClientThatTrustsIt()
+            throws IOException, InvalidInputException {
+        Server server = new Server();
+        Client client = new Client(server.getPublicSigningKey().getKeyId());
         
-        // This happens somehow - perhaps out of band, possibly by 
-        // exchanging messages over the network. Either way, the server
-        // gives its public key to the master server, and the
-        // master server decides it trusts this server to some extent
-        // and signs its public key
+        final Service service = new Service("http", 80);
+        final ByteOpenable message = server.generateMessage(service);
+        receiveMessage(client, service, message);
+    }
+    
+    @Test
+    public void serverSendsEncryptedMessageToClientThatTrustsIt()
+            throws IOException, InvalidInputException {
+        Server server = new Server();
+        Client client = new Client(server.getPublicSigningKey().getKeyId());
+        
+        final Service service = new Service("http", 80);
+        final ByteOpenable message = server.generateEncryptedMessageFor(service, client.getPublicEncryptionKey());
+        receiveMessage(client, service, message);
+    }
+    
+    @Test
+    public void serverSendsEncryptedMessageToClientThatTrustsMasterServer() 
+            throws IOException, InvalidInputException {
+        final Master master = new Master();
+        final Server server = new Server();
+        final Client client = new Client(master.getMasterPublicKeyId());        
         server.setCertificate(master.delegateTrustTo(server.getPublicSigningKey()));
 
         final Service service = new Service("http", 80);
-        final ByteOpenable message = server.generateMessage(service);
+        final ByteOpenable message = server.generateEncryptedMessageFor(service, client.getPublicEncryptionKey());
+        receiveMessage(client, service, message);
+    }
+
+    private void receiveMessage(
+        Client client,
+        final Service service,
+        final ByteOpenable message)
+        throws IOException,
+            InvalidInputException,
+            ParseException
+    {
         final Service readBack = client.receiveMessage(message);
         assertThat(readBack.name, is(service.name));
         assertThat(readBack.port, is(service.port));
