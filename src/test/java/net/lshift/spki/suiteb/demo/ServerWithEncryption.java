@@ -1,9 +1,8 @@
 package net.lshift.spki.suiteb.demo;
 
-import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
-import static net.lshift.spki.suiteb.demo.Utilities.R;
 import static net.lshift.spki.suiteb.demo.Utilities.emptyByteOpenable;
+import static net.lshift.spki.suiteb.demo.Utilities.read;
 
 import java.io.IOException;
 
@@ -17,10 +16,10 @@ import net.lshift.spki.suiteb.SequenceItem;
 public class ServerWithEncryption extends Server {
     private final EncryptionCache ephemeral
         = new EncryptionCache(PrivateEncryptionKey.generate());
-    private final Openable recipientKey = emptyByteOpenable();
+    private Openable recipientKey = emptyByteOpenable();
 
-    public Openable getRecipientKey() {
-        return recipientKey;
+    public void setRecipientKey(Openable recipientKey) {
+        this.recipientKey = recipientKey;
     }
 
     @Override
@@ -32,7 +31,7 @@ public class ServerWithEncryption extends Server {
     protected SequenceItem encrypt(SequenceItem sequence) throws IOException,
             InvalidInputException {
         PublicEncryptionKey recipient
-            = (PublicEncryptionKey) read(R, recipientKey);
+            = (PublicEncryptionKey) read(recipientKey);
         return sequence(ephemeral.getPublicKey(),
                 ephemeral.encrypt(recipient, sequence));
     }

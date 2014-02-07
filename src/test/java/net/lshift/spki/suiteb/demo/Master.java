@@ -1,9 +1,9 @@
 package net.lshift.spki.suiteb.demo;
 
-import static net.lshift.spki.convert.openable.OpenableUtils.write;
 import static net.lshift.spki.suiteb.Limit.limit;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
+import static net.lshift.spki.suiteb.demo.Utilities.asOpenable;
 
 import java.io.IOException;
 import java.util.Date;
@@ -17,13 +17,13 @@ import net.lshift.spki.suiteb.PublicSigningKey;
 public class Master {
     private final PrivateSigningKey privateKey = PrivateSigningKey.generate();
 
-    public void writeMasterTrust(Openable target) throws IOException {
-        write(target, privateKey.getPublicKey().getKeyId());
+    public Openable writeMasterTrust() throws IOException {
+        return asOpenable(privateKey.getPublicKey().getKeyId());
     }
 
-    public void delegateTrustTo(Openable target, PublicSigningKey signingKey)
+    public Openable delegateTrustTo(PublicSigningKey signingKey)
             throws IOException {
-        write(target, sequence(privateKey.getPublicKey(),
+        return asOpenable(sequence(privateKey.getPublicKey(),
                 signed(privateKey, limit(signingKey, expiresInOneHour()))));
     }
 

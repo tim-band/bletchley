@@ -1,8 +1,8 @@
 package net.lshift.spki.suiteb.demo;
 
-import static net.lshift.spki.convert.openable.OpenableUtils.write;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
+import static net.lshift.spki.suiteb.demo.Utilities.asOpenable;
 
 import java.io.IOException;
 
@@ -24,13 +24,13 @@ public class Server {
         return signingKey.getPublicKey();
     }
 
-    public void writePublicSigningKey(Openable acl) throws IOException {
-        write(acl, getPublicSigningKey());
+    public Openable writePublicSigningKey() throws IOException {
+        return asOpenable(getPublicSigningKey());
     }
 
-    public void writeServiceMessage(Openable target, Service service)
+    public Openable writeServiceMessage(Service service)
             throws IOException, InvalidInputException {
-        write(target, serviceMessage(service));
+        return asOpenable(serviceMessage(service));
     }
 
     protected SequenceItem serviceMessage(Service service)

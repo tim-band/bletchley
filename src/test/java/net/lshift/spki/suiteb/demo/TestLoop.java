@@ -10,8 +10,9 @@ import java.io.PrintWriter;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.openable.ByteOpenable;
+import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.CryptographyException;
+
 import org.junit.Test;
 
 /**
@@ -25,7 +26,7 @@ public class TestLoop {
             throws IOException, InvalidInputException {
         Server server = new Server();
         Client client = new Client();
-        server.writePublicSigningKey(client.getAcl());
+        client.setAcl(server.writePublicSigningKey());
         sendMessageFromServerToClient(server, client);
     }
 
@@ -35,8 +36,8 @@ public class TestLoop {
         ServerWithEncryption server = new ServerWithEncryption();
         Client client = new Client();
         client.generateEncryptionKeypair();
-        server.writePublicSigningKey(client.getAcl());
-        client.writePublicEncryptionKey(server.getRecipientKey());
+        client.setAcl(server.writePublicSigningKey());
+        server.setRecipientKey(client.writePublicEncryptionKey());
 
         sendMessageFromServerToClient(server, client);
     }
@@ -46,13 +47,13 @@ public class TestLoop {
             throws IOException, InvalidInputException {
         final Master master = new Master();
         final PartiallyTrustedServer server = new PartiallyTrustedServer();
-        master.delegateTrustTo(server.getCertificate(),
-                server.getPublicSigningKey());
+        server.setCertificate(
+                master.delegateTrustTo(server.getPublicSigningKey()));
 
         final Client client = new Client();
         client.generateEncryptionKeypair();
-        master.writeMasterTrust(client.getAcl());
-        client.writePublicEncryptionKey(server.getRecipientKey());
+        client.setAcl(master.writeMasterTrust());
+        server.setRecipientKey(client.writePublicEncryptionKey());
 
         sendMessageFromServerToClient(server, client);
     }
@@ -63,7 +64,7 @@ public class TestLoop {
         Server trustedServer = new Server();
         Server attacker = new Server();
         Client client = new Client();
-        trustedServer.writePublicSigningKey(client.getAcl());
+        client.setAcl(trustedServer.writePublicSigningKey());
         try {
             sendMessageFromServerToClient(attacker, client);
             fail("Expected client to fail to read any trusted content from message");
@@ -79,7 +80,7 @@ public class TestLoop {
         client.generateEncryptionKeypair();
         Client attacker = new Client();
         attacker.generateEncryptionKeypair();
-        client.writePublicEncryptionKey(server.getRecipientKey());
+        server.setRecipientKey(client.writePublicEncryptionKey());
 
         try {
             sendMessageFromServerToClient(server, attacker);
@@ -91,8 +92,7 @@ public class TestLoop {
     private void sendMessageFromServerToClient(Server server, Client client)
             throws IOException, InvalidInputException, ParseException {
         final Service service = new Service("http", 80);
-        final ByteOpenable message = new ByteOpenable();
-        server.writeServiceMessage(message, service);
+        Openable message = server.writeServiceMessage(service);
         final Service readBack = client.receiveMessage(message);
         assertThat(readBack.name, is(service.name));
         assertThat(readBack.port, is(service.port));

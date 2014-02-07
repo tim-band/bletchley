@@ -1,10 +1,9 @@
 package net.lshift.spki.suiteb.demo;
 
-import static net.lshift.spki.convert.openable.OpenableUtils.read;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
-import static net.lshift.spki.suiteb.demo.Utilities.R;
 import static net.lshift.spki.suiteb.demo.Utilities.emptyByteOpenable;
+import static net.lshift.spki.suiteb.demo.Utilities.read;
 
 import java.io.IOException;
 
@@ -14,15 +13,15 @@ import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.SequenceItem;
 
 public class PartiallyTrustedServer extends ServerWithEncryption {
-    private final Openable certificate = emptyByteOpenable();
+    private Openable certificate = emptyByteOpenable();
 
-    public Openable getCertificate() {
-        return certificate;
+    public void setCertificate(Openable certificate) {
+        this.certificate = certificate;
     }
 
     @Override
     protected SequenceItem serviceMessage(Service service) throws IOException, InvalidInputException {
-        return encrypt(sequence(read(R, certificate),
+        return encrypt(sequence(read(certificate),
                 signed(signingKey, new Action(service))));
     }
 }
