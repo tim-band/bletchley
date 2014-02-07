@@ -12,6 +12,7 @@ import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.suiteb.CryptographyException;
+import net.lshift.spki.suiteb.DigestSha384;
 
 import org.junit.Test;
 
@@ -62,6 +63,23 @@ public class TestLoop {
         try {
             sendMessageFromServerToClient(attacker, client);
             fail("Expected client to fail to read any trusted content from message");
+        } catch (CryptographyException e) {
+        }
+    }
+
+    @Test
+    public void clientCannotInterceptMessage() throws IOException,
+            ParseException, InvalidInputException {
+        ServerWithEncryption server = new ServerWithEncryption();
+        DigestSha384 serverId = server.getPublicSigningKey()
+                .getKeyId();
+        Client client = new Client(serverId);
+        Client attacker = new Client(serverId);
+        server.setRecipient(client.getPublicEncryptionKey());
+
+        try {
+            sendMessageFromServerToClient(server, attacker);
+            fail("Expected client to fail to be able to read any content from message");
         } catch (CryptographyException e) {
         }
     }
