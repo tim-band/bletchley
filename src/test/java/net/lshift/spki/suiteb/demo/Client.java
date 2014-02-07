@@ -36,6 +36,10 @@ public class Client {
         publicEncryptionKey = privateKey.getPublicKey();
     }
 
+    public void writePublicEncryptionKey(Openable key) throws IOException {
+        write(key, publicEncryptionKey);
+    }
+
     public Service receiveMessage(Openable message) throws IOException,
             InvalidInputException {
         final InferenceEngine engine = newEngine();
@@ -43,9 +47,5 @@ public class Client {
         engine.processTrusted(read(R, secrets));
         engine.process(read(R, message));
         return engine.getSoleAction(Service.class);
-    }
-
-    public PublicEncryptionKey getPublicEncryptionKey() {
-        return publicEncryptionKey;
     }
 }

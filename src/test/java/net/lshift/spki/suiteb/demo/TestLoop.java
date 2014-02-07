@@ -34,7 +34,7 @@ public class TestLoop {
         Client client = new Client();
         client.generateEncryptionKeypair();
         server.writePublicSigningKey(client.getAcl());
-        server.setRecipient(client.getPublicEncryptionKey());
+        client.writePublicEncryptionKey(server.getRecipientKey());
 
         sendMessageFromServerToClient(server, client);
     }
@@ -50,7 +50,7 @@ public class TestLoop {
         final Client client = new Client();
         client.generateEncryptionKeypair();
         master.writeMasterTrust(client.getAcl());
-        server.setRecipient(client.getPublicEncryptionKey());
+        client.writePublicEncryptionKey(server.getRecipientKey());
 
         sendMessageFromServerToClient(server, client);
     }
