@@ -9,8 +9,9 @@ import net.lshift.spki.convert.ReadInfo;
 import net.lshift.spki.convert.openable.ByteOpenable;
 
 public class Utilities {
+    public static final ReadInfo R = ReadInfo.BASE.extend(Service.class);
 
-    static ByteOpenable emptyByteOpenable() {
+    public static ByteOpenable emptyByteOpenable() {
         try {
             ByteOpenable res = new ByteOpenable();
             write(res, sequence());
@@ -19,7 +20,4 @@ public class Utilities {
             throw new RuntimeException(e);
         }
     }
-
-    static final ReadInfo R = ReadInfo.BASE.extend(Service.class);
-
 }
