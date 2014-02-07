@@ -9,7 +9,7 @@
 <section>
 <title>About Bletchley</title>
 <para>
-Bletchley is a message format for providing flexible and easy-to-use cryptographic security to applications.  Currently only a Java implementation exists, but nothing in the format depends on Java.  
+Bletchley is a message format for providing flexible and easy-to-use cryptographic security to applications.  Currently only a Java implementation exists, but nothing in the format depends on Java.
 </para>
 </section>
 <section>

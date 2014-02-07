@@ -12,7 +12,7 @@ import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.Sequence;
 
 public class ServerWithEncryption extends Server {
-    private PublicEncryptionKey recipient;    
+    private PublicEncryptionKey recipient;
     private final EncryptionCache ephemeral;
 
     public ServerWithEncryption() {
@@ -28,7 +28,7 @@ public class ServerWithEncryption extends Server {
     public void setRecipient(PublicEncryptionKey recipient) {
         this.recipient = recipient;
     }
-    
+
     protected Sequence encrypt(Sequence sequence) {
         return sequence(ephemeral.getPublicKey(),
                 ephemeral.encrypt(recipient, sequence));
