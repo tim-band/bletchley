@@ -15,11 +15,7 @@ import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
 
 public class Master {
-    private final PrivateSigningKey privateKey;
-
-    public Master() {
-        privateKey = PrivateSigningKey.generate();
-    }
+    private final PrivateSigningKey privateKey = PrivateSigningKey.generate();
 
     public void writeMasterTrust(Openable target) throws IOException {
         write(target, privateKey.getPublicKey().getKeyId());

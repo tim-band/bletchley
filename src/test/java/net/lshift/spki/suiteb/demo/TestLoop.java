@@ -2,7 +2,6 @@ package net.lshift.spki.suiteb.demo;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static net.lshift.spki.convert.openable.OpenableUtils.write;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,7 +23,7 @@ public class TestLoop {
             throws IOException, InvalidInputException {
         Server server = new Server();
         Client client = new Client();
-        write(client.getAcl(), server.getPublicSigningKey());
+        server.writePublicSigningKey(client.getAcl());
         sendMessageFromServerToClient(server, client);
     }
 
@@ -34,7 +33,7 @@ public class TestLoop {
         ServerWithEncryption server = new ServerWithEncryption();
         Client client = new Client();
         client.generateEncryptionKeypair();
-        write(client.getAcl(), server.getPublicSigningKey());
+        server.writePublicSigningKey(client.getAcl());
         server.setRecipient(client.getPublicEncryptionKey());
 
         sendMessageFromServerToClient(server, client);
