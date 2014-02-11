@@ -1,0 +1,11 @@
+<configuration debug="false">
+ <appender name="MAIN" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{ISO8601} %5p [%20c{20}] - %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="MAIN"/>
+  </root>
+</configuration>
