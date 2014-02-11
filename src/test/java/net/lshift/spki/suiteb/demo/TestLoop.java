@@ -1,79 +1,101 @@
 package net.lshift.spki.suiteb.demo;
 
-import static net.lshift.spki.convert.openable.OpenableUtils.write;
-import static net.lshift.spki.suiteb.Limit.limit;
-import static net.lshift.spki.suiteb.SequenceUtils.sequenceOrItem;
-import static net.lshift.spki.suiteb.Signed.signed;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.openable.ByteOpenable;
-import net.lshift.spki.suiteb.Action;
-import net.lshift.spki.suiteb.Condition;
-import net.lshift.spki.suiteb.InvalidOnOrAfter;
-import net.lshift.spki.suiteb.PrivateEncryptionKey;
-import net.lshift.spki.suiteb.PrivateSigningKey;
-import net.lshift.spki.suiteb.PublicSigningKey;
-import net.lshift.spki.suiteb.SequenceItem;
+import net.lshift.spki.convert.openable.Openable;
+import net.lshift.spki.suiteb.CryptographyException;
 
 import org.junit.Test;
 
+/**
+ * You can consider the first part of each test the setting up of the system,
+ * and key management. Then, the call to sendMessageFromServerToClient is the
+ * system in actual operation.
+ */
 public class TestLoop {
     @Test
-    public void simpleTest() throws IOException, InvalidInputException {
-        final PrivateSigningKey masterKey = PrivateSigningKey.generate();
-        final ByteOpenable acl = writeSequence(masterKey.getPublicKey());
-
-        final Service service = new Service("http", 80);
-        final ByteOpenable target = new ByteOpenable();
-        write(target, signed(masterKey, new Action(service)));
-        final Service readBack = ReadService.readService(acl, target);
-        assertThat(readBack.name, is(service.name));
-        assertThat(readBack.port, is(service.port));
-        PrettyPrinter.prettyPrint(
-            new PrintWriter(System.out), target.read());
+    public void serverSendsPlainTextMessageToClientThatTrustsIt()
+            throws IOException, InvalidInputException {
+        Server server = new Server();
+        Client client = new Client();
+        client.setAcl(server.writePublicSigningKey());
+        sendMessageFromServerToClient(server, client);
     }
 
     @Test
-    public void test() throws IOException, InvalidInputException {
-        final PrivateEncryptionKey decryptionKey = PrivateEncryptionKey.generate();
-        final PrivateSigningKey masterKey = PrivateSigningKey.generate();
-        final PublicSigningKey publicKey = masterKey.getPublicKey();
-        final ByteOpenable acl = writeSequence(
-            decryptionKey,
-            publicKey.getKeyId());
+    public void serverSendsEncryptedMessageToClientThatTrustsIt()
+            throws IOException, InvalidInputException {
+        ServerWithEncryption server = new ServerWithEncryption();
+        Client client = new Client();
+        client.generateEncryptionKeypair();
+        client.setAcl(server.writePublicSigningKey());
+        server.setRecipientKey(client.writePublicEncryptionKey());
 
-        final PrivateSigningKey subKey = PrivateSigningKey.generate();
-        final ByteOpenable extra = writeSequence(
-            publicKey,
-            signed(masterKey, limit(subKey.getPublicKey(),
-                expiresInOneHour())));
+        sendMessageFromServerToClient(server, client);
+    }
 
+    @Test
+    public void serverSendsEncryptedMessageToClientThatTrustsMasterServer()
+            throws IOException, InvalidInputException {
+        final Master master = new Master();
+        final PartiallyTrustedServer server = new PartiallyTrustedServer();
+        server.setCertificate(
+                master.delegateTrustTo(server.writePublicSigningKey()));
+
+        final Client client = new Client();
+        client.generateEncryptionKeypair();
+        client.setAcl(master.writeMasterTrust());
+        server.setRecipientKey(client.writePublicEncryptionKey());
+
+        sendMessageFromServerToClient(server, client);
+    }
+
+    @Test
+    public void untrustedServerSendsMessageToClient() throws IOException,
+            InvalidInputException {
+        Server trustedServer = new Server();
+        Server attacker = new Server();
+        Client client = new Client();
+        client.setAcl(trustedServer.writePublicSigningKey());
+        try {
+            sendMessageFromServerToClient(attacker, client);
+            fail("Expected client to fail to read any trusted content from message");
+        } catch (CryptographyException e) {
+        }
+    }
+
+    @Test
+    public void clientCannotInterceptMessage() throws IOException,
+            ParseException, InvalidInputException {
+        ServerWithEncryption server = new ServerWithEncryption();
+        Client client = new Client();
+        client.generateEncryptionKeypair();
+        Client attacker = new Client();
+        attacker.generateEncryptionKeypair();
+        server.setRecipientKey(client.writePublicEncryptionKey());
+
+        try {
+            sendMessageFromServerToClient(server, attacker);
+            fail("Expected client to fail to be able to read any content from message");
+        } catch (CryptographyException e) {
+        }
+    }
+
+    private void sendMessageFromServerToClient(Server server, Client client)
+            throws IOException, InvalidInputException, ParseException {
         final Service service = new Service("http", 80);
-        final ByteOpenable target = new ByteOpenable();
-        WriteService.writeService(target, extra, subKey,
-            decryptionKey.getPublicKey(), service);
-        final Service readBack = ReadService.readService(acl, target);
+        Openable message = server.writeServiceMessage(service);
+        final Service readBack = client.receiveMessage(message);
         assertThat(readBack.name, is(service.name));
         assertThat(readBack.port, is(service.port));
-        PrettyPrinter.prettyPrint(
-            new PrintWriter(System.out), target.read());
-    }
-
-    private static ByteOpenable writeSequence(final SequenceItem... items) throws IOException {
-        final ByteOpenable res = new ByteOpenable();
-        write(res, sequenceOrItem(items));
-        return res;
-    }
-
-    private static Condition expiresInOneHour() {
-        return new InvalidOnOrAfter(
-            new Date(System.currentTimeMillis() + 1000*3600));
+        PrettyPrinter.prettyPrint(new PrintWriter(System.out), message.read());
     }
 }
