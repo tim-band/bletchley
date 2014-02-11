@@ -35,8 +35,7 @@ public class DigestSha384 extends SexpBacked implements SequenceItem {
 
     public static DigestSha384 digest(final Writeable o) {
         final SHA384Digest sha = new SHA384Digest();
-        final DigestOutputStream digester = new DigestOutputStream(
-            new DevnullOutputStream(), sha);
+        final DigestOutputStream digester = new DigestOutputStream(sha);
         try {
             ConvertUtils.write(o, digester);
             digester.close();

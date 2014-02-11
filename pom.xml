@@ -51,13 +51,12 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk16</artifactId>
-      <version>1.46</version>
-      <type>jar</type>
-      <scope>compile</scope>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.49</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -68,6 +67,7 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>1.1.1</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
