@@ -13,13 +13,13 @@ import sun.misc.Unsafe;
  */
 @SuppressWarnings("restriction")
 public class DeserializingConstructor {
-    private static final Unsafe unsafe;
-    static {
-        Field field;
+    private static final Unsafe unsafe = getUnsafe();
+
+    private static Unsafe getUnsafe() {
         try {
-            field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+            Field field = Unsafe.class.getDeclaredField("theUnsafe");
             field.setAccessible(true);
-            unsafe = (sun.misc.Unsafe) field.get(null);
+            return (Unsafe) field.get(null);
         } catch (final NoSuchFieldException e) {
             throw new RuntimeException(e);
         } catch (final IllegalAccessException e) {
