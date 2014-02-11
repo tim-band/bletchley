@@ -48,7 +48,7 @@ public class TestLoop {
         final Master master = new Master();
         final PartiallyTrustedServer server = new PartiallyTrustedServer();
         server.setCertificate(
-                master.delegateTrustTo(server.getPublicSigningKey()));
+                master.delegateTrustTo(server.writePublicSigningKey()));
 
         final Client client = new Client();
         client.generateEncryptionKeypair();

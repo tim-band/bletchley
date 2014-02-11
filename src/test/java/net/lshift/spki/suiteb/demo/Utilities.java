@@ -28,11 +28,9 @@ public class Utilities {
         return engine;
     }
 
-    public static ByteOpenable emptyByteOpenable() {
+    public static Openable emptyByteOpenable() {
         try {
-            ByteOpenable res = new ByteOpenable();
-            write(res, sequence());
-            return res;
+            return asOpenable(sequence());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

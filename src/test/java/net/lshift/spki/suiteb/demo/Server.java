@@ -10,22 +10,13 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.PrivateSigningKey;
-import net.lshift.spki.suiteb.PublicSigningKey;
 import net.lshift.spki.suiteb.SequenceItem;
 
 public class Server {
-    protected final PrivateSigningKey signingKey;
-
-    public Server() {
-        signingKey = PrivateSigningKey.generate();
-    }
-
-    public PublicSigningKey getPublicSigningKey() {
-        return signingKey.getPublicKey();
-    }
+    protected final PrivateSigningKey signingKey = PrivateSigningKey.generate();
 
     public Openable writePublicSigningKey() throws IOException {
-        return asOpenable(getPublicSigningKey());
+        return asOpenable(signingKey.getPublicKey());
     }
 
     public Openable writeServiceMessage(Service service)
@@ -39,7 +30,7 @@ public class Server {
     }
 
     protected SequenceItem signedMessage(Service service) {
-        return sequence(getPublicSigningKey(),
+        return sequence(signingKey.getPublicKey(),
                 signed(signingKey, new Action(service)));
     }
 }
