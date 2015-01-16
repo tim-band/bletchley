@@ -1,20 +1,24 @@
 package net.lshift.spki.convert;
 
 import java.math.BigInteger;
+import java.util.List;
 
-@Convert.ByPosition(name="convert-example", fields={"foo", "bar", "baz", "inlineList"})
-public class ConvertExample extends SexpBacked
+@Convert.ByName("by-name-convert-example")
+public class ByNameConvertExample extends SexpBacked
 {
     public final BigInteger foo;
     public final BigInteger bar;
     final String baz;
+    @Convert.InlineList
+    public final List<String> inlineList;
 
-
-    public ConvertExample(BigInteger foo, BigInteger bar, String baz) {
+    public ByNameConvertExample(BigInteger foo, BigInteger bar, String baz,
+            List<String> inlineList) {
         super();
         this.foo = foo;
         this.bar = bar;
         this.baz = baz;
+        this.inlineList = inlineList;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class ConvertExample extends SexpBacked
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        final ConvertExample other = (ConvertExample) obj;
+        final ByNameConvertExample other = (ByNameConvertExample) obj;
         if (bar == null) {
             if (other.bar != null) return false;
         } else if (!bar.equals(other.bar)) return false;
@@ -53,3 +57,4 @@ public class ConvertExample extends SexpBacked
         return "ConvertExample [bar=" + bar + ", baz=" + baz + ", foo=" + foo + "]";
     }
 }
+

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.UUID;
 
 import net.lshift.spki.Constants;
@@ -21,15 +22,22 @@ public class ConvertTest extends UsesReadInfo
     public void convertTest() throws InvalidInputException {
         final ConvertExample test = new ConvertExample(
             BigInteger.valueOf(3), BigInteger.valueOf(17), "test");
-        testExample(test);
+        testExample(test, ConvertExample.class);
     }
 
-    private void testExample(final ConvertExample test)
+    @Test
+    public void convertByNameTest() throws InvalidInputException {
+        final ByNameConvertExample test = new ByNameConvertExample(
+            BigInteger.valueOf(3), BigInteger.valueOf(17), "test", Arrays.asList("a", "b", "c"));
+        testExample(test, ByNameConvertExample.class);
+    }
+
+    private <T extends Writeable> void testExample(final T test, Class<T> clazz)
             throws InvalidInputException {
         final byte[] bytes = ConvertUtils.toBytes(test);
         //PrettyPrinter.prettyPrint(System.out, sexp);
-        final ConvertExample changeBack = ConvertUtils.fromBytes(getReadInfo(),
-            ConvertExample.class, bytes);
+        final T changeBack = ConvertUtils.fromBytes(getReadInfo(),
+            clazz, bytes);
         assertEquals(test, changeBack);
     }
 
@@ -80,7 +88,7 @@ public class ConvertTest extends UsesReadInfo
     public void convertHyphenTest() throws InvalidInputException, IOException {
         final ConvertExample test = new ConvertExample(
             BigInteger.valueOf(3), BigInteger.valueOf(17), "-");
-        testExample(test);
+        testExample(test, ConvertExample.class);
     }
 
 }

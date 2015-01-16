@@ -27,8 +27,12 @@ public class NameBeanConverter<T>
         final FieldConvertInfo field,
         final Object property) {
         if (property != null) {
-            return list(field.hyphenatedName,
-                writeUnchecked(field.field.getType(), property));
+            if (field.inlineList) {
+                return writeListField(field, property);
+            } else {
+                return list(field.hyphenatedName,
+                        writeUnchecked(field.field.getType(), property));
+            }
         } else if (field.nullable) {
             return null;
         } else {
@@ -36,6 +40,16 @@ public class NameBeanConverter<T>
                 "Field not marked as nullable is null: " +
                 clazz.getCanonicalName() + "." + field.name);
         }
+    }
+
+    private Sexp writeListField(final FieldConvertInfo field,
+            final Object property) {
+        List<?> list = (List<?>)property;
+        Sexp [] tail = new Sexp[list.size()];
+        for(int i = 0; i != list.size(); ++i) {
+            tail[i] = writeUnchecked(field.inlineListType, list.get(i));
+        }
+        return list(field.hyphenatedName, tail);
     }
 
     @Override
@@ -49,11 +63,15 @@ public class NameBeanConverter<T>
                 throw new ConvertException("Repeated field");
             }
             final List<Sexp> ltail = ls.getSparts();
-            if (ltail.size() != 1) {
-                throw new ConvertException("multiple parts to named field");
+            if(field.inlineList) {
+                res.put(field.field, readSequence(r, field.inlineListType, ltail));
+            } else {
+                if (ltail.size() != 1) {
+                    throw new ConvertException("multiple parts to named field");
+                }
+                res.put(field.field,
+                        readElement(field.field.getType(), r, ltail.get(0)));
             }
-            res.put(field.field,
-                readElement(field.field.getType(), r, ltail.get(0)));
         }
         for (final FieldConvertInfo field: fields) {
             if (!res.containsKey(field.field) && !field.nullable) {

@@ -34,7 +34,7 @@ implements ConverterFactory<Convert.ByName>
         for (final Field f: clazz.getDeclaredFields()) {
             if (!f.getName().startsWith("$") &&
                             (f.getModifiers() & Modifier.STATIC) == 0)
-            fields.add(new FieldConvertInfo(f));
+            fields.add(new FieldConvertInfo(clazz, f));
         }
     }
 }

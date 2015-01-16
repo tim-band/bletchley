@@ -21,8 +21,7 @@ implements ConverterFactory<Convert.ByPosition>
         final String[] fieldNames) {
         final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
         for (final String fname: fieldNames) {
-            fields.add(new FieldConvertInfo(
-                getField(clazz, fname)));
+            fields.add(new FieldConvertInfo(clazz, getField(clazz, fname)));
         }
         return fields;
     }
