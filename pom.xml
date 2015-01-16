@@ -2,15 +2,42 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.lshift</groupId>
   <artifactId>bletchley</artifactId>
+  <description>
+NSA Suite B Cryptography http://enwp.org/NSA_Suite_B_Cryptography is a suite
+of cryptographic primitives endorsed by the NSA for protecting US Government
+data.  However, it does not mandate a serialization format for cryptographic
+information.  Bletchley combines those components of Suite B authorised for
+protecting TOP SECRET classified information with a simple serialization format
+drawn from the SPKI standard to provide a modular, extensible solution for
+message encryption and signing in Java.
+  </description>
+  <developers>
+    <developer>
+      <name>Paul Crowley</name>
+      <organization>LShift</organization>
+      <organizationUrl>http://www.lshift.net</organizationUrl>
+      <email>paul@lshift.net</email>
+    </developer>
+    <developer>
+      <name>David Ireland</name>
+      <organization>LShift</organization>
+      <organizationUrl>http://www.lshift.net</organizationUrl>
+      <email>david@lshift.net</email>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>MIT</name>
+      <url>http://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <url>https://github.com/lshift/bletchley</url>
+  <scm>
+    <url>git@github.com:lshift/bletchley.git</url>
+  </scm>
   <version>0.1</version>
   <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-webdav-jackrabbit</artifactId>
-        <version>1.0-beta-7</version>
-      </extension>
-    </extensions>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -43,6 +70,26 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <gpgArguments>
+            <arg>-u</arg>
+            <arg>74AC580B</arg>
+          </gpgArguments>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -88,16 +135,16 @@
     </dependency>
   </dependencies>
   <distributionManagement>
-    <snapshotRepository>
-      <id>lshift-snapshot</id>
-      <name>LShift Snapshot repository</name>
-      <url>dav:https://mvn.lshift.net/snapshot</url>
-    </snapshotRepository>
     <repository>
-      <id>lshift</id>
-      <name>LShift Internal Repository</name>
-      <url>dav:https://mvn.lshift.net/mvn</url>
+      <id>ossrh</id>
+      <name>Sonotype OSS repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
     </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <name>Sonotype OSS repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
