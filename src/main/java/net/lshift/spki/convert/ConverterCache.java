@@ -1,6 +1,7 @@
 package net.lshift.spki.convert;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,14 @@ import net.lshift.spki.convert.Convert.HandlerClass;
  */
 public class ConverterCache {
     private static final ConverterCache GLOBAL_CACHE = new ConverterCache();
+    private static final Map<Class<?>,Class<?>> PRIMITIVE_TO_WRAPPER;
+    
+    static {
+        Map<Class<?>,Class<?>> primitiveToWrapper = new HashMap<Class<?>,Class<?>>();
+        primitiveToWrapper.put(Boolean.TYPE, Boolean.class);
+        primitiveToWrapper.put(Integer.TYPE, Integer.class);
+        PRIMITIVE_TO_WRAPPER = Collections.unmodifiableMap(primitiveToWrapper);
+    }
 
     private final Map<Class<?>, ConverterFactory<?>> factoryCache
         = new HashMap<Class<?>, ConverterFactory<?>>();
@@ -46,6 +55,9 @@ public class ConverterCache {
     @SuppressWarnings("unchecked")
     private synchronized <T> Converter<T> getConverterInternal(
         final Class<T> clazz) {
+        if(PRIMITIVE_TO_WRAPPER.containsKey(clazz)) {
+            return (Converter<T>)getConverterInternal(PRIMITIVE_TO_WRAPPER.get(clazz));
+        }
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
             res = generateConverter(clazz);
