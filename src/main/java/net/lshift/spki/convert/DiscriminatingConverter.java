@@ -63,7 +63,7 @@ public class DiscriminatingConverter<T>
     }
 
     @Override
-    public T read(final ReadInfo r, final Sexp in)
+    public T read(final ConverterCatalog r, final Sexp in)
         throws InvalidInputException {
         final byte[] discrim = in.list().getHead().getBytes();
         final String stringDiscrim = ConvertUtils.stringOrNull(discrim);
@@ -73,7 +73,7 @@ public class DiscriminatingConverter<T>
     }
 
     protected Class<? extends T> lookupSubclass(
-        final ReadInfo r,
+        final ConverterCatalog r,
         final String stringDiscrim)
         throws ConvertException {
         Class<? extends T> subclass = nameMap.get(stringDiscrim);

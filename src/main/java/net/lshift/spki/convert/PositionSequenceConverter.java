@@ -38,7 +38,7 @@ public class PositionSequenceConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ReadInfo c, final Slist tail)
+    protected Map<Field, Object> readFields(final ConverterCatalog c, final Slist tail)
         throws InvalidInputException {
         final int size = fields.size();
         final Map<Field, Object> rmap = SexpBacked.getResMap(tail);

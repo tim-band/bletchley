@@ -31,7 +31,7 @@ public abstract class ConverterImpl<T> implements Converter<T> {
 
     protected <U> U readElement(
         final Class<U> elementClass,
-        final ReadInfo r,
+        final ConverterCatalog r,
         final Sexp in)
         throws InvalidInputException {
         return r.read(elementClass, extraConverters, in);
@@ -42,7 +42,7 @@ public abstract class ConverterImpl<T> implements Converter<T> {
         if (writingClazz == Sexp.class) {
             return (Sexp) o;
         }
-        return ((Converter<Object>) ReadInfo.getConverter(
+        return ((Converter<Object>) ConverterCatalog.getConverter(
             extraConverters, writingClazz)).write(o);
     }
 

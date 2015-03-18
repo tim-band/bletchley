@@ -4,7 +4,7 @@ import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.ReadInfo;
+import net.lshift.spki.convert.ConverterCatalog;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.EncryptionCache;
@@ -19,7 +19,7 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
  */
 public class SpeedTester {
     private static final String MESSAGE_TYPE = "speed-test-message";
-    private static final ReadInfo R = ReadInfo.BASE.extend(SimpleMessage.class);
+    private static final ConverterCatalog R = ConverterCatalog.BASE.extend(SimpleMessage.class);
     private final PrivateSigningKey privateKey;
     private final byte[] publicKeyBytes;
     private final byte[] messageBytes;

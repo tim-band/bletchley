@@ -15,7 +15,7 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class NullableFieldTest extends UsesReadInfo {
+public class NullableFieldTest extends UsesCatalog {
     @Convert.ByName("with-optional")
     public static class WithOptional extends SexpBacked {
         public final String mandatory;

@@ -12,7 +12,7 @@ import net.lshift.spki.suiteb.sexpstructs.ECPointConverter.Point;
 
 import org.junit.Test;
 
-public class NameBeanTest extends UsesReadInfo {
+public class NameBeanTest extends UsesCatalog {
     @Test(expected=ConvertException.class)
     public void repeatedFieldsRejected() throws IOException, InvalidInputException {
         final ByteOpenable example = new ByteOpenable();

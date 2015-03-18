@@ -12,6 +12,6 @@ public interface Converter<T> {
 
     public Sexp write(T o);
 
-    public T read(ReadInfo r, Sexp in)
+    public T read(ConverterCatalog r, Sexp in)
         throws InvalidInputException;
 }

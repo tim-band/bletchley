@@ -20,7 +20,7 @@ public class ByteArrayConverter
     }
 
     @Override
-    public byte[] read(final ReadInfo r, final Sexp in)
+    public byte[] read(final ConverterCatalog r, final Sexp in)
         throws InvalidInputException {
         return in.atom().getBytes();
     }

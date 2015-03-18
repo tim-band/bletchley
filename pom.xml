@@ -3,7 +3,7 @@
   <groupId>net.lshift</groupId>
   <artifactId>bletchley</artifactId>
   <description>
-NSA Suite B Cryptography http://enwp.org/NSA_Suite_B_Cryptography is a suite
+NSA Suite B Cryptography is a suite
 of cryptographic primitives endorsed by the NSA for protecting US Government
 data.  However, it does not mandate a serialization format for cryptographic
 information.  Bletchley combines those components of Suite B authorised for

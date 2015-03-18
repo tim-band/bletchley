@@ -12,7 +12,7 @@ import net.lshift.spki.InvalidInputException;
 
 import org.junit.Test;
 
-public class DiscriminatingConverterTest extends UsesReadInfo
+public class DiscriminatingConverterTest extends UsesCatalog
 {
     @Test
     public void testAssertDistinguishesExampleClasses() {
@@ -49,7 +49,7 @@ public class DiscriminatingConverterTest extends UsesReadInfo
 
     @Test
     public void canHandleLateClass() throws InvalidInputException {
-        ReadInfo cextra = getReadInfo().extend(LateImplementingClass.class);
+        ConverterCatalog cextra = getReadInfo().extend(LateImplementingClass.class);
         final LateImplementingClass obj = new LateImplementingClass();
         final byte[] bytes = ConvertUtils.toBytes(obj);
         final Interface res = ConvertUtils.fromBytes(cextra, Interface.class, bytes);

@@ -55,7 +55,7 @@ public class SequenceConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ReadInfo r, final Slist tail)
+    protected Map<Field, Object> readFields(final ConverterCatalog r, final Slist tail)
         throws InvalidInputException {
             final Map<Field, Object> fields = SexpBacked.getResMap(tail);
             fields.put(beanField, readSequence(r, contentType, tail.getSparts()));

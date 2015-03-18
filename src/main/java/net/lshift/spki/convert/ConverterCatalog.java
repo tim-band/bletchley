@@ -6,24 +6,37 @@ import java.util.Map;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
-public class ReadInfo {
-    public static final ReadInfo BASE = new ReadInfo();
+/**
+ * The information needed by conversion to convert Sexps into Java objects.
+ * See {@link #extend} for more information.
+ * @see ConvertUtils#read(ConverterCatalog, Class, java.io.InputStream)
+ */
+public class ConverterCatalog {
+    public static final ConverterCatalog BASE = new ConverterCatalog();
 
     private final Map<String, Class<?>> discrimMap;
 
-    private ReadInfo() {
+    private ConverterCatalog() {
         discrimMap = new HashMap<String,Class<?>>();
     }
 
-    private ReadInfo(ReadInfo base, Class<?>... classes) {
+    private ConverterCatalog(ConverterCatalog base, Class<?>... classes) {
         discrimMap = new HashMap<String,Class<?>>(base.discrimMap);
         for (Class<?> clazz: classes) {
             register(discrimMap, clazz);
         }
     }
 
-    public ReadInfo extend(Class<?>... classes) {
-        return new ReadInfo(this, classes);
+    /**
+     * Create a new catalog which extends this catalog with additional classes.
+     * All classes directly referenced by fields, and classes listed in a
+     * {@link Convert$Discriminated} converted. If you want to add to a
+     * discriminated converter, you must add those classes explicitly. E.g.
+     * if you want to add to the {@link net.lshift.spki.suiteb.ActionType} 
+     * discriminated converter.
+     */
+    public ConverterCatalog extend(Class<?>... classes) {
+        return new ConverterCatalog(this, classes);
     }
 
     public <T> T read(

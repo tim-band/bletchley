@@ -16,7 +16,7 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class ConvertTest extends UsesReadInfo
+public class ConvertTest extends UsesCatalog
 {
     @Test
     public void convertTest() throws InvalidInputException {

@@ -35,7 +35,7 @@ public abstract class BeanConverter<T> extends ConverterImpl<T>
     }
 
     @Override
-    public T read(final ReadInfo r, final Sexp in)
+    public T read(final ConverterCatalog r, final Sexp in)
         throws InvalidInputException {
         final Slist lin = in.list();
         assertMatches(lin.getHead(), getName());
@@ -52,10 +52,10 @@ public abstract class BeanConverter<T> extends ConverterImpl<T>
 
     public abstract void writeRest(T o, List<Sexp> tail);
 
-    protected abstract Map<Field, Object> readFields(ReadInfo r, Slist lin)
+    protected abstract Map<Field, Object> readFields(ConverterCatalog r, Slist lin)
         throws InvalidInputException;
 
-    public List<Object> readSequence(final ReadInfo r, final Class<?> contentType, final List<Sexp> in)
+    public List<Object> readSequence(final ConverterCatalog r, final Class<?> contentType, final List<Sexp> in)
         throws InvalidInputException {
             final List<Object> components = new ArrayList<Object>(in.size());
             for (final Sexp s: in) {

@@ -6,7 +6,7 @@ import java.io.OutputStream;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.ReadInfo;
+import net.lshift.spki.convert.ConverterCatalog;
 import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.suiteb.SequenceItem;
 
@@ -37,7 +37,7 @@ public class OpenableUtils {
     }
 
     public static <T> T read(
-        final ReadInfo r,
+        final ConverterCatalog r,
         final Class<T> clazz,
         final Openable open)
         throws IOException, InvalidInputException {
@@ -61,7 +61,7 @@ public class OpenableUtils {
         }
     }
 
-    public static SequenceItem read(final ReadInfo r, final Openable open)
+    public static SequenceItem read(final ConverterCatalog r, final Openable open)
         throws IOException, InvalidInputException {
         return read(r, SequenceItem.class, open);
     }

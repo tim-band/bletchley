@@ -21,7 +21,7 @@ public class PositionBeanConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ReadInfo r, Slist tail)
+    protected Map<Field, Object> readFields(final ConverterCatalog r, Slist tail)
         throws InvalidInputException {
         final int size = fields.size();
         if (tail.getSparts().size() != size) {

@@ -82,7 +82,7 @@ public class ConvertUtils {
     }
 
     public static <T> T read(
-        final ReadInfo r,
+        final ConverterCatalog r,
         final Class<T> clazz, final SpkiInputStream is)
         throws IOException, InvalidInputException {
         final T res = r.read(clazz, ConvertSexp.read(is));
@@ -93,14 +93,14 @@ public class ConvertUtils {
     }
 
     public static <T> T read(
-        final ReadInfo r,
+        final ConverterCatalog r,
         final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
         return read(r, clazz, new CanonicalSpkiInputStream(is));
     }
 
     public static <T> T read(
-        final ReadInfo r,
+        final ConverterCatalog r,
         final Class<T> clazz, final File f)
         throws IOException,
             InvalidInputException {
@@ -116,7 +116,7 @@ public class ConvertUtils {
      * WARNING: this closes the stream passed in!
      */
     public static <T> T readAdvanced(
-        final ReadInfo r,
+        final ConverterCatalog r,
         final Class<T> clazz, final InputStream is)
         throws IOException, InvalidInputException {
         return read(r, clazz, new AdvancedSpkiInputStream(is));
@@ -136,7 +136,7 @@ public class ConvertUtils {
     }
 
     public static <T> T fromBytes(
-        final ReadInfo r,
+        final ConverterCatalog r,
         final Class<T> clazz, final byte[] bytes)
         throws InvalidInputException {
         try {

@@ -20,6 +20,12 @@ public class Signed extends SexpBacked implements SequenceItem {
         return new Signed(DigestSha384.DIGEST_NAME, payload);
     }
 
+    /**
+     * Sign payload with key. The public key must previously have been mentioned.
+     * @param key
+     * @param payload
+     * @return
+     */
     public static SequenceItem signed(
         final PrivateSigningKey key, final SequenceItem payload) {
         return sequence(key.sign(payload), signed(payload));

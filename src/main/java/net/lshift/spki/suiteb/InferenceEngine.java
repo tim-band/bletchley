@@ -10,7 +10,7 @@ import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.ReadInfo;
+import net.lshift.spki.convert.ConverterCatalog;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
 
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class InferenceEngine {
     private static final Logger LOG
         = LoggerFactory.getLogger(InferenceEngine.class);
 
-    private final ReadInfo readInfo;
+    private final ConverterCatalog readInfo;
 
     private final List<ActionType> actions
         = new ArrayList<ActionType>();
@@ -49,7 +49,7 @@ public class InferenceEngine {
 
     private PassphraseDelegate passphraseDelegate;
 
-    public InferenceEngine(final ReadInfo readInfo) {
+    public InferenceEngine(final ConverterCatalog readInfo) {
         this.readInfo = readInfo;
     }
 
@@ -187,7 +187,7 @@ public class InferenceEngine {
         variables.put(v, val);
     }
 
-    public ReadInfo getReadInfo() {
+    public ConverterCatalog getReadInfo() {
         return readInfo;
     }
 }

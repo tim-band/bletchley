@@ -53,7 +53,7 @@ public class NameBeanConverter<T>
     }
 
     @Override
-    protected Map<Field, Object> readFields(final ReadInfo r, final Slist tail)
+    protected Map<Field, Object> readFields(final ConverterCatalog r, final Slist tail)
         throws InvalidInputException {
         final Map<Field, Object> res = SexpBacked.getResMap(tail);
         for (final Sexp s: tail.getSparts()) {

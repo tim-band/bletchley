@@ -14,11 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class UsesReadInfo {
-    private static final Logger LOG = LoggerFactory.getLogger(UsesReadInfo.class);
+public class UsesCatalog {
+    private static final Logger LOG = LoggerFactory.getLogger(UsesCatalog.class);
 
-    protected ReadInfo getReadInfo() {
-        return ReadInfo.BASE;
+    protected ConverterCatalog getReadInfo() {
+        return ConverterCatalog.BASE;
     }
 
     /**

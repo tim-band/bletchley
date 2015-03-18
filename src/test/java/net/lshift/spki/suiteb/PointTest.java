@@ -6,7 +6,7 @@ import static net.lshift.spki.sexpform.Create.list;
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.UsesReadInfo;
+import net.lshift.spki.convert.UsesCatalog;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.convert.openable.OpenableUtils;
 import net.lshift.spki.sexpform.Sexp;
@@ -14,7 +14,7 @@ import net.lshift.spki.suiteb.sexpstructs.EcdhPublicKey;
 
 import org.junit.Test;
 
-public class PointTest extends UsesReadInfo {
+public class PointTest extends UsesCatalog {
     @Test(expected=CryptographyException.class)
     public void badPointRejected() throws IOException, InvalidInputException {
         final ByteOpenable example = new ByteOpenable();

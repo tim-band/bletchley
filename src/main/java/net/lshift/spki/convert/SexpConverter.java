@@ -12,5 +12,5 @@ public class SexpConverter
     public Sexp write(Sexp o) { return o; }
 
     @Override
-    public Sexp read(ReadInfo r, Sexp in) { return in; }
+    public Sexp read(ConverterCatalog r, Sexp in) { return in; }
 }

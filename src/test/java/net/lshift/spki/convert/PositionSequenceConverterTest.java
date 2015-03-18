@@ -13,7 +13,7 @@ import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.Test;
 
-public class PositionSequenceConverterTest extends UsesReadInfo {
+public class PositionSequenceConverterTest extends UsesCatalog {
 
     @Convert.PositionSequence(name="position-convert", fields={"first"}, seq="rest")
     public static class PositionSequenceExample extends SexpBacked {

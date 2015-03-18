@@ -16,7 +16,7 @@ import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.ReadInfo;
+import net.lshift.spki.convert.ConverterCatalog;
 import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
@@ -37,7 +37,7 @@ import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
  */
 public class Cli {
     private static final String CLI_MESSAGE = Cli.class.toString();
-    private static ReadInfo R = ReadInfo.BASE.extend(SimpleMessage.class);
+    private static ConverterCatalog R = ConverterCatalog.BASE.extend(SimpleMessage.class);
 
     private static <U> U read(final Class<U> clazz, final Openable open)
         throws IOException, InvalidInputException {

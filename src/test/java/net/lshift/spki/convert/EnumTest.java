@@ -13,7 +13,7 @@ import net.lshift.spki.PrettyPrinter;
 import org.junit.Test;
 
 public class EnumTest
-    extends UsesReadInfo {
+    extends UsesCatalog {
     public static enum TestEnum {
         LEFT,
         RIGHT
