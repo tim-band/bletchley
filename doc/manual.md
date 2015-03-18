@@ -7,13 +7,13 @@ Bletchley is a java library.
 Bletchley is built using [Maven 2](http://maven.apache.org), and a Maven
 artifact is available from Central. Add it to your Maven project thus:
 
-`
+
 	<dependency>
       <groupId>net.lshift</groupId>
       <artifactId>bletchley</artifactId>
       <version>0.1</version>
     </dependency>
-`
+
 
 Here is an [example POM](https://github.com/lshift/bletchley-mail/blob/master/pom.xml)
 
@@ -65,7 +65,6 @@ the first thing to do is define an action class.
 Let's say we are writing a home automation system. Our first action
 controls a switch:
 
-`
     package homeautomation;
 
     import net.lshift.spki.convert.Convert;
@@ -83,7 +82,6 @@ controls a switch:
             this.on = on;
         }
     }
-`
 
 Briefly: We always extend SexpBacked. We annotate the class
 to tell Bletchley how it's converted. ByPosition means assign a
@@ -102,7 +100,6 @@ isn't a requirement of the library, it's just good practice.
 
 We need a converter catalog:
 
-`
     package homeautomation;
 
     import net.lshift.spki.convert.ConverterCatalog;
@@ -110,7 +107,7 @@ We need a converter catalog:
     public class Actions {
         public static final ConverterCatalog CATALOG = ConverterCatalog.BASE.extend(SetSwitch.class);
     }
-`
+
 
 extend is a varargs method, so you can list as many classes as you
 like. Add each additional action this way, and any classes it refers
@@ -118,7 +115,7 @@ to will also be added to the catalog automatically.
 
 Write some tests to prove that conversion is set up correctly:
 
-`
+
     package homeautomation;
 
     import net.lshift.spki.InvalidInputException;
@@ -135,7 +132,7 @@ Write some tests to prove that conversion is set up correctly:
                 ConvertUtils.toBytes(new SetSwitch("bathroom-light", true)));
         }
     }
-`
+
 
 And now you know how ro convert to and from byte arrays as well...
 
