@@ -127,8 +127,8 @@ Write some tests to prove that conversion is set up correctly:
         @Test
         public void testConvert() throws InvalidInputException {
             ConvertUtils.fromBytes(
-                Actions.CATALOG, 
-                SetSwitch.class, 
+                Actions.CATALOG,
+                SetSwitch.class,
                 ConvertUtils.toBytes(new SetSwitch("bathroom-light", true)));
         }
     }
@@ -138,3 +138,9 @@ And now you know how ro convert to and from byte arrays as well...
 
 ## Signing and Encrypting
 
+We are going to build up our example using unit tests. Ultimately,
+you will need to load keys from files, but for now, we will just
+generate keys in our test set-up.
+
+Our public key system works as follows: Our switches will trust
+a single key. They will each have Our controllers will 

@@ -3,9 +3,9 @@ Introduction
 
 Bletchley is an attempt to simplify writing bespoke cloud based applications 
 which process sensitive data according to the principal of least privilege. 
-It uses end to end public key encryption using ciphers as described by
-NSA Suite B for top secret classified material. It enables architects to 
-minimise the security risks inherent in these systems.
+It provides end to end encryption of data using public key encryption as
+described by NSA Suite B for top secret classified material. It enables
+architects to minimise the security risks inherent in these systems.
 
 Bletchley is implemented for Java currently, but there message format is
 language agnostic, and ports to other languages are planned.
@@ -43,14 +43,14 @@ because the configuration of the client: i.e. the trusted roots list can be
 changed, possibly by an attacker.
 
 In Java, Bletchley provides automatic conversion between annotated Java
-objects and it's wire encoding. Bletchleys takes a ground up approach to this
+objects and it's wire encoding. Bletchley takes a ground up approach to this
 which uses SPKI instead of more popular wire encodings like JSON and XML, 
 because an important property of encoding for a cryptographic system is that it
 is canonical. Systems which use XML and JSON must convert these into a canonical
 format to create or verify a signature, and this vital code is complex. SPKI is 
 designed so that the canonical form is trivial to generate. Canonical SPKI is 
-also trivial to parse, which reduces the likely hood of buffer overflows when 
-implemented in unsafe programming languages.
+also trivial to parse, which reduces the likely hood of vulnerabilities in
+network facing systems, particularly implementations in unsafe programming languages.
 
 Documentation
 -------------
