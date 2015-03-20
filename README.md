@@ -9,3 +9,5 @@ architects to minimise the security risks inherent in these systems.
 
 Bletchley is implemented for Java currently, but there message format is
 language agnostic, and ports to other languages are planned.
+
+[learn more...](doc/introduction.md)
