@@ -22,7 +22,7 @@ Here is an [example POM](https://github.com/lshift/bletchley-mail/blob/master/po
 
 Bletchley isn't just transport agnostic, it doesn't have any transports
 or transport integrations. It produces and consumes messages, which are
-streams of bytes. Because of this, you canb store the messages if you want
+streams of bytes. Because of this, you can store the messages if you want
 to, or for that matter, use Bletchley to encrypt database fields.
 
 A **message** contains some application data items and additional
@@ -33,7 +33,9 @@ Actions are Java classes defined by the application.
 Because the message asks the recipient to act, It must determine if
 the actions are trusted. At the core of Bletchley is a class that
 takes a message, and returns only actions the recipient trusts.
-This is called the **inference engine**.
+This is called the **inference engine**. If you know about expert
+systems, you can think about Bletchley as an expert system for trust.
+If not, don't worry: it's not assumed knowledge.
 
 An application creates on instance of the inference engine, and seeds
 it with trust information. Bletchley is very flexible: You migh have a single
