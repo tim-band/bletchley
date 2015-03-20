@@ -3,13 +3,14 @@
   <groupId>net.lshift</groupId>
   <artifactId>bletchley</artifactId>
   <description>
-NSA Suite B Cryptography is a suite
-of cryptographic primitives endorsed by the NSA for protecting US Government
-data.  However, it does not mandate a serialization format for cryptographic
-information.  Bletchley combines those components of Suite B authorised for
-protecting TOP SECRET classified information with a simple serialization format
-drawn from the SPKI standard to provide a modular, extensible solution for
-message encryption and signing in Java.
+Bletchley is an attempt to simplify writing bespoke cloud based applications 
+which process sensitive data according to the principal of least privilege. 
+It provides end to end encryption of data using public key encryption as
+described by NSA Suite B for top secret classified material. It enables
+architects to minimise the security risks inherent in these systems.
+
+Bletchley is implemented for Java currently, but there message format is
+language agnostic, and ports to other languages are planned.
   </description>
   <developers>
     <developer>
@@ -28,7 +29,7 @@ message encryption and signing in Java.
   <licenses>
     <license>
       <name>MIT</name>
-      <url>http://opensource.org/licenses/MIT</url>
+      <url>http://opensource.org/licenses/Apache-2.0</url>
       <distribution>repo</distribution>
     </license>
   </licenses>

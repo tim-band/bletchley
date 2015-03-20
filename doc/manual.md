@@ -22,7 +22,8 @@ Here is an [example POM](https://github.com/lshift/bletchley-mail/blob/master/po
 
 Bletchley isn't just transport agnostic, it doesn't have any transports
 or transport integrations. It produces and consumes messages, which are
-streams of bytes.
+streams of bytes. Because of this, you canb store the messages if you want
+to, or for that matter, use Bletchley to encrypt database fields.
 
 A **message** contains some application data items and additional
 data that establishes trust in this data. We call the
@@ -51,7 +52,6 @@ generally needs to contain an entry for each action class and each custom
 condition class.
 
 # API
-
 
 This introduction to the API is a bit of a script, in that it suggests an
 order of development that should prove productive.
