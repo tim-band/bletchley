@@ -45,5 +45,7 @@ Documentation
 -------------
 
 [Manual](manual.md) (work in progress)
+[Darkmail Example](https://github.com/lshift/bletchley-mail) which applies bletchley to implement a private email system
+
 
 
