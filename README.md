@@ -7,7 +7,7 @@ It provides end to end encryption of data using public key encryption as
 described by NSA Suite B for top secret classified material. It enables
 architects to minimise the security risks inherent in these systems.
 
-Bletchley is implemented for Java currently, but there message format is
+Bletchley is implemented for Java currently, but the message format is
 language agnostic, and ports to other languages are planned.
 
 [learn more...](doc/introduction.md)

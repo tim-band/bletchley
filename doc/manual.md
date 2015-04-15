@@ -138,11 +138,18 @@ Write some tests to prove that conversion is set up correctly:
 
 And now you know how ro convert to and from byte arrays as well...
 
-## Signing and Encrypting
+## Signing
+
+For now, lets assume that the fact you are turning the light on
+or off isn't a secret. We just don't want pranksters turning the
+lights on and off.
 
 We are going to build up our example using unit tests. Ultimately,
 you will need to load keys from files, but for now, we will just
 generate keys in our test set-up.
 
 Our public key system works as follows: Our switches will trust
-a single key. They will each have Our controllers will 
+a single key. Our controllers will each have their own key,
+signed by the root key for a limited time.
+
+TO BE CONTINUED...
