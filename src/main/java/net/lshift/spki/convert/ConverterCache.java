@@ -17,7 +17,7 @@ import net.lshift.spki.convert.Convert.HandlerClass;
 public class ConverterCache {
     private static final ConverterCache GLOBAL_CACHE = new ConverterCache();
     private static final Map<Class<?>,Class<?>> PRIMITIVE_TO_WRAPPER;
-    
+
     static {
         Map<Class<?>,Class<?>> primitiveToWrapper = new HashMap<Class<?>,Class<?>>();
         primitiveToWrapper.put(Boolean.TYPE, Boolean.class);
@@ -34,7 +34,7 @@ public class ConverterCache {
     private ConverterCache() {
         registerInternal(new SexpConverter());
         registerInternal(new ByteArrayConverter());
-	registerInternal(new BooleanConverter());
+        registerInternal(new BooleanConverter());
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());
         registerInternal(new IntegerConverter());

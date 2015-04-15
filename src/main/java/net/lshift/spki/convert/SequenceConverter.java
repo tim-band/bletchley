@@ -3,10 +3,15 @@ package net.lshift.spki.convert;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.schema.ConverterDeclaration;
+import net.lshift.spki.schema.Vector;
+import net.lshift.spki.schema.TypeReference;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
 
@@ -60,5 +65,15 @@ public class SequenceConverter<T>
             final Map<Field, Object> fields = SexpBacked.getResMap(tail);
             fields.put(beanField, readSequence(r, contentType, tail.getSparts()));
             return fields;
+    }
+
+    @Override
+    public ConverterDeclaration declaration() {
+        return new Vector(new TypeReference(contentType));
+    }
+
+    @Override
+    public Set<Class<?>> references() {
+        return Collections.<Class<?>>singleton(contentType);
     }
 }

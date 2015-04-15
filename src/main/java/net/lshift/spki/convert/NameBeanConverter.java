@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.schema.ConverterDeclaration;
+import net.lshift.spki.schema.EnumMapType;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
 
@@ -90,5 +92,10 @@ public class NameBeanConverter<T>
             }
         }
         throw new ConvertException("No field matching name found: " + string);
+    }
+
+    @Override
+    public ConverterDeclaration declaration() {
+        return new EnumMapType(fieldDeclarations(this.fields));
     }
 }

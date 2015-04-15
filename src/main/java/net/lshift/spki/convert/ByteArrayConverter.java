@@ -1,7 +1,13 @@
 package net.lshift.spki.convert;
 
 import static net.lshift.spki.sexpform.Create.atom;
+
+import java.util.Collections;
+import java.util.Set;
+
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.schema.AtomType;
+import net.lshift.spki.schema.ConverterDeclaration;
 import net.lshift.spki.sexpform.Sexp;
 
 /**
@@ -23,5 +29,15 @@ public class ByteArrayConverter
     public byte[] read(final ConverterCatalog r, final Sexp in)
         throws InvalidInputException {
         return in.atom().getBytes();
+    }
+
+    @Override
+    public ConverterDeclaration declaration() {
+        return new AtomType();
+    }
+
+    @Override
+    public Set<Class<?>> references() {
+        return Collections.emptySet();
     }
 }

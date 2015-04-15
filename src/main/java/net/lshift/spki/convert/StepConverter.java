@@ -1,6 +1,11 @@
 package net.lshift.spki.convert;
 
+import java.util.Collections;
+import java.util.Set;
+
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.schema.ConverterDeclaration;
+import net.lshift.spki.schema.Restriction;
 import net.lshift.spki.sexpform.Sexp;
 
 /**
@@ -33,4 +38,14 @@ public abstract class StepConverter<TResult, TStep>
     protected abstract TResult stepOut(TStep s) throws InvalidInputException;
 
     protected abstract TStep stepIn(TResult o);
+
+    @Override
+    public ConverterDeclaration declaration() {
+        return new Restriction(getStepClass());
+    }
+
+    @Override
+    public Set<Class<?>> references() {
+        return Collections.<Class<?>>singleton(getStepClass());
+    }
 }

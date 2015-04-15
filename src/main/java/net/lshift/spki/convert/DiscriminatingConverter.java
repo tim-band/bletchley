@@ -1,6 +1,7 @@
 package net.lshift.spki.convert;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,6 +9,11 @@ import java.util.Map;
 import java.util.Set;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.schema.Option;
+import net.lshift.spki.schema.TypeReference;
+import net.lshift.spki.schema.ConverterDeclaration;
+import net.lshift.spki.schema.UnionType;
+import net.lshift.spki.schema.Tagged;
 import net.lshift.spki.sexpform.Sexp;
 
 /**
@@ -120,5 +126,19 @@ public class DiscriminatingConverter<T>
 
     public String toString() {
         return String.format("DiscriminatingConverter<%s>", clazz.getSimpleName()) ;
+    }
+
+    @Override
+    public ConverterDeclaration declaration() {
+        List<Tagged> options = new ArrayList<Tagged>();
+        for(Map.Entry<String, Class<? extends T>> opt: nameMap.entrySet()) {
+            options.add(new Option(opt.getKey(), new TypeReference(opt.getValue())));
+        }
+        return new UnionType(Collections.unmodifiableList(options));
+    }
+
+    @Override
+    public Set<Class<?>> references() {
+        return new HashSet<Class<?>>(classes);
     }
 }

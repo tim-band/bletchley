@@ -8,6 +8,10 @@ import java.util.List;
  */
 public class SequenceUtils
 {
+    public static Action action(ActionType a) {
+        return new Action(a);
+    }
+
     public static Sequence sequence(
         final SequenceItem... items
     ) {

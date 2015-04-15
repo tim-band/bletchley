@@ -1,7 +1,9 @@
 package net.lshift.spki.convert;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
@@ -57,5 +59,9 @@ public abstract class ConverterImpl<T> implements Converter<T> {
             throw new ConvertException("Unexpected name, expected "
                 + name + " got " + ConvertUtils.stringOrNull(bytes));
         }
+    }
+
+    protected Set<Class<?>> excludeReferences() {
+        return Collections.unmodifiableSet(extraConverters.keySet());
     }
 }
