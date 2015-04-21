@@ -53,14 +53,14 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
         prettyPrint(sexp, System.out);
         final List<Sexp> coords
             = sexp.list().getSparts()
-            .get(0).list().getSparts()
+            .get(1).list().getSparts()
             .get(0).list().getSparts()
             .get(0).list().getSparts();
         final Sexp reversedSexp = list("suiteb-p384-ecdsa-private-key",
             list("public-key",
                 list("suiteb-p384-ecdsa-public-key",
                     list("point", coords.get(1), coords.get(0)))),
-            sexp.list().getSparts().get(1));
+            sexp.list().getSparts().get(0));
         prettyPrint(reversedSexp, System.out);
         final PrivateSigningKey res = getReadInfo().read(
             PrivateSigningKey.class, reversedSexp);

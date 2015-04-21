@@ -3,6 +3,8 @@ package net.lshift.spki.convert;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -11,6 +13,13 @@ import java.util.List;
 public class NameBeanConverterFactory
 implements ConverterFactory<Convert.ByName>
 {
+    private static Comparator<Field> FIELD_COMPARATOR = new Comparator<Field>() {
+        @Override
+        public int compare(Field a, Field b) {
+            return a.getName().compareTo(b.getName());
+        }
+    };
+
     @Override
     public <T> Converter<T> converter(final Class<T> clazz, final Convert.ByName a) {
         final List<FieldConvertInfo> fields = getFieldMap(clazz);
@@ -31,7 +40,9 @@ implements ConverterFactory<Convert.ByName>
         if (sup != null && sup != SexpBacked.class) {
             addFields(sup, fields);
         }
-        for (final Field f: clazz.getDeclaredFields()) {
+        Field[] declaredFields = clazz.getDeclaredFields();
+        Arrays.sort(declaredFields, FIELD_COMPARATOR);
+        for (final Field f: declaredFields) {
             if (!f.getName().startsWith("$") &&
                             (f.getModifiers() & Modifier.STATIC) == 0)
             fields.add(new FieldConvertInfo(clazz, f));
