@@ -21,6 +21,9 @@ implements ConverterFactory<Convert.ByPosition>
         final String[] fieldNames) {
         final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
         for (final String fname: fieldNames) {
+            if (!ConvertUtils.isAsciiIdentifier(fname)) {
+                throw new RuntimeException();
+            }
             fields.add(new FieldConvertInfo(clazz, getField(clazz, fname)));
         }
         return fields;
@@ -35,6 +38,9 @@ implements ConverterFactory<Convert.ByPosition>
         final Class<? super T> c,
         final String fname) {
         try {
+            if (!ConvertUtils.isAsciiIdentifier(fname)) {
+                throw new RuntimeException();
+            }
             return c.getDeclaredField(fname);
         } catch (final NoSuchFieldException e) {
             final Class<? super T> sup = c.getSuperclass();

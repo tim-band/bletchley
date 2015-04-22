@@ -28,4 +28,22 @@ public class PrimitivesTest {
         assertEquals(a.b, b.b);
         assertEquals(a.i, b.i);
     }
+
+    @Convert.ByPosition(fields = { "é" }, name = "primitive-non-ascii")
+    public static class PrimitivesExampleWithNonasciiFields extends SexpBacked implements ActionType {
+        public final boolean é;
+        public PrimitivesExampleWithNonasciiFields(boolean e) {
+            this.é = e;
+        }
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testConvertNonascii() throws Exception {
+        PrimitivesExampleWithNonasciiFields a = new PrimitivesExampleWithNonasciiFields(true);
+        PrimitivesExampleWithNonasciiFields b = ConvertUtils.fromBytes(
+                ConverterCatalog.BASE.extend(PrimitivesExampleWithNonasciiFields.class),
+                PrimitivesExampleWithNonasciiFields.class,
+                ConvertUtils.toBytes(a));
+        assertEquals(a.é, b.é);
+    }
 }

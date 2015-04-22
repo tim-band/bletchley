@@ -43,7 +43,11 @@ implements ConverterFactory<Convert.ByName>
         Field[] declaredFields = clazz.getDeclaredFields();
         Arrays.sort(declaredFields, FIELD_COMPARATOR);
         for (final Field f: declaredFields) {
-            if (!f.getName().startsWith("$") &&
+            final String fname = f.getName();
+            if (!ConvertUtils.isAsciiIdentifier(fname)) {
+                throw new RuntimeException();
+            }
+            if (!fname.startsWith("$") &&
                             (f.getModifiers() & Modifier.STATIC) == 0)
             fields.add(new FieldConvertInfo(clazz, f));
         }

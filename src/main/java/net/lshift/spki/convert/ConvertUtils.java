@@ -174,4 +174,20 @@ public class ConvertUtils {
         prettyPrint(o, ps);
         ps.flush();
     }
+
+    public static boolean isAsciiIdentifier(char[] chars) {
+        if (!Character.isJavaIdentifierStart(chars[0]) || chars[0] > 0x7f) {
+            return false;
+        }
+        for(char c: chars) {
+            if (!Character.isJavaIdentifierPart(c) || c > 0x7f) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isAsciiIdentifier(String s) {
+        return isAsciiIdentifier(s.toCharArray());
+    }
 }
