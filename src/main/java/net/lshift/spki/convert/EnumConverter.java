@@ -5,14 +5,10 @@ import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
 
-import org.apache.commons.lang.StringUtils;
-
 public class EnumConverter<T extends Enum<T>>
 extends StringStepConverter<T> {
-    private final Map<T, String> forwardMap
-        = new HashMap<T, String>();
-    private final Map<String, T> backMap
-        = new HashMap<String, T>();
+    private final Map<T, String> forwardMap = new HashMap<>();
+    private final Map<String, T> backMap = new HashMap<>();
 
     public EnumConverter(final Class<T> resultClass) {
         super(resultClass);
