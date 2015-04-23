@@ -7,8 +7,6 @@ import java.io.InputStream;
  * Superclass for SPKIInputStreams based on reading an InputStream.
  */
 public abstract class FileSpkiInputStream extends SpkiInputStream {
-    private static final int NO_MORE_DIGITS_BOUND = (Integer.MAX_VALUE - 9)/10;
-
     protected final InputStream is;
 
     public FileSpkiInputStream(final InputStream is) {
@@ -23,21 +21,19 @@ public abstract class FileSpkiInputStream extends SpkiInputStream {
 
     protected int readInteger(final int first)
         throws ParseException, IOException {
-        int r = first - '0';
+        int curVal = first - '0';
         for (;;) {
             final int c = is.read();
             if (c == ':')
-                return r;
+                return curVal;
             if (c < '0' || c > '9') {
                 throw new ParseException("Bad s-expression format");
             }
-            if (r > NO_MORE_DIGITS_BOUND) {
-                // Not a precise test - there are 8 integers
-                // at or below MAX_VALUE that this rejects
+            final int newVal = curVal * 10 + (c - '0');
+            if (newVal < curVal) {
                 throw new ParseException("Integer too large");
             }
-            r *= 10;
-            r += c - '0';
+            curVal = newVal;
         }
     }
 

@@ -114,4 +114,19 @@ public abstract class SpkiInputStreamTest {
         }
         sis.atomBytes();
     }
+
+    @Test(expected = OutOfMemoryError.class)
+    public void assertMaxintWorks()
+            throws ParseException, IOException {
+        setInput("2147483647:foo");
+        assertThat(sis.next(), is(ATOM));
+        sis.atomBytes();
+    }
+
+    @Test(expected = ParseException.class)
+    public void assertOverflowFails()
+            throws ParseException, IOException {
+        setInput("2147483648:foo");
+        sis.next();
+    }
 }
