@@ -70,15 +70,16 @@ public class ConvertTest extends UsesCatalog
 
     @Test
     public void convertFromUUID() {
-        final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
+        final String uidstring = "093fe929-3d5d-48f9-bb41-58A382DE934F";
         final UUID uuid = UUID.fromString(uidstring);
         final Sexp uBytes = ConverterCache.getConverter(UUID.class).write(uuid);
-        assertEquals(atom(uidstring), uBytes);
+        // UUID converter forces the lower case representation of UUID
+        assertEquals(atom(uidstring.toLowerCase()), uBytes);
     }
 
     @Test
     public void convertToUUID() throws InvalidInputException {
-        final String uidstring = "093fe929-3d5d-48f9-bb41-58a382de934f";
+        final String uidstring = "093fe929-3d5d-48f9-bb41-58A382DE934F";
         final byte[] uBytes = ConvertUtils.toBytes(atom(uidstring));
         assertEquals(UUID.fromString(uidstring),
             ConvertUtils.fromBytes(getReadInfo(), UUID.class, uBytes));
