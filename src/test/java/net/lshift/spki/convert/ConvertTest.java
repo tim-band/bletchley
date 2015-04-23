@@ -7,10 +7,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
@@ -56,14 +56,14 @@ public class ConvertTest extends UsesCatalog
 
     @Test
     public void marshalTest() {
-        final byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.ASCII);
+        final byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(StandardCharsets.US_ASCII);
         final Sexp struct = list("test", atom("abcdefghijklmnopqrstuvwxyz"), atom("12345"), atom(":: ::"));
         assertArrayEquals(bytes, ConvertUtils.toBytes(struct));
     }
 
     @Test
     public void unmarshalTest() throws InvalidInputException {
-        final byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(Constants.ASCII);
+        final byte[] bytes = "(4:test26:abcdefghijklmnopqrstuvwxyz5:123455::: ::)".getBytes(StandardCharsets.US_ASCII);
         final Sexp struct = list("test", atom("abcdefghijklmnopqrstuvwxyz"), atom("12345"), atom(":: ::"));
         assertEquals(struct, ConvertUtils.fromBytes(getReadInfo(), Sexp.class, bytes));
     }

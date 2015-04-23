@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -17,10 +18,10 @@ public class AcceptSomeBytesTest {
         final String accepted,
         final int left) throws IOException {
         final ByteArrayInputStream is = new ByteArrayInputStream(
-            input.getBytes(Constants.ASCII));
+            input.getBytes(StandardCharsets.US_ASCII));
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final int dropped = accepter.accept(out, is);
-        assertArrayEquals(accepted.getBytes(Constants.ASCII),
+        assertArrayEquals(accepted.getBytes(StandardCharsets.US_ASCII),
             out.toByteArray());
         assertEquals(left, dropped);
     }

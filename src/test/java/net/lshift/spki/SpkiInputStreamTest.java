@@ -10,6 +10,7 @@ import static org.junit.Assert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public abstract class SpkiInputStreamTest {
     public SpkiInputStream sis;
 
     public static byte[] s(final String string) {
-        return string.getBytes(Constants.ASCII);
+        return string.getBytes(StandardCharsets.US_ASCII);
     }
 
     public void setInput(final byte [] bytes) {
