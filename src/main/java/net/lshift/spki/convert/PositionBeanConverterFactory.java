@@ -22,7 +22,7 @@ implements ConverterFactory<Convert.ByPosition>
         final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
         for (final String fname: fieldNames) {
             if (!ConvertUtils.isAsciiIdentifier(fname)) {
-                throw new RuntimeException();
+                throw new IllegalArgumentException();
             }
             fields.add(new FieldConvertInfo(clazz, getField(clazz, fname)));
         }
@@ -39,7 +39,7 @@ implements ConverterFactory<Convert.ByPosition>
         final String fname) {
         try {
             if (!ConvertUtils.isAsciiIdentifier(fname)) {
-                throw new RuntimeException();
+                throw new IllegalArgumentException();
             }
             return c.getDeclaredField(fname);
         } catch (final NoSuchFieldException e) {

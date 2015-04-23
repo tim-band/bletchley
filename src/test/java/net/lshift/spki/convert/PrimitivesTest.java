@@ -37,7 +37,7 @@ public class PrimitivesTest {
         }
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testConvertNonascii() throws Exception {
         PrimitivesExampleWithNonasciiFields a = new PrimitivesExampleWithNonasciiFields(true);
         PrimitivesExampleWithNonasciiFields b = ConvertUtils.fromBytes(

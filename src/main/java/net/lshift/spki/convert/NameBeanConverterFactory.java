@@ -45,7 +45,7 @@ implements ConverterFactory<Convert.ByName>
         for (final Field f: declaredFields) {
             final String fname = f.getName();
             if (!ConvertUtils.isAsciiIdentifier(fname)) {
-                throw new RuntimeException();
+                throw new IllegalArgumentException();
             }
             if (!fname.startsWith("$") &&
                             (f.getModifiers() & Modifier.STATIC) == 0)
