@@ -45,7 +45,7 @@ implements ConverterFactory<Convert.ByName>
         for (final Field f: declaredFields) {
             final String fname = f.getName();
             if (!ConvertUtils.isAsciiIdentifier(fname)) {
-                throw new IllegalArgumentException("Field name is non ascii: " + fname);
+                throw new IllegalArgumentException("Field name is non ascii: " + clazz.getName() + "." + fname);
             }
             if (!fname.startsWith("$") &&
                             (f.getModifiers() & Modifier.STATIC) == 0)

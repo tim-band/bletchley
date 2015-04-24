@@ -18,8 +18,7 @@ extends StringStepConverter<T> {
         for (final T t: resultClass.getEnumConstants()) {
             final String name = t.name();
             if (!ConvertUtils.isAsciiIdentifier(name)) {
-                throw new IllegalArgumentException(
-                    "Enum contains non-standard name: " + name);
+                throw new IllegalArgumentException("Enum name is non ascii: " + clazz.getName() + "." + name);
             }
             final String conversion = name.toLowerCase().replace('_', '-');
             forwardMap.put(t, conversion);
