@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.apache.commons.codec.binary.Base64;
@@ -34,7 +35,7 @@ public class PrettyPrinter extends SpkiOutputStream {
             firstAtom = false;
         }
         if (isText(bytes, off, len)) {
-            final String string = Constants.ASCII.newDecoder()
+            final String string = StandardCharsets.US_ASCII.newDecoder()
                 .decode(ByteBuffer.wrap(bytes, off, len)).toString();
             if (StringUtils.containsOnly(string,
                 "abcdefghijklmnopqrstuvwxyz0123456789-") &&

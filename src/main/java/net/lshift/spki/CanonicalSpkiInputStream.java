@@ -6,7 +6,7 @@ import java.io.InputStream;
 /**
  * Tokenize an InputStream into SPKI tokens
  */
-public class CanonicalSpkiInputStream extends FileSpkiInputStream {
+public class CanonicalSpkiInputStream extends SpkiInputStream {
     int atomBytes;
 
     public CanonicalSpkiInputStream(final InputStream is) {

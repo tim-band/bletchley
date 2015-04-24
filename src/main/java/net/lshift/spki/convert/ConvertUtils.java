@@ -12,11 +12,11 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
+import java.nio.charset.StandardCharsets;
 
 import net.lshift.spki.AdvancedSpkiInputStream;
 import net.lshift.spki.CanonicalSpkiInputStream;
 import net.lshift.spki.CanonicalSpkiOutputStream;
-import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.PrettyPrinter;
 import net.lshift.spki.SpkiInputStream;
@@ -29,12 +29,12 @@ import net.lshift.spki.sexpform.ConvertSexp;
  */
 public class ConvertUtils {
     public static byte[] bytes(final String s) {
-        return s.getBytes(Constants.UTF8);
+        return s.getBytes(StandardCharsets.UTF_8);
     }
 
     public static final String decodeUtf8(final byte[] bytes)
         throws CharacterCodingException {
-        return Constants.UTF8.newDecoder()
+        return StandardCharsets.UTF_8.newDecoder()
             .decode(ByteBuffer.wrap(bytes)).toString();
     }
 

@@ -3,13 +3,14 @@ package net.lshift.spki.convert;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import net.lshift.spki.Constants;
 import net.lshift.spki.suiteb.Action;
 import net.lshift.spki.suiteb.ActionType;
 import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
+import java.nio.charset.StandardCharsets;
+
 public class UsesSimpleMessage extends UsesCatalog {
-    private static final byte[] CONTENT = "The magic words are squeamish ossifrage".getBytes(Constants.ASCII);
+    private static final byte[] CONTENT = "The magic words are squeamish ossifrage".getBytes(StandardCharsets.US_ASCII);
     private ConverterCatalog READ_INFO = super.getReadInfo().extend(SimpleMessage.class);
 
     @Override
