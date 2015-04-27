@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.UsesSimpleMessage;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
@@ -21,7 +22,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
     @Test
     public void testRoundTrip() throws InvalidInputException, IOException  {
         PrivateSigningKey originalKey = PrivateSigningKey.generate();
-        final Sexp originalSexp = originalKey.getPublicKey().toSexp();
+        final Sexp originalSexp = ConvertUtils.convertToSexp(originalKey.getPublicKey());
 
         prettyPrint(originalSexp, System.out);
         final List<Sexp> coords = originalSexp.list().getSparts().get(0).list().getSparts();
@@ -31,7 +32,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
         prettyPrint(reversedSexp, System.out);
         final PublicSigningKey deserialized = getReadInfo().read(
             PublicSigningKey.class, reversedSexp);
-        final Sexp recoveredSexp = deserialized.toSexp();
+        final Sexp recoveredSexp = ConvertUtils.convertToSexp(deserialized);
         assertEquals(originalSexp, recoveredSexp);
         assertEquals(digest(recoveredSexp), deserialized.getKeyId());
     }
@@ -50,7 +51,7 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
 
     protected PrivateSigningKey generateReversedKey() throws IOException, InvalidInputException {
         PrivateSigningKey originalKey = PrivateSigningKey.generate();
-        final Sexp originalSexp = originalKey.toSexp();
+        final Sexp originalSexp = ConvertUtils.convertToSexp(originalKey);
         prettyPrint(originalSexp, System.out);
         final List<Sexp> coords
             = originalSexp.list().getSparts()
@@ -65,11 +66,11 @@ public class NameBeanReorderTest extends UsesSimpleMessage {
         prettyPrint(reversedSexp, System.out);
         final PrivateSigningKey reversedKey = getReadInfo().read(
             PrivateSigningKey.class, reversedSexp);
-        final Sexp recoveredSexp = reversedKey.toSexp();
+        final Sexp recoveredSexp = ConvertUtils.convertToSexp(reversedKey);
         assertEquals(originalSexp, recoveredSexp);
         assertEquals(recoveredSexp.list().getSparts()
                         .get(1).list().getSparts().get(0),
-                reversedKey.getPublicKey().toSexp());
+                ConvertUtils.convertToSexp(reversedKey.getPublicKey()));
         return reversedKey;
     }
 }

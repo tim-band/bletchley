@@ -23,6 +23,7 @@ import net.lshift.spki.SpkiInputStream;
 import net.lshift.spki.SpkiInputStream.TokenType;
 import net.lshift.spki.SpkiOutputStream;
 import net.lshift.spki.sexpform.ConvertSexp;
+import net.lshift.spki.sexpform.Sexp;
 
 /**
  * Static utilities for conversion between SExps and objects.
@@ -59,7 +60,7 @@ public class ConvertUtils {
     public static <T extends Writeable> void write(
         final T o,
         final SpkiOutputStream os) throws IOException {
-        ConvertSexp.write(os, o.toSexp());
+        ConvertSexp.write(os, ConvertUtils.convertToSexp(o));
     }
 
     public static void write(
@@ -189,5 +190,12 @@ public class ConvertUtils {
 
     public static boolean isAsciiIdentifier(String s) {
         return isAsciiIdentifier(s.toCharArray());
+    }
+
+    public static Sexp convertToSexp(Object o) {
+        if (o instanceof Sexp) {
+            return (Sexp)o;
+        }
+        return (ConverterCache.getConverter((Class<Object>)o.getClass())).write(o);
     }
 }
