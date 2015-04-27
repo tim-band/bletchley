@@ -8,7 +8,7 @@ Bletchley is built using [Maven 2](http://maven.apache.org), and a Maven
 artifact is available from Central. Add it to your Maven project thus:
 
 
-	<dependency>
+    <dependency>
       <groupId>net.lshift</groupId>
       <artifactId>bletchley</artifactId>
       <version>0.1</version>
@@ -37,8 +37,8 @@ This is called the **inference engine**. If you know about expert
 systems, you can think about Bletchley as an expert system for trust.
 If not, don't worry: it's not assumed knowledge.
 
-An application creates on instance of the inference engine, and seeds
-it with trust information. Bletchley is very flexible: You migh have a single
+An application creates an instance of the inference engine, and seeds
+it with trust information. Bletchley is very flexible: You might have a single
 **public signing key** that's trusted completely, or a number of
 different keys which are trusted for specific actions, or for a specific
 period of time. Each of these is called a **condition** and you can
@@ -85,7 +85,7 @@ controls a switch:
 
 Briefly: We annotate the class to tell Bletchley how it's converted.
 ByPosition means assign a position to each field. This is the most
-compact and straight forward representation. The other alternative
+compact and straightforward representation. The other alternative
 is @Convert.ByName which labels each field. We will cover the differences
 in more detail in the conversion section.
 
@@ -133,7 +133,7 @@ Write some tests to prove that conversion is set up correctly:
     }
 
 
-And now you know how ro convert to and from byte arrays as well...
+And now you know how to convert to and from byte arrays as well...
 
 ## Signing
 
