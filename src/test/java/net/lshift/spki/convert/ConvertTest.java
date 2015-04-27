@@ -32,7 +32,7 @@ public class ConvertTest extends UsesCatalog
         testExample(test, ByNameConvertExample.class);
     }
 
-    private <T extends Writeable> void testExample(final T test, Class<T> clazz)
+    private <T> void testExample(final T test, Class<T> clazz)
             throws InvalidInputException {
         final byte[] bytes = ConvertUtils.toBytes(test);
         //PrettyPrinter.prettyPrint(System.out, sexp);

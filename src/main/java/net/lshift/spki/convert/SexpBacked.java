@@ -1,5 +1,4 @@
 package net.lshift.spki.convert;
 
-public class SexpBacked
-        implements Writeable {
+public class SexpBacked {
 }

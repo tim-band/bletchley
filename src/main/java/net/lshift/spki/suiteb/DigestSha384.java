@@ -8,7 +8,6 @@ import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.ListStepConverter;
 import net.lshift.spki.convert.SexpBacked;
-import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 
 import org.bouncycastle.crypto.digests.SHA384Digest;
@@ -33,7 +32,7 @@ public class DigestSha384 extends SexpBacked implements SequenceItem {
         return bytes;
     }
 
-    public static DigestSha384 digest(final Writeable o) {
+    public static DigestSha384 digest(final Object o) {
         final SHA384Digest sha = new SHA384Digest();
         final DigestOutputStream digester = new DigestOutputStream(sha);
         try {
