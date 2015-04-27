@@ -53,13 +53,10 @@ public class PrivateEncryptionKey implements SequenceItem {
     }
 
     public static class Step
-        extends ListStepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
+            extends ListStepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
 
-        public Step() { super(PrivateEncryptionKey.class); }
-
-        @Override
-        protected Class<EcdhPrivateKey> getStepClass() {
-            return EcdhPrivateKey.class;
+        public Step() {
+            super(PrivateEncryptionKey.class, EcdhPrivateKey.class);
         }
 
         @SuppressWarnings("synthetic-access")

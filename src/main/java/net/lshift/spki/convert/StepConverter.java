@@ -12,24 +12,25 @@ import net.lshift.spki.sexpform.Sexp;
  * Convert TResult to SExp by first converting it to TStep using stepIn/stepOut
  */
 public abstract class StepConverter<TResult, TStep>
-    extends ConverterImpl<TResult> {
+        extends ConverterImpl<TResult> {
 
-    public StepConverter(final Class<TResult> clazz) {
+    protected final Class<TStep> stepClazz;
+
+    public StepConverter(final Class<TResult> clazz, final Class<TStep> stepClazz) {
         super(clazz);
+        this.stepClazz = stepClazz;
     }
 
     @Override
     public Sexp write(final TResult o) {
-        return writeUnchecked(getStepClass(), stepIn(o));
+        return writeUnchecked(stepClazz, stepIn(o));
     }
 
     @Override
     public TResult read(final ConverterCatalog c, final Sexp in)
         throws InvalidInputException {
-        return stepOut(readElement(getStepClass(), c, in));
+        return stepOut(readElement(stepClazz, c, in));
     }
-
-    protected abstract Class<TStep> getStepClass();
 
     protected abstract TResult stepOut(TStep s) throws InvalidInputException;
 
@@ -37,11 +38,11 @@ public abstract class StepConverter<TResult, TStep>
 
     @Override
     public ConverterDeclaration declaration() {
-        return new Restriction(getStepClass());
+        return new Restriction(stepClazz);
     }
 
     @Override
     public Set<Class<?>> references() {
-        return Collections.<Class<?>>singleton(getStepClass());
+        return Collections.<Class<?>>singleton(stepClazz);
     }
 }

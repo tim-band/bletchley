@@ -6,12 +6,7 @@ public class BooleanConverter
         extends StepConverter<Boolean, String> {
 
     public BooleanConverter() {
-        super(Boolean.class);
-    }
-
-    @Override
-    protected Class<String> getStepClass() {
-        return String.class;
+        super(Boolean.class, String.class);
     }
 
     @Override

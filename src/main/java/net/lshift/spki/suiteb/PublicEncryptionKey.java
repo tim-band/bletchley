@@ -19,12 +19,7 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem {
 
     public static class Step
         extends ListStepConverter<PublicEncryptionKey, EcdhPublicKey> {
-        public Step() { super(PublicEncryptionKey.class); }
-
-        @Override
-        protected Class<EcdhPublicKey> getStepClass() {
-            return EcdhPublicKey.class;
-        }
+        public Step() { super(PublicEncryptionKey.class, EcdhPublicKey.class); }
 
         @Override
         protected EcdhPublicKey stepIn(final PublicEncryptionKey o) {

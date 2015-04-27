@@ -54,12 +54,10 @@ public class PrivateSigningKey {
     }
 
     public static class Step
-        extends ListStepConverter<PrivateSigningKey, EcdsaPrivateKey> {
-        public Step() { super(PrivateSigningKey.class); }
+            extends ListStepConverter<PrivateSigningKey, EcdsaPrivateKey> {
 
-        @Override
-        protected Class<EcdsaPrivateKey> getStepClass() {
-            return EcdsaPrivateKey.class;
+        public Step() {
+            super(PrivateSigningKey.class, EcdsaPrivateKey.class);
         }
 
         @SuppressWarnings("synthetic-access")

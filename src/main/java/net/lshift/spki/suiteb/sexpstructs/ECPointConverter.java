@@ -16,7 +16,7 @@ import org.bouncycastle.math.ec.ECPoint;
  * Point representation.
  */
 public class ECPointConverter
-    extends ListStepConverter<ECPoint, ECPointConverter.Point> {
+        extends ListStepConverter<ECPoint, ECPointConverter.Point> {
 
     /**
      * Serialization format for an ECPoint ie a point on an elliptic curve.
@@ -32,10 +32,9 @@ public class ECPointConverter
         }
     }
 
-    public ECPointConverter() { super(ECPoint.class); }
-
-    @Override
-    public Class<Point> getStepClass() { return Point.class; }
+    public ECPointConverter() {
+        super(ECPoint.class, ECPointConverter.Point.class);
+    }
 
     @Override
     public ECPointConverter.Point stepIn(final ECPoint q) {

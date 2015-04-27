@@ -45,13 +45,10 @@ public class DigestSha384 implements SequenceItem {
     }
 
     public static class Step
-        extends ListStepConverter<DigestSha384, Hash> {
+            extends ListStepConverter<DigestSha384, Hash> {
 
-        public Step() { super(DigestSha384.class); }
-
-        @Override
-        protected Class<Hash> getStepClass() {
-            return Hash.class;
+        public Step() {
+            super(DigestSha384.class, Hash.class);
         }
 
         @SuppressWarnings("synthetic-access")
