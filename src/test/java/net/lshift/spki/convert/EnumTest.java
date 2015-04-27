@@ -20,7 +20,7 @@ public class EnumTest
     }
 
     @Convert.ByPosition(name="enum-holder", fields="testEnum")
-    public static class EnumHolder extends SexpBacked {
+    public static class EnumHolder {
         public final TestEnum testEnum;
 
         public EnumHolder(final TestEnum testEnum) {
@@ -45,7 +45,7 @@ public class EnumTest
     }
 
     @Convert.ByPosition(name="invalid-enum-holder", fields="testEnum")
-    public static class InvalidEnumHolder extends SexpBacked {
+    public static class InvalidEnumHolder {
         public final InvalidTestEnum testEnum;
 
         public InvalidEnumHolder(final InvalidTestEnum testEnum) {

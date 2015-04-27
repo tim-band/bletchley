@@ -11,10 +11,9 @@ import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.Converter;
 import net.lshift.spki.convert.ConverterCache;
 import net.lshift.spki.convert.ConverterCatalog;
-import net.lshift.spki.convert.SexpBacked;
 
 @Convert.SequenceConverted("schema")
-public class Schema extends SexpBacked {
+public class Schema {
     public final List<Binding> bindings;
 
     public Schema(List<Binding> bindings) {

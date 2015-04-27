@@ -4,7 +4,6 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -14,7 +13,7 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
  * A private key for decrypting data.
  */
 @ConvertClass(PrivateEncryptionKey.Step.class)
-public class PrivateEncryptionKey extends SexpBacked implements SequenceItem {
+public class PrivateEncryptionKey implements SequenceItem {
     private final PublicEncryptionKey publicKey;
     private final AsymmetricCipherKeyPair keyPair;
 

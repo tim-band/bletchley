@@ -5,7 +5,6 @@ import java.util.Arrays;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ByteArrayStepConverter;
 import net.lshift.spki.convert.Convert.ConvertClass;
-import net.lshift.spki.convert.SexpBacked;
 
 /**
  * Identifier for a symmetric key, deterministically generated from the key.
@@ -13,7 +12,7 @@ import net.lshift.spki.convert.SexpBacked;
  * key to decrypt them with.
  */
 @ConvertClass(AesKeyId.Step.class)
-public final class AesKeyId extends SexpBacked {
+public final class AesKeyId {
     public final byte[] keyId;
 
     public AesKeyId(final byte[] keyId) {

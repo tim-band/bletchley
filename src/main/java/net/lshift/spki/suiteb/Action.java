@@ -1,7 +1,6 @@
 package net.lshift.spki.suiteb;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.SexpBacked;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,7 @@ import org.slf4j.LoggerFactory;
  * SequenceItem container for something the application might act on.
  */
 @Convert.ByPosition(name="action", fields={"payload"})
-public class Action extends SexpBacked implements SequenceItem {
+public class Action implements SequenceItem {
     private static final Logger LOG
         = LoggerFactory.getLogger(Action.class);
     private final ActionType payload;

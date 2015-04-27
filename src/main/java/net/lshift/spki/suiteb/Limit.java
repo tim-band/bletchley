@@ -7,12 +7,10 @@ import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.SexpBacked;
 
 @Convert.PositionSequence(name="limit", fields={"subject"}, seq="conditions")
 public class Limit
-    extends SexpBacked
-    implements SequenceItem {
+        implements SequenceItem {
     public final SequenceItem subject;
     public final List<Condition> conditions;
 

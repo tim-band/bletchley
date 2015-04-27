@@ -2,8 +2,7 @@ package net.lshift.spki.convert;
 
 @Convert.ByPosition(name="late-implementing-class", fields={})
 public class LateImplementingClass
-    extends SexpBacked
-    implements Interface
+        implements Interface
 {
     public LateImplementingClass()
     {

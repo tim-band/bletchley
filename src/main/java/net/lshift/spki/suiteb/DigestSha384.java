@@ -7,7 +7,6 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 
 import org.bouncycastle.crypto.digests.SHA384Digest;
@@ -18,7 +17,7 @@ import org.bouncycastle.util.encoders.Hex;
  * A SHA-384 digest of a SExp.
  */
 @ConvertClass(DigestSha384.Step.class)
-public class DigestSha384 extends SexpBacked implements SequenceItem {
+public class DigestSha384 implements SequenceItem {
     public static final String DIGEST_NAME = "sha384";
     private static final int DIGEST_LENGTH = 48;
     private final byte[] bytes;

@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class PrimitivesTest {
     @Convert.ByPosition(fields = { "b", "i" }, name = "primitive")
-    public static class PrimitivesExample extends SexpBacked implements ActionType {
+    public static class PrimitivesExample implements ActionType {
         public final boolean b;
         public final int i;
         public PrimitivesExample(boolean b, int i) {
@@ -30,7 +30,7 @@ public class PrimitivesTest {
     }
 
     @Convert.ByPosition(fields = { "é" }, name = "primitive-non-ascii")
-    public static class PrimitivesExampleWithNonasciiFields extends SexpBacked implements ActionType {
+    public static class PrimitivesExampleWithNonasciiFields implements ActionType {
         public final boolean é;
         public PrimitivesExampleWithNonasciiFields(boolean e) {
             this.é = e;

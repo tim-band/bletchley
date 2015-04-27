@@ -2,14 +2,13 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.SexpBacked;
 
 /**
  * An ECDH session key packet
  */
 @Convert.ByPosition(name = "suiteb-ecdh-aes-gcm-key",
 fields={"sender", "recipient"})
-public class EcdhItem extends SexpBacked implements SequenceItem {
+public class EcdhItem implements SequenceItem {
     public final DigestSha384 sender;
     public final DigestSha384 recipient;
 

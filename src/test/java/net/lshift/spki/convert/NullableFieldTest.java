@@ -17,7 +17,7 @@ import org.junit.Test;
 
 public class NullableFieldTest extends UsesCatalog {
     @Convert.ByName("with-optional")
-    public static class WithOptional extends SexpBacked {
+    public static class WithOptional {
         public final String mandatory;
         @Convert.Nullable
         public final String optional;

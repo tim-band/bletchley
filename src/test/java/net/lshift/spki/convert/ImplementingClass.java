@@ -2,8 +2,7 @@ package net.lshift.spki.convert;
 
 @Convert.ByPosition(name = "implementing-class", fields={})
 public class ImplementingClass
-    extends SexpBacked
-    implements Interface
+        implements Interface
 {
     public ImplementingClass()
     {

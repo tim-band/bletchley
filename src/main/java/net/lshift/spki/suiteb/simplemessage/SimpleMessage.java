@@ -1,7 +1,6 @@
 package net.lshift.spki.suiteb.simplemessage;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.ActionType;
 
 /**
@@ -9,7 +8,7 @@ import net.lshift.spki.suiteb.ActionType;
  * can be encrypted and/or signed.
  */
 @Convert.ByPosition(name="simple-message", fields={"type", "content"})
-public class SimpleMessage extends SexpBacked implements ActionType {
+public class SimpleMessage implements ActionType {
     public final String type;
     public final byte[] content;
 
