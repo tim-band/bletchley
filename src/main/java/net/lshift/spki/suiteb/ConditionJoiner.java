@@ -48,9 +48,9 @@ public class ConditionJoiner {
     }
 
 
-    private ConditionJoiner(final boolean disjunction, final Condition identity,
-        final Condition destructor) {
-        super();
+    private ConditionJoiner(final boolean disjunction,
+                            final Condition identity,
+                            final Condition destructor) {
         this.disjunction = disjunction;
         this.identity = identity;
         this.destructor = destructor;

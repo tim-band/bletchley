@@ -20,7 +20,6 @@ public class PrivateEncryptionKey implements SequenceItem {
 
     private PrivateEncryptionKey(final PublicEncryptionKey publicKey,
                                  final AsymmetricCipherKeyPair keyPair) {
-        super();
         this.publicKey = publicKey;
         this.keyPair = keyPair;
     }

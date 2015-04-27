@@ -23,7 +23,6 @@ public class NullableFieldTest extends UsesCatalog {
         public final String optional;
 
         public WithOptional(final String mandatory, final String optional) {
-            super();
             this.mandatory = mandatory;
             this.optional = optional;
         }

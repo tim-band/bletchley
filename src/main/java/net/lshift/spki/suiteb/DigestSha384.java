@@ -23,7 +23,6 @@ public class DigestSha384 implements SequenceItem {
     private final byte[] bytes;
 
     protected DigestSha384(final byte[] bytes) {
-        super();
         this.bytes = bytes;
     }
 

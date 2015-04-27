@@ -15,7 +15,6 @@ public class EcdsaPrivateKey {
     public final BigInteger d;
 
     public EcdsaPrivateKey(final PublicSigningKey publicKey, final BigInteger d) {
-        super();
         this.publicKey = publicKey;
         this.d = d;
     }

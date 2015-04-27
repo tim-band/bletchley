@@ -13,7 +13,6 @@ public class EcdhItem implements SequenceItem {
     public final DigestSha384 recipient;
 
     public EcdhItem(final DigestSha384 sender, final DigestSha384 recipient) {
-        super();
         this.sender = sender;
         this.recipient = recipient;
     }

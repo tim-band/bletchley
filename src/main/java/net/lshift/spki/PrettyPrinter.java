@@ -21,7 +21,6 @@ public class PrettyPrinter extends SpkiOutputStream {
     private boolean firstAtom = false;
 
     public PrettyPrinter(final PrintWriter pw) {
-        super();
         this.pw = pw;
     }
 

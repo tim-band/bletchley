@@ -11,7 +11,6 @@ public final class Atom extends Sexp {
     private final byte[] bytes;
 
     public Atom(final byte[] bytes) {
-        super();
         assert bytes != null;
         this.bytes = bytes;
     }

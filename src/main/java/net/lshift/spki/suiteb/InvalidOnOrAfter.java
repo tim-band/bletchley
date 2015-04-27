@@ -15,7 +15,6 @@ public class InvalidOnOrAfter implements Condition {
     public final Date date;
 
     public InvalidOnOrAfter(final Date date) {
-        super();
         this.date = date;
     }
 

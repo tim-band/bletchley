@@ -12,11 +12,7 @@ public class SimpleMessage implements ActionType {
     public final String type;
     public final byte[] content;
 
-    public SimpleMessage(
-        final String type,
-        final byte[] content
-    ) {
-        super();
+    public SimpleMessage(final String type, final byte[] content) {
         this.type = type;
         this.content = content;
     }

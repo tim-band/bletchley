@@ -8,7 +8,6 @@ public class Tagged {
     public final Type type;
 
     public Tagged(String name, Type type) {
-        super();
         this.name = name;
         this.type = type;
     }

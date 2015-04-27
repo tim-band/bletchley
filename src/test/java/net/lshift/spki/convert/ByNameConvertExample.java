@@ -12,7 +12,6 @@ public class ByNameConvertExample {
 
     public ByNameConvertExample(BigInteger foo, BigInteger bar, String baz,
             List<String> inlineList) {
-        super();
         this.foo = foo;
         this.bar = bar;
         this.baz = baz;

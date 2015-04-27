@@ -10,7 +10,6 @@ public class EnumMapType
     public final List<Field> fields;
 
     public EnumMapType(List<Field> fields) {
-        super();
         this.fields = fields;
     }
 }

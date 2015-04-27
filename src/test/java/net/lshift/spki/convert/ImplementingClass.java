@@ -2,12 +2,7 @@ package net.lshift.spki.convert;
 
 @Convert.ByPosition(name = "implementing-class", fields={})
 public class ImplementingClass
-        implements Interface
-{
-    public ImplementingClass()
-    {
-        super();
-    }
+        implements Interface {
 
     @Override
     public int hashCode()

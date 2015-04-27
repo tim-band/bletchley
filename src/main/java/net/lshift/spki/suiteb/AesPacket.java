@@ -19,12 +19,9 @@ public class AesPacket implements SequenceItem {
     public final byte[] nonce;
     public final byte[] ciphertext;
 
-    public AesPacket(
-        final AesKeyId keyId,
-        final byte[] nonce,
-        final byte[] ciphertext
-                    ) {
-        super();
+    public AesPacket(final AesKeyId keyId,
+                     final byte[] nonce,
+                     final byte[] ciphertext) {
         this.keyId = keyId;
         this.nonce = nonce;
         this.ciphertext = ciphertext;

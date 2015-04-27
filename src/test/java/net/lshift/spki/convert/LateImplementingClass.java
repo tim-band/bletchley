@@ -2,12 +2,7 @@ package net.lshift.spki.convert;
 
 @Convert.ByPosition(name="late-implementing-class", fields={})
 public class LateImplementingClass
-        implements Interface
-{
-    public LateImplementingClass()
-    {
-        super();
-    }
+        implements Interface {
 
     @Override
     public int hashCode()

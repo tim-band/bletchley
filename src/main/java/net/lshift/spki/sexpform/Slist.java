@@ -15,7 +15,6 @@ public final class Slist extends Sexp {
     private final List<Sexp> sparts;
 
     public Slist(final Atom head, final Sexp[] sparts) {
-        super();
         assert head != null;
         assert sparts != null;
         for (final Sexp part: sparts) {

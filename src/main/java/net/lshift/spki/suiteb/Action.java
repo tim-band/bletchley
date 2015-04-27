@@ -15,7 +15,6 @@ public class Action implements SequenceItem {
     private final ActionType payload;
 
     public Action(final ActionType payload) {
-        super();
         this.payload = payload;
     }
 

@@ -10,7 +10,6 @@ public class Signed implements SequenceItem {
     public final SequenceItem payload;
 
     public Signed(final String hashType, final SequenceItem payload) {
-        super();
         this.hashType = hashType;
         this.payload = payload;
     }

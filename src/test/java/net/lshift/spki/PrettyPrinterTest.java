@@ -29,7 +29,6 @@ public class PrettyPrinterTest extends UsesCatalog {
         private final Sexp sexp;
 
         public TestPair(final String resourceName, final Sexp sexp) {
-            super();
             this.resourceName = resourceName;
             this.sexp = sexp;
         }

@@ -12,7 +12,6 @@ public class PrimitivesTest {
         public final boolean b;
         public final int i;
         public PrimitivesExample(boolean b, int i) {
-            super();
             this.b = b;
             this.i = i;
         }

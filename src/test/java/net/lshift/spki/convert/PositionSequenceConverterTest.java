@@ -21,7 +21,6 @@ public class PositionSequenceConverterTest extends UsesCatalog {
         public final List<String> rest;
 
         public PositionSequenceExample(final String first, final List<String> rest) {
-            super();
             this.first = first;
             this.rest = rest;
         }

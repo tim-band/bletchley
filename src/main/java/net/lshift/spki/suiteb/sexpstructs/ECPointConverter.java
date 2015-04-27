@@ -26,11 +26,7 @@ public class ECPointConverter
         public final BigInteger x;
         public final BigInteger y;
 
-        public Point(
-            final BigInteger x,
-            final BigInteger y
-        ) {
-            super();
+        public Point(final BigInteger x, final BigInteger y) {
             this.x = x;
             this.y = y;
         }

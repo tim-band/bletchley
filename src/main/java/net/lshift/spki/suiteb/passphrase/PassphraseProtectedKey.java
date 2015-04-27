@@ -18,7 +18,6 @@ public class PassphraseProtectedKey implements SequenceItem {
 
     public PassphraseProtectedKey(final String passphraseId, final byte[] salt,
                                   final int iterations, final AesKeyId keyId) {
-        super();
         this.passphraseId = passphraseId;
         this.salt = salt;
         this.iterations = iterations;

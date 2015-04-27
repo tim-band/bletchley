@@ -18,7 +18,6 @@ public class KeyStart {
 
     public KeyStart(final String passphraseId, final byte[] salt, final int iterations,
                     final String passphrase) {
-        super();
         this.passphraseId = passphraseId;
         this.salt = salt;
         this.iterations = iterations;

@@ -15,7 +15,6 @@ public class Limit
     public final List<Condition> conditions;
 
     public Limit(final SequenceItem subject, final List<Condition> conditions) {
-        super();
         this.subject = subject;
         this.conditions = conditions;
     }

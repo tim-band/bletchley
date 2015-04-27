@@ -12,11 +12,7 @@ public class EcdsaSignature {
     public final BigInteger r;
     public final BigInteger s;
 
-    public EcdsaSignature(
-        final BigInteger r,
-        final BigInteger s
-    ) {
-        super();
+    public EcdsaSignature(final BigInteger r, final BigInteger s) {
         this.r = r;
         this.s = s;
     }

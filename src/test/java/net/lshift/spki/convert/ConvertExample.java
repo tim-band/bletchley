@@ -8,9 +8,7 @@ public class ConvertExample {
     public final BigInteger bar;
     final String baz;
 
-
     public ConvertExample(BigInteger foo, BigInteger bar, String baz) {
-        super();
         this.foo = foo;
         this.bar = bar;
         this.baz = baz;

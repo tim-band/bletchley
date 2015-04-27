@@ -27,10 +27,6 @@ public abstract class SpkiInputStreamTest {
 
     protected abstract void setInput(InputStream inputStream);
 
-    public SpkiInputStreamTest() {
-        super();
-    }
-
     public void setInput(final String string) {
         setInput(s(string));
     }

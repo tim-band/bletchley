@@ -15,8 +15,7 @@ class FieldConvertInfo {
     public final Class<?> inlineListType;
 
     public FieldConvertInfo(final Class<?> clazz, final Field field)
-        throws SecurityException {
-        super();
+            throws SecurityException {
         this.field = field;
         this.field.setAccessible(true);
         this.name = field.getName();

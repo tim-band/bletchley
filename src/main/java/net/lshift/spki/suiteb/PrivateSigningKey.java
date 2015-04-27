@@ -23,7 +23,6 @@ public class PrivateSigningKey {
 
     private PrivateSigningKey(final PublicSigningKey publicKey,
                               final AsymmetricCipherKeyPair keyPair) {
-        super();
         this.publicKey = publicKey;
         this.keyPair = keyPair;
         signer.init(true, keyPair.getPrivate());

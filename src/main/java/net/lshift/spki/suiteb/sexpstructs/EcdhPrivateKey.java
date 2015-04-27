@@ -14,7 +14,6 @@ public class EcdhPrivateKey {
     public final BigInteger d;
 
     public EcdhPrivateKey(final PublicEncryptionKey publicKey, final BigInteger d) {
-        super();
         this.publicKey = publicKey;
         this.d = d;
     }

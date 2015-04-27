@@ -14,7 +14,6 @@ public class Sequence
     public final List<SequenceItem> sequence;
 
     public Sequence(final List<SequenceItem> sequence) {
-        super();
         this.sequence = sequence;
     }
 

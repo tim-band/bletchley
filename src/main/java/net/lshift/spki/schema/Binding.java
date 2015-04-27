@@ -8,7 +8,6 @@ public class Binding {
     public final ConverterDeclaration value;
 
     public Binding(String name, ConverterDeclaration value) {
-        super();
         this.name = name;
         this.value = value;
     }

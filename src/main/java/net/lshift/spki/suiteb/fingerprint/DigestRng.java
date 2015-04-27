@@ -28,7 +28,6 @@ public class DigestRng {
         private final byte[] digest;
 
         public NextBytes(final Integer counter, final byte[] digest) {
-            super();
             this.counter = counter;
             this.digest = digest;
         }

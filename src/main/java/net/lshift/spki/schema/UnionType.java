@@ -9,7 +9,6 @@ public class UnionType implements ConverterDeclaration {
     public final List<Tagged> options;
 
     public UnionType(List<Tagged> options) {
-        super();
         this.options = options;
     }
 }

@@ -16,7 +16,6 @@ public final class AesKeyId {
     public final byte[] keyId;
 
     public AesKeyId(final byte[] keyId) {
-        super();
         this.keyId = keyId;
     }
 

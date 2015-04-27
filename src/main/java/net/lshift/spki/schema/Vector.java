@@ -8,7 +8,6 @@ public class Vector
     public final Type componentType;
 
     public Vector(Type memberType) {
-        super();
         this.componentType = memberType;
     }
 }
