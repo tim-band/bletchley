@@ -70,27 +70,24 @@ controls a switch:
     package homeautomation;
 
     import net.lshift.spki.convert.Convert;
-    import net.lshift.spki.convert.SexpBacked;
     import net.lshift.spki.suiteb.ActionType;
 
     @Convert.ByPosition(fields = { "name", "on" }, name = "set-switch")
-    public class SetSwitch extends SexpBacked implements ActionType {
+    public class SetSwitch implements ActionType {
         public final String name;
         public final boolean on;
 
         public SetSwitch(String name, boolean on) {
-            super();
             this.name = name;
             this.on = on;
         }
     }
 
-Briefly: We always extend SexpBacked. We annotate the class
-to tell Bletchley how it's converted. ByPosition means assign a
-position to each field. This is the most compact and straight forward
-representation. The other alternative is @Convert.ByName which labels
-each field. We will cover the differences in more detail in the
-conversion section.
+Briefly: We annotate the class to tell Bletchley how it's converted.
+ByPosition means assign a position to each field. This is the most
+compact and straight forward representation. The other alternative
+is @Convert.ByName which labels each field. We will cover the differences
+in more detail in the conversion section.
 
 The above applies to all the classes we want to use in messages, so
 if action refers to other classes, you must also annotate those.
