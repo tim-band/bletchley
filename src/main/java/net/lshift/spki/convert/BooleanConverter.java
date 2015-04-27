@@ -3,32 +3,28 @@ package net.lshift.spki.convert;
 import net.lshift.spki.InvalidInputException;
 
 public class BooleanConverter
-    extends StepConverter<Boolean, BooleanEnum>
-{
-    public BooleanConverter() { super(Boolean.class); }
+        extends StepConverter<Boolean, String> {
 
-    @Override
-    protected Class<BooleanEnum> getStepClass() {
-        return BooleanEnum.class;
+    public BooleanConverter() {
+        super(Boolean.class);
     }
 
     @Override
-    public Class<Boolean> getResultClass() {
-        return Boolean.class;
+    protected Class<String> getStepClass() {
+        return String.class;
     }
 
     @Override
-    protected BooleanEnum stepIn(Boolean s) {
-        return s ? BooleanEnum.TRUE : BooleanEnum.FALSE;
+    protected String stepIn(Boolean s) {
+        return s.toString();
     }
 
     @Override
-    protected Boolean stepOut(BooleanEnum o) throws InvalidInputException {
+    protected Boolean stepOut(String o) throws InvalidInputException {
         switch(o) {
-        case TRUE: return true;
-        case FALSE: return false;
-        default: throw new InvalidInputException(o.name());
+            case "true": return true;
+            case "false": return false;
+            default: throw new InvalidInputException(o);
         }
     }
-
 }
