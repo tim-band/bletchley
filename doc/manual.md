@@ -8,7 +8,7 @@ Bletchley is built using [Maven 2](http://maven.apache.org), and a Maven
 artifact is available from Central. Add it to your Maven project thus:
 
 
-	<dependency>
+    <dependency>
       <groupId>net.lshift</groupId>
       <artifactId>bletchley</artifactId>
       <version>0.1</version>
@@ -37,8 +37,8 @@ This is called the **inference engine**. If you know about expert
 systems, you can think about Bletchley as an expert system for trust.
 If not, don't worry: it's not assumed knowledge.
 
-An application creates on instance of the inference engine, and seeds
-it with trust information. Bletchley is very flexible: You migh have a single
+An application creates an instance of the inference engine, and seeds
+it with trust information. Bletchley is very flexible: You might have a single
 **public signing key** that's trusted completely, or a number of
 different keys which are trusted for specific actions, or for a specific
 period of time. Each of these is called a **condition** and you can
@@ -70,27 +70,24 @@ controls a switch:
     package homeautomation;
 
     import net.lshift.spki.convert.Convert;
-    import net.lshift.spki.convert.SexpBacked;
     import net.lshift.spki.suiteb.ActionType;
 
     @Convert.ByPosition(fields = { "name", "on" }, name = "set-switch")
-    public class SetSwitch extends SexpBacked implements ActionType {
+    public class SetSwitch implements ActionType {
         public final String name;
         public final boolean on;
 
         public SetSwitch(String name, boolean on) {
-            super();
             this.name = name;
             this.on = on;
         }
     }
 
-Briefly: We always extend SexpBacked. We annotate the class
-to tell Bletchley how it's converted. ByPosition means assign a
-position to each field. This is the most compact and straight forward
-representation. The other alternative is @Convert.ByName which labels
-each field. We will cover the differences in more detail in the
-conversion section.
+Briefly: We annotate the class to tell Bletchley how it's converted.
+ByPosition means assign a position to each field. This is the most
+compact and straightforward representation. The other alternative
+is @Convert.ByName which labels each field. We will cover the differences
+in more detail in the conversion section.
 
 The above applies to all the classes we want to use in messages, so
 if action refers to other classes, you must also annotate those.
@@ -136,7 +133,7 @@ Write some tests to prove that conversion is set up correctly:
     }
 
 
-And now you know how ro convert to and from byte arrays as well...
+And now you know how to convert to and from byte arrays as well...
 
 ## Signing
 

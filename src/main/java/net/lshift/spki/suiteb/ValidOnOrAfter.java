@@ -15,7 +15,6 @@ public class ValidOnOrAfter implements Condition {
     public final Date date;
 
     public ValidOnOrAfter(final Date date) {
-        super();
         this.date = date;
     }
 

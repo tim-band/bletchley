@@ -4,19 +4,16 @@ import java.util.List;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert.SequenceConverted;
-import net.lshift.spki.convert.SexpBacked;
 
 /**
  * A list of SequenceItems.  Itself a SequenceItem.
  */
 @SequenceConverted("sequence")
 public class Sequence
-    extends SexpBacked
-    implements SequenceItem {
+        implements SequenceItem {
     public final List<SequenceItem> sequence;
 
     public Sequence(final List<SequenceItem> sequence) {
-        super();
         this.sequence = sequence;
     }
 

@@ -2,7 +2,6 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.SexpBacked;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 @Convert.ByPosition(name = "aes-gcm-encrypted",
 fields={"keyId", "nonce", "ciphertext"})
-public class AesPacket extends SexpBacked implements SequenceItem {
+public class AesPacket implements SequenceItem {
     private static final Logger LOG
     = LoggerFactory.getLogger(AesPacket.class);
 
@@ -20,12 +19,9 @@ public class AesPacket extends SexpBacked implements SequenceItem {
     public final byte[] nonce;
     public final byte[] ciphertext;
 
-    public AesPacket(
-        final AesKeyId keyId,
-        final byte[] nonce,
-        final byte[] ciphertext
-                    ) {
-        super();
+    public AesPacket(final AesKeyId keyId,
+                     final byte[] nonce,
+                     final byte[] ciphertext) {
         this.keyId = keyId;
         this.nonce = nonce;
         this.ciphertext = ciphertext;

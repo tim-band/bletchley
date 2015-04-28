@@ -25,7 +25,6 @@ public class SpeedTester {
     private final byte[] messageBytes;
 
     public SpeedTester() {
-        super();
         this.privateKey = PrivateSigningKey.generate();
         this.publicKeyBytes = ConvertUtils.toBytes(
             PrivateEncryptionKey.generate().getPublicKey());

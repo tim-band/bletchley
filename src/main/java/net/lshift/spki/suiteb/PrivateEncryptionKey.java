@@ -4,7 +4,6 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -14,14 +13,13 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
  * A private key for decrypting data.
  */
 @ConvertClass(PrivateEncryptionKey.Step.class)
-public class PrivateEncryptionKey extends SexpBacked implements SequenceItem {
+public class PrivateEncryptionKey implements SequenceItem {
     private final PublicEncryptionKey publicKey;
     private final AsymmetricCipherKeyPair keyPair;
 
 
     private PrivateEncryptionKey(final PublicEncryptionKey publicKey,
                                  final AsymmetricCipherKeyPair keyPair) {
-        super();
         this.publicKey = publicKey;
         this.keyPair = keyPair;
     }
@@ -55,13 +53,10 @@ public class PrivateEncryptionKey extends SexpBacked implements SequenceItem {
     }
 
     public static class Step
-        extends ListStepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
+            extends ListStepConverter<PrivateEncryptionKey, EcdhPrivateKey> {
 
-        public Step() { super(PrivateEncryptionKey.class); }
-
-        @Override
-        protected Class<EcdhPrivateKey> getStepClass() {
-            return EcdhPrivateKey.class;
+        public Step() {
+            super(PrivateEncryptionKey.class, EcdhPrivateKey.class);
         }
 
         @SuppressWarnings("synthetic-access")

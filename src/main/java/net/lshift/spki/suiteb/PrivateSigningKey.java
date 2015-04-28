@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
@@ -17,14 +16,13 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
  * A private key for signing
  */
 @ConvertClass(PrivateSigningKey.Step.class)
-public class PrivateSigningKey extends SexpBacked {
+public class PrivateSigningKey {
     private final PublicSigningKey publicKey;
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();
 
     private PrivateSigningKey(final PublicSigningKey publicKey,
                               final AsymmetricCipherKeyPair keyPair) {
-        super();
         this.publicKey = publicKey;
         this.keyPair = keyPair;
         signer.init(true, keyPair.getPrivate());
@@ -56,12 +54,10 @@ public class PrivateSigningKey extends SexpBacked {
     }
 
     public static class Step
-        extends ListStepConverter<PrivateSigningKey, EcdsaPrivateKey> {
-        public Step() { super(PrivateSigningKey.class); }
+            extends ListStepConverter<PrivateSigningKey, EcdsaPrivateKey> {
 
-        @Override
-        protected Class<EcdsaPrivateKey> getStepClass() {
-            return EcdsaPrivateKey.class;
+        public Step() {
+            super(PrivateSigningKey.class, EcdsaPrivateKey.class);
         }
 
         @SuppressWarnings("synthetic-access")

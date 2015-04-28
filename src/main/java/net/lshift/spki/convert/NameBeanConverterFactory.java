@@ -37,7 +37,7 @@ implements ConverterFactory<Convert.ByName>
         final List<FieldConvertInfo> fields) {
         final Class<? super T> sup = clazz.getSuperclass();
         // FIXME: Nasty way to keep "sexp" field out of it
-        if (sup != null && sup != SexpBacked.class) {
+        if (sup != null) {
             addFields(sup, fields);
         }
         Field[] declaredFields = clazz.getDeclaredFields();

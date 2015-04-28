@@ -38,14 +38,14 @@ because an important property of encoding for a cryptographic system is that it
 is canonical. Systems which use XML and JSON must convert these into a canonical
 format to create or verify a signature, and this vital code is complex. SPKI is 
 designed so that the canonical form is trivial to generate. Canonical SPKI is 
-also trivial to parse, which reduces the likelyhood of vulnerabilities in
+also trivial to parse, which reduces the likelihood of vulnerabilities in
 network facing systems, particularly implementations in unsafe programming languages.
 
 Documentation
 -------------
 
  - [Manual](manual.md) (work in progress)
- - [Darkmail Example](https://github.com/lshift/bletchley-mail) which applies bletchley to implement a private email system
+ - [Darkmail Example](https://github.com/lshift/bletchley-mail) which applies Bletchley to implement a private email system
 
 
 

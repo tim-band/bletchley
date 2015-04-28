@@ -2,7 +2,6 @@ package net.lshift.spki.suiteb;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
 
 /**
@@ -23,7 +22,7 @@ import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
     Signature.class,
     Signed.class
 })
-public interface SequenceItem extends Writeable {
+public interface SequenceItem {
     void process(InferenceEngine engine, Condition trust)
         throws InvalidInputException;
 }
