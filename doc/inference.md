@@ -5,9 +5,9 @@ The inference engine stands between a public facing service and your application
 
 Representation
 --------------
-Messages are converted to Java objects before being processed by the inference engine. Some of those are understood by the inference engine, documented below. Actions is a base type for domain specific types. The inference engine doesn't process these items. The are conditionally passed on to the application, once processing is complete.
+Messages are converted to Java objects before being processed by the inference engine. Some of these objects are understood by the inference engine and are called items, documented below. Action is an item type the user can extend with domain specific types. The inference engine doesn't process data inside these items, except to generate digests. These are conditionally passed on to the application, once processing is complete.
 
-The itemns inference engine does understand form an abstract syntax tree.
+The items the inference engine does understand form an abstract syntax tree.
 
 Conditions
 ----------
@@ -28,7 +28,6 @@ The inference engine keeps track of trust conditions for items and for public ke
 
 Processing
 ----------
-
 Both trust and decryption are evaluated using forward chaining. I.e. items can only be processed if the required trust and/or keys have already been determined.
 
 Messages are processed using recursive decent. Sub-trees are processed with a trust condition. Some item types calculate a new trust condition and process sub-items with it. Unless otherwise specified, sub-items are processed with the trust condition unchanged. The following are the item types understood by the inference engine:
