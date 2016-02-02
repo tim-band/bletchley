@@ -46,4 +46,3 @@ Messages are processed using recursive decent. Sub-trees are processed with a tr
  * *Sequence*: process each child
  * *Signature*: Consists of a digest, a key id and the signature itself. If the public keys is known and the signture is valid, assign the trust condition of the public key to the item referred to by the digest.
  * *Signed*: Always contains a single sub-element, the payload. If there is known trust condition for the item, the sub elements are processed with that trust condition, otherwise process the content as untrusted.
-
