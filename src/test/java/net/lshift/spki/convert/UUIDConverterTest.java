@@ -34,9 +34,6 @@ public class UUIDConverterTest
         buffer.append(String.format(partFormat, Long.decode("0x" + tokens.nextToken())));
         buffer.append('-');
         buffer.append(String.format(partFormat, Long.decode("0x" + tokens.nextToken())));
-        // Just prove that UUID#fromString will accept the result
-        UUID.fromString(buffer.toString());
-        // And that we don't
         assertFalse(buffer.toString(), validUUID(buffer.toString()));
     }
 }
