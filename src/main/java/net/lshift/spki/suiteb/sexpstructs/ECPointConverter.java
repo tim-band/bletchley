@@ -4,7 +4,6 @@ import java.math.BigInteger;
 
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.suiteb.CryptographyException;
 import net.lshift.spki.suiteb.Ec;
 
@@ -17,30 +16,25 @@ import org.bouncycastle.math.ec.ECPoint;
  * Point representation.
  */
 public class ECPointConverter
-    extends ListStepConverter<ECPoint, ECPointConverter.Point> {
+        extends ListStepConverter<ECPoint, ECPointConverter.Point> {
 
     /**
      * Serialization format for an ECPoint ie a point on an elliptic curve.
      */
     @Convert.ByName("point")
-    public static class Point extends SexpBacked {
+    public static class Point {
         public final BigInteger x;
         public final BigInteger y;
 
-        public Point(
-            final BigInteger x,
-            final BigInteger y
-        ) {
-            super();
+        public Point(final BigInteger x, final BigInteger y) {
             this.x = x;
             this.y = y;
         }
     }
 
-    public ECPointConverter() { super(ECPoint.class); }
-
-    @Override
-    public Class<Point> getStepClass() { return Point.class; }
+    public ECPointConverter() {
+        super(ECPoint.class, ECPointConverter.Point.class);
+    }
 
     @Override
     public ECPointConverter.Point stepIn(final ECPoint q) {

@@ -29,12 +29,10 @@ public class PublicSigningKey
     }
 
     public static class Step
-        extends ListStepConverter<PublicSigningKey, EcdsaPublicKey> {
-        public Step() { super(PublicSigningKey.class); }
+            extends ListStepConverter<PublicSigningKey, EcdsaPublicKey> {
 
-        @Override
-        protected Class<EcdsaPublicKey> getStepClass() {
-            return EcdsaPublicKey.class;
+        public Step() {
+            super(PublicSigningKey.class, EcdsaPublicKey.class);
         }
 
         @Override

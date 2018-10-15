@@ -2,6 +2,7 @@ package net.lshift.spki;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Generate a canonical encoding of an S-expression given a stream of tokens.
@@ -17,7 +18,7 @@ public class CanonicalSpkiOutputStream
     @Override
     public void atom(final byte[] bytes, final int off, final int len)
         throws IOException {
-        os.write(Integer.toString(len).getBytes(Constants.ASCII));
+        os.write(Integer.toString(len).getBytes(StandardCharsets.US_ASCII));
         os.write(':');
         os.write(bytes, off, len);
     }

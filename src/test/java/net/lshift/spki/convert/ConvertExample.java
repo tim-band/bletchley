@@ -3,15 +3,12 @@ package net.lshift.spki.convert;
 import java.math.BigInteger;
 
 @Convert.ByPosition(name="convert-example", fields={"foo", "bar", "baz"})
-public class ConvertExample extends SexpBacked
-{
+public class ConvertExample {
     public final BigInteger foo;
     public final BigInteger bar;
     final String baz;
 
-
     public ConvertExample(BigInteger foo, BigInteger bar, String baz) {
-        super();
         this.foo = foo;
         this.bar = bar;
         this.baz = baz;

@@ -7,8 +7,6 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.convert.SexpBacked;
-import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 
 import org.bouncycastle.crypto.digests.SHA384Digest;
@@ -19,13 +17,12 @@ import org.bouncycastle.util.encoders.Hex;
  * A SHA-384 digest of a SExp.
  */
 @ConvertClass(DigestSha384.Step.class)
-public class DigestSha384 extends SexpBacked implements SequenceItem {
+public class DigestSha384 implements SequenceItem {
     public static final String DIGEST_NAME = "sha384";
     private static final int DIGEST_LENGTH = 48;
     private final byte[] bytes;
 
     protected DigestSha384(final byte[] bytes) {
-        super();
         this.bytes = bytes;
     }
 
@@ -33,7 +30,7 @@ public class DigestSha384 extends SexpBacked implements SequenceItem {
         return bytes;
     }
 
-    public static DigestSha384 digest(final Writeable o) {
+    public static DigestSha384 digest(final Object o) {
         final SHA384Digest sha = new SHA384Digest();
         final DigestOutputStream digester = new DigestOutputStream(sha);
         try {
@@ -48,13 +45,10 @@ public class DigestSha384 extends SexpBacked implements SequenceItem {
     }
 
     public static class Step
-        extends ListStepConverter<DigestSha384, Hash> {
+            extends ListStepConverter<DigestSha384, Hash> {
 
-        public Step() { super(DigestSha384.class); }
-
-        @Override
-        protected Class<Hash> getStepClass() {
-            return Hash.class;
+        public Step() {
+            super(DigestSha384.class, Hash.class);
         }
 
         @SuppressWarnings("synthetic-access")

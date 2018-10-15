@@ -3,11 +3,10 @@ package net.lshift.spki.schema;
 import java.text.MessageFormat;
 
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.SexpBacked;
 import net.lshift.spki.sexpform.Sexp;
 
 @Convert.ByPosition(name="ref",fields="name")
-public class TypeReference extends SexpBacked implements Type {
+public class TypeReference implements Type {
     public final String name;
 
     public TypeReference(String name) {

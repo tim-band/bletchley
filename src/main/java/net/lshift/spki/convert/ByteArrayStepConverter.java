@@ -4,11 +4,9 @@ package net.lshift.spki.convert;
  * Convenient superclass for converters that go via byte arrays.
  */
 public abstract class ByteArrayStepConverter<T>
-    extends StepConverter<T, byte[]> {
+        extends StepConverter<T, byte[]> {
 
     public ByteArrayStepConverter(final Class<T> clazz) {
-        super(clazz);
+        super(clazz, byte[].class);
     }
-
-    @Override protected Class<byte[]> getStepClass() { return byte[].class; }
 }

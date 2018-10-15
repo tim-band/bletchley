@@ -16,12 +16,11 @@ import org.junit.Test;
 public class PositionSequenceConverterTest extends UsesCatalog {
 
     @Convert.PositionSequence(name="position-convert", fields={"first"}, seq="rest")
-    public static class PositionSequenceExample extends SexpBacked {
+    public static class PositionSequenceExample {
         public final String first;
         public final List<String> rest;
 
         public PositionSequenceExample(final String first, final List<String> rest) {
-            super();
             this.first = first;
             this.rest = rest;
         }

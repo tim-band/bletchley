@@ -5,18 +5,10 @@ import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
 
-import org.apache.commons.lang.StringUtils;
-
 public class EnumConverter<T extends Enum<T>>
 extends StringStepConverter<T> {
-    private static final String VALID_ENUM_FIRST =
-       "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final String VALID_ENUM =
-       "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
-    private final Map<T, String> forwardMap
-        = new HashMap<T, String>();
-    private final Map<String, T> backMap
-        = new HashMap<String, T>();
+    private final Map<T, String> forwardMap = new HashMap<>();
+    private final Map<String, T> backMap = new HashMap<>();
 
     public EnumConverter(final Class<T> resultClass) {
         super(resultClass);
@@ -25,10 +17,8 @@ extends StringStepConverter<T> {
         }
         for (final T t: resultClass.getEnumConstants()) {
             final String name = t.name();
-            if (!StringUtils.containsOnly(name, VALID_ENUM) || 
-                VALID_ENUM_FIRST.indexOf(name.charAt(0)) < 0) {
-                throw new IllegalArgumentException(
-                    "Enum contains non-standard name: " + name);
+            if (!ConvertUtils.isAsciiIdentifier(name)) {
+                throw new IllegalArgumentException("Enum name is non ascii: " + clazz.getName() + "." + name);
             }
             final String conversion = name.toLowerCase().replace('_', '-');
             forwardMap.put(t, conversion);

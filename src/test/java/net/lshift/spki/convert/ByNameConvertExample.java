@@ -4,8 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 @Convert.ByName("by-name-convert-example")
-public class ByNameConvertExample extends SexpBacked
-{
+public class ByNameConvertExample {
     public final BigInteger foo;
     public final BigInteger bar;
     final String baz;
@@ -13,7 +12,6 @@ public class ByNameConvertExample extends SexpBacked
 
     public ByNameConvertExample(BigInteger foo, BigInteger bar, String baz,
             List<String> inlineList) {
-        super();
         this.foo = foo;
         this.bar = bar;
         this.baz = baz;

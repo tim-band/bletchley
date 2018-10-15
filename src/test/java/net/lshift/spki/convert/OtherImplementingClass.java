@@ -2,13 +2,7 @@ package net.lshift.spki.convert;
 
 @Convert.ByPosition(name="other-implementing-class", fields={})
 public class OtherImplementingClass
-    extends SexpBacked
-    implements Interface
-{
-    public OtherImplementingClass()
-    {
-        super();
-    }
+        implements Interface {
 
     @Override
     public int hashCode()
