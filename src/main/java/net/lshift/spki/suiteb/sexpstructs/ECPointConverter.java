@@ -38,8 +38,9 @@ public class ECPointConverter
 
     @Override
     public ECPointConverter.Point stepIn(final ECPoint q) {
+        final ECPoint normQ = q.normalize();
         return new Point(
-            q.getX().toBigInteger(), q.getY().toBigInteger());
+            normQ.getXCoord().toBigInteger(), normQ.getYCoord().toBigInteger());
     }
 
     @Override
@@ -47,8 +48,9 @@ public class ECPointConverter
         final ECCurve curve = Ec.DOMAIN_PARAMETERS.getCurve();
         final ECPoint res = curve.createPoint(
             point.x, point.y, false);
-        final ECFieldElement x = res.getX();
-        if (!res.getY().square().equals(
+        final ECPoint normRes = res.normalize();
+        final ECFieldElement x = normRes.getXCoord();
+        if (!normRes.getYCoord().square().equals(
             x.multiply(x.square().add(curve.getA())).add(curve.getB()))) {
             throw new CryptographyException("Point is not on curve");
         }
