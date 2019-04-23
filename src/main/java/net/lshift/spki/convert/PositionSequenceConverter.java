@@ -1,10 +1,7 @@
 package net.lshift.spki.convert;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.schema.ConverterDeclaration;
@@ -46,7 +43,7 @@ public class PositionSequenceConverter<T>
     protected Map<Field, Object> readFields(final ConverterCatalog c, final Slist tail)
         throws InvalidInputException {
         final int size = fields.size();
-        final Map<Field, Object> rmap = SexpBacked.getResMap(tail);
+        final Map<Field, Object> rmap = new HashMap<>();
         for (int i = 0; i < size; i++) {
             final FieldConvertInfo f = fields.get(i);
             rmap.put(f.field, readElement(f.field.getType(), c, tail.getSparts().get(i)));

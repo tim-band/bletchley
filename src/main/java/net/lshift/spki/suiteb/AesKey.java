@@ -1,11 +1,9 @@
 package net.lshift.spki.suiteb;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.ConverterCatalog;
-import net.lshift.spki.convert.SexpBacked;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESFastEngine;
@@ -13,14 +11,16 @@ import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * A key to use with AES/GCM.
  */
 @Convert.ByPosition(name="aes-gcm-key", fields={"key"})
-public class AesKey extends SexpBacked implements SequenceItem {
+public class AesKey implements SequenceItem {
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
-        = "8:keyid-ad".getBytes(Constants.ASCII);
+        = "8:keyid-ad".getBytes(StandardCharsets.US_ASCII);
     private static final byte[] ZERO_BYTES = new byte[] { };
 
     public final byte[] key;

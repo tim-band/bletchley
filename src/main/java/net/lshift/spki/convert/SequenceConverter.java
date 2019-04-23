@@ -3,10 +3,7 @@ package net.lshift.spki.convert;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.schema.ConverterDeclaration;
@@ -62,7 +59,7 @@ public class SequenceConverter<T>
     @Override
     protected Map<Field, Object> readFields(final ConverterCatalog r, final Slist tail)
         throws InvalidInputException {
-            final Map<Field, Object> fields = SexpBacked.getResMap(tail);
+            final Map<Field, Object> fields = new HashMap<>();
             fields.put(beanField, readSequence(r, contentType, tail.getSparts()));
             return fields;
     }

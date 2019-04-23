@@ -1,8 +1,7 @@
 package net.lshift.spki.sexpform;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-import net.lshift.spki.Constants;
 
 /**
  * Static methods useful for creating S-expression structures.
@@ -14,7 +13,7 @@ public class Create {
     }
 
     public static Atom atom(final String name) {
-        return atom(name.getBytes(Constants.UTF8));
+        return atom(name.getBytes(StandardCharsets.UTF_8));
     }
 
     public static Slist list(final String head, final Sexp... tail) {

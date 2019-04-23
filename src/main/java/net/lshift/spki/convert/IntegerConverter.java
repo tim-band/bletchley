@@ -5,10 +5,11 @@ import java.math.BigInteger;
 import net.lshift.spki.InvalidInputException;
 
 public class IntegerConverter
-    extends StepConverter<Integer,BigInteger> {
-    public IntegerConverter() { super(Integer.class); }
+        extends StepConverter<Integer, BigInteger> {
 
-    @Override protected Class<BigInteger> getStepClass() { return BigInteger.class; }
+    public IntegerConverter() {
+        super(Integer.class, BigInteger.class);
+    }
 
     @Override
     protected Integer stepOut(final BigInteger s)

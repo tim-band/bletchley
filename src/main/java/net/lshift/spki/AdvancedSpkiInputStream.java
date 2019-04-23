@@ -13,7 +13,7 @@ import org.bouncycastle.util.encoders.Hex;
  * There are lots of advanced streams it can't currently parse, but
  * it can parse our current prettyPrinted output.
  */
-public class AdvancedSpkiInputStream extends FileSpkiInputStream {
+public class AdvancedSpkiInputStream extends SpkiInputStream {
     private static final int NO_PUSHBACK = -2;
     private SpkiInputStream delegate = null;
     private byte[] atomBytes = null;

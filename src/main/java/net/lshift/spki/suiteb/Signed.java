@@ -3,15 +3,13 @@ package net.lshift.spki.suiteb;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.SexpBacked;
 
 @Convert.ByPosition(name="signed", fields={"hashType", "payload"})
-public class Signed extends SexpBacked implements SequenceItem {
+public class Signed implements SequenceItem {
     public final String hashType;
     public final SequenceItem payload;
 
     public Signed(final String hashType, final SequenceItem payload) {
-        super();
         this.hashType = hashType;
         this.payload = payload;
     }

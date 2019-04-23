@@ -3,9 +3,8 @@ package net.lshift.spki.suiteb;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-
-import net.lshift.spki.Constants;
 
 import org.bouncycastle.asn1.nist.NISTNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -34,7 +33,7 @@ public class EcdsaTest
         final ECDSASigner signer = new ECDSASigner();
         signer.init(true, senderPair.getPrivate());
         final byte[] message = "The magic words are squeamish ossifrage".getBytes(
-            Constants.ASCII);
+                StandardCharsets.US_ASCII);
         final SHA384Digest digester = new SHA384Digest();
         digester.update(message, 0, message.length);
         final byte[] digest = new byte[digester.getDigestSize()];

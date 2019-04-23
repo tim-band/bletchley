@@ -11,7 +11,6 @@ public final class InferenceVariable<T> {
     private final long v2 = random.nextLong();
 
     public InferenceVariable(final Class<?> type, final String name) {
-        super();
         this.type = type;
         this.name = name;
     }

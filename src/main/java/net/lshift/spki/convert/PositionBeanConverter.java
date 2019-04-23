@@ -1,6 +1,7 @@
 package net.lshift.spki.convert;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class PositionBeanConverter<T>
         if (tail.getSparts().size() != size) {
             throw new ConvertException("Wrong number of fields");
         }
-        final Map<Field, Object> res = SexpBacked.getResMap(tail);
+        final Map<Field, Object> res = new HashMap<>();
         for (int i = 0; i < size; i++) {
             final FieldConvertInfo f = fields.get(i);
             res.put(f.field, readElement(f.field.getType(), r, tail.getSparts().get(i)));

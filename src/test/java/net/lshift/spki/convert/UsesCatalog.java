@@ -25,9 +25,7 @@ public class UsesCatalog {
      * Put the argument through a serialization/deserialization round trip
      */
 
-    public <T extends Writeable> T roundTrip(
-        final Class<T> clazz, final T o)
-    {
+    public <T> T roundTrip(final Class<T> clazz, final T o) {
         try {
             final ByteOpenable buf = new ByteOpenable();
             write(buf, o);

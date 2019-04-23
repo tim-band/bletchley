@@ -16,14 +16,6 @@ import net.lshift.spki.convert.Convert.HandlerClass;
  */
 public class ConverterCache {
     private static final ConverterCache GLOBAL_CACHE = new ConverterCache();
-    private static final Map<Class<?>,Class<?>> PRIMITIVE_TO_WRAPPER;
-
-    static {
-        Map<Class<?>,Class<?>> primitiveToWrapper = new HashMap<Class<?>,Class<?>>();
-        primitiveToWrapper.put(Boolean.TYPE, Boolean.class);
-        primitiveToWrapper.put(Integer.TYPE, Integer.class);
-        PRIMITIVE_TO_WRAPPER = Collections.unmodifiableMap(primitiveToWrapper);
-    }
 
     private final Map<Class<?>, ConverterFactory<?>> factoryCache
         = new HashMap<Class<?>, ConverterFactory<?>>();
@@ -34,10 +26,14 @@ public class ConverterCache {
     private ConverterCache() {
         registerInternal(new SexpConverter());
         registerInternal(new ByteArrayConverter());
-        registerInternal(new BooleanConverter());
+        BooleanConverter booleanConverter = new BooleanConverter();
+        registerInternal(booleanConverter);
+        registerInternal(Boolean.TYPE, booleanConverter);
         registerInternal(new StringConverter());
         registerInternal(new BigIntegerConverter());
-        registerInternal(new IntegerConverter());
+        IntegerConverter integerConverter = new IntegerConverter();
+        registerInternal(integerConverter);
+        registerInternal(Integer.TYPE, integerConverter);
         registerInternal(new DateConverter());
         registerInternal(new URIConverter());
         registerInternal(new URLConverter());
@@ -45,7 +41,11 @@ public class ConverterCache {
     }
 
     private <T> void registerInternal(final Converter<T> converter) {
-        converterMap.put(converter.getResultClass(), converter);
+        registerInternal(converter.getResultClass(), converter);
+    }
+
+    private <T> void registerInternal(final Class<T> clazz, final Converter<T> converter) {
+        converterMap.put(clazz, converter);
     }
 
     public static <T> Converter<T> getConverter(final Class<T> clazz) {
@@ -55,9 +55,6 @@ public class ConverterCache {
     @SuppressWarnings("unchecked")
     private synchronized <T> Converter<T> getConverterInternal(
         final Class<T> clazz) {
-        if(PRIMITIVE_TO_WRAPPER.containsKey(clazz)) {
-            return (Converter<T>)getConverterInternal(PRIMITIVE_TO_WRAPPER.get(clazz));
-        }
         Converter<T> res = (Converter<T>) converterMap.get(clazz);
         if (res == null) {
             res = generateConverter(clazz);

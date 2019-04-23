@@ -14,17 +14,16 @@ import org.junit.Test;
 
 public class EnumTest
     extends UsesCatalog {
-    public static enum TestEnum {
+    enum TestEnum {
         LEFT,
         RIGHT
     }
 
     @Convert.ByPosition(name="enum-holder", fields="testEnum")
-    public static class EnumHolder extends SexpBacked {
+    public static class EnumHolder {
         public final TestEnum testEnum;
 
         public EnumHolder(final TestEnum testEnum) {
-            super();
             this.testEnum = testEnum;
         }
     }
@@ -39,5 +38,23 @@ public class EnumTest
         final EnumHolder changeBack = ConvertUtils.fromBytes(getReadInfo(),
             EnumHolder.class, bytes);
         assertEquals(test.testEnum, changeBack.testEnum);
+    }
+
+    enum InvalidTestEnum {
+        é
+    }
+
+    @Convert.ByPosition(name="invalid-enum-holder", fields="testEnum")
+    public static class InvalidEnumHolder {
+        public final InvalidTestEnum testEnum;
+
+        public InvalidEnumHolder(final InvalidTestEnum testEnum) {
+            this.testEnum = testEnum;
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidEnumTest() throws InvalidInputException, IOException {
+        ConvertUtils.toBytes(new InvalidEnumHolder(InvalidTestEnum.é));
     }
 }

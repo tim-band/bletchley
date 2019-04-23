@@ -22,7 +22,7 @@ public class UUIDConverter
             format(UUID_PART, 4),
             format(UUID_PART, 4),
             format(UUID_PART, 4),
-            format(UUID_PART, 12)));
+            format(UUID_PART, 12)), Pattern.CASE_INSENSITIVE);
 
     public UUIDConverter() { super(UUID.class); }
 

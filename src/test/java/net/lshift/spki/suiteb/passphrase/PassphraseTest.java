@@ -7,8 +7,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-import net.lshift.spki.Constants;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ConvertUtils;
@@ -28,7 +28,7 @@ public class PassphraseTest extends UsesSimpleMessage {
     private static final String MESSAGE_TYPE = "passphrase test message";
     private static final String MESSAGE_TEXT = "Squeamish ossifrage";
     private static final Action MESSAGE = new Action(new SimpleMessage(
-        MESSAGE_TYPE, MESSAGE_TEXT.getBytes(Constants.ASCII)));
+        MESSAGE_TYPE, MESSAGE_TEXT.getBytes(StandardCharsets.US_ASCII)));
 
     @Test
     public void testRoundtrip() throws InvalidInputException {

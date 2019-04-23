@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.ConverterCatalog;
-import net.lshift.spki.convert.Writeable;
 import net.lshift.spki.suiteb.SequenceItem;
 
 import org.apache.commons.io.IOUtils;
@@ -49,10 +48,8 @@ public class OpenableUtils {
         }
     }
 
-    public static void write(
-        final Openable open,
-        final Writeable o)
-        throws IOException {
+    public static void write(final Openable open,
+                             final Object o) throws IOException {
         final OutputStream os = open.write();
         try {
             ConvertUtils.write(o, os);

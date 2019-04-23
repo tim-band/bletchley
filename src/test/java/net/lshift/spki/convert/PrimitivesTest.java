@@ -8,11 +8,10 @@ import org.junit.Test;
 
 public class PrimitivesTest {
     @Convert.ByPosition(fields = { "b", "i" }, name = "primitive")
-    public static class PrimitivesExample extends SexpBacked implements ActionType {
+    public static class PrimitivesExample implements ActionType {
         public final boolean b;
         public final int i;
         public PrimitivesExample(boolean b, int i) {
-            super();
             this.b = b;
             this.i = i;
         }
@@ -27,5 +26,23 @@ public class PrimitivesTest {
                 ConvertUtils.toBytes(a));
         assertEquals(a.b, b.b);
         assertEquals(a.i, b.i);
+    }
+
+    @Convert.ByPosition(fields = { "é" }, name = "primitive-non-ascii")
+    public static class PrimitivesExampleWithNonasciiFields implements ActionType {
+        public final boolean é;
+        public PrimitivesExampleWithNonasciiFields(boolean e) {
+            this.é = e;
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConvertNonascii() throws Exception {
+        PrimitivesExampleWithNonasciiFields a = new PrimitivesExampleWithNonasciiFields(true);
+        PrimitivesExampleWithNonasciiFields b = ConvertUtils.fromBytes(
+                ConverterCatalog.BASE.extend(PrimitivesExampleWithNonasciiFields.class),
+                PrimitivesExampleWithNonasciiFields.class,
+                ConvertUtils.toBytes(a));
+        assertEquals(a.é, b.é);
     }
 }

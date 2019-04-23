@@ -22,7 +22,6 @@ public class UnsafeTest {
         public final int bar;
 
         public TestClass(final BigInteger foo, final int bar) {
-            super();
             this.foo = foo;
             this.bar = bar;
         }

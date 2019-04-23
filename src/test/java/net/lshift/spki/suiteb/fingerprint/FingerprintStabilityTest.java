@@ -18,7 +18,6 @@ public class FingerprintStabilityTest {
         private final String fingerprint;
 
         public TestPair(final Sexp test, final String fingerprint) {
-            super();
             this.test = test;
             this.fingerprint = fingerprint;
         }

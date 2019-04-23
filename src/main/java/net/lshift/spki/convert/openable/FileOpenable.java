@@ -9,11 +9,11 @@ import java.io.IOException;
  * Adapt File to the Openable interface.
  */
 public class FileOpenable
-    implements Openable {
+        implements Openable {
+
     private final File file;
 
     public FileOpenable(final File file) {
-        super();
         this.file = file;
     }
 
