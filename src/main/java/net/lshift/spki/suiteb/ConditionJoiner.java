@@ -8,7 +8,7 @@ public class ConditionJoiner {
     private final Condition identity;
     private final Condition destructor;
 
-    private final List<Condition> terms = new ArrayList<Condition>();
+    private final List<Condition> terms = new ArrayList<>();
     private boolean destroyed = false;
 
     private static class AndCondition

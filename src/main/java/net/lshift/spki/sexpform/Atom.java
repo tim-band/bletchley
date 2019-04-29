@@ -11,7 +11,9 @@ public final class Atom extends Sexp {
     private final byte[] bytes;
 
     public Atom(final byte[] bytes) {
-        assert bytes != null;
+        if(bytes == null) {
+        	throw new IllegalArgumentException("bytes == null");
+        }
         this.bytes = bytes;
     }
 
@@ -41,9 +43,12 @@ public final class Atom extends Sexp {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final Atom other = (Atom) obj;
-        if (!Arrays.equals(bytes, other.bytes))
-            return false;
+
+        {
+        	final Atom other = (Atom) obj;
+        	if (!Arrays.equals(bytes, other.bytes))
+        		return false;
+        }
         return true;
     }
 

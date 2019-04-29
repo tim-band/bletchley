@@ -5,7 +5,7 @@ package net.lshift.spki.suiteb;
  */
 public class TrustedCondition
     implements Condition {
-    public static TrustedCondition TRUSTED = new TrustedCondition();
+    public static final TrustedCondition TRUSTED = new TrustedCondition();
 
     private TrustedCondition() {
         // use static instance

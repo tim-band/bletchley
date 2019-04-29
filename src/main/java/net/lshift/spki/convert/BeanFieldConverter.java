@@ -1,6 +1,5 @@
 package net.lshift.spki.convert;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.lshift.spki.schema.ListType;
-import net.lshift.spki.schema.Tagged;
 import net.lshift.spki.schema.TypeReference;
 import net.lshift.spki.sexpform.Sexp;
 
@@ -25,11 +23,6 @@ public abstract class BeanFieldConverter<T>
     {
         super(clazz, name);
         this.fields = fields;
-//        System.out.println("Fields for: " +  clazz.getCanonicalName());
-//        for (FieldConvertInfo f: fields) {
-//            System.out.println(f.hyphenatedName + " " + f.field.getType().getCanonicalName());
-//        }
-//        System.out.println("----------- " +  clazz.getCanonicalName());
     }
 
     @Override
@@ -56,7 +49,7 @@ public abstract class BeanFieldConverter<T>
     }
 
     public static List<net.lshift.spki.schema.Field> fieldDeclarations(List<FieldConvertInfo> fields) {
-        List<net.lshift.spki.schema.Field> decls = new ArrayList<net.lshift.spki.schema.Field>();
+        List<net.lshift.spki.schema.Field> decls = new ArrayList<>();
         for(FieldConvertInfo info: fields) {
             decls.add(new net.lshift.spki.schema.Field(info.hyphenatedName,
                     (info.inlineListType != null)
@@ -69,7 +62,7 @@ public abstract class BeanFieldConverter<T>
     public static Set<Class<?>> references(
             List<FieldConvertInfo> fields,
             Set<Class<?>> exclude) {
-        Set<Class<?>> refs = new HashSet<Class<?>>(fields.size());
+        Set<Class<?>> refs = new HashSet<>(fields.size());
         for(FieldConvertInfo info: fields) {
             Class<?> type = (info.inlineListType != null)
                     ? info.inlineListType

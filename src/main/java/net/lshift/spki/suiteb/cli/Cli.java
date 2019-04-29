@@ -156,7 +156,7 @@ public class Cli {
         final String messageType,
         final Openable[] args)
         throws IOException, InvalidInputException {
-        final List<SequenceItem> sequenceItems = new ArrayList<SequenceItem>();
+        final List<SequenceItem> sequenceItems = new ArrayList<>();
         final AesKey aesKey = AesKey.generateAESKey();
         final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         sequenceItems.add(ephemeral.getPublicKey());
@@ -166,8 +166,7 @@ public class Cli {
             sequenceItems.add(ephemeral.encrypt(pKey, aesKey));
         }
 
-        final List<SequenceItem> encryptedSequenceItems
-            = new ArrayList<SequenceItem>();
+        final List<SequenceItem> encryptedSequenceItems = new ArrayList<>();
         final Action message = new Action(new SimpleMessage(
             messageType, OpenableUtils.readBytes(args[1])));
         final PrivateSigningKey privateKey

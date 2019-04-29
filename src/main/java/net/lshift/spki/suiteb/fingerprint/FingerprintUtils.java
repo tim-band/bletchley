@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb.fingerprint;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 import net.lshift.spki.suiteb.DigestSha384;
@@ -17,9 +18,13 @@ public class FingerprintUtils {
     public static final String SEPARATORS = "--/--/--/--/--";
     public static final int NUM_GROUPS = SEPARATORS.length()+1;
 
-    public static final List<String> WORDLIST = getWordlist();
+    public static final List<String> WORDLIST = Collections.unmodifiableList(getWordlist());
     public static final int NUM_WORDS = WORDLIST.size();
 
+    private FingerprintUtils() { 
+    	// Class cannot be instantiated
+    }
+    
     private static List<String> getWordlist() {
         try {
             final InputStream resourceStream
@@ -30,7 +35,7 @@ public class FingerprintUtils {
                 resourceStream.close();
             }
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 
@@ -40,7 +45,7 @@ public class FingerprintUtils {
 
     public static String getFingerprint(final DigestSha384 digest) {
         final DigestRng rng = new DigestRng(digest);
-        final StringBuffer res = new StringBuffer();
+        final StringBuilder res = new StringBuilder();
         res.append(rng.nextChoice(WORDLIST));
         for (final char s: SEPARATORS.toCharArray()) {
             res.append(s);

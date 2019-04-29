@@ -5,7 +5,7 @@ import net.lshift.spki.convert.Convert;
 @Convert.ByPosition(name = "untrusted", fields = {})
 public class UntrustedCondition
     implements Condition {
-    public static UntrustedCondition UNTRUSTED = new UntrustedCondition();
+    public static final UntrustedCondition UNTRUSTED = new UntrustedCondition();
 
     private UntrustedCondition() {
         // use static instance

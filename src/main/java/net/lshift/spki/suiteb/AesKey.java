@@ -44,7 +44,7 @@ public class AesKey implements SequenceItem {
             return new AesKeyId(ciphertext);
         } catch (final InvalidCipherTextException e) {
             // Should be impossible when we're encrypting!
-            throw new RuntimeException(
+            throw new AssertionError(
                 "Unexpected behaviour in crypto libraries", e);
         }
     }
@@ -70,7 +70,7 @@ public class AesKey implements SequenceItem {
                 gcm.doFinal(ciphertext, resp);
             } catch (final InvalidCipherTextException e) {
                 // Should be impossible when we're encrypting!
-                throw new RuntimeException(
+                throw new AssertionError(
                     "Unexpected behaviour in crypto libraries", e);
             }
             return new AesPacket(getKeyId(), nonce, ciphertext);

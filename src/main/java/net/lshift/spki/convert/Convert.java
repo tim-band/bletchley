@@ -83,8 +83,7 @@ public class Convert
     @Target({ElementType.TYPE})
     @ConverterFactoryClass(ConvertClassFactory.class)
     public @interface ConvertClass {
-        // FIXME: why doesn't Class<StepConverter<?,?>> work?
-        Class<? extends Converter<?>> value();
+        Class<? extends StepConverter<?,?>> value();
     }
 
     /**

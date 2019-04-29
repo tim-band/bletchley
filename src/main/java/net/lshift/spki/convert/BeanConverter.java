@@ -45,7 +45,7 @@ public abstract class BeanConverter<T> extends ConverterImpl<T>
 
     @Override
     public Sexp write(final T o) {
-        final List<Sexp> tail = new ArrayList<Sexp>();
+        final List<Sexp> tail = new ArrayList<>();
         writeRest(o, tail);
         return list(getName(), tail);
     }
@@ -57,7 +57,7 @@ public abstract class BeanConverter<T> extends ConverterImpl<T>
 
     public List<Object> readSequence(final ConverterCatalog r, final Class<?> contentType, final List<Sexp> in)
         throws InvalidInputException {
-            final List<Object> components = new ArrayList<Object>(in.size());
+            final List<Object> components = new ArrayList<>(in.size());
             for (final Sexp s: in) {
                 components.add(readElement(contentType, r, s));
             }

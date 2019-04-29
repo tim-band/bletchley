@@ -125,7 +125,7 @@ public class ConvertUtils {
             os.close();
             return os.toByteArray();
         } catch (final IOException e) {
-            throw new RuntimeException(
+            throw new AssertionError(
                 "ByteArrayInputStream cannot throw IOException", e);
         }
     }
@@ -137,7 +137,7 @@ public class ConvertUtils {
         try {
             return read(r, clazz, new ByteArrayInputStream(bytes));
         } catch (final IOException e) {
-            throw new RuntimeException(
+            throw new AssertionError(
                 "ByteArrayInputStream cannot throw IOException", e);
         }
     }
@@ -155,7 +155,7 @@ public class ConvertUtils {
             pw.close();
         } catch (final IOException e) {
             // should not be possible
-            throw new RuntimeException(e);
+            throw new AssertionError("StringWriter does not throw IOExceoption", e);
         }
         return writer.toString();
     }

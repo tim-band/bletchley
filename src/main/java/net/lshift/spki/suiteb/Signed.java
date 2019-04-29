@@ -40,3 +40,4 @@ public class Signed implements SequenceItem {
             engine.getItemTrust(DigestSha384.digest(payload)));
     }
 }
+

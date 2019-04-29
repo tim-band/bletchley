@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.util.encoders.Hex;
@@ -74,7 +75,7 @@ public class AdvancedSpkiInputStream extends SpkiInputStream {
                 break;
             default:
                 if (next < 'a' || next > 'z') {
-                    throw new ParseException("Can't handle token: " + next);
+                    throw tokenException(next);
                 }
                 final ByteArrayOutputStream r = new ByteArrayOutputStream();
                 r.write(next);
@@ -84,6 +85,10 @@ public class AdvancedSpkiInputStream extends SpkiInputStream {
             }
         }
     }
+
+	private ParseException tokenException(final int next) {
+		return new ParseException(MessageFormat.format("Invalid token: {0}", next));
+	}
 
     private SpkiInputStream transportEncodingDelegate()
                     throws ParseException, IOException {
@@ -104,7 +109,7 @@ public class AdvancedSpkiInputStream extends SpkiInputStream {
                 if (last == terminator) {
                     return Base64.decode(s.toByteArray());
                 }
-                throw new ParseException("Can't handle token: " + last);
+                throw tokenException(last);
             }
         }
     }
@@ -115,7 +120,7 @@ public class AdvancedSpkiInputStream extends SpkiInputStream {
         final ByteArrayOutputStream s = new ByteArrayOutputStream();
         final int last = AcceptSomeBytes.HEX.accept(s, is);
         if (last != '#') {
-            throw new ParseException("Can't handle token: " + last);
+            throw tokenException(last);
         }
         return Hex.decode(s.toByteArray());
     }

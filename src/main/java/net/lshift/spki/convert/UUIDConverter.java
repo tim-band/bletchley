@@ -14,8 +14,6 @@ public class UUIDConverter
     extends StringStepConverter<UUID>
 {
     public static final String UUID_PART = "([0-9a-f]{%1$d})";
-    public static final int [] UUID_PART_LENGTHS = { 8, 4, 4, 4, 12 };
-
     public static final Pattern UUID_PATTERN = Pattern.compile(
         format("%s-%s-%s-%s-%s",
             format(UUID_PART, 8),
