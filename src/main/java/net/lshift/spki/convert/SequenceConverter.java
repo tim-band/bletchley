@@ -6,9 +6,6 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.schema.ConverterDeclaration;
-import net.lshift.spki.schema.Vector;
-import net.lshift.spki.schema.TypeReference;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
 
@@ -64,13 +61,4 @@ public class SequenceConverter<T>
             return fields;
     }
 
-    @Override
-    public ConverterDeclaration declaration() {
-        return new Vector(new TypeReference(contentType));
-    }
-
-    @Override
-    public Set<Class<?>> references() {
-        return Collections.<Class<?>>singleton(contentType);
-    }
 }

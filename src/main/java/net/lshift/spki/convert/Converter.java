@@ -1,9 +1,6 @@
 package net.lshift.spki.convert;
 
-import java.util.Set;
-
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.schema.ConverterDeclaration;
 import net.lshift.spki.sexpform.Sexp;
 
 /**
@@ -17,8 +14,4 @@ public interface Converter<T> {
 
     public T read(ConverterCatalog r, Sexp in)
         throws InvalidInputException;
-
-    public ConverterDeclaration declaration();
-
-    public Set<Class<?>> references();
 }
