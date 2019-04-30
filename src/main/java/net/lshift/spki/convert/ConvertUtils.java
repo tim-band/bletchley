@@ -29,6 +29,11 @@ import net.lshift.spki.sexpform.Sexp;
  * Static utilities for conversion between SExps and objects.
  */
 public class ConvertUtils {
+	
+	private ConvertUtils() {
+		// This class cannot be instantiated
+	}
+	
     public static byte[] bytes(final String s) {
         return s.getBytes(StandardCharsets.UTF_8);
     }
@@ -56,9 +61,10 @@ public class ConvertUtils {
         }
     }
 
-    // FIXME: what about EOF?
-    public static void write(final Object o,
-                             final SpkiOutputStream os) throws IOException {
+    public static void write(
+        final Object o,
+        final SpkiOutputStream os)
+        throws IOException {
         ConvertSexp.write(os, ConvertUtils.convertToSexp(o));
     }
 
@@ -183,7 +189,8 @@ public class ConvertUtils {
         return isAsciiIdentifier(s.toCharArray());
     }
 
-    public static Sexp convertToSexp(Object o) {
+    @SuppressWarnings("unchecked")
+        public static Sexp convertToSexp(Object o) {
         if (o instanceof Sexp) {
             return (Sexp)o;
         }

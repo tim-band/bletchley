@@ -29,49 +29,22 @@ public class InferenceEngine {
 
     private final ConverterCatalog readInfo;
 
-    private final List<ActionType> actions
-        = new ArrayList<ActionType>();
+    private final List<ActionType> actions = new ArrayList<>();
 
-    private final Map<DigestSha384, Condition> itemTrust
-        = new HashMap<DigestSha384, Condition>();
+    private final Map<DigestSha384, Condition> itemTrust = new HashMap<>();
 
-    private final Map<DigestSha384, PublicEncryptionKey> publicEncryptionKeys
-    = new HashMap<DigestSha384, PublicEncryptionKey>();
-    private final Map<DigestSha384, PrivateEncryptionKey> privateEncryptionKeys
-        = new HashMap<DigestSha384, PrivateEncryptionKey>();
-    private final Map<DigestSha384, PublicSigningKey> publicSigningKeys
-        = new HashMap<DigestSha384, PublicSigningKey>();
-    private final Map<AesKeyId, AesKey> aesKeys
-        = new HashMap<AesKeyId, AesKey>();
+    private final Map<DigestSha384, PublicEncryptionKey> publicEncryptionKeys = new HashMap<>();
+    private final Map<DigestSha384, PrivateEncryptionKey> privateEncryptionKeys = new HashMap<>();
+    private final Map<DigestSha384, PublicSigningKey> publicSigningKeys = new HashMap<>();
+    private final Map<AesKeyId, AesKey> aesKeys = new HashMap<>();
 
-    private final Map<InferenceVariable<?>, Object> variables
-        = new HashMap<InferenceVariable<?>, Object>();
+    private final Map<InferenceVariable<?>, Object> variables = new HashMap<>();
 
     private PassphraseDelegate passphraseDelegate;
 
     public InferenceEngine(final ConverterCatalog readInfo) {
         this.readInfo = readInfo;
     }
-
-//    private final Map<String, String> byteNames = new HashMap<String,String>();
-//
-//    private String namedString(final String string) {
-//        String name = byteNames.get(string);
-//        if (name == null) {
-//            name = Integer.toString(byteNames.size(), 36);
-//            byteNames.put(string, name);
-//        }
-//        return "" + name + ":" + string;
-//    }
-//
-//    public String bytesString(final byte[] bytes) {
-//        final String string = "|" + Base64.encodeBase64String(bytes) + "|";
-//        return namedString(string);
-//    }
-//
-//    private String digestString(final DigestSha384 digest) {
-//        return namedString(FingerprintUtils.getFingerprint(digest));
-//    }
 
     public void process(final SequenceItem item) throws InvalidInputException {
         process(item, UntrustedCondition.UNTRUSTED);
@@ -82,8 +55,10 @@ public class InferenceEngine {
     }
 
     public void process(final SequenceItem item, final Condition trust) throws InvalidInputException {
-        LOG.debug("Processing item:\n{}",
-            ConvertUtils.prettyPrint(item));
+    	if(LOG.isDebugEnabled()) {
+    		String printed = ConvertUtils.prettyPrint(item);
+			LOG.debug("Processing item:\n{}", printed);
+    	}
         item.process(this, trust);
     }
 

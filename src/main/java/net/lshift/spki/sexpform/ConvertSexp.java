@@ -17,6 +17,11 @@ import net.lshift.spki.convert.ConvertException;
  * Convert to/from Sexp representation
  */
 public class ConvertSexp {
+	
+	private ConvertSexp() {
+		// This class cannot be instantiated
+	}
+	
     public static void write(final SpkiOutputStream out, final Sexp o)
         throws IOException {
         if (o instanceof Atom) {
@@ -37,7 +42,7 @@ public class ConvertSexp {
         if (in.next() != ATOM)
             throw new ConvertException("Slist doesn't start with atom");
         final byte [] head = in.atomBytes();
-        final List<Sexp> tail = new ArrayList<Sexp>();
+        final List<Sexp> tail = new ArrayList<>();
         for (;;) {
             final TokenType stoken = in.next();
             switch (stoken) {

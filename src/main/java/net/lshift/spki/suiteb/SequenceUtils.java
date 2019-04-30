@@ -8,7 +8,11 @@ import java.util.List;
  */
 public class SequenceUtils
 {
-    public static Action action(ActionType a) {
+	private SequenceUtils() {
+		// This class cannot be instantiated
+	}
+
+	public static Action action(ActionType a) {
         return new Action(a);
     }
 

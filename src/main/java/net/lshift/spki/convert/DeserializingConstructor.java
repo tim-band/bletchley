@@ -13,6 +13,10 @@ import sun.misc.Unsafe;
  */
 @SuppressWarnings("restriction")
 public class DeserializingConstructor {
+	private DeserializingConstructor() {
+		// This class cannot be instantiated
+	}
+	
     private static final Unsafe unsafe = getUnsafe();
 
     private static Unsafe getUnsafe() {
@@ -20,10 +24,8 @@ public class DeserializingConstructor {
             Field field = Unsafe.class.getDeclaredField("theUnsafe");
             field.setAccessible(true);
             return (Unsafe) field.get(null);
-        } catch (final NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (final IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            throw new ConvertReflectionException(e);
         }
     }
 
@@ -45,9 +47,7 @@ public class DeserializingConstructor {
     public static <T> T convertMake(final Class<T> clazz, final Map<Field, Object> fields) {
         try {
             return DeserializingConstructor.make(clazz, fields);
-        } catch (final InstantiationException e) {
-            throw new ConvertReflectionException(clazz, e);
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException e) {
             throw new ConvertReflectionException(clazz, e);
         }
     }

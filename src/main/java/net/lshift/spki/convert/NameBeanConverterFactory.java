@@ -48,8 +48,9 @@ implements ConverterFactory<Convert.ByName>
                 throw new IllegalArgumentException("Field name is non ascii: " + clazz.getName() + "." + fname);
             }
             if (!fname.startsWith("$") &&
-                            (f.getModifiers() & Modifier.STATIC) == 0)
-            fields.add(new FieldConvertInfo(clazz, f));
+                            (f.getModifiers() & Modifier.STATIC) == 0) {
+            	fields.add(new FieldConvertInfo(clazz, f));
+            }
         }
     }
 }

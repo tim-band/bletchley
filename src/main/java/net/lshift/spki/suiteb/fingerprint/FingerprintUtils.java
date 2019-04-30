@@ -2,6 +2,7 @@ package net.lshift.spki.suiteb.fingerprint;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class FingerprintUtils {
             final InputStream resourceStream
                 = FingerprintUtils.class.getResourceAsStream("wordlist");
             try {
-                return IOUtils.readLines(resourceStream);
+                return IOUtils.readLines(resourceStream, Charset.defaultCharset());
             } finally {
                 resourceStream.close();
             }

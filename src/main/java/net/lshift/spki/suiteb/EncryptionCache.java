@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class EncryptionCache {
     private final PrivateEncryptionKey privateKey;
-    private final Map<DigestSha384, AesKey> cache = new HashMap<DigestSha384, AesKey>();
+    private final Map<DigestSha384, AesKey> cache = new HashMap<>();
 
     public EncryptionCache(final PrivateEncryptionKey privateKey) {
         this.privateKey = privateKey;

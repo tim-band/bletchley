@@ -21,9 +21,9 @@ public class Schema {
     }
 
     public static Schema schema(ConverterCatalog catalog, Class<?> ... roots) {
-        Stack<Class<?>> unprocessed = new Stack<Class<?>>();
-        Set<Class<?>> visited = new HashSet<Class<?>>();
-        List<Binding> bindings = new ArrayList<Binding>();
+        Stack<Class<?>> unprocessed = new Stack<>();
+        Set<Class<?>> visited = new HashSet<>();
+        List<Binding> bindings = new ArrayList<>();
         unprocessed.addAll(Arrays.asList(roots));
         while(!unprocessed.isEmpty()) {
             Class<?> next = unprocessed.pop();

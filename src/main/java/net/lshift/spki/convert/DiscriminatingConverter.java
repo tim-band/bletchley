@@ -22,10 +22,8 @@ import net.lshift.spki.sexpform.Sexp;
  */
 public class DiscriminatingConverter<T>
     extends ConverterImpl<T> {
-    private final Map<String, Class<? extends T>> nameMap
-        = new HashMap<String, Class<? extends T>>();
-    private final Set<Class<? extends T>> classes
-        = new HashSet<Class<? extends T>>();
+    private final Map<String, Class<? extends T>> nameMap = new HashMap<>();
+    private final Set<Class<? extends T>> classes = new HashSet<>();
 
     public DiscriminatingConverter(
         final Class<T> clazz,
@@ -94,7 +92,7 @@ public class DiscriminatingConverter<T>
     }
 
     public static Class<?> getDiscriminatedSuperclass(Class<?> clazz) {
-        List<Class<?>> answers = new ArrayList<Class<?>>();
+        List<Class<?>> answers = new ArrayList<>();
         getDiscriminatedSuperclasses(clazz, answers, clazz);
         if (answers.isEmpty()) {
             throw new ConvertReflectionException(clazz,
@@ -130,7 +128,7 @@ public class DiscriminatingConverter<T>
 
     @Override
     public ConverterDeclaration declaration() {
-        List<Tagged> options = new ArrayList<Tagged>();
+        List<Tagged> options = new ArrayList<>();
         for(Map.Entry<String, Class<? extends T>> opt: nameMap.entrySet()) {
             options.add(new Option(opt.getKey(), new TypeReference(opt.getValue())));
         }

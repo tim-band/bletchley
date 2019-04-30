@@ -1,7 +1,7 @@
 package net.lshift.spki.convert;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,11 +17,9 @@ import net.lshift.spki.convert.Convert.HandlerClass;
 public class ConverterCache {
     private static final ConverterCache GLOBAL_CACHE = new ConverterCache();
 
-    private final Map<Class<?>, ConverterFactory<?>> factoryCache
-        = new HashMap<Class<?>, ConverterFactory<?>>();
+    private final Map<Class<?>, ConverterFactory<?>> factoryCache = new HashMap<>();
 
-    private final Map<Class<?>, Converter<?>> converterMap
-        = new HashMap<Class<?>, Converter<?>>();
+    private final Map<Class<?>, Converter<?>> converterMap = new HashMap<>();
 
     private ConverterCache() {
         registerInternal(new SexpConverter());
@@ -84,9 +82,7 @@ public class ConverterCache {
                     handleAnnotation(clazz, converter, a, handlerClass);
                 }
             }
-        } catch (final InstantiationException e) {
-            throw new ConvertReflectionException(clazz, e);
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException|ConvertReflectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             throw new ConvertReflectionException(clazz, e);
         }
     }
@@ -96,10 +92,11 @@ public class ConverterCache {
         final Converter<T> converter,
         final A a,
         final HandlerClass handlerClass)
-        throws InstantiationException, IllegalAccessException {
+        throws InstantiationException, IllegalAccessException, 
+            InvocationTargetException, NoSuchMethodException {
         @SuppressWarnings("unchecked")
         final AnnotationHandler<A> handler =
-            (AnnotationHandler<A>) handlerClass.value().newInstance();
+            (AnnotationHandler<A>) handlerClass.value().getDeclaredConstructor().newInstance();
         handler.handle(clazz, converter, a);
     }
 
@@ -118,9 +115,8 @@ public class ConverterCache {
             }
             throw new ConvertReflectionException(clazz,
                             "Could not resolve converter");
-        } catch (final IllegalAccessException e) {
-            throw new ConvertReflectionException(clazz, e);
-        } catch (final InstantiationException e) {
+        } catch (final IllegalAccessException | InstantiationException | 
+        		InvocationTargetException | NoSuchMethodException e) {
             throw new ConvertReflectionException(clazz, e);
         }
     }
@@ -136,7 +132,8 @@ public class ConverterCache {
         final Class<T> clazz,
         final A a,
         final ConverterFactoryClass factoryClass)
-                        throws InstantiationException, IllegalAccessException {
+        throws InstantiationException, IllegalAccessException, 
+            InvocationTargetException, NoSuchMethodException {
         final Converter<T> res = getFactoryInstance(factoryClass.value())
                         .converter(clazz, a);
         if (!res.getResultClass().equals(clazz)) {
@@ -149,10 +146,11 @@ public class ConverterCache {
     @SuppressWarnings("unchecked")
     private <A extends Annotation> ConverterFactory<A> getFactoryInstance(
         final Class<? extends ConverterFactory<?>> clazz)
-                        throws InstantiationException, IllegalAccessException {
+        throws InstantiationException, IllegalAccessException, 
+            InvocationTargetException, NoSuchMethodException {
         ConverterFactory<?> res = factoryCache.get(clazz);
         if (res == null) {
-            res = clazz.newInstance();
+            res = clazz.getDeclaredConstructor().newInstance();
             factoryCache.put(clazz, res);
         }
         return (ConverterFactory<A>) res;
