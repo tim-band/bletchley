@@ -1,9 +1,6 @@
 package net.lshift.spki.convert;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import net.lshift.spki.sexpform.Sexp;
 
 /**
@@ -39,18 +36,4 @@ public abstract class BeanFieldConverter<T>
     protected abstract Sexp writeField(
         FieldConvertInfo fieldConvertInfo,
         Object property);
-
-    public static Set<Class<?>> references(
-            List<FieldConvertInfo> fields,
-            Set<Class<?>> exclude) {
-        Set<Class<?>> refs = new HashSet<>(fields.size());
-        for(FieldConvertInfo info: fields) {
-            Class<?> type = (info.inlineListType != null)
-                    ? info.inlineListType
-                    : info.field.getType();
-            if(!exclude.contains(type))
-                refs.add(type);
-        }
-        return refs;
-    }
 }
