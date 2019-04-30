@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.schema.ConverterDeclaration;
-import net.lshift.spki.schema.TupleType;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
 
@@ -43,10 +41,5 @@ public class PositionBeanConverter<T>
         final FieldConvertInfo field,
         final Object property) {
         return writeUnchecked(field.field.getType(), property);
-    }
-
-    @Override
-    public ConverterDeclaration declaration() {
-        return new TupleType(fieldDeclarations(this.fields));
     }
 }

@@ -4,9 +4,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.schema.ConverterDeclaration;
-import net.lshift.spki.schema.VariadicType;
-import net.lshift.spki.schema.TypeReference;
 import net.lshift.spki.sexpform.Sexp;
 import net.lshift.spki.sexpform.Slist;
 
@@ -53,17 +50,4 @@ public class PositionSequenceConverter<T>
         return rmap;
     }
 
-    @Override
-    public ConverterDeclaration declaration() {
-        return new VariadicType(
-                BeanFieldConverter.fieldDeclarations(fields), 
-                new TypeReference(contentType));
-    }
-
-    @Override
-    public Set<Class<?>> references() {
-        Set<Class<?>> refs = BeanFieldConverter.references(fields, excludeReferences());
-        refs.add(contentType);
-        return Collections.unmodifiableSet(refs);
-    }
 }
