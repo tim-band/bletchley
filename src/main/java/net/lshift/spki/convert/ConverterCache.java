@@ -1,7 +1,6 @@
 package net.lshift.spki.convert;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

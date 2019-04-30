@@ -2,9 +2,6 @@ package net.lshift.spki.convert;
 
 import static net.lshift.spki.sexpform.Create.atom;
 
-import java.util.Collections;
-import java.util.Set;
-
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.sexpform.Sexp;
 
