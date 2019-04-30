@@ -17,11 +17,11 @@ public class ConverterCatalog {
     private final Map<String, Class<?>> discrimMap;
 
     private ConverterCatalog() {
-        discrimMap = new HashMap<String,Class<?>>();
+        discrimMap = new HashMap<>();
     }
 
     private ConverterCatalog(ConverterCatalog base, Class<?>... classes) {
-        discrimMap = new HashMap<String,Class<?>>(base.discrimMap);
+        discrimMap = new HashMap<>(base.discrimMap);
         for (Class<?> clazz: classes) {
             register(discrimMap, clazz);
         }

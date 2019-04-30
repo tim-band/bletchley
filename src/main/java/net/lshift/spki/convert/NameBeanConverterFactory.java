@@ -27,7 +27,7 @@ implements ConverterFactory<Convert.ByName>
     }
 
     public static <T> List<FieldConvertInfo> getFieldMap(final Class<T> clazz) {
-        final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
+        final List<FieldConvertInfo> fields = new ArrayList<>();
         addFields(clazz, fields);
         return fields;
     }
