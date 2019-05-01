@@ -226,6 +226,16 @@ public class Cli {
         }
     }
 
+    /**
+     * Call main with stdout as the output stream.
+     * This exists just to minimise the scope of warning suppression.
+     */
+    @SuppressWarnings("squid:S106")
+    private static void mainWithStdout(final String[] args, final Openable[] openables)
+            throws IOException, InvalidInputException {
+        main(System.out, args[0], openables);
+    }
+    
     public static void main(final String[] args) {
         final Openable[] openables = new Openable[args.length-1];
         for (int i = 0; i < args.length-1; i++) {
@@ -240,9 +250,5 @@ public class Cli {
         }
     }
 
-    @SuppressWarnings("squid:S106")
-    private static void mainWithStdout(final String[] args, final Openable[] openables)
-			throws IOException, InvalidInputException {
-		main(System.out, args[0], openables);
-	}
+
 }
