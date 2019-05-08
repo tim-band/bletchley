@@ -111,8 +111,8 @@ public class CliTest extends UsesCatalog
     }
 
     /**
-     * This test demonstrates that commands that a command that should
-     * write to stdout actually does, by capturing the output and verifying it
+     * This test demonstrates that commands that should
+     * write to stdout actually do, by capturing the output and verifying it
      * is as expected. We use the example of pretty printing a private signing key.
      * This is overkill, but satisfies our code coverage rules for new code.
      * @throws IOException
