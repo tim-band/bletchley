@@ -110,6 +110,14 @@ public class CliTest extends UsesCatalog
         assertTrue(IOUtils.contentEquals(sPrivate.read(), canonical.read()));
     }
 
+    /**
+     * This test demonstrates that commands that a command that should
+     * write to stdout actually does, by capturing the output and verifying it
+     * is as expected. We use the example of pretty printing a private signing key.
+     * This is overkill, but satisfies our code coverage rules for new code.
+     * @throws IOException
+     * @throws ParseException
+     */
     @Test
     public void mainWithStdoutTest() throws IOException, ParseException {
         PrintStream originalOut = System.out;
@@ -117,6 +125,7 @@ public class CliTest extends UsesCatalog
         workDir.toFile().deleteOnExit();
         Path signingKeyPath = workDir.resolve("signing-private-key.spki");
 
+        // Generate a signing key, for later pretty printing
         Cli.main(new String [] { "genSigningKey", signingKeyPath.toString() });
 
         final Openable prettyPrinted = new ByteOpenable();
@@ -129,8 +138,11 @@ public class CliTest extends UsesCatalog
         
         FileOpenable canonical = new FileOpenable(signingKeyPath.toFile());
         ByteOpenable refPrettyPrinted = new ByteOpenable();
+        // Pretty print directly, so we can compare the results
         Cli.prettyPrintToFile(canonical, refPrettyPrinted);
-        
+
+        // Compare our directly generated pretty printed key with the one
+        // written to stdout
         assertTrue(IOUtils.contentEquals(prettyPrinted.read(), refPrettyPrinted.read()));
     }
     
