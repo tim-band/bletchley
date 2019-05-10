@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.lshift</groupId>
   <artifactId>bletchley</artifactId>
-  <version>0.2.1</version>
+  <version>0.20.1</version>
   <description>
 Bletchley is an attempt to simplify writing bespoke cloud based applications 
 which process sensitive data according to the principal of least privilege. 
