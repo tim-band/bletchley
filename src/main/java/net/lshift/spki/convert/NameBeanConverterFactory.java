@@ -27,7 +27,7 @@ implements ConverterFactory<Convert.ByName>
     }
 
     public static <T> List<FieldConvertInfo> getFieldMap(final Class<T> clazz) {
-        final List<FieldConvertInfo> fields = new ArrayList<FieldConvertInfo>();
+        final List<FieldConvertInfo> fields = new ArrayList<>();
         addFields(clazz, fields);
         return fields;
     }
@@ -48,8 +48,9 @@ implements ConverterFactory<Convert.ByName>
                 throw new IllegalArgumentException("Field name is non ascii: " + clazz.getName() + "." + fname);
             }
             if (!fname.startsWith("$") &&
-                            (f.getModifiers() & Modifier.STATIC) == 0)
-            fields.add(new FieldConvertInfo(clazz, f));
+                            (f.getModifiers() & Modifier.STATIC) == 0) {
+            	fields.add(new FieldConvertInfo(clazz, f));
+            }
         }
     }
 }

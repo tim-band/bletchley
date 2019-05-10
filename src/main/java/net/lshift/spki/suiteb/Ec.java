@@ -20,6 +20,10 @@ import org.bouncycastle.math.ec.ECPoint;
  * Static convenience functions for working with elliptic curves.
  */
 public class Ec {
+	private Ec() {
+		// This class cannot be instantiated
+	}
+	
     private static final X9ECParameters CURVE
         = NISTNamedCurves.getByName("P-384");
 

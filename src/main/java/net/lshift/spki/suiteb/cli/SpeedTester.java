@@ -36,7 +36,7 @@ public class SpeedTester {
         final long start = System.currentTimeMillis();
         for (int i = 0; ; i++) {
             final long end = System.currentTimeMillis();
-            if (end - start > 5000) {
+            if (end - start > 5000 && i > 0) {
                 System.out.println("Time (ms): " + (end-start)*1.0/i);
                 break;
             }

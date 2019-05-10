@@ -16,9 +16,7 @@ public class RequiresConverterHandler
         final RequiresConverter annotation) {
         try {
             ((ConverterImpl<U>)converter).addConverter(annotation.value().newInstance());
-        } catch (final InstantiationException e) {
-            throw new ConvertReflectionException(clazz, e);
-        } catch (final IllegalAccessException e) {
+        } catch (final InstantiationException|IllegalAccessException e) {
             throw new ConvertReflectionException(clazz, e);
         }
     }

@@ -69,7 +69,7 @@ public class PrettyPrinter extends SpkiOutputStream {
         throws IOException {
         clearFirstAtom();
         if (indent == 0) {
-            throw new RuntimeException("Too many closeparens");
+            throw new IllegalStateException("Too many closeparens");
         }
         indent -= 1;
         printPrefix();

@@ -46,8 +46,7 @@ public class ECPointConverter
     @Override
     public ECPoint stepOut(final Point point) throws CryptographyException {
         final ECCurve curve = Ec.DOMAIN_PARAMETERS.getCurve();
-        final ECPoint res = curve.createPoint(
-            point.x, point.y, false);
+        final ECPoint res = curve.createPoint(point.x, point.y);
         final ECPoint normRes = res.normalize();
         final ECFieldElement x = normRes.getXCoord();
         if (!normRes.getYCoord().square().equals(
