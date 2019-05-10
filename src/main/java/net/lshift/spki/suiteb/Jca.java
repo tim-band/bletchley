@@ -105,6 +105,13 @@ public class Jca {
             try {
                 signature = java.security.Signature.getInstance("SHA384withECDSA");
                 signature.initSign(keyPair.getPrivate());
+            } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+                throw new CryptographyException("JCA provider not compatible", e);
+            }
+        }
+
+        private void importPayload(SequenceItem payload) throws CryptographyException {
+            try {
                 ConvertUtils.write(payload, new OutputStream() {
                     @Override public void write(int b) throws IOException {
                         try {
@@ -121,11 +128,8 @@ public class Jca {
                             throw new SignatureIOException(e);
                         }
                     }
-
                 });
-            } catch (InvalidKeyException | NoSuchAlgorithmException e) {
-                throw new CryptographyException("JCA provider not compatible", e);
-            } catch(SignatureIOException e) {
+            }  catch(SignatureIOException e) {
                 throw new CryptographyException("JCA exception during signing",e.getCause());
             } catch (IOException e) {
                 throw new AssertionError(e);
@@ -134,6 +138,7 @@ public class Jca {
 
         public SequenceItem signed() throws CryptographyException {
             try {
+                importPayload(payload);
                 return SequenceUtils.sequence(
                         importSignature(
                                 DigestSha384.digest(this.payload),
