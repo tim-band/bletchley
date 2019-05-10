@@ -6,7 +6,7 @@ import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.ConverterCatalog;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.bouncycastle.crypto.engines.AESFastEngine;
+import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -34,7 +34,7 @@ public class AesKey implements SequenceItem {
 
     private AesKeyId genKeyId() {
         try {
-            final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+            final GCMBlockCipher gcm = gcmBlockCipher();
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, KEYID_AD, KEYID_AD));
             final byte[] ciphertext = new byte[gcm.getOutputSize(ZERO_BYTES.length)];
@@ -58,7 +58,7 @@ public class AesKey implements SequenceItem {
 
     public AesPacket encrypt(final SequenceItem message) {
             final byte[] nonce = Ec.randomBytes(12);
-            final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+            final GCMBlockCipher gcm = gcmBlockCipher();
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, nonce, ZERO_BYTES));
             final byte[] plaintext =
@@ -78,7 +78,7 @@ public class AesKey implements SequenceItem {
 
     public SequenceItem decrypt(final ConverterCatalog r, final AesPacket packet)
         throws InvalidInputException {
-        final GCMBlockCipher gcm = new GCMBlockCipher(new AESFastEngine());
+        final GCMBlockCipher gcm = gcmBlockCipher();
         gcm.init(false, new AEADParameters(
             new KeyParameter(key), 128, packet.nonce, ZERO_BYTES));
         final byte[] newtext = new byte[
@@ -92,6 +92,10 @@ public class AesKey implements SequenceItem {
         }
         return ConvertUtils.fromBytes(r, SequenceItem.class, newtext);
     }
+
+	private GCMBlockCipher gcmBlockCipher() {
+		return new GCMBlockCipher(new AESEngine());
+	}
 
     public static AesKey generateAESKey() {
         return new AesKey(Ec.randomBytes(AES_KEY_BYTES));

@@ -15,7 +15,11 @@ import org.apache.commons.io.IOUtils;
  * Utilities for acting on Openable objects
  */
 public class OpenableUtils {
-    public static byte[] readBytes(final Openable message)
+	private OpenableUtils() {
+		// This class cannot be instantiated
+	}
+
+	public static byte[] readBytes(final Openable message)
         throws IOException {
         final InputStream is = message.read();
         try {
