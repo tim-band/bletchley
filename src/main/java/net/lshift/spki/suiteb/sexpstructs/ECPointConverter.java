@@ -45,8 +45,20 @@ public class ECPointConverter
 
     @Override
     public ECPoint stepOut(final Point point) throws CryptographyException {
+        return convert(point.x, point.y);
+    }
+
+    /**
+     * convert a point into an ECPoint, if it's a valid point on Bletchley's
+     * EC curve.
+     * @param pointX x coordinate of the point
+     * @param pointY y coordinate of the point
+     * @return
+     * @throws CryptographyException if the point isn't on the curve
+     */
+    public static ECPoint convert(BigInteger pointX, BigInteger pointY) throws CryptographyException {
         final ECCurve curve = Ec.DOMAIN_PARAMETERS.getCurve();
-        final ECPoint res = curve.createPoint(point.x, point.y);
+        final ECPoint res = curve.createPoint(pointX, pointY);
         final ECPoint normRes = res.normalize();
         final ECFieldElement x = normRes.getXCoord();
         if (!normRes.getYCoord().square().equals(
