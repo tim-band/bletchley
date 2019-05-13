@@ -15,8 +15,7 @@ import org.bouncycastle.util.Arrays;
  */
 public abstract class ConverterImpl<T> implements Converter<T> {
     protected final Class<T> clazz;
-    private final Map<Class<?>, Converter<?>> extraConverters
-        = new HashMap<Class<?>, Converter<?>>();
+    private final Map<Class<?>, Converter<?>> extraConverters = new HashMap<>();
 
     public ConverterImpl(final Class<T> clazz) {
         this.clazz = clazz;

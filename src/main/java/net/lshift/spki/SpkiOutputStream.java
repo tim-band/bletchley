@@ -9,10 +9,6 @@ import java.io.IOException;
  */
 public abstract class SpkiOutputStream implements Closeable, Flushable
 {
-    @Override
-    public abstract void close()
-        throws IOException;
-
     public abstract void atom(byte[] bytes, int off, int len)
         throws IOException;
 

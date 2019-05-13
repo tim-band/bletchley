@@ -8,22 +8,68 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.Permission;
 import java.util.regex.Pattern;
 
 import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.UsesCatalog;
 import net.lshift.spki.convert.openable.ByteOpenable;
+import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class CliTest extends UsesCatalog
 {
     private static final Pattern FINGERPRINT_OUTPUT
         = Pattern.compile("[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}/[a-z]{1,6}-[a-z]{1,6}-[a-z]{1,6}\n");
+    private SecurityManager securityManager;
+    
+    static class ExitException extends SecurityException {
+        public ExitException(int status) {
+            this.status = status;
+        }
+        private static final long serialVersionUID = 1L;
+        public final int status;
 
+    }
+    
+    private static class NoExitSecurityManager extends SecurityManager {
+        @Override
+        public void checkPermission(Permission perm) {
+            // allow anything.
+        }
+
+        @Override
+        public void checkPermission(Permission perm, Object context) {
+            // allow anything.
+        }
+
+        @Override
+        public void checkExit(int status) {
+            super.checkExit(status);
+            throw new ExitException(status);
+        }
+    }
+
+    @Before
+    public void setUp() {
+        securityManager = System.getSecurityManager();
+        System.setSecurityManager(new NoExitSecurityManager());
+    }
+    
+    @After
+    public void tearDown() {
+        System.setSecurityManager(securityManager);
+    }
+    
     @Test
     public void cliTest()
         throws IOException, InvalidInputException
@@ -64,6 +110,42 @@ public class CliTest extends UsesCatalog
         assertTrue(IOUtils.contentEquals(sPrivate.read(), canonical.read()));
     }
 
+    /**
+     * This test demonstrates that commands that should
+     * write to stdout actually do, by capturing the output and verifying it
+     * is as expected. We use the example of pretty printing a private signing key.
+     * This is overkill, but satisfies our code coverage rules for new code.
+     * @throws IOException
+     * @throws ParseException
+     */
+    @Test
+    public void mainWithStdoutTest() throws IOException, ParseException {
+        PrintStream originalOut = System.out;
+        Path workDir = Files.createTempDirectory(this.getClass().getName());
+        workDir.toFile().deleteOnExit();
+        Path signingKeyPath = workDir.resolve("signing-private-key.spki");
+
+        // Generate a signing key, for later pretty printing
+        Cli.main(new String [] { "genSigningKey", signingKeyPath.toString() });
+
+        final Openable prettyPrinted = new ByteOpenable();
+        System.setOut(new PrintStream(prettyPrinted.write()));
+        try {
+            Cli.main(new String [] { "prettyPrint", signingKeyPath.toString() });
+        } finally {
+            System.setOut(originalOut);
+        }
+        
+        FileOpenable canonical = new FileOpenable(signingKeyPath.toFile());
+        ByteOpenable refPrettyPrinted = new ByteOpenable();
+        // Pretty print directly, so we can compare the results
+        Cli.prettyPrintToFile(canonical, refPrettyPrinted);
+
+        // Compare our directly generated pretty printed key with the one
+        // written to stdout
+        assertTrue(IOUtils.contentEquals(prettyPrinted.read(), refPrettyPrinted.read()));
+    }
+    
     @Test
     public void signingFingerprintTest()
         throws IOException, InvalidInputException
@@ -102,4 +184,15 @@ public class CliTest extends UsesCatalog
     private static boolean isFingerprint(final String pubFingerprint) {
         return FINGERPRINT_OUTPUT.matcher(pubFingerprint).matches();
     }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testUnknownCommand() throws IOException, InvalidInputException {
+        Cli.main(null, "unknown");
+    }
+    
+    @Test(expected=ExitException.class)
+    public void testUnknownCommandLogging()  {
+        Cli.main(new String [] { "unknown" });
+    }
+    
 }

@@ -3,7 +3,7 @@ package net.lshift.spki.suiteb;
 import static org.junit.Assert.assertArrayEquals;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.bouncycastle.crypto.engines.AESFastEngine;
+import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -20,7 +20,7 @@ public class GcmTest {
         for (int i = 0; i < key.length; i++) {
             key[i] = (byte) i;
         }
-        final AESFastEngine aes = new AESFastEngine();
+        final AESEngine aes = new AESEngine();
         final GCMBlockCipher gcm = new GCMBlockCipher(aes);
         final AEADParameters aeadparams = new AEADParameters(new KeyParameter(key), MAC_BYTES*8, key, new byte[0]);
         gcm.init(true, aeadparams);

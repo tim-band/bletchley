@@ -8,6 +8,10 @@ import java.util.List;
  * Designed to be imported statically.
  */
 public class Create {
+	private Create() {
+		// This class cannot be instantiated
+	}
+	
     public static Atom atom(final byte[] bytes) {
         return new Atom(bytes);
     }
