@@ -69,8 +69,11 @@ public class PrettyPrinterTest extends UsesCatalog {
     public void theoryPrettyPrintingIsStable(final TestPair pair) throws IOException {
         final String prettyPrinted
             = ConvertUtils.prettyPrint(pair.getSexp());
+        // The expected output has Unix line endings; our PrettyPrinter will provide whatever
+        // line endings are appropirate for the environment.
+        final String expectedWithLF = IOUtils.toString(pair.getResourceAsStream());
         assertThat(prettyPrinted,
-            is(IOUtils.toString(pair.getResourceAsStream())));
+            is(expectedWithLF.replace("\n", System.lineSeparator())));
     }
 
     @Theory
