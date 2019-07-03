@@ -40,9 +40,13 @@ If not, don't worry: it's not assumed knowledge.
 An application creates an instance of the inference engine, and seeds
 it with trust information. Bletchley is very flexible: You might have a single
 **public signing key** that's trusted completely, or a number of
-different keys which are trusted for specific actions, or for a specific
-period of time. Each of these is called a **condition** and you can
-create your own to match your problem domain.
+different keys which are trusted conditionally. E.g.
+
+  - For specific actions
+  - within a time period
+
+Each of these is called a **condition** and you can create your own
+to match your problem domain.
 
 On the wire, Bletchley encodes data using a binary encoding of s-expressions
 very similar to the one used in SPKI. Bletchley converts between Java
@@ -59,7 +63,6 @@ This introduction to the API is a bit of a script, in that it suggests an
 order of development that should prove productive.
 
 ## Define an Action
-
 
 As covered above, Bletchley applications pass actions to each other, so
 the first thing to do is define an action class.
