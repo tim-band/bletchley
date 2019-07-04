@@ -196,6 +196,10 @@ language agnostic, and ports to other languages are planned.
       <artifactId>commons-codec</artifactId>
       <version>1.12</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
   </dependencies>
   <distributionManagement>
     <repository>
@@ -212,4 +216,13 @@ language agnostic, and ports to other languages are planned.
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>3.6.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
