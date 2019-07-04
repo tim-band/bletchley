@@ -4,6 +4,8 @@ package suiteb;
 option java_package = "net.lshift.bletchley.suiteb.proto";
 option java_outer_classname = "SuiteBProto";
 
+import "google/protobuf/any.proto";
+
 message SequenceItem {
     oneof item {
         Action action = 1;
@@ -23,22 +25,7 @@ message SequenceItem {
 }
 
 /**
-  * Describe a GRPC method invocation
-  */
-message Invoke {
-    string service = 1; // GRPC The service URI
-    string method = 2;  // GRPC method
-
-    /**
-      * The parameters to pass to the method, as the bytes of
-      * protocol buffer messages for each parameter.
-      * Any isn't used here because the type can be inferred from the service definition.
-      */
-    bytes parameter = 3;
-}
-
-/**
-  * An action is a request to invoke a GRPC method.
+  * An action
   * FIXME: people find the term Action confusing, but think of it
   * as being like HTTP method: a GET action requests a resource,
   * PUT provides a resource, POST updates it's state, etc. You
@@ -46,7 +33,11 @@ message Invoke {
   * the server  * takes is to 
   */
 message Action {
-    Invoke invoke = 1;
+    // The oneof is here for extensions later. The main likely extension
+    // is a GRPC method invocation.
+    oneof action {
+        google.protobuf.Any accept = 1;
+    }
 }
 
 message AesKey {
@@ -82,15 +73,6 @@ message UntrustedCondition {
     
 }
 
-/**
-  * Evaluate a condition by invoking a GRPC service. The service must
-  * take a single Action parameter and return bool. If it returns true, 
-  * the action satisfies the condition.
-  */
-message TestCondition {
-    Invoke invoke = 1;
-}
-
 message ValidOnOrAfterCondition {
 
 }
@@ -120,11 +102,9 @@ message CommonExpressionCondition {
 message Condition {
     oneof condition {
         UntrustedCondition untrusted = 1;
-        TestCondition test = 2;
         ValidOnOrAfterCondition valid_on_or_after = 3;
         ValidBeforeCondition valid_before = 4;
-        ServiceCondition service = 5;
-        CommonExpressionCondition common_expression = 6;
+        google.protobuf.Any extension = 5;
     }
 }
 
