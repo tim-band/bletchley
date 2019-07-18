@@ -12,7 +12,7 @@ public class ConditionJoiner {
     private boolean destroyed = false;
 
     private static class AndCondition
-    implements Condition {
+    extends InternalCondition {
         private final Condition[] conditions;
 
         private AndCondition(final Condition... conditions) {
@@ -27,10 +27,11 @@ public class ConditionJoiner {
             }
             return true;
         }
+
     }
 
     private static class OrCondition
-    implements Condition {
+    extends InternalCondition {
         private final Condition[] conditions;
 
         private OrCondition(final Condition... conditions) {

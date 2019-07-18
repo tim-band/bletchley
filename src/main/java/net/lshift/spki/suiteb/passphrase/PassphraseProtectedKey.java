@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb.passphrase;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.AesKey;
@@ -59,5 +60,10 @@ public class PassphraseProtectedKey implements SequenceItem {
                 engine.process(key, trust);
             }
         }
+    }
+
+    @Override
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+        throw new UnsupportedOperationException("Passphrase protected keys are not yet defined in the protocol buffer schema");
     }
 }

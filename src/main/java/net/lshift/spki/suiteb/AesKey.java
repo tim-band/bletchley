@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
@@ -10,6 +11,8 @@ import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
+
+import com.google.protobuf.ByteString;
 
 import java.nio.charset.StandardCharsets;
 
@@ -105,5 +108,11 @@ public class AesKey implements SequenceItem {
     public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addAesKey(this);
+    }
+
+    @Override
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+        return SuiteBProto.SequenceItem.newBuilder().setAesKey(
+                SuiteBProto.AesKey.newBuilder().setKey(ByteString.copyFrom(key)));       
     }
 }

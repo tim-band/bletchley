@@ -1,5 +1,9 @@
 package net.lshift.spki.suiteb;
 
+import static net.lshift.spki.suiteb.proto.ProtobufHelper.toBigInteger;
+import static net.lshift.spki.suiteb.proto.ProtobufHelper.toDigest;
+
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
@@ -35,5 +39,22 @@ public class Signature implements SequenceItem {
         if (!pKey.validate(digest, rawSignature))
             throw new CryptographyException("Sig validation failure");
         engine.addItemTrust(digest, engine.getItemTrust(keyId));
+    }
+
+    public static Signature fromProtobuf(SuiteBProto.Signature signature) throws InvalidInputException {
+        return new Signature(
+                toDigest(signature.getDigest()), 
+                toDigest(signature.getKeyId()),
+                new EcdsaSignature(
+                        toBigInteger(signature.getSignature().getR()), 
+                        toBigInteger(signature.getSignature().getS())));
+    }
+    
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+        return SuiteBProto.SequenceItem.newBuilder().setSignature(
+                SuiteBProto.Signature.newBuilder()
+                .setDigest(digest.toProtobufHash())
+                .setKeyId(keyId.toProtobufHash())
+                .setSignature(rawSignature.toProtobuf()));
     }
 }

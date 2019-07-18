@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto.SequenceItem.Builder;
 import net.lshift.spki.convert.Convert;
 
 import org.slf4j.Logger;
@@ -30,5 +31,11 @@ public class Action implements SequenceItem {
         } else {
             LOG.debug("Discarding untrusted message");
         }
+    }
+
+    @Override
+    public Builder toProtobuf() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

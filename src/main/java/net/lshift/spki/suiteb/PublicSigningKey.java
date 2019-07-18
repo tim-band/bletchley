@@ -1,9 +1,12 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
+import net.lshift.bletchley.suiteb.proto.SuiteBProto.SequenceItem.Builder;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
+import net.lshift.spki.suiteb.proto.ProtobufHelper;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPublicKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
@@ -17,6 +20,7 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 public class PublicSigningKey
     extends PublicKey
     implements SequenceItem {
+    private static final Step CONVERTER = new Step();
     private final ECDSASigner signer = new ECDSASigner();
 
     PublicSigningKey(final CipherParameters publicKey) {
@@ -36,12 +40,12 @@ public class PublicSigningKey
         }
 
         @Override
-        protected EcdsaPublicKey stepIn(final PublicSigningKey o) {
+        public EcdsaPublicKey stepIn(final PublicSigningKey o) {
             return new EcdsaPublicKey(o.publicKey);
         }
 
         @Override
-        protected PublicSigningKey stepOut(final EcdsaPublicKey s)
+        public PublicSigningKey stepOut(final EcdsaPublicKey s)
             throws ParseException {
             return new PublicSigningKey(s.getParameters());
         }
@@ -53,4 +57,19 @@ public class PublicSigningKey
         engine.addPublicSigningKey(this);
         engine.addItemTrust(keyId, trust);
     }
+
+    public static PublicSigningKey fromProtobuf(SuiteBProto.PublicSigningKey publicSigningKey) 
+    throws ParseException, CryptographyException {
+        return CONVERTER.stepOut(
+                new EcdsaPublicKey(ProtobufHelper.ecPointFromProtobuf(publicSigningKey.getPoint())));
+    }
+
+    @Override
+    public Builder toProtobuf() {
+        return SuiteBProto.SequenceItem.newBuilder()
+                .setPublicSigningKey(SuiteBProto.PublicSigningKey.newBuilder()
+                        .setPoint(ProtobufHelper.toProtobuf(CONVERTER.stepIn(this).point)));
+    }
+    
+    
 }

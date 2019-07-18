@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.convert.Convert;
 
 @Convert.ByPosition(name = "untrusted", fields = {})
@@ -18,5 +19,11 @@ public class UntrustedCondition
 
     public static Condition nullMeansUntrusted(final Condition condition) {
         return condition != null ? condition : UNTRUSTED;
+    }
+
+    @Override
+    public SuiteBProto.Condition.Builder toProtobuf() {
+        return SuiteBProto.Condition.newBuilder().setUntrusted(
+                SuiteBProto.UntrustedCondition.getDefaultInstance());
     }
 }

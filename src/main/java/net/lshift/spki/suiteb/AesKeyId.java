@@ -2,6 +2,8 @@ package net.lshift.spki.suiteb;
 
 import java.util.Arrays;
 
+import com.google.protobuf.ByteString;
+
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ByteArrayStepConverter;
 import net.lshift.spki.convert.Convert.ConvertClass;
@@ -46,5 +48,9 @@ public final class AesKeyId {
             throws ParseException {
             return new AesKeyId(s);
         }
+    }
+
+    public ByteString toProtobuf() {
+        return ByteString.copyFrom(keyId);
     }
 }

@@ -26,7 +26,7 @@ language agnostic, and ports to other languages are planned.
       <name>David Ireland</name>
       <organization>LShift</organization>
       <organizationUrl>http://www.lshift.net</organizationUrl>
-      <email>david@lshift.net</email>
+      <email>david.ireland@oliverwyman.com</email>
     </developer>
   </developers>
   <licenses>
@@ -182,6 +182,15 @@ language agnostic, and ports to other languages are planned.
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.12</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java-util</artifactId>
+      <version>3.6.1</version>
     </dependency>
   </dependencies>
   <distributionManagement>

@@ -1,10 +1,13 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.protobuf.ByteString;
 
 /**
  * A SequenceItem encrypted with AES/GCM.
@@ -39,5 +42,14 @@ public class AesPacket implements SequenceItem {
         } else {
             LOG.debug("Key not known");
         }
+    }
+
+    @Override
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+        return SuiteBProto.SequenceItem.newBuilder().setAesPacket(
+                SuiteBProto.AesPacket.newBuilder()
+                .setKeyId(keyId.toProtobuf())
+                .setNonce(ByteString.copyFrom(nonce))
+                .setCiphertext(ByteString.copyFrom(ciphertext)));
     }
 }

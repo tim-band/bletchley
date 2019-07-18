@@ -3,6 +3,7 @@ package net.lshift.spki.suiteb;
 import java.io.IOException;
 import java.util.Arrays;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ConvertUtils;
@@ -12,6 +13,8 @@ import net.lshift.spki.suiteb.sexpstructs.Hash;
 import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.io.DigestOutputStream;
 import org.bouncycastle.util.encoders.Hex;
+
+import com.google.protobuf.ByteString;
 
 /**
  * A SHA-384 digest of a SExp.
@@ -58,7 +61,7 @@ public class DigestSha384 implements SequenceItem {
         }
 
         @Override
-        protected DigestSha384 stepOut(final Hash hash)
+        public DigestSha384 stepOut(final Hash hash)
             throws InvalidInputException {
             if (!DIGEST_NAME.equals(hash.hashType)) {
                 throw new CryptographyException(
@@ -98,5 +101,16 @@ public class DigestSha384 implements SequenceItem {
     public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addItemTrust(this, trust);
+    }
+
+    public SuiteBProto.Hash.Builder toProtobufHash() {
+        return SuiteBProto.Hash.newBuilder()
+                .setType(DIGEST_NAME)
+                .setValue(ByteString.copyFrom(bytes));
+    }
+
+    @Override
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+        return SuiteBProto.SequenceItem.newBuilder().setHash(this.toProtobufHash());
     }
 }

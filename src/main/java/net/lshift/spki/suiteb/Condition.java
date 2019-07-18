@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.convert.Convert;
 
 @Convert.Discriminated({
@@ -9,4 +10,5 @@ import net.lshift.spki.convert.Convert;
 })
 public interface Condition {
     boolean allows(InferenceEngine engine, ActionType action);
+    SuiteBProto.Condition.Builder toProtobuf();
 }

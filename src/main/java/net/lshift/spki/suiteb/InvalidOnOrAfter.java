@@ -4,7 +4,9 @@ import static net.lshift.spki.suiteb.InferenceVariables.NOW;
 
 import java.util.Date;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 /**
  * Valid only strictly before the date given -
@@ -21,5 +23,12 @@ public class InvalidOnOrAfter implements Condition {
     @Override
     public boolean allows(final InferenceEngine engine, final ActionType action) {
         return NOW.get(engine).before(date);
+    }
+    
+    @Override
+    public SuiteBProto.Condition.Builder toProtobuf() {
+        return SuiteBProto.Condition.newBuilder().setInvalidOnOrAfter(
+                SuiteBProto.InvalidOnOrAfterCondition.newBuilder()
+                .setDate(ProtobufHelper.fromDate(date)));
     }
 }

@@ -1,8 +1,11 @@
 package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
+
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 @Convert.ByPosition(name="signed", fields={"hashType", "payload"})
 public class Signed implements SequenceItem {
@@ -38,6 +41,18 @@ public class Signed implements SequenceItem {
         }
         engine.process(payload,
             engine.getItemTrust(DigestSha384.digest(payload)));
+    }
+
+    public static Signed fromProtobuf(SuiteBProto.Signed signed) throws InvalidInputException {
+        return new Signed(signed.getHashType(), ProtobufHelper.fromProtobuf(signed.getPayload()));
+    }
+
+    @Override
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+        return SuiteBProto.SequenceItem.newBuilder().setSigned(
+                SuiteBProto.Signed.newBuilder()
+                .setHashType(DigestSha384.DIGEST_NAME)
+                .setPayload(payload.toProtobuf()));
     }
 }
 

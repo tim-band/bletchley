@@ -1,9 +1,11 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
+import net.lshift.spki.suiteb.proto.ProtobufHelper;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -61,14 +63,14 @@ public class PrivateEncryptionKey implements SequenceItem {
 
         @SuppressWarnings("synthetic-access")
         @Override
-        protected EcdhPrivateKey stepIn(final PrivateEncryptionKey o) {
+        public EcdhPrivateKey stepIn(final PrivateEncryptionKey o) {
             return new EcdhPrivateKey(o.publicKey,
                 ((ECPrivateKeyParameters)o.keyPair.getPrivate()).getD());
         }
 
         @SuppressWarnings("synthetic-access")
         @Override
-        protected PrivateEncryptionKey stepOut(final EcdhPrivateKey s)
+        public PrivateEncryptionKey stepOut(final EcdhPrivateKey s)
             throws ParseException, CryptographyException {
             return new PrivateEncryptionKey(
                 s.publicKey,
@@ -80,5 +82,19 @@ public class PrivateEncryptionKey implements SequenceItem {
     public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addPrivateEncryptionKey(this);
+    }
+
+    public static SequenceItem fromProtobuf(
+            net.lshift.bletchley.suiteb.proto.SuiteBProto.PrivateEncryptionKey privateEncryptionKey)
+            throws ParseException, CryptographyException {
+        return ProtobufHelper.privateEncryptionKeyConverter.stepOut(
+                EcdhPrivateKey.fromProtobuf(privateEncryptionKey));
+    }
+
+    @Override
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+        return SuiteBProto.SequenceItem.newBuilder().setPrivateEncryptionKey(
+                SuiteBProto.PrivateEncryptionKey.newBuilder()
+                .setKey(ProtobufHelper.privateEncryptionKeyConverter.stepIn(this).toProtobuf()));
     }
 }

@@ -3,8 +3,7 @@ package net.lshift.spki.suiteb;
 /**
  * Condition that always passes
  */
-public class TrustedCondition
-    implements Condition {
+public class TrustedCondition extends InternalCondition {
     public static final TrustedCondition TRUSTED = new TrustedCondition();
 
     private TrustedCondition() {

@@ -1,7 +1,9 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 /**
  * An ECDH session key packet
@@ -29,5 +31,19 @@ public class EcdhItem implements SequenceItem {
         } else if (privs != null && pubr != null) {
             engine.process(privs.getKeyAsSender(pubr), trust);
         }
+    }
+
+    public static SequenceItem fromProtobuf(SuiteBProto.EcdhItem ecdhItem)
+            throws InvalidInputException {
+        return new EcdhItem(
+                ProtobufHelper.toDigest(ecdhItem.getSender()),
+                ProtobufHelper.toDigest(ecdhItem.getRecipient()));
+    }
+    
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+        return SuiteBProto.SequenceItem.newBuilder()
+                .setEcdhItem(SuiteBProto.EcdhItem.newBuilder()
+                        .setSender(sender.toProtobufHash())
+                        .setRecipient(sender.toProtobufHash()));
     }
 }
