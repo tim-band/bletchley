@@ -5,6 +5,7 @@ option java_package = "net.lshift.bletchley.suiteb.proto";
 option java_outer_classname = "SuiteBProto";
 
 import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
 
 message SequenceItem {
     oneof item {
@@ -56,8 +57,8 @@ message Hash {
 }
 
 message EcdhItem {
-    bytes sender = 1;
-    bytes recipient = 2;
+    Hash sender = 1;
+    Hash recipient = 2;
 }
 
 /**
@@ -74,11 +75,12 @@ message UntrustedCondition {
 }
 
 message ValidOnOrAfterCondition {
+     google.protobuf.Timestamp date = 1;
 
 }
 
-message ValidBeforeCondition {
-
+message InvalidOnOrAfterCondition {
+     google.protobuf.Timestamp date = 1;
 }
 
 /**
@@ -103,7 +105,7 @@ message Condition {
     oneof condition {
         UntrustedCondition untrusted = 1;
         ValidOnOrAfterCondition valid_on_or_after = 3;
-        ValidBeforeCondition valid_before = 4;
+        InvalidOnOrAfterCondition invalid_on_or_after = 4;
         google.protobuf.Any extension = 5;
     }
 }
@@ -144,8 +146,8 @@ message Sequence {
   * item.
   */
 message Signature {
-    bytes digest = 1;
-    bytes key_id = 2;
+    Hash digest = 1;
+    Hash key_id = 2;
     EcdsaSignature signature = 3;
 }
 
@@ -163,7 +165,8 @@ message EcdsaSignature {
   * become those of the key used to create the signature.
   */
 message Signed {
-    SequenceItem payload = 1;
+    string hash_type = 1;
+    SequenceItem payload = 2;
 }
 
 message EcdhSharedSecret {
