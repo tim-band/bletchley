@@ -1,0 +1,176 @@
+syntax = "proto3";
+
+package suiteb;
+option java_package = "net.lshift.bletchley.suiteb.proto";
+option java_outer_classname = "SuiteBProto";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+message SequenceItem {
+    oneof item {
+        Action action = 1;
+        AesKey aes_key = 2;
+        AesPacket aes_packet = 3;
+        Hash hash = 4;
+        EcdhItem ecdh_item = 5;
+        Limit limit = 6;
+        // PassphraseProtectedKey passphrase_protected_key = 7;
+        PrivateEncryptionKey private_encryption_key = 8;
+        PublicEncryptionKey public_encryption_key = 9;
+        PublicSigningKey public_signing_key = 11;
+        Sequence sequence = 12;
+        Signature signature = 13;
+        Signed signed = 14;
+    }
+}
+
+/**
+  * An action
+  * FIXME: people find the term Action confusing, but think of it
+  * as being like HTTP method: a GET action requests a resource,
+  * PUT provides a resource, POST updates it's state, etc. You
+  * still need permission to GET a resource for example: the action 
+  * the server  * takes is to 
+  */
+message Action {
+    // The oneof is here for extensions later. The main likely extension
+    // is a GRPC method invocation.
+    oneof action {
+        google.protobuf.Any accept = 1;
+    }
+}
+
+message AesKey {
+    bytes key = 1;
+}
+
+message AesPacket {
+    bytes key_id = 1;
+    bytes nonce = 2;
+    bytes ciphertext = 3;
+}
+
+message Hash {
+    string type = 1;
+    bytes value = 2;
+}
+
+message EcdhItem {
+    Hash sender = 1;
+    Hash recipient = 2;
+}
+
+/**
+  * Add additional conditions to the current conditions - I.e.
+  * more conditions => more limited trust.
+  */
+message Limit {
+    SequenceItem subject = 1;
+    repeated Condition condition = 2;
+}
+
+message UntrustedCondition {
+    
+}
+
+message ValidOnOrAfterCondition {
+     google.protobuf.Timestamp date = 1;
+
+}
+
+message InvalidOnOrAfterCondition {
+     google.protobuf.Timestamp date = 1;
+}
+
+/**
+  * The action's service and method must match the
+  * service and optionally the method specified in this condition
+  */
+message ServiceCondition {
+    // If service is not set this condition MUST be treated as Untrusted
+    string service = 1;
+    string method = 2;
+}
+
+/**
+  * The message must satisfy a the CEL conditions
+  * See https://github.com/google/cel-spec
+  */
+message CommonExpressionCondition {
+    repeated string cel_conditions = 1;
+}
+
+message Condition {
+    oneof condition {
+        UntrustedCondition untrusted = 1;
+        ValidOnOrAfterCondition valid_on_or_after = 3;
+        InvalidOnOrAfterCondition invalid_on_or_after = 4;
+        google.protobuf.Any extension = 5;
+    }
+}
+
+message PrivateEncryptionKey {
+    EcdhPrivateKey key = 1;
+}
+
+message PublicEncryptionKey {
+    EcPoint point = 1;
+}
+
+message PublicSigningKey {
+    EcPoint point = 1;
+}
+
+message EcdhPrivateKey {
+    EcPoint public_key = 1;
+    bytes d = 2;
+}
+
+message EcPoint {
+    bytes x = 1;
+    bytes y = 2;
+}
+
+message Sequence {
+    repeated SequenceItem items = 1;
+}
+
+/**
+  * A signature associates the conditions which apply
+  * to the key used to make the signature with the
+  * SequenceItem which has digest. It's neccessary
+  * to wrap the SequenceItem in a Signed element
+  * to cause Bletchly to look up the association - it
+  * doesn't just look for signatures for every sequence
+  * item.
+  */
+message Signature {
+    Hash digest = 1;
+    Hash key_id = 2;
+    EcdsaSignature signature = 3;
+}
+
+message EcdsaSignature {
+    bytes r = 1;
+    bytes s = 2;
+}
+
+/**
+  * This says a signature exist for this payload.
+  * If a signature for the payload exists, and is valid the payload
+  * is then processed with the conditions
+  * associated with the key used create the signature, rather rather than
+  * the current conditions. I.e. the current conditions
+  * become those of the key used to create the signature.
+  */
+message Signed {
+    string hash_type = 1;
+    SequenceItem payload = 2;
+}
+
+message EcdhSharedSecret {
+    EcPoint recipient_key = 1;
+    EcPoint sender_key = 2;
+    bytes shared_secret = 3;
+}
