@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb.cli;
 
 import static net.lshift.spki.convert.openable.OpenableUtils.write;
+import static net.lshift.spki.convert.openable.OpenableUtils.writeAny;
 import static net.lshift.spki.suiteb.Signed.signed;
 import static net.lshift.spki.suiteb.fingerprint.FingerprintUtils.getFingerprint;
 
@@ -14,12 +15,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.protobuf.ByteString;
+
+import net.lshift.bletchley.suiteb.proto.PrivateSigningKeyProto;
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.AdvancedSpkiInputStream;
 import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.ConverterCatalog;
 import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
@@ -33,7 +38,7 @@ import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
 import net.lshift.spki.suiteb.Sequence;
 import net.lshift.spki.suiteb.SequenceItem;
-import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
+import net.lshift.spki.suiteb.SequenceUtils;
 
 /**
  * Command line interface to crypto functions
@@ -42,11 +47,15 @@ public class Cli {
 	private static final Logger log = LoggerFactory.getLogger(Cli.class);
 
     private static final String CLI_MESSAGE = Cli.class.toString();
-    private static ConverterCatalog catalog = ConverterCatalog.BASE.extend(SimpleMessage.class);
 
-    private static <U> U read(final Class<U> clazz, final Openable open)
+    private static <U extends SequenceItem> U read(final Class<U> clazz, final Openable open)
         throws IOException, InvalidInputException {
-        return OpenableUtils.read(catalog, clazz, open);
+        return OpenableUtils.read(clazz, open);
+    }
+
+    private static PrivateSigningKey readPrivateSigningKey(Openable keyFile) 
+            throws IOException, InvalidInputException {
+        return OpenableUtils.readAny(PrivateSigningKey.class, keyFile);
     }
 
     private static SequenceItem read(final Openable open)
@@ -75,39 +84,39 @@ public class Cli {
 
     public static void genSigningKey(final Openable out)
         throws IOException {
-        write(out, PrivateSigningKey.generate());
+        writeAny(out, PrivateSigningKey.generate());
     }
 
     public static void genEncryptionKey(final Openable out)
         throws IOException {
-        write(out, PrivateEncryptionKey.generate());
+        writeAny(out, PrivateEncryptionKey.generate());
     }
 
     public static void getPublicSigningKey(final Openable privk, final Openable pubk)
         throws IOException, InvalidInputException {
-        final PrivateSigningKey privatek = read(PrivateSigningKey.class, privk);
-        write(pubk, privatek.getPublicKey());
+        final PrivateSigningKey privatek = readPrivateSigningKey(privk);
+        writeAny(pubk, privatek.getPublicKey());
     }
 
     public static void getPublicEncryptionKey(final Openable privk, final Openable pubk)
         throws IOException, InvalidInputException {
         final PrivateEncryptionKey privatek
             = read(PrivateEncryptionKey.class, privk);
-        write(pubk, privatek.getPublicKey());
+        writeAny(pubk, privatek.getPublicKey());
     }
 
     public static void fingerprintPrivateSigningKey(
         final PrintStream stdout,
         final Openable privk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
-            read(PrivateSigningKey.class, privk).getPublicKey().getKeyId()));
+            readPrivateSigningKey(privk).getPublicKey().getKeyId()));
     }
 
     public static void fingerprintPublicSigningKey(
         final PrintStream stdout,
         final Openable pubk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
-            read(PublicSigningKey.class, pubk).getKeyId()));
+            OpenableUtils.readAny(PublicSigningKey.class, pubk).getKeyId()));
     }
 
     public static void fingerprintPrivateEncryptionKey(
@@ -131,16 +140,16 @@ public class Cli {
         final Openable packet,
         final Openable out)
         throws IOException, InvalidInputException {
-        final InferenceEngine inference = new InferenceEngine(catalog);
+        final InferenceEngine<SimpleMessage> inference = new InferenceEngine<>(SimpleMessage.class);
         inference.processTrusted(signingKey);
         inference.process(encryptionKey);
         inference.process(read(packet));
         final SimpleMessage message
             = inference.getSoleAction(SimpleMessage.class);
-        if (!messageType.equals(message.type)) {
+        if (!messageType.equals(message.getType())) {
             throw new IllegalArgumentException("Message was not of expected type");
         }
-        OpenableUtils.writeBytes(out, message.content);
+        OpenableUtils.writeBytes(out, message.getContent());
     }
 
     public static void decryptSignedMessage(
@@ -171,15 +180,21 @@ public class Cli {
         }
 
         final List<SequenceItem> encryptedSequenceItems = new ArrayList<>();
-        final Action message = new Action(new SimpleMessage(
-            messageType, OpenableUtils.readBytes(args[1])));
+        final Action message = SequenceUtils.action(SimpleMessage.newBuilder()
+                .setType(messageType)
+                .setContent(ByteString.copyFrom(OpenableUtils.readBytes(args[1])))
+                .build());
         final PrivateSigningKey privateKey
-            = read(PrivateSigningKey.class, args[0]);
+            = readPrivateSigningKey(args[0]);
         encryptedSequenceItems.add(privateKey.sign(message));
         encryptedSequenceItems.add(signed(message));
 
         sequenceItems.add(aesKey.encrypt(new Sequence(encryptedSequenceItems)));
 
+        // Almost everything we write from the command line is wrapped in an
+        // 'any'. This is an exception: so that, for example, you could send
+        // the resulting file to a message queue. I.e. here, we are using the
+        // wire encoding.
         write(args[args.length - 1], new Sequence(sequenceItems));
     }
 

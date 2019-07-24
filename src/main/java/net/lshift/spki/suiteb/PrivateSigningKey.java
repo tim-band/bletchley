@@ -2,9 +2,11 @@ package net.lshift.spki.suiteb;
 
 import java.math.BigInteger;
 
+import net.lshift.bletchley.suiteb.proto.PrivateSigningKeyProto;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
+import net.lshift.spki.convert.ProtobufConvert;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
@@ -16,13 +18,16 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
  * A private key for signing
  */
 @ConvertClass(PrivateSigningKey.Step.class)
-public class PrivateSigningKey {
+public class PrivateSigningKey 
+implements ProtobufConvert<PrivateSigningKeyProto.PrivateSigningKey.Builder> {
     private final PublicSigningKey publicKey;
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();
+    private static final Step stepConverter = new Step();
 
-    private PrivateSigningKey(final PublicSigningKey publicKey,
-                              final AsymmetricCipherKeyPair keyPair) {
+    private PrivateSigningKey(
+            final PublicSigningKey publicKey,
+            final AsymmetricCipherKeyPair keyPair) {
         this.publicKey = publicKey;
         this.keyPair = keyPair;
         signer.init(true, keyPair.getPrivate());
@@ -75,5 +80,16 @@ public class PrivateSigningKey {
                 s.publicKey,
                 s.publicKey.getKeyPair(s.d));
         }
+    }
+
+    public static PrivateSigningKey fromProtobuf(PrivateSigningKeyProto.PrivateSigningKey pb) 
+            throws ParseException, CryptographyException {
+        return stepConverter.stepOut(EcdsaPrivateKey.fromProtobuf(pb.getKey()));
+    }
+
+    @Override
+    public PrivateSigningKeyProto.PrivateSigningKey.Builder toProtobuf() {
+        return PrivateSigningKeyProto.PrivateSigningKey.newBuilder()
+                .setKey(stepConverter.stepIn(this).toProtobuf());
     }
 }

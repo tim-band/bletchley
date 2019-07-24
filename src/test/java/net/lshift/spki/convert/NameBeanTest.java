@@ -19,6 +19,6 @@ public class NameBeanTest extends UsesCatalog {
         OpenableUtils.write(example, list("point",
             list("x", atom("foo")),
             list("x", atom("bar"))));
-        OpenableUtils.read(getReadInfo(), Point.class, example);
+        OpenableUtils.read(Point.class, example);
     }
 }

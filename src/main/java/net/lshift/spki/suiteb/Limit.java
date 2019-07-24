@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.protobuf.Message;
+
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto.Limit.Builder;
 import net.lshift.spki.InvalidInputException;
@@ -24,7 +26,7 @@ public class Limit
     }
 
     @Override
-    public void process(final InferenceEngine engine, final Condition trust)
+    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
         throws InvalidInputException {
         engine.process(subject, and(trust, and(conditions)));
     }
@@ -36,7 +38,7 @@ public class Limit
         for(SuiteBProto.Condition condition: limit.getConditionList()) {
             conditions.add(ProtobufHelper.fromProtobuf(condition));
         }
-        return new Limit(ProtobufHelper.fromProtobuf(limit.getSubject()),
+        return new Limit(SequenceItem.fromProtobuf(limit.getSubject()),
                 conditions);
     }
 
@@ -47,8 +49,8 @@ public class Limit
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobuf() {
-        Builder builder = SuiteBProto.Limit.newBuilder().setSubject(subject.toProtobuf());
+    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
+        Builder builder = SuiteBProto.Limit.newBuilder().setSubject(subject.toProtobufSequenceItem());
         for(Condition condition: conditions) {
             builder.addCondition(condition.toProtobuf());
         }

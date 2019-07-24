@@ -30,9 +30,9 @@ import net.lshift.spki.sexpform.Sexp;
  */
 public class ConvertUtils {
 	
-	private ConvertUtils() {
-		// This class cannot be instantiated
-	}
+    private ConvertUtils() {
+        // This class cannot be instantiated
+    }
 	
     public static byte[] bytes(final String s) {
         return s.getBytes(StandardCharsets.UTF_8);

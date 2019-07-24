@@ -1,5 +1,7 @@
 package net.lshift.spki.suiteb.passphrase;
 
+import com.google.protobuf.Message;
+
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
@@ -51,8 +53,9 @@ public class PassphraseProtectedKey implements SequenceItem {
     }
 
     @Override
-    public void process(final InferenceEngine engine, final Condition trust)
-        throws InvalidInputException {
+    public <ActionType extends Message> void process(
+            InferenceEngine<ActionType> engine, Condition trust,
+            Class<ActionType> actionType) throws InvalidInputException {
         final PassphraseDelegate passphraseDelegate = engine.getPassphraseDelegate();
         if (passphraseDelegate != null) {
             final AesKey key = passphraseDelegate.getPassphrase(this);
@@ -63,7 +66,8 @@ public class PassphraseProtectedKey implements SequenceItem {
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
         throw new UnsupportedOperationException("Passphrase protected keys are not yet defined in the protocol buffer schema");
     }
+
 }

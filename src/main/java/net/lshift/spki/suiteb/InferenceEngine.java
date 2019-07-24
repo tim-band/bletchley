@@ -8,13 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.ConverterCatalog;
-import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.protobuf.Message;
+
+import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
 
 /**
  * Take a bunch of SequenceItems and figure out what you can infer from them.
@@ -23,11 +24,9 @@ import org.slf4j.LoggerFactory;
  * Full of limitations, but the principle is there, the limitations can be
  * fixed and it will do for now.
  */
-public class InferenceEngine {
+public class InferenceEngine<ActionType extends Message> {
     private static final Logger LOG
         = LoggerFactory.getLogger(InferenceEngine.class);
-
-    private final ConverterCatalog readInfo;
 
     private final List<ActionType> actions = new ArrayList<>();
 
@@ -41,9 +40,11 @@ public class InferenceEngine {
     private final Map<InferenceVariable<?>, Object> variables = new HashMap<>();
 
     private PassphraseDelegate passphraseDelegate;
+    private final Class<ActionType> actionType;
 
-    public InferenceEngine(final ConverterCatalog readInfo) {
-        this.readInfo = readInfo;
+    public InferenceEngine(Class<ActionType> actionType) {
+
+        this.actionType = actionType;
     }
 
     public void process(final SequenceItem item) throws InvalidInputException {
@@ -59,7 +60,7 @@ public class InferenceEngine {
     		String printed = ConvertUtils.prettyPrint(item);
 			LOG.debug("Processing item:\n{}", printed);
     	}
-        item.process(this, trust);
+        item.process(this, trust, actionType);
     }
 
     public List<ActionType> getActions() {
@@ -160,9 +161,5 @@ public class InferenceEngine {
                 "Variable can only be set once:" + v.toString());
         }
         variables.put(v, val);
-    }
-
-    public ConverterCatalog getReadInfo() {
-        return readInfo;
     }
 }

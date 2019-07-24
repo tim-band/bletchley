@@ -1,5 +1,7 @@
 package net.lshift.spki.suiteb;
 
+import com.google.protobuf.Message;
+
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.convert.Convert;
 
@@ -9,6 +11,8 @@ import net.lshift.spki.convert.Convert;
     ValidOnOrAfter.class
 })
 public interface Condition {
-    boolean allows(InferenceEngine engine, ActionType action);
+    public <ActionType extends Message> boolean allows(
+            InferenceEngine<ActionType> engine, 
+            ActionType action);
     SuiteBProto.Condition.Builder toProtobuf();
 }

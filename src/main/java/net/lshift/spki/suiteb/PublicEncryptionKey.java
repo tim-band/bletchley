@@ -6,16 +6,23 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
+import net.lshift.spki.convert.ProtobufConvert;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPublicKey;
 
 import org.bouncycastle.crypto.CipherParameters;
 
+import com.google.protobuf.Message;
+
 /**
  * A public key for encrypting data.
  */
 @ConvertClass(PublicEncryptionKey.Step.class)
-public class PublicEncryptionKey extends PublicKey implements SequenceItem {
+public class PublicEncryptionKey 
+extends PublicKey 
+implements SequenceItem ,
+ProtobufConvert<SuiteBProto.PublicEncryptionKey.Builder>
+{
     PublicEncryptionKey(final CipherParameters publicKey) {
         super(publicKey);
     }
@@ -37,7 +44,7 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem {
     }
 
     @Override
-    public void process(final InferenceEngine engine, final Condition trust)
+    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
         throws InvalidInputException {
         engine.addPublicEncryptionKey(this);
     }
@@ -53,9 +60,14 @@ public class PublicEncryptionKey extends PublicKey implements SequenceItem {
     }
 
     @Override
-    public Builder toProtobuf() {
+    public Builder toProtobufSequenceItem() {
         return SuiteBProto.SequenceItem.newBuilder()
-                .setPublicEncryptionKey(SuiteBProto.PublicEncryptionKey.newBuilder()
-                        .setPoint(ProtobufHelper.publicEncryptionKeyConverter.stepIn(this).toProtobuf()));
+                .setPublicEncryptionKey(this.toProtobuf());
+    }
+
+    @Override
+    public SuiteBProto.PublicEncryptionKey.Builder toProtobuf() {
+        return SuiteBProto.PublicEncryptionKey.newBuilder()
+                .setPoint(ProtobufHelper.publicEncryptionKeyConverter.stepIn(this).toProtobuf());
     }
 }

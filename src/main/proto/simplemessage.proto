@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package suiteb.simplemessage;
+option java_package = "net.lshift.bletchley.suiteb.proto";
+option java_outer_classname = "SimpleMessageProto";
+
+message SimpleMessage {
+   string type = 1;
+   bytes content = 2;
+}

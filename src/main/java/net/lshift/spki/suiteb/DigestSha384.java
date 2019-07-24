@@ -15,6 +15,7 @@ import org.bouncycastle.crypto.io.DigestOutputStream;
 import org.bouncycastle.util.encoders.Hex;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Message;
 
 /**
  * A SHA-384 digest of a SExp.
@@ -98,7 +99,7 @@ public class DigestSha384 implements SequenceItem {
     }
 
     @Override
-    public void process(final InferenceEngine engine, final Condition trust)
+    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
         throws InvalidInputException {
         engine.addItemTrust(this, trust);
     }
@@ -110,7 +111,7 @@ public class DigestSha384 implements SequenceItem {
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
         return SuiteBProto.SequenceItem.newBuilder().setHash(this.toProtobufHash());
     }
 }

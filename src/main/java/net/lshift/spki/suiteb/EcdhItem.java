@@ -1,5 +1,7 @@
 package net.lshift.spki.suiteb;
 
+import com.google.protobuf.Message;
+
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
@@ -20,7 +22,7 @@ public class EcdhItem implements SequenceItem {
     }
 
     @Override
-    public void process(final InferenceEngine engine, final Condition trust)
+    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
                     throws InvalidInputException {
         final PrivateEncryptionKey privs = engine.getPrivateEncryptionKey(sender);
         final PrivateEncryptionKey privr = engine.getPrivateEncryptionKey(recipient);
@@ -40,7 +42,7 @@ public class EcdhItem implements SequenceItem {
                 ProtobufHelper.toDigest(ecdhItem.getRecipient()));
     }
     
-    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
         return SuiteBProto.SequenceItem.newBuilder()
                 .setEcdhItem(SuiteBProto.EcdhItem.newBuilder()
                         .setSender(sender.toProtobufHash())

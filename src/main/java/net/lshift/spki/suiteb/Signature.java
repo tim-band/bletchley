@@ -3,6 +3,8 @@ package net.lshift.spki.suiteb;
 import static net.lshift.spki.suiteb.proto.ProtobufHelper.toBigInteger;
 import static net.lshift.spki.suiteb.proto.ProtobufHelper.toDigest;
 
+import com.google.protobuf.Message;
+
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.Convert;
@@ -30,7 +32,7 @@ public class Signature implements SequenceItem {
     }
 
     @Override
-    public void process(final InferenceEngine engine, final Condition trust)
+    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
         throws InvalidInputException {
         final PublicSigningKey pKey = engine.getPublicSigningKey(keyId);
         if (pKey == null) {
@@ -50,7 +52,7 @@ public class Signature implements SequenceItem {
                         toBigInteger(signature.getSignature().getS())));
     }
     
-    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
         return SuiteBProto.SequenceItem.newBuilder().setSignature(
                 SuiteBProto.Signature.newBuilder()
                 .setDigest(digest.toProtobufHash())

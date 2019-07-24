@@ -5,19 +5,23 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.Convert.ConvertClass;
 import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.suiteb.proto.ProtobufHelper;
+import net.lshift.spki.convert.ProtobufConvert;
 import net.lshift.spki.suiteb.sexpstructs.EcdhPrivateKey;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 
+import com.google.protobuf.Message;
+
 /**
  * A private key for decrypting data.
  */
 @ConvertClass(PrivateEncryptionKey.Step.class)
-public class PrivateEncryptionKey implements SequenceItem {
+public class PrivateEncryptionKey implements SequenceItem, 
+ ProtobufConvert<SuiteBProto.PrivateEncryptionKey.Builder> {
     private final PublicEncryptionKey publicKey;
     private final AsymmetricCipherKeyPair keyPair;
+    private static final Step stepConverter = new Step();
 
 
     private PrivateEncryptionKey(final PublicEncryptionKey publicKey,
@@ -79,7 +83,7 @@ public class PrivateEncryptionKey implements SequenceItem {
     }
 
     @Override
-    public void process(final InferenceEngine engine, final Condition trust)
+    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
         throws InvalidInputException {
         engine.addPrivateEncryptionKey(this);
     }
@@ -87,14 +91,18 @@ public class PrivateEncryptionKey implements SequenceItem {
     public static SequenceItem fromProtobuf(
             net.lshift.bletchley.suiteb.proto.SuiteBProto.PrivateEncryptionKey privateEncryptionKey)
             throws ParseException, CryptographyException {
-        return ProtobufHelper.privateEncryptionKeyConverter.stepOut(
+        return stepConverter.stepOut(
                 EcdhPrivateKey.fromProtobuf(privateEncryptionKey));
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobuf() {
-        return SuiteBProto.SequenceItem.newBuilder().setPrivateEncryptionKey(
-                SuiteBProto.PrivateEncryptionKey.newBuilder()
-                .setKey(ProtobufHelper.privateEncryptionKeyConverter.stepIn(this).toProtobuf()));
+    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
+        return SuiteBProto.SequenceItem.newBuilder().setPrivateEncryptionKey(toProtobuf());
+    }
+
+    @Override
+    public SuiteBProto.PrivateEncryptionKey.Builder toProtobuf() {
+        return SuiteBProto.PrivateEncryptionKey.newBuilder()
+                .setKey(stepConverter.stepIn(this).toProtobuf());
     }
 }

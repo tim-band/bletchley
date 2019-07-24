@@ -1,10 +1,6 @@
 package net.lshift.spki.suiteb;
 
-import net.lshift.bletchley.suiteb.proto.SuiteBProto;
-import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert;
-import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.ConverterCatalog;
+import java.nio.charset.StandardCharsets;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESEngine;
@@ -13,8 +9,12 @@ import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Message;
 
-import java.nio.charset.StandardCharsets;
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
+import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.Convert;
+import net.lshift.spki.convert.ConvertUtils;
 
 /**
  * A key to use with AES/GCM.
@@ -79,7 +79,7 @@ public class AesKey implements SequenceItem {
             return new AesPacket(getKeyId(), nonce, ciphertext);
     }
 
-    public SequenceItem decrypt(final ConverterCatalog r, final AesPacket packet)
+    public SequenceItem decrypt(final AesPacket packet)
         throws InvalidInputException {
         final GCMBlockCipher gcm = gcmBlockCipher();
         gcm.init(false, new AEADParameters(
@@ -93,25 +93,26 @@ public class AesKey implements SequenceItem {
         } catch (final InvalidCipherTextException e) {
             throw new CryptographyException(e);
         }
-        return ConvertUtils.fromBytes(r, SequenceItem.class, newtext);
+
+        return SequenceItem.fromProtobuf(newtext);
     }
 
-	private GCMBlockCipher gcmBlockCipher() {
-		return new GCMBlockCipher(new AESEngine());
-	}
+    private GCMBlockCipher gcmBlockCipher() {
+        return new GCMBlockCipher(new AESEngine());
+    }
 
     public static AesKey generateAESKey() {
         return new AesKey(Ec.randomBytes(AES_KEY_BYTES));
     }
 
     @Override
-    public void process(final InferenceEngine engine, final Condition trust)
+    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
         throws InvalidInputException {
         engine.addAesKey(this);
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
         return SuiteBProto.SequenceItem.newBuilder().setAesKey(
                 SuiteBProto.AesKey.newBuilder().setKey(ByteString.copyFrom(key)));       
     }

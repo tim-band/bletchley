@@ -4,6 +4,8 @@ import static net.lshift.spki.suiteb.InferenceVariables.NOW;
 
 import java.util.Date;
 
+import com.google.protobuf.Message;
+
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
@@ -21,7 +23,9 @@ public class ValidOnOrAfter implements Condition {
     }
 
     @Override
-    public boolean allows(final InferenceEngine engine, final ActionType action) {
+    public <ActionType extends Message> boolean allows(
+            final InferenceEngine<ActionType> engine, 
+            final ActionType action) {
         return !NOW.get(engine).before(date);
     }
 

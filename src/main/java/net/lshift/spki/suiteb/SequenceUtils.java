@@ -3,17 +3,20 @@ package net.lshift.spki.suiteb;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.protobuf.Any;
+import com.google.protobuf.Message;
+
 /**
  * Utilities for working with sequences.
  */
 public class SequenceUtils
 {
-	private SequenceUtils() {
-		// This class cannot be instantiated
-	}
+    private SequenceUtils() {
+        // This class cannot be instantiated
+    }
 
-	public static Action action(ActionType a) {
-        return new Action(a);
+    public static Action action(Message a) {
+        return new Action(Any.pack(a));
     }
 
     public static Sequence sequence(

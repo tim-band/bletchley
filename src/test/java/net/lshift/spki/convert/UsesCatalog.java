@@ -30,7 +30,7 @@ public class UsesCatalog {
             final ByteOpenable buf = new ByteOpenable();
             write(buf, o);
             LOG.info("\n{}", PrettyPrinter.prettyPrint(buf.read()));
-            return read(getReadInfo(), clazz, buf);
+            return read(clazz, buf);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } catch (final InvalidInputException e) {

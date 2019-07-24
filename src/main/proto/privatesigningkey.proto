@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package suiteb.privatesigningkey;
+option java_package = "net.lshift.bletchley.suiteb.proto";
+option java_outer_classname = "PrivateSigningKeyProto";
+
+import "suiteb.proto";
+
+// Is there any point in this indirection? If there isn't, then fix PrivateEncryptionKey too?
+message EcdsaPrivateKey {
+   suiteb.EcPoint public_key = 1;
+   bytes d = 2;
+}
+
+message PrivateSigningKey {
+    EcdsaPrivateKey key = 1;
+}

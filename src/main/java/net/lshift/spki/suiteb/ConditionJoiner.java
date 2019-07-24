@@ -3,6 +3,8 @@ package net.lshift.spki.suiteb;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.protobuf.Message;
+
 public class ConditionJoiner {
     private final boolean disjunction;
     private final Condition identity;
@@ -20,7 +22,9 @@ public class ConditionJoiner {
         }
 
         @Override
-        public boolean allows(final InferenceEngine inferenceEngine, final ActionType action) {
+        public <ActionType extends Message> boolean allows(
+                final InferenceEngine<ActionType> inferenceEngine, 
+                final ActionType action) {
             for (final Condition c: conditions) {
                 if (!c.allows(inferenceEngine, action))
                     return false;
@@ -39,7 +43,9 @@ public class ConditionJoiner {
         }
 
         @Override
-        public boolean allows(final InferenceEngine inferenceEngine, final ActionType payload) {
+        public <ActionType extends Message> boolean allows(
+                final InferenceEngine<ActionType> inferenceEngine, 
+                final ActionType payload) {
             for (final Condition c: conditions) {
                 if (c.allows(inferenceEngine, payload))
                     return true;

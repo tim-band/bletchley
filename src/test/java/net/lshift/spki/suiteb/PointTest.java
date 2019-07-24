@@ -23,6 +23,6 @@ public class PointTest extends UsesCatalog {
                 list("x", atom("asdf")),
                 list("y", atom("qwert"))));
         OpenableUtils.write(example, sexp);
-        OpenableUtils.read(getReadInfo(), EcdhPublicKey.class, example);
+        OpenableUtils.read(EcdhPublicKey.class, example);
     }
 }

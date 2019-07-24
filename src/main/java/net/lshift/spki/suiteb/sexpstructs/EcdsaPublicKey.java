@@ -1,6 +1,8 @@
 package net.lshift.spki.suiteb.sexpstructs;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto.EcPoint;
 import net.lshift.spki.convert.Convert;
+import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -23,5 +25,9 @@ public class EcdsaPublicKey
 
     public EcdsaPublicKey(final AsymmetricCipherKeyPair keyPair) {
         super(keyPair);
+    }
+
+    public EcPoint.Builder toProtobuf() {
+        return ProtobufHelper.toProtobuf(this.point);
     }
 }
