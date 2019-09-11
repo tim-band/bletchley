@@ -1,19 +1,17 @@
 package net.lshift.spki.suiteb.passphrase;
 
-import net.lshift.spki.convert.Convert;
+import com.google.protobuf.ByteString;
 
-@Convert.ByPosition(name="digest-this-to-get-the-key",
-fields={"passphraseId", "salt", "iterations", "passphrase"})
-public class KeyStart {
-    // This class is only used to create a digest, so
-    // no getters are needed
-    @SuppressWarnings("unused")
+import net.lshift.bletchley.suiteb.proto.PassphraseProto;
+import net.lshift.bletchley.suiteb.proto.PassphraseProto.KeyStart.Builder;
+import net.lshift.spki.convert.ProtobufConvert;
+
+public class KeyStart implements ProtobufConvert<PassphraseProto.KeyStart.Builder> {
+    // This class is only used to create a digest, so no access to the fields
+    // is required, other than to convert to a protobuf
     private final String passphraseId;
-    @SuppressWarnings("unused")
     private final byte [] salt;
-    @SuppressWarnings("unused")
     private final Integer iterations;
-    @SuppressWarnings("unused")
     private final String passphrase;
 
     public KeyStart(final String passphraseId, final byte[] salt, final int iterations,
@@ -22,5 +20,14 @@ public class KeyStart {
         this.salt = salt;
         this.iterations = iterations;
         this.passphrase = passphrase;
+    }
+
+    @Override
+    public Builder toProtobuf() {
+        return PassphraseProto.KeyStart.newBuilder()
+                .setPassphraseId(passphraseId)
+                .setSalt(ByteString.copyFrom(salt))
+                .setIterations(iterations)
+                .setPassphrase(passphrase);
     }
 }

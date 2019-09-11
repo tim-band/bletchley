@@ -6,9 +6,7 @@ import com.google.protobuf.Message;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert;
 
-@Convert.ByPosition(name="signed", fields={"hashType", "payload"})
 public class Signed implements SequenceItem {
     public final String hashType;
     public final SequenceItem payload;
@@ -49,11 +47,11 @@ public class Signed implements SequenceItem {
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
         return SuiteBProto.SequenceItem.newBuilder().setSigned(
                 SuiteBProto.Signed.newBuilder()
                 .setHashType(DigestSha384.DIGEST_NAME)
-                .setPayload(payload.toProtobufSequenceItem()));
+                .setPayload(payload.toProtobuf()));
     }
 }
 

@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESEngine;
@@ -13,13 +14,11 @@ import com.google.protobuf.Message;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.convert.ConvertUtils;
 
 /**
  * A key to use with AES/GCM.
  */
-@Convert.ByPosition(name="aes-gcm-key", fields={"key"})
 public class AesKey implements SequenceItem {
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
@@ -29,9 +28,16 @@ public class AesKey implements SequenceItem {
     public final byte[] key;
     private AesKeyId keyId;
 
-    public AesKey(
-        final byte[] key
-    ) {
+    public AesKey(final byte[] key) {
+        if(key == null) {
+            throw new NullPointerException("key");
+        }
+
+        if(key.length != AES_KEY_BYTES) {
+            throw new IllegalArgumentException(MessageFormat.format(
+                    "Expected {0} byte key, actual {1} bytes", AES_KEY_BYTES, key.length));
+        }
+
         this.key = key;
     }
 
@@ -64,8 +70,7 @@ public class AesKey implements SequenceItem {
             final GCMBlockCipher gcm = gcmBlockCipher();
             gcm.init(true, new AEADParameters(
                 new KeyParameter(key), 128, nonce, ZERO_BYTES));
-            final byte[] plaintext =
-                ConvertUtils.toBytes(message);
+            final byte[] plaintext = ConvertUtils.toBytes(message);
             final byte[] ciphertext = new byte[gcm.getOutputSize(plaintext.length)];
             final int resp = gcm.processBytes(plaintext, 0, plaintext.length,
                 ciphertext, 0);
@@ -112,7 +117,7 @@ public class AesKey implements SequenceItem {
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
         return SuiteBProto.SequenceItem.newBuilder().setAesKey(
                 SuiteBProto.AesKey.newBuilder().setKey(ByteString.copyFrom(key)));       
     }

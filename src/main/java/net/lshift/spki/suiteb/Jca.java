@@ -13,7 +13,6 @@ import java.security.interfaces.ECPublicKey;
 import org.bouncycastle.crypto.signers.StandardDSAEncoding;
 
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.suiteb.sexpstructs.ECPointConverter;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
 /**
@@ -33,7 +32,7 @@ public class Jca {
      * only if the point is valid on Bletchley's EC curve.
      * It's up to you to ensure this is a signing key, since the JCA doesn't
      * make the distinction.
-     * Note: this relies on {@link ECPointConverter#convert} rejecting invalid points,
+     * Note: this relies on {@link Ec#convert} rejecting invalid points,
      * rather than on checking that the curve in key matches the Bletchley EC curve.
      * This is unfriendly because it doesn't give a clear message.
      * @param key the key to convert
@@ -49,7 +48,7 @@ public class Jca {
         // the conversion will work, but signatures won't validate, but the chance
         // of such a point being generated in testing is very small
         return new PublicSigningKey(Ec.toECPublicKeyParameters(
-                ECPointConverter.convert(key.getW().getAffineX(), key.getW().getAffineY())));
+                Ec.convert(key.getW().getAffineX(), key.getW().getAffineY())));
     }
 
     public static PublicSigningKey importPublicSigningKey(PublicKey publicKey) throws CryptographyException {

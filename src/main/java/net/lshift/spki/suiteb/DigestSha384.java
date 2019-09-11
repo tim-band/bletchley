@@ -3,13 +3,6 @@ package net.lshift.spki.suiteb;
 import java.io.IOException;
 import java.util.Arrays;
 
-import net.lshift.bletchley.suiteb.proto.SuiteBProto;
-import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert.ConvertClass;
-import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.ListStepConverter;
-import net.lshift.spki.suiteb.sexpstructs.Hash;
-
 import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.io.DigestOutputStream;
 import org.bouncycastle.util.encoders.Hex;
@@ -17,16 +10,20 @@ import org.bouncycastle.util.encoders.Hex;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
+import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.ConvertUtils;
+import net.lshift.spki.convert.ProtobufConvert;
+
 /**
  * A SHA-384 digest of a SExp.
  */
-@ConvertClass(DigestSha384.Step.class)
 public class DigestSha384 implements SequenceItem {
     public static final String DIGEST_NAME = "sha384";
-    private static final int DIGEST_LENGTH = 48;
+    public static final int DIGEST_LENGTH = 48;
     private final byte[] bytes;
 
-    protected DigestSha384(final byte[] bytes) {
+    public DigestSha384(final byte[] bytes) {
         this.bytes = bytes;
     }
 
@@ -34,7 +31,7 @@ public class DigestSha384 implements SequenceItem {
         return bytes;
     }
 
-    public static DigestSha384 digest(final Object o) {
+    public static DigestSha384 digest(final SequenceItem o) {
         final SHA384Digest sha = new SHA384Digest();
         final DigestOutputStream digester = new DigestOutputStream(sha);
         try {
@@ -48,36 +45,28 @@ public class DigestSha384 implements SequenceItem {
         return new DigestSha384(digest);
     }
 
-    public static class Step
-            extends ListStepConverter<DigestSha384, Hash> {
-
-        public Step() {
-            super(DigestSha384.class, Hash.class);
-        }
-
-        @SuppressWarnings("synthetic-access")
-        @Override
-        protected Hash stepIn(final DigestSha384 o) {
-            return new Hash(DIGEST_NAME, o.bytes);
-        }
-
-        @Override
-        public DigestSha384 stepOut(final Hash hash)
-            throws InvalidInputException {
-            if (!DIGEST_NAME.equals(hash.hashType)) {
-                throw new CryptographyException(
-                    "Unexpected hash type: " + hash.hashType);
-            }
-            final byte[] bytes = hash.value;
-            if (bytes.length != DIGEST_LENGTH) {
-                throw new CryptographyException(
-                    "Wrong number of bytes, expected"
-                    + DIGEST_LENGTH + ", got " + bytes.length);
-            }
-            return new DigestSha384(bytes);
+    /**
+     * Convert an object to a protocol buffer, and then digests it.
+     * It will digest anything that can be converted to a protocol
+     * buffer, but returns bytes, because a Digest384 is a digest
+     * of a SequenceItem. This method is defined here only because
+     * of the code it has in common.
+     * @param o the object to generate a digest for.
+     * @return the digest
+     */
+    public static byte [] digest(ProtobufConvert<?> o) {
+        final SHA384Digest sha = new SHA384Digest();
+        final DigestOutputStream digester = new DigestOutputStream(sha);
+        try {
+            o.toProtobuf().build().writeTo(digester);
+            final byte[] digest = new byte[sha.getDigestSize()];
+            sha.doFinal(digest, 0);
+            return digest;
+        } catch (IOException e) {
+            throw new AssertionError("CANTHAPPEN:" + e);
         }
     }
-
+    
     @Override
     public String toString() {
         return "DigestSha384 [bytes=" + new String(Hex.encode(bytes)) + "]";
@@ -111,7 +100,7 @@ public class DigestSha384 implements SequenceItem {
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
         return SuiteBProto.SequenceItem.newBuilder().setHash(this.toProtobufHash());
     }
 }

@@ -7,14 +7,17 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Permission;
+import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.UsesCatalog;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.convert.openable.FileOpenable;
@@ -34,6 +37,7 @@ public class CliTest extends UsesCatalog
     
     static class ExitException extends SecurityException {
         public ExitException(int status) {
+            super(MessageFormat.format("Exit with status {0}", status));
             this.status = status;
         }
         private static final long serialVersionUID = 1L;
@@ -101,13 +105,15 @@ public class CliTest extends UsesCatalog
     @Test
     public void prettyPrintTest() throws FileNotFoundException, IOException, InvalidInputException {
         final Openable sPrivate = new ByteOpenable();
+        final Openable sPublic = new ByteOpenable();
         final Openable pp = new ByteOpenable();
         final Openable canonical = new ByteOpenable();
 
         Cli.main(null, "genSigningKey", sPrivate);
-        Cli.main(null, "prettyPrintToFile", sPrivate, pp);
+        Cli.main(null, "getPublicSigningKey", sPrivate, sPublic);
+        Cli.main(null, "prettyPrintToFile", sPublic, pp);
         Cli.main(null, "canonical", pp, canonical);
-        assertTrue(IOUtils.contentEquals(sPrivate.read(), canonical.read()));
+        assertTrue(IOUtils.contentEquals(sPublic.read(), canonical.read()));
     }
 
     /**
@@ -116,34 +122,40 @@ public class CliTest extends UsesCatalog
      * is as expected. We use the example of pretty printing a private signing key.
      * This is overkill, but satisfies our code coverage rules for new code.
      * @throws IOException
-     * @throws ParseException
+     * @throws InvalidInputException 
      */
     @Test
-    public void mainWithStdoutTest() throws IOException, ParseException {
+    public void mainWithStdoutTest() throws IOException, InvalidInputException {
         PrintStream originalOut = System.out;
         Path workDir = Files.createTempDirectory(this.getClass().getName());
         workDir.toFile().deleteOnExit();
         Path signingKeyPath = workDir.resolve("signing-private-key.spki");
+        Path publicSigningKeyPath = workDir.resolve("signing-public-key.spki");
 
         // Generate a signing key, for later pretty printing
         Cli.main(new String [] { "genSigningKey", signingKeyPath.toString() });
+        Cli.main(new String [] { "getPublicSigningKey", signingKeyPath.toString(), publicSigningKeyPath.toString() });
 
         final Openable prettyPrinted = new ByteOpenable();
-        System.setOut(new PrintStream(prettyPrinted.write()));
-        try {
-            Cli.main(new String [] { "prettyPrint", signingKeyPath.toString() });
-        } finally {
-            System.setOut(originalOut);
+        try(PrintStream out = new PrintStream(prettyPrinted.write())) {
+            System.setOut(out);
+            try {
+                Cli.main(new String [] { "prettyPrint", publicSigningKeyPath.toString() });
+            } finally {
+                System.setOut(originalOut);
+            }
         }
-        
-        FileOpenable canonical = new FileOpenable(signingKeyPath.toFile());
+
+        FileOpenable canonical = new FileOpenable(publicSigningKeyPath.toFile());
         ByteOpenable refPrettyPrinted = new ByteOpenable();
         // Pretty print directly, so we can compare the results
         Cli.prettyPrintToFile(canonical, refPrettyPrinted);
 
         // Compare our directly generated pretty printed key with the one
         // written to stdout
-        assertTrue(IOUtils.contentEquals(prettyPrinted.read(), refPrettyPrinted.read()));
+        assertEquals(
+                IOUtils.toString(new InputStreamReader(refPrettyPrinted.read())),
+                IOUtils.toString(new InputStreamReader(prettyPrinted.read())));
     }
     
     @Test

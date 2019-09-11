@@ -6,16 +6,12 @@ import java.net.URL;
 /**
  * Serialize URLs as strings
  */
-public class URLConverter
-    extends StringStepConverter<URL>
-{
-    public URLConverter() { super(URL.class); }
+public class URLConverter{
+    private URLConverter() {  }
 
-    @Override
-    protected String stepIn(final URL o) { return o.toString(); }
+    public static String stepIn(final URL o) { return o.toString(); }
 
-    @Override
-    protected URL stepOut(final String s) throws ConvertException {
+    public static URL stepOut(final String s) throws ConvertException {
         try {
             return new URL(s);
         } catch (final MalformedURLException e) {

@@ -10,11 +10,14 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 /**
  * A superclass for PublicKey objects
  */
-public abstract class PublicKey {
-    protected final ECPublicKeyParameters publicKey;
+public abstract class PublicKey implements SequenceItem {
+    public final ECPublicKeyParameters publicKey;
     protected DigestSha384 keyId = null;
 
     PublicKey(final CipherParameters publicKey) {
+        if(publicKey == null) {
+            throw new NullPointerException("publicKey");
+        }
         this.publicKey = (ECPublicKeyParameters) publicKey;
     }
 

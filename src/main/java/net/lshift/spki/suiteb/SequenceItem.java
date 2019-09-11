@@ -1,33 +1,20 @@
 package net.lshift.spki.suiteb;
 
+import java.text.MessageFormat;
+
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert;
-import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
+import net.lshift.spki.convert.ProtobufConvert;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 /**
  * Item that can go in a sequence and so be interpreted by the InferenceEngine.
  */
-@Convert.Discriminated({
-    Action.class,
-    AesKey.class,
-    AesPacket.class,
-    DigestSha384.class,
-    EcdhItem.class,
-    Limit.class,
-    PassphraseProtectedKey.class,
-    PrivateEncryptionKey.class,
-    PublicEncryptionKey.class,
-    PublicSigningKey.class,
-    Sequence.class,
-    Signature.class,
-    Signed.class
-})
-public interface SequenceItem {
+@ProtobufConvert.ProtobufClass(SuiteBProto.SequenceItem.class)
+public interface SequenceItem extends ProtobufConvert<SuiteBProto.SequenceItem.Builder> {
 
     public <ActionType extends Message> void process(InferenceEngine<ActionType> engine, Condition trust, Class<ActionType> actionType)
         throws InvalidInputException;
@@ -37,7 +24,7 @@ public interface SequenceItem {
      * always wrapped in a discriminator.
      * @return the protocol buffer representation
      */
-    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem();
+    public SuiteBProto.SequenceItem.Builder toProtobuf();
 
     /**
      * Convert from the protocol buffer representation to the
@@ -49,6 +36,7 @@ public interface SequenceItem {
     public static SequenceItem fromProtobuf(SuiteBProto.SequenceItem pb) throws InvalidInputException {
         switch(pb.getItemCase()) {
         case ACTION:
+            return new Action(pb.getAction().getAccept());
         case AES_KEY:
             return new AesKey(pb.getAesKey().getKey().toByteArray());
         case AES_PACKET:
@@ -86,6 +74,31 @@ public interface SequenceItem {
             return fromProtobuf(SuiteBProto.SequenceItem.parseFrom(bytes));
         } catch (InvalidProtocolBufferException e) {
             throw new InvalidInputException(e); 
+        }
+    }
+    
+    public static <T extends SequenceItem> T fromProtobuf(Class<T> required, byte [] bytes) 
+            throws InvalidInputException {
+        return require(required, fromProtobuf(bytes));
+    }
+
+    public static <T extends SequenceItem> T fromProtobuf(
+            Class<T> required, 
+            SuiteBProto.SequenceItem item) 
+            throws InvalidInputException {
+        return require(required, fromProtobuf(item));
+    }
+
+    public static <T extends SequenceItem> T require(Class<T> required,
+            SequenceItem item) {
+        if(required.isInstance(item)) {
+            return required.cast(item);
+        } else {
+            throw new IllegalArgumentException(
+                    MessageFormat.format(
+                            "Required {0} received {1}", 
+                            required, 
+                            item.getClass()));
         }
     }
 }

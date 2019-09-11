@@ -1,20 +1,17 @@
 package net.lshift.spki.suiteb;
 
-import net.lshift.bletchley.suiteb.proto.SuiteBProto;
-import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
+import net.lshift.spki.InvalidInputException;
+
 /**
  * A SequenceItem encrypted with AES/GCM.
  */
-@Convert.ByPosition(name = "aes-gcm-encrypted",
-fields={"keyId", "nonce", "ciphertext"})
 public class AesPacket implements SequenceItem {
     private static final Logger LOG
     = LoggerFactory.getLogger(AesPacket.class);
@@ -45,7 +42,7 @@ public class AesPacket implements SequenceItem {
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
         return SuiteBProto.SequenceItem.newBuilder().setAesPacket(
                 SuiteBProto.AesPacket.newBuilder()
                 .setKeyId(keyId.toProtobuf())

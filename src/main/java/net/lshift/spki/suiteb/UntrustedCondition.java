@@ -3,9 +3,7 @@ package net.lshift.spki.suiteb;
 import com.google.protobuf.Message;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
-import net.lshift.spki.convert.Convert;
 
-@Convert.ByPosition(name = "untrusted", fields = {})
 public class UntrustedCondition
     implements Condition {
     public static final UntrustedCondition UNTRUSTED = new UntrustedCondition();

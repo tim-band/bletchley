@@ -35,7 +35,7 @@ public class Client {
 
     public Service receiveMessage(Openable message) throws IOException,
             InvalidInputException {
-        final InferenceEngine engine = newEngine();
+        final InferenceEngine<Service> engine = newEngine();
         engine.processTrusted(read(acl));
         engine.processTrusted(read(secrets));
         engine.process(read(message));

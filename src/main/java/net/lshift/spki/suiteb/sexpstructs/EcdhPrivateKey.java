@@ -4,7 +4,6 @@ import java.math.BigInteger;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.ParseException;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.CryptographyException;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
@@ -12,7 +11,6 @@ import net.lshift.spki.suiteb.proto.ProtobufHelper;
 /**
  * Serialization format for private encryption keys
  */
-@Convert.ByName("suiteb-p384-ecdh-private-key")
 public class EcdhPrivateKey {
     public final PublicEncryptionKey publicKey;
     public final BigInteger d;
@@ -24,7 +22,7 @@ public class EcdhPrivateKey {
 
     public SuiteBProto.EcdhPrivateKey.Builder toProtobuf() {
         return SuiteBProto.EcdhPrivateKey.newBuilder()
-                .setPublicKey(ProtobufHelper.publicEncryptionKeyConverter.stepIn(publicKey).toProtobuf())
+                .setPublicKey(new EcdhPublicKey(publicKey.publicKey).toProtobuf())
                 .setD(ProtobufHelper.toProtobuf(d));
     }
 

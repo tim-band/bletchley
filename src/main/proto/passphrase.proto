@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package suiteb.passphrase;
+option java_package = "net.lshift.bletchley.suiteb.proto";
+option java_outer_classname = "PassphraseProto";
+
+
+message KeyStart {
+    string passphrase_id = 1;
+    bytes salt = 2;
+    uint32 iterations = 3;
+    string passphrase = 4;
+}

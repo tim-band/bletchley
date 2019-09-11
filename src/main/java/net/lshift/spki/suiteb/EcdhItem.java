@@ -4,14 +4,11 @@ import com.google.protobuf.Message;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 /**
  * An ECDH session key packet
  */
-@Convert.ByPosition(name = "suiteb-ecdh-aes-gcm-key",
-fields={"sender", "recipient"})
 public class EcdhItem implements SequenceItem {
     public final DigestSha384 sender;
     public final DigestSha384 recipient;
@@ -42,7 +39,7 @@ public class EcdhItem implements SequenceItem {
                 ProtobufHelper.toDigest(ecdhItem.getRecipient()));
     }
     
-    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
         return SuiteBProto.SequenceItem.newBuilder()
                 .setEcdhItem(SuiteBProto.EcdhItem.newBuilder()
                         .setSender(sender.toProtobufHash())

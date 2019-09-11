@@ -36,8 +36,7 @@ public class PassphraseUtils {
         final int iterations,
         final String passphrase) {
         final KeyStart keyStart = new KeyStart(passphraseId, salt, iterations, passphrase);
-        final DigestSha384 initialDigest = DigestSha384.digest(keyStart);
-        final byte[] digest = initialDigest.getBytes().clone();
+        final byte[] digest = DigestSha384.digest(keyStart);
         for (int i = 0; i < 1<<iterations; i++) {
             final SHA384Digest sha = new SHA384Digest();
             sha.update(digest, 0, digest.length);

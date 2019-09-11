@@ -22,43 +22,6 @@ public class ConvertReflectionException
         super("error converting " + clazz.getCanonicalName() + ": " + message, t);
     }
 
-    private static String context(
-        final Converter<?> converter,
-        final Class<?> type)    {
-        return "error converting " + type.getCanonicalName();
-    }
-
-    public ConvertReflectionException(
-        final Converter<?> converter,
-        final Class<?> type,
-        final String message,
-        final Throwable cause) {
-        super(prefix(converter, type, message), cause);
-    }
-
-    private static String prefix(
-        final Converter<?> converter,
-        final Class<?> type,
-        final String message)
-    {
-        return context(converter, type) + ": " + message;
-    }
-
-    public ConvertReflectionException(
-        final Converter<?> converter,
-        final Class<?> type,
-        final String message) {
-        super(prefix(converter, type, message));
-    }
-
-
-    public ConvertReflectionException(
-        final Converter<?> converter,
-        final Class<?> type,
-        final Throwable cause) {
-        super(context(converter, type), cause);
-    }
-
     public ConvertReflectionException(ReflectiveOperationException e) {
 		super("Error during conversion", e);
 	}

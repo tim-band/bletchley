@@ -4,6 +4,8 @@ import static net.lshift.spki.suiteb.DigestSha384.digest;
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
+
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
 
@@ -14,7 +16,7 @@ public class ChainedSigningTest extends UsesSimpleMessage
     @Test
     public void testSequenceBasedSigningAndVerification() throws InvalidInputException {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
-        privateKey = roundTrip(PrivateSigningKey.class, privateKey);
+        // privateKey = roundTrip(PrivateSigningKey.class, privateKey);
         final PublicSigningKey publicKey = privateKey.getPublicKey();
         final Action message = makeMessage();
         Sequence sequence = sequence(
@@ -26,7 +28,7 @@ public class ChainedSigningTest extends UsesSimpleMessage
             signed(message));
         sequence = roundTrip(Sequence.class, sequence);
 
-        final InferenceEngine inference = newEngine();
+        final InferenceEngine<SimpleMessage> inference = newEngine();
         inference.processTrusted(publicKey.getKeyId());
         inference.process(sequence);
         checkMessage(inference, message);

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.lshift.spki.suiteb.DigestSha384;
+import net.lshift.spki.suiteb.SequenceItem;
 
 import org.apache.commons.io.IOUtils;
 
@@ -40,7 +41,7 @@ public class FingerprintUtils {
         }
     }
 
-    public static String getFingerprint(final Object o) {
+    public static String getFingerprint(final SequenceItem o) {
         return getFingerprint(DigestSha384.digest(o));
     }
 

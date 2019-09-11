@@ -1,28 +1,23 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.sexpform.Create.atom;
-import static net.lshift.spki.sexpform.Create.list;
-
 import java.io.IOException;
-
-import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.UsesCatalog;
-import net.lshift.spki.convert.openable.ByteOpenable;
-import net.lshift.spki.convert.openable.OpenableUtils;
-import net.lshift.spki.sexpform.Sexp;
-import net.lshift.spki.suiteb.sexpstructs.EcdhPublicKey;
 
 import org.junit.Test;
 
+import com.google.protobuf.ByteString;
+
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
+import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.UsesCatalog;
+
 public class PointTest extends UsesCatalog {
     @Test(expected=CryptographyException.class)
-    public void badPointRejected() throws IOException, InvalidInputException {
-        final ByteOpenable example = new ByteOpenable();
-        final Sexp sexp = list("suiteb-p384-ecdh-public-key",
-            list("point",
-                list("x", atom("asdf")),
-                list("y", atom("qwert"))));
-        OpenableUtils.write(example, sexp);
-        OpenableUtils.read(EcdhPublicKey.class, example);
+    public void badPointInPublicKeyRejected() throws IOException, InvalidInputException {
+        SequenceItem.fromProtobuf(
+                SuiteBProto.SequenceItem.newBuilder().setPublicSigningKey(
+                SuiteBProto.PublicSigningKey.newBuilder()
+                .setPoint(SuiteBProto.EcPoint.newBuilder()
+                        .setX(ByteString.copyFrom("asdf".getBytes()))
+                        .setY(ByteString.copyFrom("qwert".getBytes())))).build());
     }
 }

@@ -7,7 +7,6 @@ import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import java.io.IOException;
 
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ConverterCatalog;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
@@ -15,11 +14,10 @@ import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.SequenceItem;
 
 public class Utilities {
-    public static final ConverterCatalog R = ConverterCatalog.BASE.extend(Service.class);
 
     public static SequenceItem read(Openable message) throws IOException,
             InvalidInputException {
-        return OpenableUtils.read(R, message);
+        return OpenableUtils.read(message);
     }
 
     public static InferenceEngine newEngine() {

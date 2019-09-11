@@ -8,12 +8,10 @@ import com.google.protobuf.Message;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto.Sequence.Builder;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert.SequenceConverted;
 
 /**
  * A list of SequenceItems.  Itself a SequenceItem.
  */
-@SequenceConverted("sequence")
 public class Sequence
         implements SequenceItem {
     public final List<SequenceItem> sequence;
@@ -40,9 +38,9 @@ public class Sequence
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
         Builder builder = SuiteBProto.Sequence.newBuilder();
-        sequence.stream().map(SequenceItem::toProtobufSequenceItem).forEach(builder::addItems);
+        sequence.stream().map(SequenceItem::toProtobuf).forEach(builder::addItems);
         return SuiteBProto.SequenceItem.newBuilder().setSequence(builder);
     }
 }

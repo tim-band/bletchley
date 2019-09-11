@@ -17,14 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 
-import net.lshift.bletchley.suiteb.proto.PrivateSigningKeyProto;
 import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
-import net.lshift.bletchley.suiteb.proto.SuiteBProto;
-import net.lshift.spki.AdvancedSpkiInputStream;
-import net.lshift.spki.CanonicalSpkiOutputStream;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.ParseException;
-import net.lshift.spki.PrettyPrinter;
+import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
@@ -48,11 +43,6 @@ public class Cli {
 
     private static final String CLI_MESSAGE = Cli.class.toString();
 
-    private static <U extends SequenceItem> U read(final Class<U> clazz, final Openable open)
-        throws IOException, InvalidInputException {
-        return OpenableUtils.read(clazz, open);
-    }
-
     private static PrivateSigningKey readPrivateSigningKey(Openable keyFile) 
             throws IOException, InvalidInputException {
         return OpenableUtils.readAny(PrivateSigningKey.class, keyFile);
@@ -60,26 +50,37 @@ public class Cli {
 
     private static SequenceItem read(final Openable open)
         throws IOException, InvalidInputException {
-        return read(SequenceItem.class, open);
+        return OpenableUtils.read(SequenceItem.class, open);
     }
 
+    /**
+     * Pretty print a sequence item: I.e. this doesn't work on keys,
+     * public or otherwise.
+     * @param file the file containing the protocol buffer encoded sequence item
+     * @param stdout the print stream to write to
+     * @throws IOException
+     * @throws InvalidInputException
+     */
     public static void prettyPrint(final Openable file, PrintStream stdout)
-        throws IOException,
-            ParseException {
-        PrettyPrinter.prettyPrint(new PrintWriter(stdout), file.read());
+        throws IOException, InvalidInputException {
+        // FIXME: this doesn't have a mechanism to understand action types
+        // or custom conditions, so it will fail on any domain specific
+        // messages.
+        PrintWriter out = new PrintWriter(stdout);
+        ConvertUtils.prettyPrint(read(file), out);
+        out.flush();
     }
 
     public static void prettyPrintToFile(final Openable in, final Openable out)
-                    throws ParseException, IOException {
-        final PrintWriter pw = new PrintWriter(out.write());
-        PrettyPrinter.prettyPrint(pw, in.read());
-        pw.close();
+                    throws IOException, InvalidInputException {
+        try(final PrintWriter pw = new PrintWriter(out.write())) {
+            ConvertUtils.prettyPrint(read(in), pw);
+        }
     }
 
-    public static void canonical(final Openable in, final Openable out) throws IOException, ParseException {
-        PrettyPrinter.copyStream(
-            new AdvancedSpkiInputStream(in.read()),
-            new CanonicalSpkiOutputStream(out.write()));
+    public static void canonical(final Openable in, final Openable out) 
+            throws IOException, InvalidInputException {
+        write(out, ConvertUtils.readAdvanced(in.read()));
     }
 
     public static void genSigningKey(final Openable out)
@@ -89,20 +90,20 @@ public class Cli {
 
     public static void genEncryptionKey(final Openable out)
         throws IOException {
-        writeAny(out, PrivateEncryptionKey.generate());
+        write(out, PrivateEncryptionKey.generate());
     }
 
     public static void getPublicSigningKey(final Openable privk, final Openable pubk)
         throws IOException, InvalidInputException {
         final PrivateSigningKey privatek = readPrivateSigningKey(privk);
-        writeAny(pubk, privatek.getPublicKey());
+        write(pubk, privatek.getPublicKey());
     }
 
     public static void getPublicEncryptionKey(final Openable privk, final Openable pubk)
         throws IOException, InvalidInputException {
         final PrivateEncryptionKey privatek
-            = read(PrivateEncryptionKey.class, privk);
-        writeAny(pubk, privatek.getPublicKey());
+            = OpenableUtils.read(PrivateEncryptionKey.class, privk);
+        write(pubk, privatek.getPublicKey());
     }
 
     public static void fingerprintPrivateSigningKey(
@@ -116,21 +117,21 @@ public class Cli {
         final PrintStream stdout,
         final Openable pubk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
-            OpenableUtils.readAny(PublicSigningKey.class, pubk).getKeyId()));
+            OpenableUtils.read(PublicSigningKey.class, pubk).getKeyId()));
     }
 
     public static void fingerprintPrivateEncryptionKey(
         final PrintStream stdout,
         final Openable privk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
-            read(PrivateEncryptionKey.class, privk).getPublicKey().getKeyId()));
+            OpenableUtils.read(PrivateEncryptionKey.class, privk).getPublicKey().getKeyId()));
     }
 
     public static void fingerprintPublicEncryptionKey(
         final PrintStream stdout,
         final Openable pubk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
-            read(PublicEncryptionKey.class, pubk).getKeyId()));
+            OpenableUtils.read(PublicEncryptionKey.class, pubk).getKeyId()));
     }
 
     public static void decryptSignedMessage(
@@ -160,8 +161,8 @@ public class Cli {
         final Openable out)
         throws IOException, InvalidInputException {
         final PrivateEncryptionKey encryptionKey
-            = read(PrivateEncryptionKey.class, ePrivate);
-        final PublicSigningKey signingKey = read(PublicSigningKey.class, sPublic);
+            = OpenableUtils.read(PrivateEncryptionKey.class, ePrivate);
+        final PublicSigningKey signingKey = OpenableUtils.read(PublicSigningKey.class, sPublic);
         decryptSignedMessage(messageType, encryptionKey, signingKey, packet, out);
     }
 
@@ -175,7 +176,7 @@ public class Cli {
         sequenceItems.add(ephemeral.getPublicKey());
         for (int i = 2; i < args.length - 1; i++) {
             final PublicEncryptionKey pKey
-                = read(PublicEncryptionKey.class, args[i]);
+                = OpenableUtils.read(PublicEncryptionKey.class, args[i]);
             sequenceItems.add(ephemeral.encrypt(pKey, aesKey));
         }
 
@@ -184,17 +185,12 @@ public class Cli {
                 .setType(messageType)
                 .setContent(ByteString.copyFrom(OpenableUtils.readBytes(args[1])))
                 .build());
-        final PrivateSigningKey privateKey
-            = readPrivateSigningKey(args[0]);
+        final PrivateSigningKey privateKey = readPrivateSigningKey(args[0]);
         encryptedSequenceItems.add(privateKey.sign(message));
         encryptedSequenceItems.add(signed(message));
 
         sequenceItems.add(aesKey.encrypt(new Sequence(encryptedSequenceItems)));
 
-        // Almost everything we write from the command line is wrapped in an
-        // 'any'. This is an exception: so that, for example, you could send
-        // the resulting file to a message queue. I.e. here, we are using the
-        // wire encoding.
         write(args[args.length - 1], new Sequence(sequenceItems));
     }
 
@@ -258,7 +254,8 @@ public class Cli {
         }
         try {
             mainWithStdout(args, openables);
-        } catch (final Exception ex) {
+        } catch (final Throwable ex) {
+            ex.printStackTrace();
             log.error("Could not '{}': {}", args[0], ex.getMessage());
             log.debug("Exception:", ex);
             System.exit(2);

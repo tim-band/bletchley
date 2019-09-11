@@ -2,7 +2,11 @@ package net.lshift.spki.suiteb.fingerprint;
 
 import java.util.List;
 
-import net.lshift.spki.convert.Convert;
+import com.google.protobuf.ByteString;
+
+import net.lshift.bletchley.suiteb.proto.DigestRngProto;
+import net.lshift.bletchley.suiteb.proto.DigestRngProto.NextBytes.Builder;
+import net.lshift.spki.convert.ProtobufConvert;
 import net.lshift.spki.suiteb.DigestSha384;
 
 /**
@@ -20,24 +24,28 @@ public class DigestRng {
         initialBytes = digest.getBytes();
     }
 
-    @Convert.ByPosition(name = "digest-rng", fields = { "counter", "digest" })
-    private static class NextBytes {
-        @SuppressWarnings("unused")
+    private static class NextBytes 
+    implements ProtobufConvert<DigestRngProto.NextBytes.Builder> {
         private final Integer counter;
-        @SuppressWarnings("unused")
         private final byte[] digest;
 
         public NextBytes(final Integer counter, final byte[] digest) {
             this.counter = counter;
             this.digest = digest;
         }
+
+        @Override
+        public Builder toProtobuf() {
+            return DigestRngProto.NextBytes.newBuilder()
+                    .setCounter(counter)
+                    .setDigest(ByteString.copyFrom(digest));
+        }
     }
 
     private int nextByte() {
         if (randomBytes == null || byteOff >= randomBytes.length) {
-            final DigestSha384 digest = DigestSha384.digest(
+            randomBytes = DigestSha384.digest(
                 new NextBytes(useCounter++, initialBytes));
-            randomBytes = digest.getBytes();
             byteOff = 0;
         }
         return 0xff & randomBytes[byteOff++];

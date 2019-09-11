@@ -7,14 +7,12 @@ import java.util.Date;
 import com.google.protobuf.Message;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 /**
  * Valid only on or after the date given -
  * fails before that date.
  */
-@Convert.ByPosition(name = "valid-on-or-after", fields = {"date"})
 public class ValidOnOrAfter implements Condition {
     public final Date date;
 

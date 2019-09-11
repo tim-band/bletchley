@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
 
@@ -50,7 +51,7 @@ public class JcaTest extends UsesSimpleMessage {
         Sequence sequence = sequence(publicKey, Jca.signed(keyPair, message));
         sequence = roundTrip(Sequence.class, sequence);
 
-        final InferenceEngine inference = newEngine();
+        final InferenceEngine<SimpleMessage> inference = newEngine();
         inference.processTrusted(publicKey.getKeyId());
         inference.process(sequence);
         checkMessage(inference, message);

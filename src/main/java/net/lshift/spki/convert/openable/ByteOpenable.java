@@ -2,6 +2,7 @@ package net.lshift.spki.convert.openable;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.CharacterCodingException;
@@ -16,6 +17,16 @@ public class ByteOpenable
 {
     private ByteArrayOutputStream output = null;
 
+    public static Openable fromBytes(byte [] b) {
+        Openable openable = new ByteOpenable();
+        try(OutputStream o = openable.write()) {
+            o.write(b);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return openable;
+    }
+    
     @Override
     public InputStream read()
     {

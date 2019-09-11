@@ -9,6 +9,8 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto;
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
 import net.lshift.spki.convert.ConvertUtils;
@@ -18,20 +20,25 @@ import net.lshift.spki.suiteb.AesKey;
 import net.lshift.spki.suiteb.AesPacket;
 import net.lshift.spki.suiteb.InferenceEngine;
 import net.lshift.spki.suiteb.Sequence;
-import net.lshift.spki.suiteb.simplemessage.SimpleMessage;
 
 import org.junit.Test;
+
+import com.google.protobuf.Any;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 public class PassphraseTest extends UsesSimpleMessage {
     private static final String PASSPHRASE_ID = "passphrase id";
     private static final String PASSPHRASE = "passphrase";
     private static final String MESSAGE_TYPE = "passphrase test message";
     private static final String MESSAGE_TEXT = "Squeamish ossifrage";
-    private static final Action MESSAGE = new Action(new SimpleMessage(
-        MESSAGE_TYPE, MESSAGE_TEXT.getBytes(StandardCharsets.US_ASCII)));
+    private static final Action MESSAGE = new Action(Any.pack(
+            SimpleMessageProto.SimpleMessage.newBuilder()
+            .setType(MESSAGE_TYPE)
+            .setContent(ByteString.copyFrom(MESSAGE_TEXT.getBytes(StandardCharsets.US_ASCII))).build()));
 
     @Test
-    public void testRoundtrip() throws InvalidInputException {
+    public void testRoundtrip() throws InvalidInputException, InvalidProtocolBufferException {
         final KeyFromPassphrase kfp = PassphraseUtils.generate(PASSPHRASE_ID, PASSPHRASE);
         final AesKey key = kfp.getAesKey();
         final AesPacket encrypted = key.encrypt(MESSAGE);
@@ -53,15 +60,16 @@ public class PassphraseTest extends UsesSimpleMessage {
 
     private void assertDecryptsToMessage(final AesKey trueKey, final AesPacket encrypted)
         throws InvalidInputException,
-            ParseException {
-        final Action decrypted = (Action) trueKey.decrypt(getReadInfo(), encrypted);
-        assertMessagesMatch(MESSAGE.getPayload(), decrypted.getPayload());
+            ParseException, InvalidProtocolBufferException {
+        final Action decrypted = (Action) trueKey.decrypt(encrypted);
+        assertMessagesMatch(
+                MESSAGE.getPayload().unpack(SimpleMessage.class), 
+                decrypted.getPayload().unpack(SimpleMessage.class));
     }
 
     @Test
     public void testStability() throws IOException, InvalidInputException {
-        final Sequence sequence = ConvertUtils.read(getReadInfo(), Sequence.class,
-            getClass().getResourceAsStream("encrypted.spki"));
+        final Sequence sequence = ConvertUtils.read(Sequence.class, getClass().getResourceAsStream("encrypted.spki"));
         final PassphraseProtectedKey ppk = (PassphraseProtectedKey) sequence.sequence.get(0);
         final AesPacket encrypted = (AesPacket) sequence.sequence.get(1);
         assertDecryptsToMessage(ppk.getKey(PASSPHRASE), encrypted);
@@ -80,7 +88,7 @@ public class PassphraseTest extends UsesSimpleMessage {
         final Sequence sequence = sequence(
             kfp.getPassphraseProtectedKey(),
             kfp.getAesKey().encrypt(MESSAGE));
-        final InferenceEngine engine = newEngine();
+        final InferenceEngine<SimpleMessage> engine = newEngine();
         engine.setPassphraseDelegate(new PassphraseDelegate() {
             @Override
             public AesKey getPassphrase(final PassphraseProtectedKey ppk) {
@@ -100,7 +108,7 @@ public class PassphraseTest extends UsesSimpleMessage {
         final Sequence sequence = sequence(
             kfp.getPassphraseProtectedKey(),
             kfp.getAesKey().encrypt(MESSAGE));
-        final InferenceEngine engine = newEngine();
+        final InferenceEngine<SimpleMessage> engine = newEngine();
         engine.process(sequence);
         checkNoMessages(engine);
     }
@@ -111,7 +119,7 @@ public class PassphraseTest extends UsesSimpleMessage {
         final Sequence sequence = sequence(
             kfp.getPassphraseProtectedKey(),
             kfp.getAesKey().encrypt(MESSAGE));
-        final InferenceEngine engine = newEngine();
+        final InferenceEngine<SimpleMessage> engine = newEngine();
         engine.setPassphraseDelegate(new PassphraseDelegate() {
             @Override
             public AesKey getPassphrase(final PassphraseProtectedKey ppk) {

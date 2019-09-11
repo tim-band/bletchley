@@ -14,20 +14,14 @@ import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.Condition;
 import net.lshift.spki.suiteb.CryptographyException;
 import net.lshift.spki.suiteb.DigestSha384;
-import net.lshift.spki.suiteb.DigestSha384.Step;
+import net.lshift.spki.suiteb.Ec;
 import net.lshift.spki.suiteb.InvalidOnOrAfter;
-import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.UntrustedCondition;
 import net.lshift.spki.suiteb.ValidOnOrAfter;
-import net.lshift.spki.suiteb.sexpstructs.ECPointConverter;
-import net.lshift.spki.suiteb.sexpstructs.ECPointConverter.Point;
 import net.lshift.spki.suiteb.sexpstructs.Hash;
 
 
 public class ProtobufHelper {
-    public static final net.lshift.spki.suiteb.PublicEncryptionKey.Step publicEncryptionKeyConverter = new PublicEncryptionKey.Step();
-    private static final ECPointConverter ecPointConverter = new ECPointConverter();
-    private static final Step digestSha384Converter = new DigestSha384.Step();
 
     private ProtobufHelper() {
         // It might be necessary for this to have a catalog of condition converters
@@ -52,8 +46,7 @@ public class ProtobufHelper {
     }
     
     public static ECPoint ecPointFromProtobuf(SuiteBProto.EcPoint pb) throws CryptographyException {
-        return ecPointConverter.stepOut(
-                new Point(toBigInteger(pb.getX()), toBigInteger(pb.getY())));
+        return Ec.convert(toBigInteger(pb.getX()), toBigInteger(pb.getY()));
     }
     
     public static BigInteger toBigInteger(ByteString s) {
@@ -62,9 +55,20 @@ public class ProtobufHelper {
     
     public static DigestSha384 toDigest(net.lshift.bletchley.suiteb.proto.SuiteBProto.Hash hash) 
             throws InvalidInputException {
-        return digestSha384Converter.stepOut(new Hash(
-                hash.getType(), 
-                hash.getValue().toByteArray()));
+        final Hash hash1 = new Hash(
+                        hash.getType(), 
+                        hash.getValue().toByteArray());
+        if (!DigestSha384.DIGEST_NAME.equals(hash1.hashType)) {
+            throw new CryptographyException(
+                "Unexpected hash type: " + hash1.hashType);
+        }
+        final byte[] bytes = hash1.value;
+        if (bytes.length != DigestSha384.DIGEST_LENGTH) {
+            throw new CryptographyException(
+                "Wrong number of bytes, expected"
+                + DigestSha384.DIGEST_LENGTH + ", got " + bytes.length);
+        }
+        return new DigestSha384(bytes);
     }
     
     private static Date toDate(Timestamp timestamp) {
@@ -80,12 +84,9 @@ public class ProtobufHelper {
     }
 
     public static SuiteBProto.EcPoint.Builder toProtobuf(ECPoint point) {
-        return toProtobuf(ecPointConverter.stepIn(point));
-    }
-
-    private static SuiteBProto.EcPoint.Builder toProtobuf(Point ecPoint) {
+        final ECPoint normPoint = point.normalize();
         return SuiteBProto.EcPoint.newBuilder()
-                .setX(toProtobuf(ecPoint.x))
-                .setY(toProtobuf(ecPoint.y));
+                .setX(toProtobuf(normPoint.getXCoord().toBigInteger()))
+                .setY(toProtobuf(normPoint.getYCoord().toBigInteger()));
     }
 }

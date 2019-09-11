@@ -1,9 +1,8 @@
 package net.lshift.spki.suiteb;
 
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto.SequenceItem.Builder;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,6 @@ import com.google.protobuf.Message;
 /**
  * SequenceItem container for something the application might act on.
  */
-@Convert.ByPosition(name="action", fields={"payload"})
 public class Action implements SequenceItem {
     private static final Logger LOG = LoggerFactory.getLogger(Action.class);
     private final Any payload;
@@ -28,12 +26,12 @@ public class Action implements SequenceItem {
     }
 
     @Override
-    public <ActionType extends Message> void process(
-            final InferenceEngine<ActionType> engine, 
+    public <A extends Message> void process(
+            final InferenceEngine<A> engine, 
             final Condition trust, 
-            final Class<ActionType> actionType) throws InvalidInputException {
+            final Class<A> actionType) throws InvalidInputException {
         try {
-            ActionType action = payload.unpack(actionType);
+            A action = payload.unpack(actionType);
             if (trust.allows(engine, action)) {
                 LOG.debug("Trusting message");
                 engine.addAction(action);
@@ -46,8 +44,9 @@ public class Action implements SequenceItem {
     }
 
     @Override
-    public Builder toProtobufSequenceItem() {
-        // TODO Auto-generated method stub
-        return null;
+    public Builder toProtobuf() {
+        return SuiteBProto.SequenceItem.newBuilder()
+                .setAction(SuiteBProto.Action.newBuilder().setAccept(this.payload));
     }
+
 }

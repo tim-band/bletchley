@@ -15,6 +15,7 @@ import net.lshift.spki.suiteb.PrivateEncryptionKey;
 import net.lshift.spki.suiteb.PrivateSigningKey;
 import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.Sequence;
+import net.lshift.spki.suiteb.SequenceItem;
 import net.lshift.spki.suiteb.SequenceUtils;
 
 /**
@@ -49,7 +50,7 @@ public class SpeedTester {
     private void doRun() throws InvalidInputException {
         final AesKey aesKey = AesKey.generateAESKey();
         final PublicEncryptionKey pKey
-            = ConvertUtils.fromBytes(PublicEncryptionKey.class, publicKeyBytes);
+            = SequenceItem.fromProtobuf(PublicEncryptionKey.class, publicKeyBytes);
         final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         final Action message = SequenceUtils.action(SimpleMessage.newBuilder()
                 .setType(MESSAGE_TYPE)

@@ -11,12 +11,9 @@ import com.google.protobuf.Message;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto.Limit.Builder;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.Convert;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
-@Convert.PositionSequence(name="limit", fields={"subject"}, seq="conditions")
-public class Limit
-        implements SequenceItem {
+public class Limit implements SequenceItem {
     public final SequenceItem subject;
     public final List<Condition> conditions;
 
@@ -49,8 +46,8 @@ public class Limit
     }
 
     @Override
-    public SuiteBProto.SequenceItem.Builder toProtobufSequenceItem() {
-        Builder builder = SuiteBProto.Limit.newBuilder().setSubject(subject.toProtobufSequenceItem());
+    public SuiteBProto.SequenceItem.Builder toProtobuf() {
+        Builder builder = SuiteBProto.Limit.newBuilder().setSubject(subject.toProtobuf());
         for(Condition condition: conditions) {
             builder.addCondition(condition.toProtobuf());
         }

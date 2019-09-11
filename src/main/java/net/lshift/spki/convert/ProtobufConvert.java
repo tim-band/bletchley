@@ -1,5 +1,8 @@
 package net.lshift.spki.convert;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import com.google.protobuf.Message;
 
 /**
@@ -9,6 +12,7 @@ import com.google.protobuf.Message;
  * @param <B>
  */
 public interface ProtobufConvert<B extends Message.Builder> {
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface ProtobufClass {
         Class<?> value();
     }

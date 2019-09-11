@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.UsesSimpleMessage;
@@ -29,7 +30,6 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
         final AesKey aesKey = AesKey.generateAESKey();
         System.out.println("Master key:");
         ConvertUtils.prettyPrint(aesKey, System.out);
-        ConvertUtils.prettyPrint(aesKey.getKeyId(), System.out);
         final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         sequenceItems.add(ephemeral.getPublicKey());
         for (final PublicEncryptionKey pKey : publicKeys) {
@@ -41,7 +41,7 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
         packet = roundTrip(
             SequenceItem.class, packet);
         for (final PrivateEncryptionKey k: keys) {
-            final InferenceEngine inferenceEngine = newEngine();
+            final InferenceEngine<SimpleMessage> inferenceEngine = newEngine();
             inferenceEngine.process(k);
             inferenceEngine.processTrusted(packet);
             checkMessage(inferenceEngine, message);

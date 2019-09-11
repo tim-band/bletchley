@@ -6,13 +6,10 @@ import java.net.URISyntaxException;
 /**
  * Serialize URIs as strings.
  */
-public class URIConverter
-    extends StringStepConverter<URI>
-{
-    public URIConverter() { super(URI.class); }
+public class URIConverter {
+    private URIConverter() { }
 
-    @Override
-    protected URI stepOut(final String s) throws ConvertException {
+    public static URI stepOut(final String s) throws ConvertException {
         try {
             return new URI(s);
         } catch (final URISyntaxException e) {
@@ -20,8 +17,7 @@ public class URIConverter
         }
     }
 
-    @Override
-    protected String stepIn(final URI o) {
+    public static String stepIn(final URI o) {
         return o.toString();
     }
 }

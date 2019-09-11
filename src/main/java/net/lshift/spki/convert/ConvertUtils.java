@@ -7,23 +7,21 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.StandardCharsets;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.util.JsonFormat.Parser;
+import com.google.protobuf.util.JsonFormat.Printer;
 
-import net.lshift.spki.AdvancedSpkiInputStream;
-import net.lshift.spki.CanonicalSpkiInputStream;
-import net.lshift.spki.CanonicalSpkiOutputStream;
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
+import net.lshift.bletchley.suiteb.proto.SuiteBProto.SequenceItem.Builder;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.SpkiInputStream;
-import net.lshift.spki.SpkiInputStream.TokenType;
-import net.lshift.spki.SpkiOutputStream;
-import net.lshift.spki.sexpform.ConvertSexp;
-import net.lshift.spki.sexpform.Sexp;
+import net.lshift.spki.suiteb.SequenceItem;
 
 /**
  * Static utilities for conversion between SExps and objects.
@@ -61,73 +59,66 @@ public class ConvertUtils {
         }
     }
 
-    public static void write(
-        final Object o,
-        final SpkiOutputStream os)
-        throws IOException {
-        ConvertSexp.write(os, ConvertUtils.convertToSexp(o));
+    public static void write(final SequenceItem item, final OutputStream os) throws IOException {
+        item.toProtobuf().build().writeTo(os);
     }
 
-    public static void write(final Object o,
-                             final OutputStream os) throws IOException {
-        write(o, new CanonicalSpkiOutputStream(os));
+    public static void write(final SequenceItem item, final File f) throws IOException {        
+        try(FileOutputStream os = new FileOutputStream(f)) {
+            write(item, os);
+        }
     }
 
-    public static void write(final Object o,
-                             final File f) throws IOException {
-        final FileOutputStream os = new FileOutputStream(f);
+    public static <T extends SequenceItem> T read(
+        final Class<T> require,
+        final InputStream is)
+        throws IOException, InvalidInputException {
         try {
-            write(o, os);
-        } finally {
-            os.close();
+            return SequenceItem.fromProtobuf(require, SuiteBProto.SequenceItem.parseFrom(is));
+        } catch(InvalidProtocolBufferException e) {
+            throw new InvalidInputException(e);
         }
     }
 
-    public static <T> T read(
-        final ConverterCatalog r,
-        final Class<T> clazz, final SpkiInputStream is)
-        throws IOException, InvalidInputException {
-        final T res = r.read(clazz, ConvertSexp.read(is));
-        if (is.next() != TokenType.EOF) {
-            throw new ConvertException("File continues after object read");
+    public static SequenceItem read(final InputStream is)
+            throws IOException, InvalidInputException {
+        try {
+            return SequenceItem.fromProtobuf(SuiteBProto.SequenceItem.parseFrom(is));
+        } catch(InvalidProtocolBufferException e) {
+            throw new InvalidInputException(e); 
         }
-        return res;
     }
 
-    public static <T> T read(
-        final ConverterCatalog r,
-        final Class<T> clazz, final InputStream is)
+    public static <T extends SequenceItem> T read(
+        final Class<T> clazz,
+        final File f)
         throws IOException, InvalidInputException {
-        return read(r, clazz, new CanonicalSpkiInputStream(is));
-    }
-
-    public static <T> T read(
-        final ConverterCatalog r,
-        final Class<T> clazz, final File f)
-        throws IOException,
-            InvalidInputException {
         final FileInputStream is = new FileInputStream(f);
         try {
-            return read(r, clazz, is);
+            return read(clazz, is);
         } finally {
             is.close();
         }
     }
 
-    /**
-     * WARNING: this closes the stream passed in!
-     */
-    public static <T> T readAdvanced(
-        final ConverterCatalog r,
-        final Class<T> clazz, final InputStream is)
+    public static <T extends SequenceItem> T readAdvanced(Class<T> require, final InputStream is)
         throws IOException, InvalidInputException {
-        return read(r, clazz, new AdvancedSpkiInputStream(is));
+        Builder builder = SuiteBProto.SequenceItem.newBuilder();
+        parser().merge(new InputStreamReader(is), builder);
+        return SequenceItem.fromProtobuf(require, builder.build());
     }
 
-    public static byte[] toBytes(final Object o) {
+    public static SequenceItem readAdvanced(final InputStream is)
+            throws IOException, InvalidInputException {
+        Builder builder = SuiteBProto.SequenceItem.newBuilder();
+        parser().merge(new InputStreamReader(is), builder);
+        return SequenceItem.fromProtobuf(builder.build());
+    }
+
+    public static byte[] toBytes(final SequenceItem item) {
         try {
             final ByteArrayOutputStream os = new ByteArrayOutputStream();
-            write(o, os);
+            write(item, os);
             os.close();
             return os.toByteArray();
         } catch (final IOException e) {
@@ -136,64 +127,45 @@ public class ConvertUtils {
         }
     }
 
-    public static <T> T fromBytes(
-        final ConverterCatalog r,
-        final Class<T> clazz, final byte[] bytes)
+    public static <T extends SequenceItem> T fromBytes(
+        final Class<T> clazz,
+        final byte[] bytes)
         throws InvalidInputException {
         try {
-            return read(r, clazz, new ByteArrayInputStream(bytes));
+            return read(clazz, new ByteArrayInputStream(bytes));
         } catch (final IOException e) {
             throw new AssertionError(
                 "ByteArrayInputStream cannot throw IOException", e);
         }
     }
 
-    public static void prettyPrint(final Object o,
-                                   final PrintWriter ps) throws IOException {
-        write(o, new PrettyPrinter(ps));
+    public static void prettyPrint(
+            final SequenceItem item,
+            final PrintWriter ps) throws InvalidProtocolBufferException {
+        ps.print(printer().print(item.toProtobuf()));
     }
 
-    public static String prettyPrint(final Object o) {
-        final StringWriter writer = new StringWriter();
+    public static String prettyPrint(final SequenceItem item) throws InvalidInputException {
         try {
-            final PrintWriter pw = new PrintWriter(writer);
-            prettyPrint(o, pw);
-            pw.close();
-        } catch (final IOException e) {
-            // should not be possible
-            throw new AssertionError("StringWriter does not throw IOExceoption", e);
+            return printer().print(item.toProtobuf());
+        } catch (InvalidProtocolBufferException e) {
+            throw new InvalidInputException("Error printing JSON for SequenceItem", e);
         }
-        return writer.toString();
     }
 
-    public static void prettyPrint(final Object o,
-                                   final OutputStream out) throws IOException {
+    public static void prettyPrint(
+            final SequenceItem item,
+            final OutputStream out) throws IOException {
         final PrintWriter ps = new PrintWriter(out);
-        prettyPrint(o, ps);
+        prettyPrint(item, ps);
         ps.flush();
     }
 
-    public static boolean isAsciiIdentifier(char[] chars) {
-        if (!Character.isJavaIdentifierStart(chars[0]) || chars[0] > 0x7f) {
-            return false;
-        }
-        for(char c: chars) {
-            if (!Character.isJavaIdentifierPart(c) || c > 0x7f) {
-                return false;
-            }
-        }
-        return true;
+    private static Printer printer() {
+        return JsonFormat.printer();
     }
 
-    public static boolean isAsciiIdentifier(String s) {
-        return isAsciiIdentifier(s.toCharArray());
-    }
-
-    @SuppressWarnings("unchecked")
-        public static Sexp convertToSexp(Object o) {
-        if (o instanceof Sexp) {
-            return (Sexp)o;
-        }
-        return (ConverterCache.getConverter((Class<Object>)o.getClass())).write(o);
+    private static Parser parser() {
+        return JsonFormat.parser();
     }
 }

@@ -10,9 +10,7 @@ import net.lshift.spki.InvalidInputException;
 /**
  * Serialize/deserialize a UUID
  */
-public class UUIDConverter
-    extends StringStepConverter<UUID>
-{
+public class UUIDConverter {
     public static final String UUID_PART = "([0-9a-f]{%1$d})";
     public static final Pattern UUID_PATTERN = Pattern.compile(
         format("%s-%s-%s-%s-%s",
@@ -22,13 +20,11 @@ public class UUIDConverter
             format(UUID_PART, 4),
             format(UUID_PART, 12)), Pattern.CASE_INSENSITIVE);
 
-    public UUIDConverter() { super(UUID.class); }
+    private UUIDConverter() {  }
 
-    @Override
-    protected String stepIn(final UUID o) { return o.toString().toLowerCase(); }
+    public static String stepIn(final UUID o) { return o.toString().toLowerCase(); }
 
-    @Override
-    protected UUID stepOut(final String s) throws InvalidInputException {
+    public static UUID stepOut(final String s) throws InvalidInputException {
         if(!validUUID(s))
             throw new InvalidInputException(s);
         return UUID.fromString(s);

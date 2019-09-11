@@ -11,10 +11,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
+import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.util.JsonFormat.Printer;
+import com.google.protobuf.util.JsonFormat.TypeRegistry;
 
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto;
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
 
 /**
@@ -41,10 +47,14 @@ public class InferenceEngine<ActionType extends Message> {
 
     private PassphraseDelegate passphraseDelegate;
     private final Class<ActionType> actionType;
+    private final Printer printer;
 
     public InferenceEngine(Class<ActionType> actionType) {
-
         this.actionType = actionType;
+        this.printer = JsonFormat.printer().usingTypeRegistry(TypeRegistry.newBuilder()
+                .add(SimpleMessageProto.getDescriptor().getMessageTypes())
+                .add(SuiteBProto.getDescriptor().getMessageTypes()).build());
+        
     }
 
     public void process(final SequenceItem item) throws InvalidInputException {
@@ -57,10 +67,18 @@ public class InferenceEngine<ActionType extends Message> {
 
     public void process(final SequenceItem item, final Condition trust) throws InvalidInputException {
     	if(LOG.isDebugEnabled()) {
-    		String printed = ConvertUtils.prettyPrint(item);
-			LOG.debug("Processing item:\n{}", printed);
+    	    String printed = print(item.toProtobuf());
+    	    LOG.debug("Processing item:\n{}", printed);
     	}
         item.process(this, trust, actionType);
+    }
+
+    private String print(final MessageOrBuilder message) {
+        try {
+            return printer.print(message);
+        } catch (InvalidProtocolBufferException e) {
+            throw new IllegalStateException("Can't print message", e);
+        }
     }
 
     public List<ActionType> getActions() {
@@ -84,7 +102,10 @@ public class InferenceEngine<ActionType extends Message> {
                     "Expected exactly one validated action, found: " + actions);
         }
     }
-
+    public ActionType getSoleAction() throws CryptographyException {
+        return getSoleAction(actionType);
+    }
+            
     public void addAction(final ActionType payload) {
         actions.add(payload);
     }

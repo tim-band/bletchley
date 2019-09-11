@@ -1,24 +1,22 @@
 package net.lshift.spki.suiteb;
 
-import static net.lshift.spki.sexpform.Create.atom;
 import static org.junit.Assert.assertTrue;
-import net.lshift.spki.convert.UsesCatalog;
-import net.lshift.spki.sexpform.Sexp;
-import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
 import org.junit.Test;
 
-public class PKSigningTest extends UsesCatalog {
+import net.lshift.spki.convert.UsesSimpleMessage;
+
+public class PKSigningTest extends UsesSimpleMessage {
     @Test
     public void test() {
         PrivateSigningKey privateKey = PrivateSigningKey.generate();
-        privateKey = roundTrip(PrivateSigningKey.class, privateKey);
+        // privateKey = roundTrip(PrivateSigningKey.class, privateKey);
         PublicSigningKey publicKey = privateKey.getPublicKey();
         publicKey = roundTrip(PublicSigningKey.class, publicKey);
-        final Sexp message = atom("The magic words are squeamish ossifrage");
+        final Action message = makeMessage();
         final DigestSha384 digest = DigestSha384.digest(message);
-        final EcdsaSignature sigVal = roundTrip(EcdsaSignature.class,
-            privateKey.rawSignature(digest));
-        assertTrue(publicKey.validate(digest, sigVal));
+        final Signature signature = roundTrip(Signature.class,
+            new Signature(digest, publicKey.keyId, privateKey.rawSignature(digest)));
+        assertTrue(publicKey.validate(digest, signature.rawSignature));
     }
 }

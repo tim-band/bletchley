@@ -8,8 +8,7 @@ import java.util.TimeZone;
 /**
  * Convert between a Date and a SExp
  */
-public class DateConverter
-        extends StringStepConverter<Date> {
+public class DateConverter {
 
     private static final DateFormat DATE_FORMAT;
 
@@ -23,17 +22,13 @@ public class DateConverter
         return (DateFormat) DATE_FORMAT.clone();
     }
 
-    public DateConverter() {
-        super(Date.class);
-    }
+    private DateConverter() { }
 
-    @Override
-    protected String stepIn(final Date o) {
+    public static String stepIn(final Date o) {
         return getDateFormat().format(o);
     }
 
-    @Override
-    protected Date stepOut(final String o) throws ConvertException {
+    public static Date stepOut(final String o) throws ConvertException {
         try {
             return getDateFormat().parse(o);
         } catch (final java.text.ParseException e) {

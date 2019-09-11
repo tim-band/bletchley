@@ -4,21 +4,16 @@ import java.math.BigInteger;
 
 import net.lshift.spki.InvalidInputException;
 
-public class IntegerConverter
-        extends StepConverter<Integer, BigInteger> {
+public class IntegerConverter {
 
-    public IntegerConverter() {
-        super(Integer.class, BigInteger.class);
-    }
+    private IntegerConverter() { }
 
-    @Override
-    protected Integer stepOut(final BigInteger s)
+    public static Integer stepOut(final BigInteger s)
         throws InvalidInputException {
         return s.intValue();
     }
 
-    @Override
-    protected BigInteger stepIn(final Integer o) {
+    public static BigInteger stepIn(final Integer o) {
         return BigInteger.valueOf(o);
     }
 }

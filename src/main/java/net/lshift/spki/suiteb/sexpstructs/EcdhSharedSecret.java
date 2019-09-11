@@ -2,18 +2,19 @@ package net.lshift.spki.suiteb.sexpstructs;
 
 import java.math.BigInteger;
 
-import net.lshift.spki.convert.Convert;
-
 import org.bouncycastle.math.ec.ECPoint;
+
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
+import net.lshift.bletchley.suiteb.proto.SuiteBProto.EcdhSharedSecret.Builder;
+import net.lshift.spki.convert.ProtobufConvert;
+import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 /**
  * Serialization format for ECDH shared secret before it's hashed into
  * a GCM key.
  */
-@Convert.RequiresConverter(ECPointConverter.class)
-@Convert.ByPosition(name="suiteb-p384-ecdh-shared-secret",
-    fields={"receiverKey", "senderKey", "sharedSecret"})
-public class EcdhSharedSecret {
+@ProtobufConvert.ProtobufClass(SuiteBProto.EcdhSharedSecret.class)
+public class EcdhSharedSecret implements ProtobufConvert<SuiteBProto.EcdhSharedSecret.Builder> {
     public final ECPoint receiverKey;
     public final ECPoint senderKey;
     public final BigInteger sharedSecret;
@@ -24,5 +25,13 @@ public class EcdhSharedSecret {
         this.receiverKey = receiverKey;
         this.senderKey = senderKey;
         this.sharedSecret = sharedSecret;
+    }
+
+    @Override
+    public Builder toProtobuf() {
+        return SuiteBProto.EcdhSharedSecret.newBuilder()
+                .setRecipientKey(ProtobufHelper.toProtobuf(receiverKey))
+                .setSenderKey(ProtobufHelper.toProtobuf(senderKey))
+                .setSharedSecret(ProtobufHelper.toProtobuf(sharedSecret));
     }
 }

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package suiteb.digestrng;
+option java_package = "net.lshift.bletchley.suiteb.proto";
+option java_outer_classname = "DigestRngProto";
+
+/**
+  * This structure is used to construct word list fingerprints.
+  * any SequenceItem can be fingerprinted. digest is set to
+  * the SHA384 digest of the protocol buffer bytes of the sequence item
+  * To generate the Nth block of psuedo random data, set counter to N,
+  * convert to a protocol buffer and digest the result. Each block is
+  * 48 bytes.
+  * The random word generator chooses words from a list with size elements.
+  * Each request consumes the smallest number of bytes needed to represent
+  * an unsigned integer >= size - 1. If the resulting integer is >= size, repeat
+  * until a result in range is generated.
+  * Fingerprints consist of 6 words.
+  * See src/main/resources/net/lshift/spki/suiteb/fingerprint/wordlist
+  */
+message NextBytes {
+    uint32 counter = 1;
+    bytes digest = 2;
+}
