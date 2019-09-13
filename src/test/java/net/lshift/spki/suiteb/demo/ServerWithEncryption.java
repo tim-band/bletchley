@@ -6,6 +6,7 @@ import static net.lshift.spki.suiteb.demo.Utilities.read;
 
 import java.io.IOException;
 
+import net.lshift.bletchley.suiteb.demo.DemoProto.Service;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.EncryptionCache;

@@ -26,6 +26,8 @@ public interface SequenceItem extends ProtobufConvert<SuiteBProto.SequenceItem.B
      */
     public SuiteBProto.SequenceItem.Builder toProtobuf();
 
+    
+    
     /**
      * Convert from the protocol buffer representation to the
      * internal representation.

@@ -4,9 +4,11 @@ import static net.lshift.spki.suiteb.ConditionJoiner.or;
 import static net.lshift.spki.suiteb.UntrustedCondition.nullMeansUntrusted;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat;
 import com.google.protobuf.util.JsonFormat.Printer;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
@@ -49,12 +52,12 @@ public class InferenceEngine<ActionType extends Message> {
     private final Class<ActionType> actionType;
     private final Printer printer;
 
-    public InferenceEngine(Class<ActionType> actionType) {
+    public InferenceEngine(Class<ActionType> actionType, FileDescriptor ... descriptors) {
         this.actionType = actionType;
         this.printer = JsonFormat.printer().usingTypeRegistry(TypeRegistry.newBuilder()
-                .add(SimpleMessageProto.getDescriptor().getMessageTypes())
-                .add(SuiteBProto.getDescriptor().getMessageTypes()).build());
-        
+                .add(SuiteBProto.getDescriptor().getMessageTypes())
+                .add(Arrays.asList(descriptors).stream().flatMap(fd -> fd.getMessageTypes().stream()).collect(Collectors.toList()))
+                .build());       
     }
 
     public void process(final SequenceItem item) throws InvalidInputException {

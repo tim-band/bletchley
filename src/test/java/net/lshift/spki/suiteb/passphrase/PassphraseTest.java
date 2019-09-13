@@ -63,8 +63,8 @@ public class PassphraseTest extends UsesSimpleMessage {
             ParseException, InvalidProtocolBufferException {
         final Action decrypted = (Action) trueKey.decrypt(encrypted);
         assertMessagesMatch(
-                MESSAGE.getPayload().unpack(SimpleMessage.class), 
-                decrypted.getPayload().unpack(SimpleMessage.class));
+                MESSAGE.getPayload(SimpleMessage.class), 
+                decrypted.getPayload(SimpleMessage.class));
     }
 
     @Test

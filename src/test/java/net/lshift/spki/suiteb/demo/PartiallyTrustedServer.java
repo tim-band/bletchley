@@ -7,6 +7,9 @@ import static net.lshift.spki.suiteb.demo.Utilities.read;
 
 import java.io.IOException;
 
+import com.google.protobuf.Any;
+
+import net.lshift.bletchley.suiteb.demo.DemoProto.Service;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.Action;
@@ -22,6 +25,6 @@ public class PartiallyTrustedServer extends ServerWithEncryption {
     @Override
     protected SequenceItem serviceMessage(Service service) throws IOException, InvalidInputException {
         return encrypt(sequence(read(certificate),
-                signed(signingKey, new Action(service))));
+                signed(signingKey, new Action(Any.pack(service)))));
     }
 }

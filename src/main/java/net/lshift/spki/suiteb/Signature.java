@@ -23,6 +23,9 @@ public class Signature implements SequenceItem {
         final DigestSha384 keyId,
         final EcdsaSignature rawSignature
     ) {
+        if(digest == null) throw new NullPointerException("digest");
+        if(keyId == null) throw new NullPointerException("keyId");
+        if(rawSignature == null) throw new NullPointerException("rawSignature");
         this.digest = digest;
         this.keyId = keyId;
         this.rawSignature = rawSignature;

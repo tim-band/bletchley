@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.google.protobuf.ByteString;
-
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesCatalog;

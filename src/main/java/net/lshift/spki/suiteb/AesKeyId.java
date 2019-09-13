@@ -2,6 +2,8 @@ package net.lshift.spki.suiteb;
 
 import java.util.Arrays;
 
+import org.bouncycastle.util.encoders.Hex;
+
 import com.google.protobuf.ByteString;
 
 /**
@@ -31,5 +33,9 @@ public final class AesKeyId {
 
     public ByteString toProtobuf() {
         return ByteString.copyFrom(keyId);
+    }
+    
+    public String toString() {
+        return new String(Hex.encode(keyId));
     }
 }

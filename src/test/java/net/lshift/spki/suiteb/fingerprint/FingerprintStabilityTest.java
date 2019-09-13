@@ -1,28 +1,33 @@
 package net.lshift.spki.suiteb.fingerprint;
 
-import static net.lshift.spki.sexpform.Create.atom;
-import static net.lshift.spki.sexpform.Create.list;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import net.lshift.spki.sexpform.Sexp;
 
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
+import com.google.protobuf.Any;
+import com.google.protobuf.ByteString;
+
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
+import net.lshift.spki.suiteb.Action;
+import net.lshift.spki.suiteb.SequenceItem;
+
 @RunWith(Theories.class)
 public class FingerprintStabilityTest {
+
     private static class TestPair {
-        private final Sexp test;
+        private final SequenceItem test;
         private final String fingerprint;
 
-        public TestPair(final Sexp test, final String fingerprint) {
+        public TestPair(final SequenceItem test, final String fingerprint) {
             this.test = test;
             this.fingerprint = fingerprint;
         }
 
-        public Sexp getTest() {
+        public SequenceItem getTest() {
             return test;
         }
 
@@ -34,15 +39,15 @@ public class FingerprintStabilityTest {
     @DataPoints
     public static TestPair[] data() {
         return new TestPair[] {
-            new TestPair(atom(""),
-                "word-shots-term/boils-hyde-dish/cajun-vs-zw/doubt-them-cry/torn-accuse-facile"),
-            new TestPair(atom("hello"),
-                "ire-bh-marks/sol-carat-norway/hhhh-bushy-rufus/sara-grout-ouija/pencil-leda-yyyy"),
-            new TestPair(list("hello"),
-                "bk-crank-award/moore-buyer-gil/vie-gauge-byline/e-gl-tut/irvin-lcd-bowed"),
-            new TestPair(list("hello", atom("there")),
-                "nails-whine-led/ah-levis-endow/xr-porn-carpet/posse-node-wear/waxy-locks-root"),
+            new TestPair(message(""),
+                "cheat-hoot-reads/hwy-vexed-cb/jm-px-mask/emits-books-wall/pain-skid-jolt"),
+            new TestPair(message("hello"),
+                "honey-knots-exert/dodo-irons-lenny/third-ale-brief/yelp-burns-essay/score-humid-bella")
         };
+    }
+
+    private static Action message(String text) {
+        return new Action(Any.pack(SimpleMessage.newBuilder().setType("").setContent(ByteString.copyFromUtf8(text)).build()));
     }
 
     @Theory
@@ -52,3 +57,4 @@ public class FingerprintStabilityTest {
             is(pair.getFingerprint()));
     }
 }
+

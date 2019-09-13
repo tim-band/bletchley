@@ -3,15 +3,19 @@ package net.lshift.spki.convert;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import net.lshift.spki.suiteb.Action;
-import net.lshift.spki.suiteb.InferenceEngine;
-import net.lshift.bletchley.suiteb.proto.SimpleMessageProto;
-import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 
 import java.nio.charset.StandardCharsets;
 
+import org.junit.Assert;
+
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Message;
+
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto;
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
+import net.lshift.spki.suiteb.Action;
+import net.lshift.spki.suiteb.InferenceEngine;
 
 public class UsesSimpleMessage extends UsesCatalog {
     private static final ByteString CONTENT = ByteString.copyFrom(
@@ -28,7 +32,8 @@ public class UsesSimpleMessage extends UsesCatalog {
         return newEngine(SimpleMessage.class);
     }
 
-    protected static void assertMessagesMatch(final SimpleMessage actual, final SimpleMessage expected) {
+    protected static void assertMessagesMatch(final Message actual, final Message expected) {
+        Assert.assertEquals(expected, actual);
         final SimpleMessage actuals = (SimpleMessage) actual;
         final SimpleMessage expecteds = (SimpleMessage) expected;
         assertThat(actuals.getType(), is(equalTo(expecteds.getType())));

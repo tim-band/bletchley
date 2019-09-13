@@ -6,6 +6,8 @@ import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 
 import java.io.IOException;
 
+import net.lshift.bletchley.suiteb.demo.DemoProto;
+import net.lshift.bletchley.suiteb.demo.DemoProto.Service;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.convert.openable.Openable;
@@ -15,13 +17,13 @@ import net.lshift.spki.suiteb.SequenceItem;
 
 public class Utilities {
 
-    public static SequenceItem read(Openable message) throws IOException,
-            InvalidInputException {
-        return OpenableUtils.read(message);
+    public static SequenceItem read(Openable message) 
+            throws IOException, InvalidInputException {
+        return OpenableUtils.read(SequenceItem.class, message);
     }
 
-    public static InferenceEngine newEngine() {
-        final InferenceEngine engine = new InferenceEngine(R);
+    public static InferenceEngine<Service> newEngine() {
+        final InferenceEngine<Service> engine = new InferenceEngine<>(Service.class, DemoProto.getDescriptor());
         setNow(engine);
         return engine;
     }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
+import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
 import net.lshift.spki.convert.UsesSimpleMessage;
@@ -17,58 +18,40 @@ import net.lshift.spki.convert.UsesSimpleMessage;
 import org.junit.Test;
 
 public class NameBeanReorderTest extends UsesSimpleMessage {
-    @Test
-    public void testRoundTrip() throws InvalidInputException, IOException  {
-        PrivateSigningKey originalKey = PrivateSigningKey.generate();
-        final Sexp originalSexp = ConvertUtils.convertToSexp(originalKey.getPublicKey());
+    
+    /*
+        The previous version of this test - for s-expressions
+        used Point (EC point) as an example. That's because 
+        ECPoints where encoded using named fields, E.g. 
+        (point (x ...) (y ...)). So (point (y ...) (x ...)) means 
+        the same thing. The code normalises before generating 
+        a digest, so they have the same digest as well.
+        
+        Protocol buffers numbers all fields, and in the encoding,
+        always labels fields with those numbers, and the new 
+        protocol buffers version also normalises before generating
+        a digest, so an equivalent property can be tested in the new
+        protocol buffer version.
+        
+        ECpoints isn't a complete example, because Bletchley
+        converts from protocol buffers generated classes
+        to it's own representation, and then in the reverse
+        conversion, it generates completely new protocol buffers
+        objects. What we want to prove is that when you parse a
+        de-normalised protocol buffer into a generated object,
+        reversing the process produces a normalised protocol
+        buffer. For that we need an action.
+        
+        In addition, protocol buffers retains any fields it
+        doesn't understand in a map. It writes the fields it
+        understands in order, and then the fields it doesn't
+        understand, in order. When a field is added or removed
+        from the schema, it's default position in the message changes.
+        
+        This library is meant to not trust messages it doesn't
+        completely understand - we want to discard unknown fields
+        when we parse protocol buffers.
+     */
+    
 
-        prettyPrint(originalSexp, System.out);
-        final List<Sexp> coords = originalSexp.list().getSparts().get(0).list().getSparts();
-        final Slist reversedSexp = list("suiteb-p384-ecdsa-public-key",
-            list("point", coords.get(1), coords.get(0)));
-
-        prettyPrint(reversedSexp, System.out);
-        final PublicSigningKey deserialized = getReadInfo().read(
-            PublicSigningKey.class, reversedSexp);
-        final Sexp recoveredSexp = ConvertUtils.convertToSexp(deserialized);
-        assertEquals(originalSexp, recoveredSexp);
-        assertEquals(digest(recoveredSexp), deserialized.getKeyId());
-    }
-
-    @Test
-    public void test() throws InvalidInputException, IOException  {
-        final Action message = makeMessage();
-        final PrivateSigningKey key = generateReversedKey();
-        // Reorder the public key
-        final PublicSigningKey publicKey = key.getPublicKey();
-        final InferenceEngine<SimpleMessage> engine = newEngine();
-        engine.processTrusted(publicKey);
-        engine.process(signed(key, message));
-        checkMessage(engine, message);
-    }
-
-    protected PrivateSigningKey generateReversedKey() throws IOException, InvalidInputException {
-        PrivateSigningKey originalKey = PrivateSigningKey.generate();
-        final Sexp originalSexp = ConvertUtils.convertToSexp(originalKey);
-        prettyPrint(originalSexp, System.out);
-        final List<Sexp> coords
-            = originalSexp.list().getSparts()
-                .get(1).list().getSparts()
-                .get(0).list().getSparts()
-                .get(0).list().getSparts();
-        final Sexp reversedSexp = list("suiteb-p384-ecdsa-private-key",
-                list("public-key",
-                        list("suiteb-p384-ecdsa-public-key",
-                                list("point", coords.get(1), coords.get(0)))),
-                originalSexp.list().getSparts().get(0));
-        prettyPrint(reversedSexp, System.out);
-        final PrivateSigningKey reversedKey = getReadInfo().read(
-            PrivateSigningKey.class, reversedSexp);
-        final Sexp recoveredSexp = ConvertUtils.convertToSexp(reversedKey);
-        assertEquals(originalSexp, recoveredSexp);
-        assertEquals(recoveredSexp.list().getSparts()
-                        .get(1).list().getSparts().get(0),
-                ConvertUtils.convertToSexp(reversedKey.getPublicKey()));
-        return reversedKey;
-    }
 }

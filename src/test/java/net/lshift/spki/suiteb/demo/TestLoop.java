@@ -5,15 +5,14 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-
-import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.ParseException;
-import net.lshift.spki.PrettyPrinter;
-import net.lshift.spki.convert.openable.Openable;
-import net.lshift.spki.suiteb.CryptographyException;
 
 import org.junit.Test;
+
+import net.lshift.bletchley.suiteb.demo.DemoProto.Service;
+import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.ParseException;
+import net.lshift.spki.convert.openable.Openable;
+import net.lshift.spki.suiteb.CryptographyException;
 
 /**
  * You can consider the first part of each test the setting up of the system,
@@ -91,11 +90,11 @@ public class TestLoop {
 
     private void sendMessageFromServerToClient(Server server, Client client)
             throws IOException, InvalidInputException, ParseException {
-        final Service service = new Service("http", 80);
+        final Service service = Service.newBuilder().setName("http").setPort(80).build();
         Openable message = server.writeServiceMessage(service);
         final Service readBack = client.receiveMessage(message);
-        assertThat(readBack.name, is(service.name));
-        assertThat(readBack.port, is(service.port));
-        PrettyPrinter.prettyPrint(new PrintWriter(System.out), message.read());
+        assertThat(readBack.getName(), is(service.getName()));
+        assertThat(readBack.getPort(), is(service.getPort()));
+        // ConvertUtils.prettyPrint(message.read(), new PrintWriter(System.out));
     }
 }

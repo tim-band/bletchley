@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto;
 import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
@@ -141,7 +142,7 @@ public class Cli {
         final Openable packet,
         final Openable out)
         throws IOException, InvalidInputException {
-        final InferenceEngine<SimpleMessage> inference = new InferenceEngine<>(SimpleMessage.class);
+        final InferenceEngine<SimpleMessage> inference = new InferenceEngine<>(SimpleMessage.class, SimpleMessageProto.getDescriptor());
         inference.processTrusted(signingKey);
         inference.process(encryptionKey);
         inference.process(read(packet));

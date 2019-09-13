@@ -6,6 +6,8 @@ import static net.lshift.spki.convert.openable.OpenableUtils.write;
 import java.io.IOException;
 
 import com.google.protobuf.Message;
+
+import net.lshift.bletchley.suiteb.proto.SimpleMessageProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.suiteb.InferenceEngine;
@@ -28,6 +30,6 @@ public class UsesCatalog {
     }
 
     public <T extends Message> InferenceEngine<T> newEngine(Class<T> actionType) {
-        return new InferenceEngine<T>(actionType);
+        return new InferenceEngine<T>(actionType, SimpleMessageProto.getDescriptor());
     }
 }

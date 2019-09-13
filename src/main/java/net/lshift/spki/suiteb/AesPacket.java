@@ -29,7 +29,10 @@ public class AesPacket implements SequenceItem {
     }
 
     @Override
-    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
+    public <ActionType extends Message> void process(
+            final InferenceEngine<ActionType> engine, 
+            final Condition trust, 
+            Class<ActionType> actionType)
                     throws InvalidInputException {
         final AesKey key = engine.getAesKey(keyId);
         if (key != null) {
@@ -37,7 +40,7 @@ public class AesPacket implements SequenceItem {
             LOG.debug("Decryption successful");
             engine.process(contents, trust);
         } else {
-            LOG.debug("Key not known");
+            LOG.debug("Key not known {}", keyId);
         }
     }
 

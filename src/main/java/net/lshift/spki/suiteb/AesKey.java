@@ -8,6 +8,8 @@ import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
@@ -20,6 +22,8 @@ import net.lshift.spki.convert.ConvertUtils;
  * A key to use with AES/GCM.
  */
 public class AesKey implements SequenceItem {
+    private static final Logger LOG = LoggerFactory.getLogger(AesKey.class);
+
     public static final int AES_KEY_BYTES = 32;
     private static final byte[] KEYID_AD
         = "8:keyid-ad".getBytes(StandardCharsets.US_ASCII);
@@ -113,6 +117,7 @@ public class AesKey implements SequenceItem {
     @Override
     public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
         throws InvalidInputException {
+        LOG.debug("Added key {}", keyId);
         engine.addAesKey(this);
     }
 

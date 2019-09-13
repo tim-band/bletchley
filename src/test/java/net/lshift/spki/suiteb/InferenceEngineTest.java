@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Test;
+
 import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
-
-import org.junit.Test;
-
-import com.google.protobuf.InvalidProtocolBufferException;
 
 public class InferenceEngineTest extends UsesSimpleMessage {
     public static void checkNoMessages(final InferenceEngine<SimpleMessage> engine) {
@@ -29,13 +27,9 @@ public class InferenceEngineTest extends UsesSimpleMessage {
         final InferenceEngine<SimpleMessage> engine,
         final Action message)
         throws CryptographyException {
-        try {
-            assertMessagesMatch(
-                    engine.getSoleAction(SimpleMessage.class),
-                    message.getPayload().unpack(SimpleMessage.class));
-        } catch (InvalidProtocolBufferException e) {
-            throw new IllegalArgumentException("action not SimpleMessage", e);
-        }
+        assertMessagesMatch(
+                engine.getSoleAction(SimpleMessage.class),
+                message.getPayload(SimpleMessage.class));
     }
 
     @Test

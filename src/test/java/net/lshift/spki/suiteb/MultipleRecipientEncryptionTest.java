@@ -36,10 +36,8 @@ public class MultipleRecipientEncryptionTest extends UsesSimpleMessage
             sequenceItems.add(ephemeral.encrypt(pKey, aesKey));
         }
         sequenceItems.add(aesKey.encrypt(message));
-        SequenceItem packet
-            = new Sequence(sequenceItems);
-        packet = roundTrip(
-            SequenceItem.class, packet);
+        SequenceItem packet = new Sequence(sequenceItems);
+        packet = roundTrip(SequenceItem.class, packet);
         for (final PrivateEncryptionKey k: keys) {
             final InferenceEngine<SimpleMessage> inferenceEngine = newEngine();
             inferenceEngine.process(k);

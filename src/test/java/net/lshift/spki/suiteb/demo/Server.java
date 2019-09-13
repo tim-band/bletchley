@@ -6,6 +6,9 @@ import static net.lshift.spki.suiteb.demo.Utilities.asOpenable;
 
 import java.io.IOException;
 
+import com.google.protobuf.Any;
+
+import net.lshift.bletchley.suiteb.demo.DemoProto.Service;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.suiteb.Action;
@@ -31,6 +34,6 @@ public class Server {
 
     protected SequenceItem signedMessage(Service service) {
         return sequence(signingKey.getPublicKey(),
-                signed(signingKey, new Action(service)));
+                signed(signingKey, new Action(Any.pack(service))));
     }
 }

@@ -16,7 +16,7 @@ public class PKSigningTest extends UsesSimpleMessage {
         final Action message = makeMessage();
         final DigestSha384 digest = DigestSha384.digest(message);
         final Signature signature = roundTrip(Signature.class,
-            new Signature(digest, publicKey.keyId, privateKey.rawSignature(digest)));
+            new Signature(digest, publicKey.getKeyId(), privateKey.rawSignature(digest)));
         assertTrue(publicKey.validate(digest, signature.rawSignature));
     }
 }

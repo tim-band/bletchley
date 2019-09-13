@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.StandardCharsets;
+
+import com.google.protobuf.DiscardUnknownFieldsParser;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import com.google.protobuf.util.JsonFormat.Parser;
@@ -74,7 +76,7 @@ public class ConvertUtils {
         final InputStream is)
         throws IOException, InvalidInputException {
         try {
-            return SequenceItem.fromProtobuf(require, SuiteBProto.SequenceItem.parseFrom(is));
+            return SequenceItem.fromProtobuf(require, parse(is));
         } catch(InvalidProtocolBufferException e) {
             throw new InvalidInputException(e);
         }
@@ -83,10 +85,15 @@ public class ConvertUtils {
     public static SequenceItem read(final InputStream is)
             throws IOException, InvalidInputException {
         try {
-            return SequenceItem.fromProtobuf(SuiteBProto.SequenceItem.parseFrom(is));
+            return SequenceItem.fromProtobuf(parse(is));
         } catch(InvalidProtocolBufferException e) {
             throw new InvalidInputException(e); 
         }
+    }
+
+    private static net.lshift.bletchley.suiteb.proto.SuiteBProto.SequenceItem parse(
+            final InputStream is) throws InvalidProtocolBufferException {
+        return DiscardUnknownFieldsParser.wrap(SuiteBProto.SequenceItem.parser()).parseFrom(is);
     }
 
     public static <T extends SequenceItem> T read(

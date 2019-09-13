@@ -21,8 +21,12 @@ public class Action implements SequenceItem {
         this.payload = payload;
     }
 
-    public Any getPayload() {
-        return payload;
+    public <M extends Message> M getPayload(Class<M> type) {
+        try {
+            return payload.unpack(type);
+        } catch (InvalidProtocolBufferException e) {
+            throw new IllegalStateException("Payload type doesn't match", e);
+        }
     }
 
     @Override
@@ -30,16 +34,12 @@ public class Action implements SequenceItem {
             final InferenceEngine<A> engine, 
             final Condition trust, 
             final Class<A> actionType) throws InvalidInputException {
-        try {
-            A action = payload.unpack(actionType);
-            if (trust.allows(engine, action)) {
-                LOG.debug("Trusting message");
-                engine.addAction(action);
-            } else {
-                LOG.debug("Discarding untrusted message");
-            }
-        } catch (InvalidProtocolBufferException e) {
-            throw new InvalidInputException(e);
+        A action = getPayload(actionType);
+        if (trust.allows(engine, action)) {
+            LOG.debug("Trusting message");
+            engine.addAction(action);
+        } else {
+            LOG.debug("Discarding untrusted message");
         }
     }
 
