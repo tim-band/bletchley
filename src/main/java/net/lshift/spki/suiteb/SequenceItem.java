@@ -8,6 +8,7 @@ import com.google.protobuf.Message;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ProtobufConvert;
+import net.lshift.spki.suiteb.passphrase.PassphraseProtectedKey;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 /**
@@ -43,7 +44,7 @@ public interface SequenceItem extends ProtobufConvert<SuiteBProto.SequenceItem.B
             return new AesKey(pb.getAesKey().getKey().toByteArray());
         case AES_PACKET:
             return new AesPacket(
-                    new AesKeyId(pb.getAesPacket().getKeyId().toByteArray()), 
+                    AesKeyId.fromProtobuf(pb.getAesPacket().getKeyId()), 
                     pb.getAesPacket().getNonce().toByteArray(),
                     pb.getAesPacket().getCiphertext().toByteArray());
         case HASH:
@@ -64,6 +65,8 @@ public interface SequenceItem extends ProtobufConvert<SuiteBProto.SequenceItem.B
             return Signature.fromProtobuf(pb.getSignature());
         case SIGNED:
             return Signed.fromProtobuf(pb.getSigned());
+        case PASSPHRASE_PROTECTED_KEY:
+            return PassphraseProtectedKey.fromProtobuf(pb.getPassphraseProtectedKey());
         case ITEM_NOT_SET:
             throw new InvalidInputException("Empty sequence item");
         default:

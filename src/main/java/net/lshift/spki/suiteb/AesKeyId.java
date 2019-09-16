@@ -38,4 +38,8 @@ public final class AesKeyId {
     public String toString() {
         return new String(Hex.encode(keyId));
     }
+
+    public static AesKeyId fromProtobuf(ByteString byteString) {
+        return new AesKeyId(byteString.toByteArray());
+    }
 }

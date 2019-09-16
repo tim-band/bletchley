@@ -21,7 +21,6 @@ import com.google.protobuf.util.JsonFormat;
 import com.google.protobuf.util.JsonFormat.Printer;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
 
-import net.lshift.bletchley.suiteb.proto.SimpleMessageProto;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;

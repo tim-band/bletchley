@@ -15,7 +15,7 @@ message SequenceItem {
         Hash hash = 4;
         EcdhItem ecdh_item = 5;
         Limit limit = 6;
-        // PassphraseProtectedKey passphrase_protected_key = 7;
+        PassphraseProtectedKey passphrase_protected_key = 7;
         PrivateEncryptionKey private_encryption_key = 8;
         PublicEncryptionKey public_encryption_key = 9;
         PublicSigningKey public_signing_key = 11;
@@ -174,3 +174,11 @@ message EcdhSharedSecret {
     EcPoint sender_key = 2;
     bytes shared_secret = 3;
 }
+
+message PassphraseProtectedKey {
+    string passphrase_id = 1;
+    bytes salt = 2;
+    uint32 iterations = 3;
+    bytes key_id = 4;
+}
+

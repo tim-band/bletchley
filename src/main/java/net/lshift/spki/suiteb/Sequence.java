@@ -1,6 +1,7 @@
 package net.lshift.spki.suiteb;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.protobuf.Message;
@@ -20,6 +21,10 @@ public class Sequence
         this.sequence = sequence;
     }
 
+    public static Sequence of(SequenceItem ... items) {
+        return new Sequence(Arrays.asList(items));
+    }
+    
     @Override
     public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
         throws InvalidInputException {

@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb.passphrase;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
@@ -16,8 +17,11 @@ public class PassphraseProtectedKey implements SequenceItem {
     private final Integer iterations;
     private final AesKeyId keyId;
 
-    public PassphraseProtectedKey(final String passphraseId, final byte[] salt,
-                                  final int iterations, final AesKeyId keyId) {
+    public PassphraseProtectedKey(
+            final String passphraseId, 
+            final byte[] salt,
+            final int iterations, 
+            final AesKeyId keyId) {
         this.passphraseId = passphraseId;
         this.salt = salt;
         this.iterations = iterations;
@@ -64,7 +68,20 @@ public class PassphraseProtectedKey implements SequenceItem {
 
     @Override
     public SuiteBProto.SequenceItem.Builder toProtobuf() {
-        throw new UnsupportedOperationException("Passphrase protected keys are not yet defined in the protocol buffer schema");
+        return SuiteBProto.SequenceItem.newBuilder().setPassphraseProtectedKey(
+                SuiteBProto.PassphraseProtectedKey.newBuilder()
+                .setPassphraseId(passphraseId)
+                .setSalt(ByteString.copyFrom(salt))
+                .setIterations(iterations)
+                .setKeyId(keyId.toProtobuf()));
+    }
+
+    public static SequenceItem fromProtobuf(SuiteBProto.PassphraseProtectedKey passphraseProtectedKey) {
+        return new PassphraseProtectedKey(
+                passphraseProtectedKey.getPassphraseId(),
+                passphraseProtectedKey.getSalt().toByteArray(),
+                passphraseProtectedKey.getIterations(),
+                AesKeyId.fromProtobuf(passphraseProtectedKey.getKeyId()));
     }
 
 }

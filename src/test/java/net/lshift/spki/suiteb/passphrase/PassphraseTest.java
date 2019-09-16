@@ -6,9 +6,9 @@ import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
 import net.lshift.bletchley.suiteb.proto.SimpleMessageProto;
 import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
@@ -46,16 +46,17 @@ public class PassphraseTest extends UsesSimpleMessage {
         final PassphraseProtectedKey ppk = roundTrip(PassphraseProtectedKey.class,
             kfp.getPassphraseProtectedKey());
         assertEquals(PASSPHRASE_ID, ppk.getPassphraseId());
-//        try {
-//            ConvertUtils.write(Sequence.class, new Sequence(
-//                Arrays.asList(
-//                    ppk,
-//                    encrypted
-//                    )), new File("/tmp/saveme"));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+        saveTestStabilityExample(ppk, encrypted);
         assertDecryptsToMessage(ppk.getKey(PASSPHRASE), encrypted);
+    }
+
+    private void saveTestStabilityExample(final PassphraseProtectedKey ppk,
+            final AesPacket encrypted) {
+        try {
+            ConvertUtils.write(Sequence.of(ppk, encrypted), new File("/tmp/example.pb"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void assertDecryptsToMessage(final AesKey trueKey, final AesPacket encrypted)
@@ -69,7 +70,7 @@ public class PassphraseTest extends UsesSimpleMessage {
 
     @Test
     public void testStability() throws IOException, InvalidInputException {
-        final Sequence sequence = ConvertUtils.read(Sequence.class, getClass().getResourceAsStream("encrypted.spki"));
+        final Sequence sequence = ConvertUtils.read(Sequence.class, getClass().getResourceAsStream("encrypted.pb"));
         final PassphraseProtectedKey ppk = (PassphraseProtectedKey) sequence.sequence.get(0);
         final AesPacket encrypted = (AesPacket) sequence.sequence.get(1);
         assertDecryptsToMessage(ppk.getKey(PASSPHRASE), encrypted);

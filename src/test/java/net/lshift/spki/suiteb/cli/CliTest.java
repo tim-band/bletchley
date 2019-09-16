@@ -8,14 +8,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Permission;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesCatalog;
@@ -23,11 +26,6 @@ import net.lshift.spki.convert.openable.ByteOpenable;
 import net.lshift.spki.convert.openable.FileOpenable;
 import net.lshift.spki.convert.openable.Openable;
 import net.lshift.spki.convert.openable.OpenableUtils;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class CliTest extends UsesCatalog
 {
