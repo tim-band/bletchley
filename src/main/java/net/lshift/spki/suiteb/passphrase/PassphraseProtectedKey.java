@@ -1,8 +1,6 @@
 package net.lshift.spki.suiteb.passphrase;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Message;
-
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.AesKey;
@@ -54,9 +52,8 @@ public class PassphraseProtectedKey implements SequenceItem {
     }
 
     @Override
-    public <ActionType extends Message> void process(
-            InferenceEngine<ActionType> engine, Condition trust,
-            Class<ActionType> actionType) throws InvalidInputException {
+    public void process(
+            InferenceEngine engine, Condition trust) throws InvalidInputException {
         final PassphraseDelegate passphraseDelegate = engine.getPassphraseDelegate();
         if (passphraseDelegate != null) {
             final AesKey key = passphraseDelegate.getPassphrase(this);

@@ -3,8 +3,6 @@ package net.lshift.spki.suiteb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.protobuf.Message;
-
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
@@ -24,10 +22,9 @@ public class EcdhItem implements SequenceItem {
     }
 
     @Override
-    public <ActionType extends Message> void process(
-            final InferenceEngine<ActionType> engine, 
-            final Condition trust, 
-            Class<ActionType> actionType)
+    public void process(
+            final InferenceEngine engine, 
+            final Condition trust)
                     throws InvalidInputException {
         final PrivateEncryptionKey privs = engine.getPrivateEncryptionKey(sender);
         final PrivateEncryptionKey privr = engine.getPrivateEncryptionKey(recipient);

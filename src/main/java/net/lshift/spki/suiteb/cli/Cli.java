@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 
-import net.lshift.bletchley.suiteb.proto.SimpleMessageProto;
 import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
@@ -34,6 +33,7 @@ import net.lshift.spki.suiteb.PublicEncryptionKey;
 import net.lshift.spki.suiteb.PublicSigningKey;
 import net.lshift.spki.suiteb.Sequence;
 import net.lshift.spki.suiteb.SequenceItem;
+import net.lshift.spki.suiteb.SequenceItemConverter;
 import net.lshift.spki.suiteb.SequenceUtils;
 
 /**
@@ -51,7 +51,7 @@ public class Cli {
 
     private static SequenceItem read(final Openable open)
         throws IOException, InvalidInputException {
-        return OpenableUtils.read(SequenceItem.class, open);
+        return new SequenceItemConverter(SimpleMessage.class).parse(open);
     }
 
     /**
@@ -102,8 +102,7 @@ public class Cli {
 
     public static void getPublicEncryptionKey(final Openable privk, final Openable pubk)
         throws IOException, InvalidInputException {
-        final PrivateEncryptionKey privatek
-            = OpenableUtils.read(PrivateEncryptionKey.class, privk);
+        final PrivateEncryptionKey privatek = read(privk).require(PrivateEncryptionKey.class);
         write(pubk, privatek.getPublicKey());
     }
 
@@ -118,21 +117,21 @@ public class Cli {
         final PrintStream stdout,
         final Openable pubk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
-            OpenableUtils.read(PublicSigningKey.class, pubk).getKeyId()));
+            read(pubk).require(PublicSigningKey.class).getKeyId()));
     }
 
     public static void fingerprintPrivateEncryptionKey(
         final PrintStream stdout,
         final Openable privk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
-            OpenableUtils.read(PrivateEncryptionKey.class, privk).getPublicKey().getKeyId()));
+            read(privk).require(PrivateEncryptionKey.class).getPublicKey().getKeyId()));
     }
 
     public static void fingerprintPublicEncryptionKey(
         final PrintStream stdout,
         final Openable pubk) throws IOException, InvalidInputException {
         stdout.println(getFingerprint(
-            OpenableUtils.read(PublicEncryptionKey.class, pubk).getKeyId()));
+            read(pubk).require(PublicEncryptionKey.class).getKeyId()));
     }
 
     public static void decryptSignedMessage(
@@ -142,12 +141,11 @@ public class Cli {
         final Openable packet,
         final Openable out)
         throws IOException, InvalidInputException {
-        final InferenceEngine<SimpleMessage> inference = new InferenceEngine<>(SimpleMessage.class, SimpleMessageProto.getDescriptor());
+        final InferenceEngine inference = new InferenceEngine(SimpleMessage.class);
         inference.processTrusted(signingKey);
         inference.process(encryptionKey);
         inference.process(read(packet));
-        final SimpleMessage message
-            = inference.getSoleAction(SimpleMessage.class);
+        final SimpleMessage message = inference.getSoleAction(SimpleMessage.class);
         if (!messageType.equals(message.getType())) {
             throw new IllegalArgumentException("Message was not of expected type");
         }
@@ -162,8 +160,8 @@ public class Cli {
         final Openable out)
         throws IOException, InvalidInputException {
         final PrivateEncryptionKey encryptionKey
-            = OpenableUtils.read(PrivateEncryptionKey.class, ePrivate);
-        final PublicSigningKey signingKey = OpenableUtils.read(PublicSigningKey.class, sPublic);
+            = read(ePrivate).require(PrivateEncryptionKey.class);
+        final PublicSigningKey signingKey = read(sPublic).require(PublicSigningKey.class);
         decryptSignedMessage(messageType, encryptionKey, signingKey, packet, out);
     }
 
@@ -176,8 +174,7 @@ public class Cli {
         final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         sequenceItems.add(ephemeral.getPublicKey());
         for (int i = 2; i < args.length - 1; i++) {
-            final PublicEncryptionKey pKey
-                = OpenableUtils.read(PublicEncryptionKey.class, args[i]);
+            final PublicEncryptionKey pKey = read(args[i]).require(PublicEncryptionKey.class);
             sequenceItems.add(ephemeral.encrypt(pKey, aesKey));
         }
 

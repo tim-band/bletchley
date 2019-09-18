@@ -7,18 +7,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Optional;
 
-import net.lshift.bletchley.suiteb.proto.SuiteBProto;
-import net.lshift.spki.InvalidInputException;
-import net.lshift.spki.convert.ConvertReflectionException;
-import net.lshift.spki.convert.ProtobufConvert;
-import net.lshift.spki.suiteb.SequenceItem;
-
 import org.apache.commons.io.IOUtils;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
+
+import net.lshift.spki.InvalidInputException;
+import net.lshift.spki.convert.ConvertReflectionException;
+import net.lshift.spki.convert.ProtobufConvertible;
+import net.lshift.spki.suiteb.SequenceItem;
 
 /**
  * Utilities for acting on Openable objects
@@ -66,18 +65,18 @@ public class OpenableUtils {
      *             doesn't satisfy the type
      */
     @SuppressWarnings("unchecked")
-    public static <B extends Message.Builder, U extends ProtobufConvert<B>> U readAny(
+    public static <B extends Message.Builder, U extends ProtobufConvertible<B>> U readAny(
             final Class<U> clazz, final Openable open)
             throws IOException, InvalidInputException {
         final InputStream is = open.read();
         try {
             Any any = Any.parseFrom(open.read());
             Class<Message> pbclass = (Class<Message>)Optional.ofNullable(
-                clazz.getAnnotation(ProtobufConvert.ProtobufClass.class))
+                clazz.getAnnotation(ProtobufConvertible.ProtobufClass.class))
                     .map(a -> a.value())
                     .orElseThrow(() -> new IllegalArgumentException(
                             MessageFormat.format("{0} does not have annotation {1}", 
-                                    clazz, ProtobufConvert.ProtobufClass.class)) );
+                                    clazz, ProtobufConvertible.ProtobufClass.class)) );
             return (U) clazz.getMethod("fromProtobuf", pbclass).invoke(null,
                     any.unpack(pbclass));
         } catch (IllegalAccessException | IllegalArgumentException
@@ -92,33 +91,12 @@ public class OpenableUtils {
     }
 
     public static <B extends Message.Builder> void writeAny(final Openable open,
-            final ProtobufConvert<B> message) throws IOException {
+            final ProtobufConvertible<B> message) throws IOException {
         final OutputStream os = open.write();
         try {
             Any.pack(message.toProtobuf().build()).writeTo(os);
         } finally {
             os.close();
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends SequenceItem> T read(final Class<T> clazz,
-            final Openable open) throws IOException, InvalidInputException {
-        final InputStream is = open.read();
-        try {
-            SequenceItem sequenceItem = SequenceItem.fromProtobuf(
-                    SuiteBProto.SequenceItem.parseFrom(open.read()));
-            if (clazz.isInstance(sequenceItem)) {
-                return (T) sequenceItem;
-            } else {
-                throw new InvalidInputException(
-                        MessageFormat.format("Expected {0} item type {1}",
-                                clazz, sequenceItem.getClass()));
-            }
-        } catch (InvalidProtocolBufferException e) {
-            throw new InvalidInputException(e);
-        } finally {
-            is.close();
         }
     }
 

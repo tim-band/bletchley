@@ -34,11 +34,8 @@ message SequenceItem {
   * the server  * takes is to 
   */
 message Action {
-    // The oneof is here for extensions later. The main likely extension
-    // is a GRPC method invocation.
-    oneof action {
-        google.protobuf.Any accept = 1;
-    }
+  string name = 1;
+  bytes value = 2;
 }
 
 message AesKey {

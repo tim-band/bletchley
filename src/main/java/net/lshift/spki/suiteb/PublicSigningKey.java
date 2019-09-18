@@ -3,8 +3,6 @@ package net.lshift.spki.suiteb;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
-import com.google.protobuf.Message;
-
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto.EcPoint;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto.SequenceItem.Builder;
@@ -31,7 +29,7 @@ public class PublicSigningKey
     }
 
     @Override
-    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addPublicSigningKey(this);
         engine.addItemTrust(keyId, trust);

@@ -3,7 +3,6 @@ package net.lshift.spki.suiteb;
 import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static org.junit.Assert.assertSame;
 
-import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
 
@@ -28,7 +27,7 @@ public class EncryptionCacheTest extends UsesSimpleMessage {
             cache.ecdhItem(publicKey),
             aesKey.encrypt(message));
         sequence = roundTrip(Sequence.class, sequence);
-        final InferenceEngine<SimpleMessage> inferenceEngine = newEngine();
+        final InferenceEngine inferenceEngine = newEngine();
         inferenceEngine.process(privateKey);
         inferenceEngine.processTrusted(sequence);
         checkMessage(inferenceEngine, message);

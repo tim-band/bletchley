@@ -2,8 +2,6 @@ package net.lshift.spki.suiteb;
 
 import java.util.Random;
 
-import com.google.protobuf.Message;
-
 public final class InferenceVariable<T> {
     private static final Random random = new Random();
 
@@ -18,11 +16,11 @@ public final class InferenceVariable<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T get(final InferenceEngine<? extends Message> engine) {
+    public T get(final InferenceEngine engine) {
         return (T) engine.getVar(this);
     }
 
-    public void set(final InferenceEngine<? extends Message> engine, final T o) {
+    public void set(final InferenceEngine engine, final T o) {
         engine.setVar(this, o);
     }
 

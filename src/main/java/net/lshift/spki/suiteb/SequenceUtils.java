@@ -3,7 +3,6 @@ package net.lshift.spki.suiteb;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 
 /**
@@ -16,7 +15,7 @@ public class SequenceUtils
     }
 
     public static Action action(Message a) {
-        return new Action(Any.pack(a));
+        return new Action(a);
     }
 
     public static Sequence sequence(

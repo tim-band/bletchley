@@ -1,9 +1,7 @@
 package net.lshift.spki.convert;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 
 import com.google.protobuf.DiscardUnknownFieldsParser;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import com.google.protobuf.util.JsonFormat.Parser;
 import com.google.protobuf.util.JsonFormat.Printer;
@@ -24,6 +23,7 @@ import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto.SequenceItem.Builder;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.suiteb.SequenceItem;
+import net.lshift.spki.suiteb.SequenceItemConverter;
 
 /**
  * Static utilities for conversion between SExps and objects.
@@ -71,21 +71,11 @@ public class ConvertUtils {
         }
     }
 
-    public static <T extends SequenceItem> T read(
-        final Class<T> require,
-        final InputStream is)
-        throws IOException, InvalidInputException {
-        try {
-            return SequenceItem.fromProtobuf(require, parse(is));
-        } catch(InvalidProtocolBufferException e) {
-            throw new InvalidInputException(e);
-        }
-    }
-
-    public static SequenceItem read(final InputStream is)
+    @SafeVarargs
+    public static SequenceItem read(final InputStream is, Class<? extends Message> ... actionTypes)
             throws IOException, InvalidInputException {
         try {
-            return SequenceItem.fromProtobuf(parse(is));
+            return new SequenceItemConverter(actionTypes).fromProtobuf(parse(is));
         } catch(InvalidProtocolBufferException e) {
             throw new InvalidInputException(e); 
         }
@@ -96,30 +86,12 @@ public class ConvertUtils {
         return DiscardUnknownFieldsParser.wrap(SuiteBProto.SequenceItem.parser()).parseFrom(is);
     }
 
-    public static <T extends SequenceItem> T read(
-        final Class<T> clazz,
-        final File f)
-        throws IOException, InvalidInputException {
-        final FileInputStream is = new FileInputStream(f);
-        try {
-            return read(clazz, is);
-        } finally {
-            is.close();
-        }
-    }
-
-    public static <T extends SequenceItem> T readAdvanced(Class<T> require, final InputStream is)
-        throws IOException, InvalidInputException {
-        Builder builder = SuiteBProto.SequenceItem.newBuilder();
-        parser().merge(new InputStreamReader(is), builder);
-        return SequenceItem.fromProtobuf(require, builder.build());
-    }
-
-    public static SequenceItem readAdvanced(final InputStream is)
+    @SafeVarargs
+    public static SequenceItem readAdvanced(final InputStream is, Class<? extends Message> ... actionTypes)
             throws IOException, InvalidInputException {
         Builder builder = SuiteBProto.SequenceItem.newBuilder();
         parser().merge(new InputStreamReader(is), builder);
-        return SequenceItem.fromProtobuf(builder.build());
+        return new SequenceItemConverter(actionTypes).fromProtobuf(builder.build());
     }
 
     public static byte[] toBytes(final SequenceItem item) {
@@ -128,18 +100,6 @@ public class ConvertUtils {
             write(item, os);
             os.close();
             return os.toByteArray();
-        } catch (final IOException e) {
-            throw new AssertionError(
-                "ByteArrayInputStream cannot throw IOException", e);
-        }
-    }
-
-    public static <T extends SequenceItem> T fromBytes(
-        final Class<T> clazz,
-        final byte[] bytes)
-        throws InvalidInputException {
-        try {
-            return read(clazz, new ByteArrayInputStream(bytes));
         } catch (final IOException e) {
             throw new AssertionError(
                 "ByteArrayInputStream cannot throw IOException", e);

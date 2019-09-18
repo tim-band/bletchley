@@ -8,12 +8,10 @@ import org.bouncycastle.crypto.io.DigestOutputStream;
 import org.bouncycastle.util.encoders.Hex;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Message;
-
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
-import net.lshift.spki.convert.ProtobufConvert;
+import net.lshift.spki.convert.ProtobufConvertible;
 
 /**
  * A SHA-384 digest of a SExp.
@@ -54,7 +52,7 @@ public class DigestSha384 implements SequenceItem {
      * @param o the object to generate a digest for.
      * @return the digest
      */
-    public static byte [] digest(ProtobufConvert<?> o) {
+    public static byte [] digest(ProtobufConvertible<?> o) {
         final SHA384Digest sha = new SHA384Digest();
         final DigestOutputStream digester = new DigestOutputStream(sha);
         try {
@@ -88,7 +86,7 @@ public class DigestSha384 implements SequenceItem {
     }
 
     @Override
-    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         engine.addItemTrust(this, trust);
     }

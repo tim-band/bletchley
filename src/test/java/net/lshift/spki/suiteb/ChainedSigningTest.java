@@ -5,7 +5,6 @@ import static net.lshift.spki.suiteb.InferenceEngineTest.checkMessage;
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 import static net.lshift.spki.suiteb.Signed.signed;
 
-import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.UsesSimpleMessage;
 
@@ -28,7 +27,7 @@ public class ChainedSigningTest extends UsesSimpleMessage
             signed(message));
         sequence = roundTrip(Sequence.class, sequence);
 
-        final InferenceEngine<SimpleMessage> inference = newEngine();
+        final InferenceEngine inference = newEngine();
         inference.processTrusted(publicKey.getKeyId());
         inference.process(sequence);
         checkMessage(inference, message);

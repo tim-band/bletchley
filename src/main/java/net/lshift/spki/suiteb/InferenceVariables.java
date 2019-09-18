@@ -2,8 +2,6 @@ package net.lshift.spki.suiteb;
 
 import java.util.Date;
 
-import com.google.protobuf.Message;
-
 public class InferenceVariables {
     private InferenceVariables() {
         // This class cannot be instantiated
@@ -11,7 +9,7 @@ public class InferenceVariables {
 
     public static final InferenceVariable<Date> NOW = new InferenceVariable<>(Date.class, "now");
 
-    public static void setNow(final InferenceEngine<? extends Message> engine) {
+    public static void setNow(final InferenceEngine engine) {
         NOW.set(engine, new Date());
     }
 }

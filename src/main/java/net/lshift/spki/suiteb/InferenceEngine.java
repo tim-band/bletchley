@@ -4,7 +4,6 @@ import static net.lshift.spki.suiteb.ConditionJoiner.or;
 import static net.lshift.spki.suiteb.UntrustedCondition.nullMeansUntrusted;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.util.JsonFormat;
 import com.google.protobuf.util.JsonFormat.Printer;
 import com.google.protobuf.util.JsonFormat.TypeRegistry;
@@ -32,11 +30,12 @@ import net.lshift.spki.suiteb.passphrase.PassphraseDelegate;
  * Full of limitations, but the principle is there, the limitations can be
  * fixed and it will do for now.
  */
-public class InferenceEngine<ActionType extends Message> {
+public class InferenceEngine {
     private static final Logger LOG
         = LoggerFactory.getLogger(InferenceEngine.class);
 
-    private final List<ActionType> actions = new ArrayList<>();
+    private final SequenceItemConverter parser;
+    private final List<Message> actions = new ArrayList<>();
 
     private final Map<DigestSha384, Condition> itemTrust = new HashMap<>();
 
@@ -48,15 +47,22 @@ public class InferenceEngine<ActionType extends Message> {
     private final Map<InferenceVariable<?>, Object> variables = new HashMap<>();
 
     private PassphraseDelegate passphraseDelegate;
-    private final Class<ActionType> actionType;
     private final Printer printer;
 
-    public InferenceEngine(Class<ActionType> actionType, FileDescriptor ... descriptors) {
-        this.actionType = actionType;
+    public InferenceEngine(Class<? extends Message> actionTypes) {
+        this(new SequenceItemConverter(actionTypes));
+    }
+
+    public InferenceEngine(SequenceItemConverter parser) {
+        this.parser = parser;
         this.printer = JsonFormat.printer().usingTypeRegistry(TypeRegistry.newBuilder()
                 .add(SuiteBProto.getDescriptor().getMessageTypes())
-                .add(Arrays.asList(descriptors).stream().flatMap(fd -> fd.getMessageTypes().stream()).collect(Collectors.toList()))
-                .build());       
+                .add(parser.getDescriptors())
+                .build());
+    }
+
+    public SequenceItemConverter getParser() {
+        return parser;
     }
 
     public void process(final SequenceItem item) throws InvalidInputException {
@@ -72,7 +78,7 @@ public class InferenceEngine<ActionType extends Message> {
     	    String printed = print(item.toProtobuf());
     	    LOG.debug("Processing item:\n{}", printed);
     	}
-        item.process(this, trust, actionType);
+        item.process(this, trust);
     }
 
     private String print(final MessageOrBuilder message) {
@@ -83,15 +89,20 @@ public class InferenceEngine<ActionType extends Message> {
         }
     }
 
-    public List<ActionType> getActions() {
+    public List<Message> getActions() {
         return actions;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ActionType> T getSoleAction(final Class<T> clazz)
+    public <T extends Message> List<T> getActions(final Class<T> clazz) {
+        return (List<T>) actions.stream().filter(clazz::isInstance).collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Message> T getSoleAction(final Class<T> clazz)
         throws CryptographyException {
         if (actions.size() == 1) {
-            final ActionType res = actions.get(0);
+            final Message res = actions.get(0);
             if (!clazz.isInstance(res)) {
                 throw new CryptographyException("Action is not an instance of "
                     + clazz.getSimpleName() + " :" + res.getClass().getSimpleName());
@@ -104,11 +115,8 @@ public class InferenceEngine<ActionType extends Message> {
                     "Expected exactly one validated action, found: " + actions);
         }
     }
-    public ActionType getSoleAction() throws CryptographyException {
-        return getSoleAction(actionType);
-    }
             
-    public void addAction(final ActionType payload) {
+    public void addAction(final Message payload) {
         actions.add(payload);
     }
 

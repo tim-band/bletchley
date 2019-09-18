@@ -6,7 +6,7 @@ import com.google.protobuf.ByteString;
 
 import net.lshift.bletchley.suiteb.proto.DigestRngProto;
 import net.lshift.bletchley.suiteb.proto.DigestRngProto.NextBytes.Builder;
-import net.lshift.spki.convert.ProtobufConvert;
+import net.lshift.spki.convert.ProtobufConvertible;
 import net.lshift.spki.suiteb.DigestSha384;
 
 /**
@@ -25,7 +25,7 @@ public class DigestRng {
     }
 
     private static class NextBytes 
-    implements ProtobufConvert<DigestRngProto.NextBytes.Builder> {
+    implements ProtobufConvertible<DigestRngProto.NextBytes.Builder> {
         private final Integer counter;
         private final byte[] digest;
 

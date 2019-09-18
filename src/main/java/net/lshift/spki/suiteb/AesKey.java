@@ -12,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Message;
-
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.convert.ConvertUtils;
@@ -88,7 +86,7 @@ public class AesKey implements SequenceItem {
             return new AesPacket(getKeyId(), nonce, ciphertext);
     }
 
-    public SequenceItem decrypt(final AesPacket packet)
+    public SequenceItem decrypt(final AesPacket packet, SequenceItemConverter converter)
         throws InvalidInputException {
         final GCMBlockCipher gcm = gcmBlockCipher();
         gcm.init(false, new AEADParameters(
@@ -103,7 +101,7 @@ public class AesKey implements SequenceItem {
             throw new CryptographyException(e);
         }
 
-        return SequenceItem.fromProtobuf(newtext);
+        return converter.parse(newtext);
     }
 
     private GCMBlockCipher gcmBlockCipher() {
@@ -115,7 +113,7 @@ public class AesKey implements SequenceItem {
     }
 
     @Override
-    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         LOG.debug("Added key {}", keyId);
         engine.addAesKey(this);

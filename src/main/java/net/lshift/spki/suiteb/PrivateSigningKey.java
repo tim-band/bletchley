@@ -8,16 +8,16 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 
 import net.lshift.bletchley.suiteb.proto.PrivateSigningKeyProto;
 import net.lshift.spki.ParseException;
-import net.lshift.spki.convert.ProtobufConvert;
+import net.lshift.spki.convert.ProtobufConvertible;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaPrivateKey;
 import net.lshift.spki.suiteb.sexpstructs.EcdsaSignature;
 
 /**
  * A private key for signing
  */
-@ProtobufConvert.ProtobufClass(PrivateSigningKeyProto.PrivateSigningKey.class)
+@ProtobufConvertible.ProtobufClass(PrivateSigningKeyProto.PrivateSigningKey.class)
 public class PrivateSigningKey
-implements ProtobufConvert<PrivateSigningKeyProto.PrivateSigningKey.Builder> {
+implements ProtobufConvertible<PrivateSigningKeyProto.PrivateSigningKey.Builder> {
     private final PublicSigningKey publicKey;
     private final AsymmetricCipherKeyPair keyPair;
     private final ECDSASigner signer = new ECDSASigner();

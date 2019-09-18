@@ -21,7 +21,7 @@ public class InvalidOnOrAfter implements Condition {
     }
 
     @Override
-    public <ActionType extends Message> boolean allows(final InferenceEngine<ActionType> engine, final ActionType action) {
+    public boolean allows(final InferenceEngine engine, final Message action) {
         return NOW.get(engine).before(date);
     }
     

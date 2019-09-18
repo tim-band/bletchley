@@ -12,7 +12,7 @@ import net.lshift.spki.convert.UsesCatalog;
 public class PointTest extends UsesCatalog {
     @Test(expected=CryptographyException.class)
     public void badPointInPublicKeyRejected() throws IOException, InvalidInputException {
-        SequenceItem.fromProtobuf(
+        new SequenceItemConverter().fromProtobuf(
                 SuiteBProto.SequenceItem.newBuilder().setPublicSigningKey(
                 SuiteBProto.PublicSigningKey.newBuilder()
                 .setPoint(SuiteBProto.EcPoint.newBuilder()

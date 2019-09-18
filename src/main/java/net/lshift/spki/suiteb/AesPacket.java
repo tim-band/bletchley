@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Message;
-
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 
@@ -29,14 +27,13 @@ public class AesPacket implements SequenceItem {
     }
 
     @Override
-    public <ActionType extends Message> void process(
-            final InferenceEngine<ActionType> engine, 
-            final Condition trust, 
-            Class<ActionType> actionType)
+    public void process(
+            final InferenceEngine engine, 
+            final Condition trust)
                     throws InvalidInputException {
         final AesKey key = engine.getAesKey(keyId);
         if (key != null) {
-            final SequenceItem contents = key.decrypt(this);
+            final SequenceItem contents = key.decrypt(this, engine.getParser());
             LOG.debug("Decryption successful");
             engine.process(contents, trust);
         } else {

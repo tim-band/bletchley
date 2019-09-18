@@ -13,9 +13,9 @@ public class TrustedCondition extends InternalCondition {
     }
 
     @Override
-    public <ActionType extends Message> boolean allows(
-            final InferenceEngine<ActionType> inferenceEngine, 
-            final ActionType payload) {
+    public boolean allows(
+            final InferenceEngine inferenceEngine, 
+            final Message payload) {
         return true;
     }
 }

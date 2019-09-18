@@ -1,10 +1,7 @@
 package net.lshift.spki.suiteb;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.protobuf.Message;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto.Sequence.Builder;
@@ -13,8 +10,7 @@ import net.lshift.spki.InvalidInputException;
 /**
  * A list of SequenceItems.  Itself a SequenceItem.
  */
-public class Sequence
-        implements SequenceItem {
+public class Sequence implements SequenceItem {
     public final List<SequenceItem> sequence;
 
     public Sequence(final List<SequenceItem> sequence) {
@@ -26,20 +22,11 @@ public class Sequence
     }
     
     @Override
-    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         for (final SequenceItem i: sequence) {
             engine.process(i, trust);
         }
-    }
-
-    public static Sequence fromProtobuf(SuiteBProto.Sequence sequence) throws InvalidInputException {
-        // Because of exception handling, this doesn't use Stream#map
-        List<SequenceItem> items = new ArrayList<>(sequence.getItemsCount());
-        for(SuiteBProto.SequenceItem item: sequence.getItemsList()) {
-            items.add(SequenceItem.fromProtobuf(item));
-        }
-        return new Sequence(items);
     }
 
     @Override

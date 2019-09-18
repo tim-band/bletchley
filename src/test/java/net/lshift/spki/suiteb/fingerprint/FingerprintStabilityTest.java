@@ -1,5 +1,6 @@
 package net.lshift.spki.suiteb.fingerprint;
 
+import static net.lshift.spki.suiteb.SequenceUtils.action;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -8,7 +9,6 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
-import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
 
 import net.lshift.bletchley.suiteb.proto.SimpleMessageProto.SimpleMessage;
@@ -40,14 +40,14 @@ public class FingerprintStabilityTest {
     public static TestPair[] data() {
         return new TestPair[] {
             new TestPair(message(""),
-                "cheat-hoot-reads/hwy-vexed-cb/jm-px-mask/emits-books-wall/pain-skid-jolt"),
+                "lara-denial-piano/ce-pardon-spade/wax-flu-rash/doris-morsel-trail/mice-spray-beers"),
             new TestPair(message("hello"),
-                "honey-knots-exert/dodo-irons-lenny/third-ale-brief/yelp-burns-essay/score-humid-bella")
+                "scour-fault-icons/skin-teacup-sizes/kq-tend-datum/spitz-say-sank/truck-drawn-crops")
         };
     }
 
     private static Action message(String text) {
-        return new Action(Any.pack(SimpleMessage.newBuilder().setType("").setContent(ByteString.copyFromUtf8(text)).build()));
+        return action(SimpleMessage.newBuilder().setType("").setContent(ByteString.copyFromUtf8(text)).build());
     }
 
     @Theory
@@ -57,4 +57,5 @@ public class FingerprintStabilityTest {
             is(pair.getFingerprint()));
     }
 }
+
 

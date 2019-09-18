@@ -6,15 +6,15 @@ import org.bouncycastle.math.ec.ECPoint;
 
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.bletchley.suiteb.proto.SuiteBProto.EcdhSharedSecret.Builder;
-import net.lshift.spki.convert.ProtobufConvert;
+import net.lshift.spki.convert.ProtobufConvertible;
 import net.lshift.spki.suiteb.proto.ProtobufHelper;
 
 /**
  * Serialization format for ECDH shared secret before it's hashed into
  * a GCM key.
  */
-@ProtobufConvert.ProtobufClass(SuiteBProto.EcdhSharedSecret.class)
-public class EcdhSharedSecret implements ProtobufConvert<SuiteBProto.EcdhSharedSecret.Builder> {
+@ProtobufConvertible.ProtobufClass(SuiteBProto.EcdhSharedSecret.class)
+public class EcdhSharedSecret implements ProtobufConvertible<SuiteBProto.EcdhSharedSecret.Builder> {
     public final ECPoint receiverKey;
     public final ECPoint senderKey;
     public final BigInteger sharedSecret;

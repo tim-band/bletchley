@@ -2,8 +2,6 @@ package net.lshift.spki.suiteb;
 
 import static net.lshift.spki.suiteb.SequenceUtils.sequence;
 
-import com.google.protobuf.Message;
-
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 
@@ -32,7 +30,7 @@ public class Signed implements SequenceItem {
     }
 
     @Override
-    public <ActionType extends Message> void process(final InferenceEngine<ActionType> engine, final Condition trust, Class<ActionType> actionType)
+    public void process(final InferenceEngine engine, final Condition trust)
         throws InvalidInputException {
         if (!DigestSha384.DIGEST_NAME.equals(hashType)) {
             throw new CryptographyException(
@@ -40,10 +38,6 @@ public class Signed implements SequenceItem {
         }
         engine.process(payload,
             engine.getItemTrust(DigestSha384.digest(payload)));
-    }
-
-    public static Signed fromProtobuf(SuiteBProto.Signed signed) throws InvalidInputException {
-        return new Signed(signed.getHashType(), SequenceItem.fromProtobuf(signed.getPayload()));
     }
 
     @Override

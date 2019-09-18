@@ -11,7 +11,7 @@ import com.google.protobuf.Message;
  * and are annotated with the protocol buffer representation class. 
  * @param <B>
  */
-public interface ProtobufConvert<B extends Message.Builder> {
+public interface ProtobufConvertible<B extends Message.Builder> {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ProtobufClass {
         Class<?> value();

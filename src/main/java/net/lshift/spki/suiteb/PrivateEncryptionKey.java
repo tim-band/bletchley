@@ -3,8 +3,6 @@ package net.lshift.spki.suiteb;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 
-import com.google.protobuf.Message;
-
 import net.lshift.bletchley.suiteb.proto.SuiteBProto;
 import net.lshift.spki.InvalidInputException;
 import net.lshift.spki.ParseException;
@@ -52,10 +50,9 @@ public class PrivateEncryptionKey implements SequenceItem {
     }
 
     @Override
-    public <ActionType extends Message> void process(
-            final InferenceEngine<ActionType> engine, 
-            final Condition trust, 
-            Class<ActionType> actionType)
+    public void process(
+            final InferenceEngine engine, 
+            final Condition trust)
         throws InvalidInputException {
         engine.addPrivateEncryptionKey(this);
     }

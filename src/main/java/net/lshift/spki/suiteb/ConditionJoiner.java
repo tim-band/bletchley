@@ -22,9 +22,9 @@ public class ConditionJoiner {
         }
 
         @Override
-        public <ActionType extends Message> boolean allows(
-                final InferenceEngine<ActionType> inferenceEngine, 
-                final ActionType action) {
+        public boolean allows(
+                final InferenceEngine inferenceEngine, 
+                final Message action) {
             for (final Condition c: conditions) {
                 if (!c.allows(inferenceEngine, action))
                     return false;
@@ -43,9 +43,9 @@ public class ConditionJoiner {
         }
 
         @Override
-        public <ActionType extends Message> boolean allows(
-                final InferenceEngine<ActionType> inferenceEngine, 
-                final ActionType payload) {
+        public boolean allows(
+                final InferenceEngine inferenceEngine, 
+                final Message payload) {
             for (final Condition c: conditions) {
                 if (c.allows(inferenceEngine, payload))
                     return true;

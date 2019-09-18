@@ -4,9 +4,9 @@ import com.google.protobuf.ByteString;
 
 import net.lshift.bletchley.suiteb.proto.PassphraseProto;
 import net.lshift.bletchley.suiteb.proto.PassphraseProto.KeyStart.Builder;
-import net.lshift.spki.convert.ProtobufConvert;
+import net.lshift.spki.convert.ProtobufConvertible;
 
-public class KeyStart implements ProtobufConvert<PassphraseProto.KeyStart.Builder> {
+public class KeyStart implements ProtobufConvertible<PassphraseProto.KeyStart.Builder> {
     // This class is only used to create a digest, so no access to the fields
     // is required, other than to convert to a protobuf
     private final String passphraseId;
