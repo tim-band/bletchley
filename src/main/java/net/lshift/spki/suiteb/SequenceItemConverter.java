@@ -141,16 +141,17 @@ public class SequenceItemConverter {
 
     public Action fromProtobuf(SuiteBProto.Action action) throws InvalidInputException {
         try {
-            Message actionDefaultInstance = actionDefaultInstanceByName.get(action.getName());
+            String typeName = Action.typeName(action.getAccept().getTypeUrl());
+            Message actionDefaultInstance = actionDefaultInstanceByName.get(typeName);
             if(actionDefaultInstance == null) {
                 throw new InvalidInputException(MessageFormat.format(
                         "Action name {0} not one of {1}.", 
-                        action.getName(),
+                        typeName,
                         actionDefaultInstanceByName.keySet())); 
             }
             return action(
                     DiscardUnknownFieldsParser.wrap(
-                            actionDefaultInstance.getParserForType()).parseFrom(action.getValue()));
+                            actionDefaultInstance.getParserForType()).parseFrom(action.getAccept().getValue()));
         } catch (InvalidProtocolBufferException e) {
             throw new InvalidInputException(e);
         }

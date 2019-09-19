@@ -34,8 +34,7 @@ message SequenceItem {
   * the server  * takes is to 
   */
 message Action {
-  string name = 1;
-  bytes value = 2;
+    google.protobuf.Any accept = 1;
 }
 
 message AesKey {

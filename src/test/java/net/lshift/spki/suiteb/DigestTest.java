@@ -14,8 +14,7 @@ public class DigestTest extends UsesSimpleMessage
         final DigestSha384 digest
             = DigestSha384.digest(makeMessage());
         assertThat(digest, is(new DigestSha384(Hex.decode(
-            "ba4c9bcfa96ada720fccfd68f66735dfc55762a5cda126b4" + 
-            "6d1dffcc51a09ddfb64b8da61e8f5d41cada1bc9c2eb64c3"))));
+            "af03dee21dedc87aaa673badaadc7fa83a88c700ad6ac4cf" +
+            "d6bcb8a600603874bef28a1ac1e048c071ac88c95bc30215"))));
     }
 }
-

@@ -40,9 +40,9 @@ public class FingerprintStabilityTest {
     public static TestPair[] data() {
         return new TestPair[] {
             new TestPair(message(""),
-                "lara-denial-piano/ce-pardon-spade/wax-flu-rash/doris-morsel-trail/mice-spray-beers"),
+                    "gas-host-logs/andrew-celia-slide/allan-awash-fizz/clock-stuff-jew/gk-harvey-snipe"),
             new TestPair(message("hello"),
-                "scour-fault-icons/skin-teacup-sizes/kq-tend-datum/spitz-say-sank/truck-drawn-crops")
+                    "fill-seeds-tots/doing-wes-jeep/viii-ebb-tax/eel-did-wick/blown-larynx-jkl")
         };
     }
 
@@ -57,5 +57,3 @@ public class FingerprintStabilityTest {
             is(pair.getFingerprint()));
     }
 }
-
-
