@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package suiteb.test.reorder;
+option java_package = "net.lshift.spki.suiteb";
+option java_outer_classname = "DecanonicaliseProto";
+
+// This message exists just so we can see what happens if we re-order it's fields,
+// or add unknown fields, in a unit test.
+message ExampleAction {
+    string a = 1;
+    string b = 2;
+}
+
+message ExampleActionExtraField {
+    string a = 1;
+    string b = 2;
+    string c = 3;
+}
