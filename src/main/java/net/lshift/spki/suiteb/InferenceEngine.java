@@ -3,6 +3,7 @@ package net.lshift.spki.suiteb;
 import static net.lshift.spki.suiteb.ConditionJoiner.or;
 import static net.lshift.spki.suiteb.UntrustedCondition.nullMeansUntrusted;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
@@ -69,8 +71,43 @@ public class InferenceEngine {
         process(item, UntrustedCondition.UNTRUSTED);
     }
 
+    public void process(final ByteString item) throws InvalidInputException {
+        process(this.parser.parse(item), UntrustedCondition.UNTRUSTED);
+    }
+
+    public void process(final InputStream item) throws InvalidInputException {
+        process(this.parser.parse(item), UntrustedCondition.UNTRUSTED);
+    }
+
+    /**
+     * Process a trusted item. The item is generally a public key. Any action
+     * signed by this key will be accepted by {@link #process}. Any delegation signed by this
+     * key will be accepted by {@link #process}.
+     * @param item The item to be trusted.
+     * @throws InvalidInputException
+     */
     public void processTrusted(final SequenceItem item) throws InvalidInputException {
         process(item, TrustedCondition.TRUSTED);
+    }
+
+    /**
+     * Parse and then process a trusted item.
+     * @see #processTrusted(SequenceItem)
+     * @param item the item to be trusted
+     * @throws InvalidInputException
+     */
+    public void processTrusted(final ByteString item) throws InvalidInputException {
+        process(this.parser.parse(item), TrustedCondition.TRUSTED);
+    }
+
+    /**
+     * Parse and then process a trusted item.
+     * @see #processTrusted(SequenceItem)
+     * @param item the item to be trusted
+     * @throws InvalidInputException
+     */
+    public void processTrusted(final InputStream item) throws InvalidInputException {
+        process(this.parser.parse(item), TrustedCondition.TRUSTED);
     }
 
     public void process(final SequenceItem item, final Condition trust) throws InvalidInputException {

@@ -11,6 +11,9 @@ message ExampleAction {
     string b = 2;
 }
 
+// If you read this message, expecting ExampleAction (above)
+// then you will get one unknown field (3). I.e. this is a convenient
+// way for a test to construct a message with an unknown field.
 message ExampleActionExtraField {
     string a = 1;
     string b = 2;

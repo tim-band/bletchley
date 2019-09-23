@@ -58,7 +58,7 @@ public class DecanonicaliseTest extends UsesSimpleMessage {
         completely understand - we want to discard unknown fields
         when we parse protocol buffers.
      */
-    
+
     @Test
     public void digestReversedFieldsTest() throws IOException, InvalidInputException {
         ExampleAction exampleAction = ExampleAction.newBuilder().setA("foo").setB("bar").build();
@@ -74,7 +74,11 @@ public class DecanonicaliseTest extends UsesSimpleMessage {
 
     @Test
     public void digestUnknownFieldTest() throws IOException, InvalidInputException {
-        ExampleActionExtraField exampleActionExtra = ExampleActionExtraField.newBuilder().setA("foo").setB("bar").setC("baz").build();
+        ExampleActionExtraField exampleActionExtra = 
+                ExampleActionExtraField.newBuilder()
+                .setA("foo")
+                .setB("bar")
+                .setC("baz").build();
         Action exampleSequenceItemOriginal = SequenceUtils.action(exampleActionExtra);
         // What we expect is that if field is known - I.e. the the action is labelled with the right type
         // the round trip will produce the same digest. Think of this assert as the control
@@ -83,7 +87,7 @@ public class DecanonicaliseTest extends UsesSimpleMessage {
                 DigestSha384.digest(CONVERTER
                         .parse(actionSequenceItemToBytes(EXTRA_FIELD_FULL_NAME, exampleActionExtra.toByteString()))
                         .require(Action.class)));
-        // If we label the action with a type that has one less field, the round trip will produce different digests
+        // If we label the action with a type that has one less field, the round trip will produce different digests.
         // This is what we want - because if we don't understand the whole content of a message, we don't want
         // to accept it. It might mean something different to the sender/signer
         assertNotEquals(

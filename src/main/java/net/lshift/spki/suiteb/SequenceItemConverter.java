@@ -181,5 +181,4 @@ public class SequenceItemConverter {
     public List<Descriptor> getDescriptors() {
         return actionDefaultInstanceByName.values().stream().map(Message::getDescriptorForType).collect(Collectors.toList());
     }
-
 }
